@@ -1,0 +1,41 @@
+##python:genLines
+
+def genLines(setupvars):
+    yield "PPDEFINE FLASH_MULTISPECIES"
+
+    maxelems = 6
+    if "ms_maxelems" in setupvars:
+        maxelems = int(setupvars["ms_maxelems"])
+    if "ManualSpeciesDirectives" in setupvars:
+        ManualSpeciesDirectives = setupvars["ManualSpeciesDirectives"]
+    else:
+        ManualSpeciesDirectives = False
+    yield "PPDEFINE MS_MAXELEMS " + str(maxelems)
+
+    if "species" in setupvars:
+        yield "PPDEFINE SPECIES_SETUPVAR"
+
+        species = [s.lower() for s in setupvars["species"].split(',')]
+
+        for spec in species:
+            if not ManualSpeciesDirectives:
+                yield "SPECIES " + spec.upper()
+
+            yield 'PARAMETER  ms_' + spec + 'A          REAL -999.'
+            yield 'PARAMETER  ms_' + spec + 'Z          REAL -999.'
+            yield 'PARAMETER  ms_' + spec + 'Neutral    REAL -999.'
+            yield 'PARAMETER  ms_' + spec + 'Negative   REAL -999.'
+            yield 'PARAMETER  ms_' + spec + 'BindEnergy REAL -999.'
+            yield 'PARAMETER  ms_' + spec + 'Gamma      REAL ' + str(5.0/3.0)
+            yield 'PARAMETER  ms_' + spec + 'ZMin       REAL -998.'
+            yield 'PARAMETER  op_' + spec + 'LowTemp    REAL 0.0'
+            yield 'PARAMETER eos_' + spec + 'EosType    STRING "-none-" ["-none-","eos_gam","eos_tab"]'
+	    yield 'PARAMETER eos_' + spec + 'SubType    STRING "-none-" ["-none-","ionmix","ionmix4","ionmix6","propaceos","opacplot"]'
+            yield 'PARAMETER eos_' + spec + 'TableFile  STRING "-none-"'
+            yield 'PARAMETER eos_' + spec + 'GroupName  STRING "-none-"'
+
+            yield 'PARAMETER  ms_' + spec + 'NumElems   INTEGER 0 [... ' + str(maxelems) + ']'
+            for i in xrange(maxelems):
+                yield 'PARAMETER  ms_' + spec + 'ZElems_'    + str(i+1) + ' INTEGER -999'
+                yield 'PARAMETER  ms_' + spec + 'AElems_'    + str(i+1) + ' REAL    -999.'
+                yield 'PARAMETER  ms_' + spec + 'Fractions_' + str(i+1) + ' REAL    -999.'

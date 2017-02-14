@@ -1,0 +1,53 @@
+#       Configuration file for the Brio-Wu MHD shock-tube problem
+#       (Brio, M. and Wu, C. C., J. Comput. Phys., 75:400--422, 1988)
+
+REQUIRES physics/Hydro/HydroMain
+REQUIRES physics/Eos/EosMain/Gamma
+
+
+# Add custom variables below
+
+
+D   rho_left, right   Density in left and right parts of grid
+D   p_left, right     Pressure in left and right parts of grid
+D   u_left, right     Fluid x-velocity in left and right parts of grid
+D   v_left, right     Fluid y-velocity in left and right parts of grid
+D   w_left, right     Fluid z-velocity in left and right parts of grid
+D   by_left, right    Magnetic field transverse component
+D   b_normal          Magnetic field normal component
+D   xangle            Angle made by diaphragm normal w/x-axis (deg)
+D   yangle            Angle made by diaphragm normal w/y-axis (deg)
+D   posn              Point of intersection between the shock plane and the x-axis
+D   tiny	      Threshold value used for numerical zero
+
+# ADD DESCRIPTION HERE
+ 
+PARAMETER rho_left      REAL    1.
+PARAMETER rho_right     REAL    0.125
+PARAMETER p_left        REAL    1.
+PARAMETER p_right       REAL    0.1
+PARAMETER u_left        REAL    0.
+PARAMETER u_right       REAL    0.
+PARAMETER v_left        REAL    0.
+PARAMETER v_right       REAL    0.
+PARAMETER w_left        REAL    0.
+PARAMETER w_right       REAL    0.
+PARAMETER by_left       REAL    1.
+PARAMETER by_right      REAL    -1.
+PARAMETER bz_left       REAL    0.
+PARAMETER bz_right      REAL    0.
+PARAMETER b_normal      REAL    0.75
+
+PARAMETER xangle        REAL    0.
+PARAMETER yangle        REAL    90.
+PARAMETER posn          REAL    0.5
+PARAMETER tiny		REAL    1.e-16
+PARAMETER rx            REAL    0.
+PARAMETER ry            REAL    1.
+
+PARAMETER xmin          REAL    0.
+PARAMETER xmax          REAL    1.
+PARAMETER ymin          REAL    0.
+PARAMETER ymax          REAL    1.
+
+VARIABLE vecz			# vector potential Az

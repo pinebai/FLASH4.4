@@ -1,0 +1,69 @@
+# Runtime parameters for the Multipole unitTest, a MacLaurin spheroid problem.
+#
+#               3D cartesian version:
+#
+#     calculation domain    x = from 0. to 1.
+#                           y = from 0. to 1.
+#                           z = from 0. to 1.
+#
+#     center of spheroid at x = 0.5
+#                           y = 0.5
+#                           z = 0.5
+#
+#-------------------------------------------------------------------------------
+# Parameters for initial model
+
+density                   = 1.        # Spheroid density (rho)
+eccentricity              = 0.9       # Eccentricity of spheroid (e)
+equatorialSemimajorAxis   = 0.25      # Equatorial semimajor axis (a1)
+xctr                      = 0.5       # Coordinate x of center of spheroid
+yctr                      = 0.5       # Coordinate y of center of spheroid
+zctr                      = 0.5       # Coordinate z of center of spheroid
+nsubzones                 = 2         # Number of averaging sub-zones per axis
+                                      # This is to ensure a non-blocky spheroid
+                                      # density near the surface of the spheroid
+
+#-------------------------------------------------------------------------------
+# Computational geometry and volume parameters
+
+geometry                  = "cartesian"
+xmin                      = 0.                 # smallest x of domain
+xmax                      = 1.                 # largest  x of domain
+ymin                      = 0.                 # smallest y of domain
+ymax                      = 1.                 # largest  y of domain
+zmin                      = 0.                 # smallest z of domain
+zmax                      = 1.                 # largest  z of domain
+xl_boundary_type          = "outflow"          # better than default "periodic"
+xr_boundary_type          = "outflow"          # better than default "periodic"
+yl_boundary_type          = "outflow"          # better than default "periodic"
+yr_boundary_type          = "outflow"          # better than default "periodic"
+zl_boundary_type          = "outflow"          # better than default "periodic"
+zr_boundary_type          = "outflow"          # better than default "periodic"
+
+#-------------------------------------------------------------------------------
+# Adaptive mesh parameters
+
+lrefine_max               = 4         # Maximum refinement level
+lrefine_min               = 4         # Minimum refinement level
+                                      # (force uniform refinement)
+refine_var_1              = "dens"    # Refinement variables
+Nblockx                   = 1         # Number of top-level blocks
+Nblocky                   = 1
+Nblockz                   = 1
+
+#-------------------------------------------------------------------------------
+# Time and I/O parameters
+
+run_comment               = "Maclaurin spheroid test"   # Comment for log file
+basenm                    = "Maclaurin_"                # Base name output files
+restart                   = .false.             # Start from checkpoint file?
+checkpointFileNumber      = 0                   # Initial checkpoint file number
+plot_var_1                = "dens"
+
+#-------------------------------------------------------------------------------
+# Physics/solver parameters
+
+mpole_Lmax                = 6         # Maximum multipole moment
+mpole_PrintRadialInfo     = .false.   # Print out radial info
+mpole_DumpMoments         = .false.   # Print out multipole moments
+#-------------------------------------------------------------------------------

@@ -1,0 +1,9 @@
+# Config file for the Eos/EosMain/Tabulated/Hdf5TableRead implementation.
+
+LIBRARY HDF5
+
+D control parameter indicating use of logarithmic opacities
+PARAMETER eos_useLogTables BOOLEAN TRUE
+
+DATAFILES *.imx
+DATAFILES *.h5

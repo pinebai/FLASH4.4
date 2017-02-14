@@ -1,0 +1,93 @@
+#	Runtime parameters for the Woodward-Colella interacting blast problem.
+
+#	Parameters for initial model
+
+#		Density, pressure, and velocity in each section of the grid
+
+sim_rhoLeft        =    1.
+sim_rhoMid         =    1.
+sim_rhoRight       =    1.
+sim_pLeft          =    1000.
+sim_pMid           =    0.01
+sim_pRight         =    100.
+sim_uLeft          =    0.
+sim_uMid           =    0.
+sim_uRight         =    0.
+
+#		Angle and position of interfaces relative to x and y axes
+
+sim_xangle		=    0.
+sim_yangle		=    90.
+sim_posnL           =    0.1
+sim_posnR           =    0.9
+
+#		Gas ratio of specific heats
+
+gamma           = 1.4
+
+
+#		Size of computational volume
+
+xmin		= 0.
+xmax		= 1.
+
+#		Boundary conditions
+
+xl_boundary_type = "reflect"
+xr_boundary_type = "reflect"
+
+#	Simulation (grid, time, I/O) parameters
+
+cfl		= 0.8
+basenm          = "2blast_"
+restart         = .false.
+checkpointFileIntervalTime          = 0.002
+nend            = 999999
+tmax            = 0.02
+plotFileIntervalTime           = 0.00038
+
+run_comment	= "Woodward-Colella blast wave (to t=0.038)"
+log_file	= "2blast_ug_1d_400pts.log"
+
+#       Misc parameters
+
+eintSwitch     = 0.
+
+# Particle stuff
+useParticles = .true.
+pt_numX = 128
+pt_maxPerProc = 128
+
+
+gridImax = 408   #defined as nxb + 2*ng
+gridJmax = 1
+gridKmax = 1
+iGridSize = 400   #defined as nxb * iprocs
+jGridSize = 1
+kGridSize = 1
+iProcs = 4
+jProcs = 1
+kProcs = 1
+
+#Lines below appended by flash_test (override above definitions)
+#commented out 2007-04-17 - KW
+##basenm          = "2blast_ug_parallel_hdf5_1d_400pts_"
+##log_file        = "2blast_ug_parallel_hdf5_1d_400pts.log"
+
+## -------------------------------------------------------------##
+##  SWITCHES SPECIFIC TO THE UNSPLIT HYDRO SOLVER               ##
+#       I. INTERPOLATION SCHEME:
+order           = 3      # Interpolation order (First/Second/Third order)
+slopeLimiter    = "mc"   # Slope limiters (minmod, mc, vanLeer, hybrid, limited)
+LimitedSlopeBeta= 1.     # Slope parameter for the "limited" slope by Toro
+charLimiting    = .true. # Characteristic limiting vs. Primitive limiting
+use_steepening	= .true. # Contact Steepening for Third order PPM
+
+#       II. RIEMANN SOLVERS:
+RiemannSolver   = "Roe"       # Roe, HLL, HLLC, LF
+shockInstabilityFix = .false. # Carbuncle instability fix for the Roe solver
+EOSforRiemann	= .false.     # Call EoS for Riemann solves
+
+#       III. STRONG SHOCK HANDELING SCHEME:
+shockDetect     = .false.     # Shock Detect for numerical stability
+## -------------------------------------------------------------##

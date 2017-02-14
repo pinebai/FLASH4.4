@@ -1,0 +1,40 @@
+# Config file for the Deleptonize unit
+REQUIRES physics/Eos/EosNuclear
+REQUIRES physics/sourceTerms/Deleptonize/localAPI
+
+MASS_SCALAR YE    EOSMAPIN: YE
+MASS_SCALAR SUMY  EOSMAPIN: SUMY
+
+#VARIABLE DYE
+#VARIABLE DENTR
+#VARIABLE DEINT
+
+PARAMETER delep_Enu      REAL 10.0
+PARAMETER delep_rhoOne   REAL 0.0
+PARAMETER delep_rhoTwo   REAL 0.0
+PARAMETER delep_yOne     REAL 0.0
+PARAMETER delep_yTwo     REAL 0.0
+PARAMETER delep_yc       REAL 0.0
+PARAMETER useEntr	 BOOLEAN TRUE
+
+USESETUPVARS threadBlockList, threadWithinBlock
+
+IF threadBlockList
+   PARAMETER threadDelepBlockList BOOLEAN TRUE
+ELSE
+   PARAMETER threadDelepBlockList BOOLEAN FALSE
+ENDIF
+
+IF threadWithinBlock
+   PARAMETER threadDelepWithinBlock BOOLEAN TRUE
+ELSE
+   PARAMETER threadDelepWithinBlock BOOLEAN FALSE
+ENDIF
+
+D threadDelepBlockList Turn on block-list threading for the Deleptonize implementation?
+D threadDelepWithinBlock Turn on within-block threading for the Deleptonize implementation?
+
+IF threadBlockList
+  PPDEFINE ST_THREAD_BLOCK_LIST
+  REQUIRES ./threadBlockList
+ENDIF

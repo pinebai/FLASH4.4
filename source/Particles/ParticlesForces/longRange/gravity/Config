@@ -1,0 +1,7 @@
+# Config for active particles, long range time integration forces
+# [/source/Particles/ParticlesForces/longRange/gravity]
+
+DEFAULT ParticleMesh
+
+D gpot_particleprop  Gravitational potential mapped to particle location
+PARTICLEPROP gpot     REAL       # particle gravitational potential

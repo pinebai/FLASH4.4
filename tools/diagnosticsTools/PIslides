@@ -1,0 +1,120 @@
+#!/usr/bin/env python
+
+import os
+import re
+import string
+import sys
+
+def usage ():
+    print " Usage: ./PIslides         <flash executable command>  <PIchkfiles>"
+    print "        ./PIcreateHDF5file <flash executable command>   all"
+    print "        ./PIcreateHDF5file -help"
+
+def informUser ():
+    print "\n"
+    print "************************************************************************************"
+    print "*           Wellcome to the Proton Imaging Slides Production Program               *"
+    print "************************************************************************************"
+    print "\n"
+    print " Performs a series of FLASH Proton Imaging runs on selected or all PI checkpoint "
+    print " files. The following items must be present in the current directory:            "
+    print "\n"
+    print "        1) the FLASH Proton Imaging executable (ex: flash4)"
+    print "        2) the appropriate flash.par file"
+    print "        3) a list of PI checkpoint files labeled with PI_hdf5_chk_nnnn (n = integer)"
+    print "\n"
+
+if __name__ == "__main__":
+
+     argList = sys.argv[1:]                                  # gets a list of all arguments
+     sizeArgList = len (argList)
+
+     if (sizeArgList == 0):                                  # no arguments
+         usage ()
+         sys.exit (0)
+     if (argList[0] == "-help"):                             # help condition
+         informUser ()
+         usage ()
+         sys.exit (0)
+
+     files = os.listdir (os.curdir)                          # all files in current directory
+
+     nFiles = 0                                              #
+     for fileName in files:                                  # see, if flash.par file is present
+         match = re.search ('\Aflash.par\Z',fileName)        # \A matches string at the beginning
+         if match and os.path.isfile (fileName):             # \Z matches string at the end
+            nFiles += 1                                      #
+
+     if nFiles == 0:                                         # no flash.par file
+        print "No flash.par file present!"
+        sys.exit (0)
+
+     if (argList[1] != "all"):                               # reset files list to argument list
+         files = argList[1:]                                 # if not all chk files are processed
+
+     flashRunCommand = argList[0]                            # get the flash executable command
+#
+#    ...Explanation of pattern search:
+#
+#                PI_hdf5_chk_     : does the string 'PI_hdf5_chk_' occur anywhere in file name?
+#                [0-9]            : this represents any character of the set {0-9}
+#                the * afterwards : search for repetitions of [0-9]
+#                \Z               : all that comes before should be at the end of the file name
+#
+     nFiles = 0                                              #
+     for fileName in files:                                  #
+         match = re.search ('PI_hdf5_chk_[0-9]*\Z',fileName) # see, if at least one chk file is
+         if match and os.path.isfile (fileName):             # present
+            nFiles += 1                                      #
+
+     if nFiles == 0:                                         # no chk file in current directory
+        print "No HDF5 PI checkpoint files present!"
+        sys.exit (0)
+#
+#    ...Main outer loop over all checkpoint files to be processed.
+#       Get each checkpoint file number.
+#
+     for fileName in files:
+         match = re.search ('PI_hdf5_chk_[0-9]*\Z',fileName)
+         if match and os.path.isfile (fileName):
+
+            nameLabels = string.split (fileName,'_')
+            chkNumber  = nameLabels [len (nameLabels) - 1]
+            chkNumber  = string.lstrip (chkNumber,'0')
+
+            print chkNumber
+#
+#    ...Prepare (replace) the flash.par file with the current checkpoint file number.
+#       Set also the checkpoint file interval step to a very large number, so as not
+#       to overwrite existing checkpoint files (they have the same name since they
+#       use the same basename of the simulation).
+#
+            bufferSize = 1
+            infile = open ('flash.par')
+            lines = infile.readlines (bufferSize)
+            infile.close ()
+
+            if lines == []:
+               print "flash.par file empty!"
+               sys.exit (0)
+            for i in xrange (0,len (lines)):
+                line = lines[i]
+                match = re.search ('\AcheckpointFileNumber',line)
+                if match:
+                   line = 'checkpointFileNumber'+' = '+chkNumber+'\n'
+                   lines[i] = line
+                match = re.search ('\AcheckpointFileIntervalStep',line)
+                if match:
+                   line = 'checkpointFileIntervalStep'+' = '+'10000'+'\n'
+                   lines[i] = line
+
+            outfile = open ('flash.par','w')
+
+            for i in xrange (0,len (lines)):
+                outfile.write (lines[i])
+            outfile.close ()
+#
+#    ...The new flash.par file is ready. Call the flash executable to process the
+#       current checkpoint file.
+#
+            os.system (flashRunCommand)

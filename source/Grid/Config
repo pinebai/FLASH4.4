@@ -1,0 +1,5 @@
+#Config file for Grid unit
+DEFAULT GridMain
+
+# localAPI comes earlier while linking so can be overriden easily
+CHILDORDER localAPI unitTest

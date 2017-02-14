@@ -1,0 +1,13 @@
+UnitTest/Laser_quadraticTube/testII/2d/async/mpi_only
+UnitTest/Laser_quadraticTube/testII/2d/async/multithreaded
+UnitTest/Laser_quadraticTube/testII/2d/sync/mpi_only
+UnitTest/Laser_quadraticTube/testII/3d/async/mpi_only
+UnitTest/Laser_quadraticTube/testII/3d/sync/mpi_only
+Comparison/LaserSlab/1d/async/one_beam/mpi_only
+Comparison/LaserSlab/2d/async/one_beam/mpi_only
+Comparison/LaserSlab/2d/async/one_beam/multithreaded
+Comparison/LaserSlab/2d/async/two_beam/mpi_only
+Comparison/LaserSlab/2d/async/two_beam/multithreaded
+Comparison/LaserSlab/3dIn2d/async/one_beam/mpi_only
+Comparison/Nif2013/2d/async/mpi_only
+Comparison/Nif2013/2d/async_grid_particles/mpi_only

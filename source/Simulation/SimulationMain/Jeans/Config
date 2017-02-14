@@ -1,0 +1,48 @@
+#	Configuration file for the Jeans instability problem
+
+#	This problem can run as "time dependent", in which case it follows
+#	the evolution of the Jeans instability, or "steady", in which case
+#	it only computes the potential.
+
+REQUIRES Driver
+REQUIRES Grid
+REQUIRES physics/Hydro
+REQUIRES IO
+REQUIRES physics/Gravity/GravityMain/Poisson
+# If you don't request Multigrid, you get Multipole... which shouldn't work with periodic b.c.s
+# But if you want any other Gravity unit, you have to say 
+#  prompt> setup blah blah -without-unit=physics/Gravity/GravityMain/Poisson/Multigrid'
+REQUESTS physics/Gravity/GravityMain/Poisson/Multigrid
+
+USESETUPVARS nDim
+IF nDim <> 2
+  SETUPERROR Jeans must run in 2d.  Use ./setup Jeans -2d -maxblocks=1000 blah blah
+ENDIF
+
+#So that we can also use UG.
+LINKIF Grid_markRefineDerefine.F90 Grid/GridMain/paramesh
+
+
+VARIABLE tmp1   # for debugging
+VARIABLE tmp2 
+#		p0		Unperturbed pressure
+#		rho0		Unperturbed density
+#		lambdax/y/z	Wavelengths of perturbation in x/y/z directions
+#		amplitude	Amplitude of perturbation
+#		delta_ref	Refine a block if the max density contrast is
+#				  greater than this
+#		delta_deref	Derefine a block if the max density contrast is
+#				  less than this
+#               reference_density
+#                               Reference density for density contrast
+ 
+PARAMETER p0			REAL	1.
+PARAMETER rho0			REAL	1.
+PARAMETER lambdax		REAL	1.
+PARAMETER lambday		REAL	1.
+PARAMETER lambdaz		REAL	1.
+PARAMETER amplitude		REAL	0.01
+PARAMETER delta_ref		REAL	0.1
+PARAMETER delta_deref		REAL	0.01
+PARAMETER reference_density	REAL	1.
+

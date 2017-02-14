@@ -1,0 +1,17 @@
+#	Config file for the gravity module.  Available sub-modules are:
+DEFAULT GravityMain
+
+D   useGravity       Whether gravity calculations should be performed.
+# Value is meant to be overridden if a GravityMain implementation gets included
+PARAMETER useGravity    BOOLEAN FALSE 
+
+D grav_boundary_type Type of gravitational boundary condition if a Poisson solve
+D           &        is used for Gravity; string-valued version of grav_boundary.
+D           &        Accepts:
+D           &        "isolated", "periodic", "dirichlet", and maybe others,
+D           &        depending on the Poisson solver used.
+D           &        This is declared in the stub level of the Gravity unit
+D           &        to allow the Grid unit to refer to this runtime parameter
+D           &        even when no Gravity implementation is included.
+PARAMETER grav_boundary_type STRING "isolated"
+

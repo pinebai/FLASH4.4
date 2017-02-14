@@ -1,0 +1,10 @@
+# [/lib/specfun]
+# Some special functions needed by some FLASH units
+# (if not provided by the compiler)
+# Used by (at least):
+#  physics/Gravity/GravityMain/Poisson/BHTree
+
+# declare dependency on library
+# INTERNAL means we distribute the source code
+
+TYPE INTERNAL

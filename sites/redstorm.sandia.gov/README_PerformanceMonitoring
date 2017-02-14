@@ -1,0 +1,56 @@
+How to do performance monitoring on the Cray XT3 system using CrayPat
+
+1. module load craypat (default will become 3.1)
+
+2. Build application as usual (make)
+
+3. Instrument application with pat_build
+  - pat_build -g [group] -u flash3
+  - g group options are mpi, io, heap (can only use one a a time?)
+  - default -g group is instrumentation at the function level
+  - u option for user functions
+  - .o files must be available for pat_build!  
+
+  Examples
+	pat_build -g mpi,io,heap -u flash3  (gives mpi,io,heap instrumentation)
+	pat_build -u    flash3  (instrument only user functions)
+
+  - Running the pat_build command will create a file called flash3+pat
+
+  
+
+4. Run instrumented code with PBS or yod interactive commands
+  
+  if you want to collect info on hardware counters at this point
+  - set other environmental varialbes like PAT_RT_HWPC 	(1-9)
+  - yod -sz 256 flash3+pat
+  
+  - Code must be run on Lustre!
+
+  - When code is run a file called flash3.out+[PID]em.xf will be created.
+  
+
+5. Generate performance file (.ap2) with pat_report
+  
+  - pat_report -f ap2 [options] <.xf file>
+  - the basic options are 
+	-o output_file (if I want a different name?)
+
+  - This will generate a file called flash3.ap2?
+
+6. Analyze results with Cray Apprentice2 or pat_report
+
+  6.1> pat_report [options] flash3.ap2 | less
+
+  6.2> for visualization 
+  - module load apprentice2/3.1
+  - app2 flash.ap2
+  - have fun!
+  
+
+  
+  
+
+
+
+  

@@ -1,0 +1,33 @@
+fileFormatVersion = 10
+
+useCollectiveHDF5 = .true.
+
+packMeshPlotWriteHDF5 = .true.
+packMeshChkWriteHDF5 = .true.
+packMeshChkReadHDF5 = .true.
+
+
+#paramesh grid will not refine on its own. 
+#set this to higher values to create more blocks
+lrefine_max = 3
+lrefine_min = 3
+
+#can also create more initial blocks in paramesh this way
+nblockx = 1
+nblocky = 1
+nblockz = 1
+
+#must specify which variables to output for plotfile
+plot_var_1 = "var1"
+plot_var_2 = "var2"
+plot_var_3 = "var3"
+
+
+#particles
+useParticles = .false.
+pt_numX = 5
+pt_numY = 5
+pt_numZ = 5
+
+pt_maxPerProc = 100
+

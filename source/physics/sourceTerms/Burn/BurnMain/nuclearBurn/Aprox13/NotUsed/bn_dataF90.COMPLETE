@@ -1,0 +1,198 @@
+
+Module Burn_data
+  integer, save :: bn_algebra, bn_odeStepper, bn_useTable
+
+!..this sets the size of the number of nuclear reaction rates
+!..only critical to the burn modules
+!..nrat    = number of reaction rates
+!
+  integer, parameter :: bn_rate = 59, bn_ratep1 = bn_rate+1)
+!..nuclear reation network common block declarations
+
+!..xmass   = mass fractions
+!..ymass   = molar fractions
+!..aion    = number of nucleons
+!..aionin  = 1/aion
+!..zion    = number of protons
+!..zionsq  = zion*zion
+!..bion    = binding energies
+!..ionnam  = name of isotope
+
+!..ratnam  = name of reaction rates
+!..ratdum  = the raw reaction rates (unscreened) as an array
+!..ratdum  = the screened reaction rates as an array
+
+!..ra1     = nucleons in one reacting channel
+!..rz1     = charge in one reacting channel
+!..ra2     = nucleons in other reacting channel
+!..rz2     = charge in other reacting channel
+!..zs13    = (z1+z2)**(1./3.)
+!..zhat    = combination of z1 and z2 raised to the 5/3 power
+!..zhat2   = combination of z1 and z2 raised to the 5/12 power
+!..lzav    = log of effective charge
+!..aznut   = combination of a1,z1,a2,z2 raised to 1/3 power
+!..scfac   = screening factors
+
+!..sneut   = total neutrino energy losss rate
+!..sphot   = neutrino losss from photodisintegration
+!..splas   = neutrino loss from plasmons
+!..spair   = neutrino loss from pair production
+!..sbrem   = neutrino less from bremmstrahlung
+!..srecomb = neutrino loss from recombination
+
+!..xoktot  = total number of burner steps taken
+!..xbadtot = total number of bad, but redone, burner steps
+!..xkbrn   = total number of times the burner was called
+
+  !! these were in common block netc2
+  character(len=5) ::    ratnam(nrat)
+  character(len=4) ::    ionam(ionmax)
+  
+  real,save,dimension(NSPECIES) :: xmass,ymass,aion,zion,bion,aionin,zionsq
+  real,save,dimension(
+     &                 rz1(nrat+1),ra1(nrat+1),                         &
+     &                 rz2(nrat+1),ra2(nrat+1),                         &
+     &                 zs13(nrat),zhat(nrat),zhat2(nrat),               &
+     &                 lzav(nrat),aznut(nrat),scfac(nrat),              &
+     &                 zs13inv(nrat),                                   &
+     &                 ratraw(nrat),ratdum(nrat),                       &
+     &                 xoktot,xbadtot,xkbrn                           
+      integer          isflag(nrat+1)
+      common /netc4/   xmass,ymass,aion,zion,bion,aionin,zionsq,        &
+     &                 rz1,ra1,rz2,ra2,zs13,zhat,zhat2,lzav,aznut,      &
+     &                 scfac,zs13inv,ratraw,ratdum,                     &
+     &                 xoktot,xbadtot,xkbrn,isflag
+
+      real             sneut,sphot,spair,splas,sbrem,srecomb
+      common /netc5/   sneut,sphot,spair,splas,sbrem,srecomb
+
+
+
+!..for tabular evaluation of the raw reaction rates
+!..allow storage for 120/points per decade
+!..logical use_tables for determing if tables are to be used
+
+      integer          nrattab
+      parameter        (nrattab = 481) 
+      real             rattab(nrat,nrattab),                            &
+     &                 ttab(nrattab),dtab(nrat)
+      common /rcm2t/   rattab,ttab,dtab
+
+
+
+!..for nice identification of 62 key isotopes
+       integer   nisotp
+       parameter (nisotp=64) 
+       integer                                                          &
+     &         ih1,iprot,ineut,ihe4,ih2,ih3,ihe3,ili6,ili7,ibe7,ibe9,   &
+     &         ib8,ib10,ib11,ic11,ic12,ic13,ic14,in13,in14,in15,io14,   &
+     &         io15,io16,io17,io18,if17,if18,if19,ine18,ine19,ine20,    &
+     &         ine21,ine22,ina21,ina22,ina23,img22,img23,img24,img25,   &
+     &         img26,ial25,ial26,ial27,isi27,isi28,isi29,isi30,ip30,    &
+     &         ip31,is30,is31,is32,iar36,ica40,iti44,icr48,ife52,       &
+     &         ife54,ini56,izn60,ifuel,iash
+
+      common /netc8/                                                    &
+     &         ih1,iprot,ineut,ihe4,ih2,ih3,ihe3,ili6,ili7,ibe7,ibe9,   &
+     &         ib8,ib10,ib11,ic11,ic12,ic13,ic14,in13,in14,in15,io14,   &
+     &         io15,io16,io17,io18,if17,if18,if19,ine18,ine19,ine20,    &
+     &         ine21,ine22,ina21,ina22,ina23,img22,img23,img24,img25,   &
+     &         img26,ial25,ial26,ial27,isi27,isi28,isi29,isi30,ip30,    &
+     &         ip31,is30,is31,is32,iar36,ica40,iti44,icr48,ife52,       &
+     &         ife54,ini56,izn60,ifuel,iash
+
+
+
+!..for easy aprox13 rate identification:
+      integer          ir3a,   irg3a,  ircag,  ir1212, ir1216, iroga,   &   
+     &                 iroag,  irnega, irneag, irmgga, irmgag, irsiga,  &
+     &                 irmgap, iralpa, iralpg, irsigp, irsiag, irsga,   &
+     &                 irsiap, irppa,  irppg,  irsgp,  irsag,  irarga,  &
+     &                 irsap,  irclpa, irclpg, irargp, irarag, ircaga,  &
+     &                 irarap, irkpa,  irkpg,  ircagp, ircaag, irtiga,  &
+     &                 ircaap, irscpa, irscpg, irtigp, irtiag, ircrga,  &
+     &                 irtiap, irvpa,  irvpg,  ircrgp, ircrag, irfega,  &
+     &                 ircrap, irmnpa, irmnpg, irfegp, irfeag, irniga,  &
+     &                 ir1616
+      common /netc12/   ir3a,   irg3a,  ircag,  ir1212, ir1216, iroga,  &
+     &                 iroag,  irnega, irneag, irmgga, irmgag, irsiga,  &
+     &                 irmgap, iralpa, iralpg, irsigp, irsiag, irsga,   &
+     &                 irsiap, irppa,  irppg,  irsgp,  irsag,  irarga,  &
+     &                 irsap,  irclpa, irclpg, irargp, irarag, ircaga,  &
+     &                 irarap, irkpa,  irkpg,  ircagp, ircaag, irtiga,  &
+     &                 ircaap, irscpa, irscpg, irtigp, irtiag, ircrga,  &
+     &                 irtiap, irvpa,  irvpg,  ircrgp, ircrag, irfega,  &
+     &                 ircrap, irmnpa, irmnpg, irfegp, irfeag, irniga,  &
+     &                 ir1616
+
+
+
+!..add these rates for the aprox19 network
+      integer          irpp,   ir33,   ir34,   ircpg,  irnpg,  iropg,   &     
+     &                 irnag,  irfeap, ircopa, ircopg, irnigp, irfepg,  &
+     &                 ircogp, ir52ng, ir53gn, ir53ng, ir54gn, irheng,  &
+     &                 irhegn, irhng,  irdgn,  irdpg,  irhegp, irpen,   &
+     &                 ispen,  irnep,  isnep,  irn56ec,isn56ec,ifa,     &
+     &                 ifg
+      common /netc13/  irpp,   ir33,   ir34,   ircpg,  irnpg,  iropg,   &
+     &                 irnag,  irfeap, ircopa, ircopg, irnigp, irfepg,  &
+     &                 ircogp, ir52ng, ir53gn, ir53ng, ir54gn, irheng,  &
+     &                 irhegn, irhng,  irdgn,  irdpg,  irhegp, irpen,   &
+     &                 ispen,  irnep,  isnep,  irn56ec,isn56ec,ifa,     &
+     &                 ifg
+
+
+
+!..add these rates for the pp123 network
+      integer          irli7pa, irbepg, irb8ep, irbeec
+      common /netc13a/ irli7pa, irbepg, irb8ep, irbeec
+
+
+
+!..add these rates for the cno network
+      integer          ir12cpg13n,    ir12cpg13ninv, ir13nenu13c,       &
+     &                 ir13cpg14n,    ir13cpg14ninv, ir14npg15o,        &
+     &                 ir14npg15oinv, ir15oenu15n,   ir15npa12c,        &
+     &                 ir15npa12cinv, ir15npg16o,    ir15npg16oinv,     &
+     &                 ir16opg17f,    ir16opg17finv, ir17fenu17o,       &
+     &                 ir17opa14n,    ir17opa14ninv, ir17opg18f,        &
+     &                 ir17opg18finv, ir18fenu18o,   ir18opa15n,        &
+     &                 ir18opa15ninv, ir18opg19f,    ir18opg19finv,     &
+     &                 ir19fpa16o,    ir19fpa16oinv, ir13npg14o,        &
+     &                 ir13npg14oinv, ir14oenu14n,   ir14oap17f,        &
+     &                 ir14oap17finv, ir17fpg18ne,   ir17fpg18neinv,    &
+     &                 ir18nenu18f,   ir18fpa15o,    ir18fpa15oinv,     &
+     &                 ir16oag20ne,   ir18neap21na,  ir15oag19ne,       &
+     &                 ir19nepg20na,  ir26siap29p,   ir44tiap47v        
+      common /netc13b/ ir12cpg13n,    ir12cpg13ninv, ir13nenu13c,       &
+     &                 ir13cpg14n,    ir13cpg14ninv, ir14npg15o,        &
+     &                 ir14npg15oinv, ir15oenu15n,   ir15npa12c,        &
+     &                 ir15npa12cinv, ir15npg16o,    ir15npg16oinv,     &
+     &                 ir16opg17f,    ir16opg17finv, ir17fenu17o,       &
+     &                 ir17opa14n,    ir17opa14ninv, ir17opg18f,        &
+     &                 ir17opg18finv, ir18fenu18o,   ir18opa15n,        &
+     &                 ir18opa15ninv, ir18opg19f,    ir18opg19finv,     &
+     &                 ir19fpa16o,    ir19fpa16oinv, ir13npg14o,        &
+     &                 ir13npg14oinv, ir14oenu14n,   ir14oap17f,        &
+     &                 ir14oap17finv, ir17fpg18ne,   ir17fpg18neinv,    &
+     &                 ir18nenu18f,   ir18fpa15o,    ir18fpa15oinv,     &
+     &                 ir16oag20ne,   ir18neap21na,  ir15oag19ne,       &
+     &                 ir19nepg20na,  ir26siap29p,   ir44tiap47v  
+
+
+
+!..add these rates for the rp network
+      integer          irpg19e,  irap18e, irpg14n, irpg22g, irap26i,    &
+     &                 irap44t,  irpg12c, irap14o, irpg17f, irgp17f,    &
+     &                 irpg16o,  irag15o, irag16o
+      common /netc13c/ irpg19e,  irap18e, irpg14n, irpg22g, irap26i,    &
+     &                 irap44t,  irpg12c, irap14o, irpg17f, irgp17f,    &
+     &                 irpg16o,  irag15o, irag16o
+
+
+
+!..add these rates for the generic 2 fluid network
+      integer          irfuel
+      common /netc13d/ irfuel
+
+end Module Burn_data

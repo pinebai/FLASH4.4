@@ -1,0 +1,76 @@
+#Runtime parameters for the x,y,z periodic BCs Poisson problem.
+
+# Wavenumbers in x, y and z for the solution.
+waven_x = 1.
+waven_y = 1.
+waven_z = 1.
+
+# Phase angle for the solution in x (in rads)
+alpha_x = .314159265358979
+alpha_y = .314159265358979
+
+#       Grid dimensionality and geometry
+geometry	= "cartesian"
+
+
+#       Size of computational volume
+xmin		=  0.
+xmax		=  1.
+ymin		=  0.
+ymax		=  1.
+zmin		=  0.
+zmax		=  1.
+
+
+
+#       Boundary conditions
+xl_boundary_type = "periodic"
+xr_boundary_type = "periodic"
+yl_boundary_type = "periodic"
+yr_boundary_type = "periodic"
+zl_boundary_type = "periodic"
+zr_boundary_type = "periodic"
+
+#      Poisson Solver Boundary Conditions
+xl_mg_boundary_type = "periodic"
+xr_mg_boundary_type = "periodic"
+yl_mg_boundary_type = "periodic"
+yr_mg_boundary_type = "periodic"
+zl_mg_boundary_type = "periodic"
+zr_mg_boundary_type = "periodic"
+
+
+
+#       Simulation (grid, time, I/O) parameters
+run_comment	= "x,y,z periodic Bcs Poisson problem"
+log_file	= "PoissonFD.log"
+basenm		= "PoissonFD_"
+restart         = .false.
+#checkPointFileNumber=1
+#plotFileNumber  = 1
+nend            = 1
+tmax            = 1. 
+
+
+convertToConsvdInMeshInterp = .false.
+checkpointFileIntervalTime = 1.5
+#checkpointFileIntervalStep = 50
+
+pfft_setupOnce = .false.
+writeStatSummary = .true.
+eachProcWritesSummary = .true.
+
+#	AMR parameters
+nblockx	        = 1
+nblocky	        = 1
+nblockz         = 1
+lrefine_min	= 3
+lrefine_max     = 4
+nrefs           = 1
+
+
+#	Flux Conservation for AMR
+flux_correct    = .true.
+
+# Multigrid Convergence tolerance
+mg_maxResidualNorm = 1.e-10

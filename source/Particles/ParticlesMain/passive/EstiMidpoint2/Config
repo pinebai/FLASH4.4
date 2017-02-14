@@ -1,0 +1,24 @@
+# Configuration for "Corrected Estimated Midpoint" integration of passive particles
+# [source/Particles/ParticlesMain/EstiMidpoint2Passive]
+
+D velPredX  predicted x-velocity; an intermediate result and should not be used
+D velPredY  predicted y-velocity; an intermediate result and should not be used
+D velPredZ  predicted z-velocity; an intermediate result and should not be used
+D posPredX  predicted x-position; an intermediate result and should not be used
+D posPredY  predicted y-position; an intermediate result and should not be used
+D posPredZ  predicted z-position; an intermediate result and should not be used
+
+PARTICLEPROP velPredX REAL       # predicted updated x-velocity
+PARTICLEPROP velPredY REAL       # predicted updated y-velocity
+PARTICLEPROP velPredZ REAL       # predicted updated z-velocity
+PARTICLEPROP posPredX REAL           # predicted updated x-coordinate
+PARTICLEPROP posPredY REAL           # predicted updated y-coordinate
+PARTICLEPROP posPredZ REAL           # predicted updated z-coordinate
+
+D pt_dtChangeToleranceUp controls Euler vs. estimated midpoint step
+D & in EstiMidpoint2Passive/Particles_advance when time step increases.
+D pt_dtChangeToleranceDown controls Euler vs. estimated midpoint step
+D & in EstiMidpoint2Passive/Particles_advance when time step increases.
+PARAMETER pt_dtChangeToleranceUp	REAL  5.0 [0.00 to ]
+PARAMETER pt_dtChangeToleranceDown	REAL  0.8 [0.00 to 1.01]
+

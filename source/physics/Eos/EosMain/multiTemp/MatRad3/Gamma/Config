@@ -1,0 +1,6 @@
+# Config file for the perfect-gas equation of state
+# - Matter-Radiation version with 3 components (one unused)
+# [physics/Eos/EosMain/multiTemp/MatRad3/Gamma]
+
+REQUIRES physics/Eos/EosMain/multiTemp/Gamma
+

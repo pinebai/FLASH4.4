@@ -1,0 +1,124 @@
+# Runtime parameters for the 3D laser cubic tube ring unit test.
+
+basenm                        = "LaserTubeRingExpPotential_"
+useEnergyDeposition           = .true.
+
+##########################
+#  PARTICLES PARAMETERS  #
+##########################
+
+keepLostParticles  = .false.
+
+#######################
+#  LASER PARAMETERS   #
+#######################
+
+ed_saveOutOfDomainRays = .true.
+
+ed_maxRayCount               = 1000000
+ed_gradOrder                 = 2
+ed_printBeams                = .true.
+ed_printMain                 = .true.
+ed_printPulses               = .true.
+ed_printRays                 = .false.
+ed_rayZeroPower              = 1.e-100   # to ensure survival of each ray for large number of rays
+ed_cellStepTolerance         = 0.01
+ed_cellWallThicknessFactor   = 1.0e-12
+
+ed_numberOfPulses     = 1
+
+ed_numberOfSections_1 = 2
+ed_time_1_1           = 0.e+00     # in seconds
+ed_time_1_2           = 1.e-08     # in seconds
+ed_power_1_1          = 1.e-01     # in Watt (J/s)  # has to be number of rays times 1.e-07 -> each ray has 1 erg/s
+ed_power_1_2          = 1.e-01     # in Watt (J/s)  # has to be number of rays times 1.e-07 -> each ray has 1 erg/s
+
+ed_numberOfBeams      = 1
+
+ed_lensX_1                        =  1.5               # lens X coordinate
+ed_lensY_1                        = -1.0               # lens Y coordinate
+ed_lensZ_1                        =  1.5               # lens Z coordinate
+ed_targetX_1                      =  1.5               # target X coordinate
+ed_targetY_1                      =  0.0               # target Y coordinate
+ed_targetZ_1                      =  1.5               # target Z coordinate
+ed_targetSemiAxisMajor_1          =  1.0               # target major semiaxis length
+ed_targetSemiAxisMinor_1          =  1.0               # target minor semiaxis length
+ed_lensSemiAxisMajor_1            =  1.0               # lens major semiaxis length
+ed_semiAxisMajorTorsionAngle_1    =  0.0               # major semiaxis torsion angle
+ed_semiAxisMajorTorsionAxis_1     =  "z"               # major semiaxis torsion axis
+ed_pulseNumber_1                  =  1                 # pulse ID number
+ed_wavelength_1                   =  1.0               # wavelength in microns
+ed_initialRaySpeed_1              =  1.0               # initial ray speed (units of c)
+ed_ignoreBoundaryCondition_1      =  .true.            # ignore domain boundary condition ?
+ed_crossSectionFunctionType_1     =  "uniform"         # beam cross section function type (equal weight)
+ed_gaussianExponent_1             =  1.0               # gaussian exponent
+ed_gaussianRadiusMajor_1          =  1.0               # gaussian e-folding length along major semiaxis
+ed_gaussianRadiusMinor_1          =  1.0               # gaussian e-folding length along minor semiaxis
+ed_gaussianCenterMajor_1          =  0.0               # gaussian origin location along major semiaxis
+ed_gaussianCenterMinor_1          =  0.0               # gaussian origin location along minor semiaxis
+ed_numberOfRays_1                 =  1000000           # number of rays wanted
+ed_gridType_1                     =  "radial2D"        # type of beam grid
+ed_gridnRadialTics_1              =  0                 # number radial tics for radial grids
+ed_gridnAngularTics_1             =  1000000           # number of angular tics for radial grids (force rays on ring)
+
+##########################
+# SIMMULATION PARAMETERS #
+##########################
+
+sim_printBlockVariables = .false.
+sim_totalNumberOfBoxes  = 10000
+sim_alpha               = 1
+
+#######################
+#  HYDRO PARAMETERS   #
+#######################
+#
+# No HYDRO parameters needed! HYDRO not included in setup!
+#
+#######################
+#    EOS PARAMETERS   #
+#######################
+#
+# No EOS parameters needed! EOS not included in setup!
+#
+#########################
+#   OUTPUT PARAMETERS   #
+#########################
+#
+# No IO parameters needed! IO is included in setup, but no IO is performed!
+#
+#######################
+#   TIME PARAMETERS   #
+#######################
+tmax           = 1.0e-08
+dtmin          = 1.0e-15
+dtinit         = 1.0e-14
+dtmax          = 1.0e-11
+nend           = 1
+
+#######################
+#   MESH PARAMETERS   #
+#######################
+
+geometry = cartesian
+
+xmin = 0.0
+xmax = 3.0
+ymin = 0.0
+ymax = 2.0
+zmin = 0.0
+zmax = 3.0
+
+xl_boundary_type  = "outflow"
+xr_boundary_type  = "outflow"
+yl_boundary_type  = "outflow"
+yr_boundary_type  = "outflow"
+zl_boundary_type  = "outflow"
+zr_boundary_type  = "outflow"
+
+lrefine_min = 4
+lrefine_max = 4
+
+Nblockx = 1         # Number of top-level blocks for x direction
+Nblocky = 1         # Number of top-level blocks for y direction
+Nblockz = 1         # Number of top-level blocks for y direction

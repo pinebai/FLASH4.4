@@ -1,0 +1,41 @@
+#	Config file for the Column subunit of TreeRay unit.
+
+PPDEFINE TR_OPTICALDEPTH
+USESETUPVARS chnet
+
+# maximum distance for the column density calculation
+PARAMETER tr_odMaxDist    REAL        1e99
+
+# power index in total column density calculation
+# e.g. tr_odCDTOIndex=2 can be used to get integral of rho^2
+# to obtain number of collisional recombinations
+PARAMETER tr_odCDTOIndex  REAL        1.0
+
+# column density field variables
+VARIABLE CDTO
+
+IF chnet in ["4","5"]
+  VARIABLE CHID
+  VARIABLE TDUS
+  SPECIES IHP
+  SPECIES IHA
+ENDIF
+
+IF chnet=="4"
+  PPDEFINE CHEMISTRYNETWORK=4
+  VARIABLE CDH2
+  SPECIES IH2
+ENDIF
+
+IF chnet=="5"
+  PPDEFINE CHEMISTRYNETWORK=5
+  VARIABLE CDH2
+  VARIABLE CDCO
+  SPECIES IH2
+  SPECIES ICO
+  SPECIES ICP
+ENDIF
+
+
+
+

@@ -1,0 +1,25 @@
+#Use iprocs > 1 to test the mesh reconfiguration.
+
+iProcs = 2
+jProcs = 2
+kProcs = 1
+
+iGridSize=32
+jGridSize=32
+kGridSize=32
+
+#       Boundary conditions
+xl_boundary_type = "periodic"
+xr_boundary_type = "periodic"
+yl_boundary_type = "periodic"
+yr_boundary_type = "periodic"
+zl_boundary_type = "periodic"
+zr_boundary_type = "periodic"
+
+#      Poisson Solver Boundary Conditions
+xl_mg_boundary_type = "periodic"
+xr_mg_boundary_type = "periodic"
+yl_mg_boundary_type = "periodic"
+yr_mg_boundary_type = "periodic"
+zl_mg_boundary_type = "periodic"
+zr_mg_boundary_type = "periodic"

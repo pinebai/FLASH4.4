@@ -1,0 +1,10 @@
+#	Configuration file for the gravitational physics module:
+#	constant gravitational field
+
+#	Parameters:
+
+D	  gconst		Gravitational acceleration constant
+D	  gdirec		Direction of acceleration ("x", "y", "z")
+
+PARAMETER gconst        REAL    -981.
+PARAMETER gdirec	STRING	"x"

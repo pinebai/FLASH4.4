@@ -1,0 +1,36 @@
+#Configuration file for testing Particles based refinement
+
+REQUIRES Driver
+REQUIRES RuntimeParameters
+REQUIRES Grid/GridMain/paramesh
+
+
+#Active particles.
+PARTICLETYPE active INITMETHOD custom MAPMETHOD weighted ADVMETHOD leapfrog
+PARTICLEPROP mass     REAL
+
+REQUIRES Grid/GridParticles
+REQUIRES Grid/GridParticles/GridParticlesMapToMesh
+REQUESTS Particles/ParticlesMapping/meshWeighting/MapToMesh
+REQUESTS Particles/ParticlesMapping/meshWeighting/CIC
+
+D sim_ptMass mass of one particles when replacing some mass in the
+D & domain with active particles to test refinement based on particles
+D & count
+PARAMETER sim_ptMass     REAL    0.005
+
+D sim_densityThreshold the level of density in any cell above which
+D & the particles are used to simulate the mass in the domain. This 
+D & formulation is used only to test refinement based on particles.
+PARAMETER sim_densityThreshold REAL 0.85
+
+D sim_smlRho the smallest allowed value of density so that we don't
+D & have overflow in calculations.
+PARAMETER sim_smlRho REAL 1.e-10
+
+D sim_minBlks parameter to ensure that refinement is taking place
+PARAMETER sim_minBlks  INTEGER 40
+
+VARIABLE dens #the density profile
+VARIABLE dmps #the density distribution where mass carried by particles is removed
+VARIABLE pden #the density distribution obtained by mapping particles to mesh

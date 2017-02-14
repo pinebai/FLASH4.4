@@ -1,0 +1,3 @@
+# Runtime parameters for the utilities unit test.
+
+basenm  = "Roots_x2Polynomials"

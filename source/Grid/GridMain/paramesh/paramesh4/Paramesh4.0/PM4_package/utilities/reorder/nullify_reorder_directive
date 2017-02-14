@@ -1,0 +1,25 @@
+#!/usr/bin/env python
+##This is used to break REORDER directives while keeping them human-readable.
+
+import sys, re, os
+
+def main():
+
+    reorder_directive = re.compile("^\s*!+\s*REORDER[(](?P<num>[45])[)]:\s*(?P<list>.*)$")
+    
+    file = open(os.path.join(sys.argv[1]), "r")
+    lines = file.readlines()
+    file.close()
+    
+    outlines = []
+
+    for line in lines:
+        if reorder_directive.match(line):
+           line = re.sub('REORDER', 'REORDER__', line)
+        outlines.append(line)
+
+    file = open(os.path.join(sys.argv[1]), "w")
+    file.write(''.join(outlines))
+    file.close()
+
+if __name__=="__main__": main()

@@ -1,0 +1,50 @@
+[ FIRST ADDED r10711 | klaus | 2009-06-18 10:16:12 -0500 (Thu, 18 Jun 2009) ]
+
+Adding new simulation "HydroStatic" for demonstrating, and playing around with,
+boundary conditions, esp. hydrostatic ones.  To be used in FLASH tutorial.
+
+As it is, this suimulation unly works with the "Constant" Gravity implementation,
+since it assumes existence of "gconst" and "gdirec" runtime parameters.
+
+Simulation_initBlock just fills the region according to a barometric formula
+equivalent to
+     \rho\ (h)=\rho\ (0) e^{-Mgh/RT} 
+assuming constant Gravity, an idea gas EOS, constant temperature, height-dependent
+pressure and density; where:
+
+    g = the acceleration due to gravity
+    T = Absolute temperature
+    R = Ideal gas constant
+    M = Molar mass
+   \rho = Density
+    h = height 
+
+Cell values of variables are taken to be the cell center values, no attempts
+are made to take account of the fact that FLASH3 assumes cell values to represent
+volume averages instead.  No subsampling (or any other methods that could be used
+to increase accuracy) is used.
+
+Default and example values for parameters are approximately like terrestrial conditions.
+
+This should be usable in 1D, 2D, and 3D.  The direction for the "height h" can
+be chosen along the X, Y, or Z axis.
+
+Boundary conditions provided:
+
+A Grid_bcApplyToRegionSpecialized.F90 which
+  o  implements a USER_DEFINED boundary condition type, which simply fills boundary
+     guard cells according to the same static formula used in Simulation_initBlock
+     (but handles velocity components as for REFLECTING boundaries, and handles
+     face variables, if present, as for OUTFLOW boundaries);
+  o  for HYDROSTATIC,HYDROSTATIC_NVDIODE,HYDROSTATIC_NVOUT,HYDROSTATIC_NVREFL
+     uses the FLASH3-provided gr_applyFlash3HSEBC() implementation (which must be
+     configured in);  ** THIS CODE IS CURRENTLY COMMENTED OUT - KW **
+  o  for HYDROSTATIC_F2,HYDROSTATIC_F2_NVDIODE,HYDROSTATIC_F2_NVOUT,HYDROSTATIC_F2_NVREFL
+     uses the FLASH3-provided gr_applyFlash2HSEBC() implementation (which must be
+     configured in);  ** THIS CODE IS CURRENTLY COMMENTED OUT - KW Oct 2012 **
+  o  falls back to default handling by Grid_bcApplyToRegion in other cases
+     (by returning applied=.FALSE.).
+
+The simulation simply initializes the solution variables hydrostatically, and then lets
+Hydro loose on it.  The less happens, the better: It's supposed to be static after all.
+

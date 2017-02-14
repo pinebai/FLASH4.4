@@ -1,0 +1,52 @@
+#	Configuration file for the all the alpha-chain burn network.
+#   [/source/physics/sourceTerms/Burn/BurnMain/nuclearBurn]
+
+REQUIRES Simulation/SimulationComposition
+#REQUIRES physics/utilities/solvers/LinearAlgebra
+
+LIBRARY MA28
+
+# there are millions of burn modules defined in FLASH2, here in FLASH3 we have
+#   Aprox13  -- 13 isotopes
+#   Aprox19  -- not yet implemented
+#   Iso7     -- not yet implemented
+
+EXCLUSIVE Aprox13 Aprox19 Iso7
+
+DEFAULT Aprox13
+
+REQUIRES physics/sourceTerms/Burn/BurnIntegrate
+
+
+
+D algebra      choice of linear algebra package &
+D     &            1 = MA28 ;  2 = GIFT
+PARAMETER algebra     INTEGER     1      [1 to 2] 
+
+D odeStepper   choice of ode time stepper
+D             & 1 = Bader-Deuflhard variable order
+D             & 2 = Rosenbrock 4th order
+PARAMETER odeStepper  INTEGER     1     [1 to 2]
+
+D useBurnTable    choice of rate evaluation
+D             & FALSE = analytic rates
+D             & TRUE = table interpolation  
+PARAMETER useBurnTable   BOOLEAN     FALSE    
+
+D nuclearTempMin        Min burning temperature
+PARAMETER nuclearTempMin       REAL    1.1E8  [0 to ] 
+
+D nuclearTempMax        Max burning temperature
+PARAMETER nuclearTempMax       REAL    1.0E12  [0 to ]
+
+D nuclearDensMin        Min burning density
+PARAMETER nuclearDensMin       REAL    1.0E-10  [0 to ]
+
+D nuclearDensMax        Max burning density
+PARAMETER nuclearDensMax       REAL    1.0E14 [0 to ]
+
+D nuclearNI56Max        Max Ni56 mass frac. for burning
+PARAMETER nuclearNI56Max       REAL    1.0    [0 to ]
+
+VARIABLE enuc                # nuclear energy generation rate
+

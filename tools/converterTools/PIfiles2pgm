@@ -1,0 +1,182 @@
+#!/usr/bin/env python
+
+import os
+import re
+import string
+import sys
+
+def usage ():
+    print " Usage: ./PIfiles2pgm all          (converts ALL proton imaging files in current directory)"
+    print "        ./PIfiles2pgm <filenames>  (converts selected files in current directory)"
+
+def informUser ():
+    print "\n"
+    print "************************************************************************************"
+    print "*   Wellcome to the Proton Detector Screen ASCII file -> Greyscale PGM Converter   *"
+    print "************************************************************************************"
+    print "\n"
+    print " Current picture type options for the PGM converter:"
+    print "\n"
+    print "     1: low    quality resolution  256 x 256   (color depth -> 256)"
+    print "     2: medium quality resolution  512 x 512   (color depth -> 256)"
+    print "     3: high   quality resolution 1024 x 1024  (color depth -> 256)"
+    print "     4: custom made (input resolution + color depth)"
+    print "\n"
+    print " Output: filename -> filename.pgm"
+    print "\n"
+
+def getUserInput ():
+    print "Enter desired picture type"
+    pictureQuality = input ("Picture Type (1,2,3 or 4): ")
+    return pictureQuality
+            
+def setPGMdata (pictureQuality):
+    borderWidth = 1.0 / 200.0   # fraction of detector side length devoted to one border
+    nColumns    = 20            # number of color intensities per row in .pgm file
+    if (pictureQuality == 1):
+        Resolution = 256
+        colorDepth = 256
+    elif (pictureQuality == 2):
+        Resolution = 512
+        colorDepth = 256
+    elif (pictureQuality == 3):
+        Resolution = 1024
+        colorDepth = 256
+    elif (pictureQuality == 4):
+        Resolution = input ("Picture  Resolution: ") 
+        colorDepth = input ("Picture Color Depth: ")
+    else:
+        sys.exit ("Unknown picture type!")
+    return (Resolution, colorDepth, borderWidth, nColumns)
+
+if __name__ == "__main__":
+
+     argList = sys.argv[1:]   # gets a list of all arguments
+     sizeArgList = len (argList)
+
+     if (sizeArgList == 0):
+         usage ()
+         sys.exit (0)
+     if (argList[0] == "all"):
+         files = os.listdir (os.curdir)
+     else:
+         files = argList
+
+     nFiles = 0
+     for fileName in files:
+         match = re.search ('ProtonDetectorFile[\d\.\%E\-\_]*(?!\.pgm)\Z',fileName)
+         if match and os.path.isfile (fileName):
+            nFiles += 1
+
+     if nFiles == 0:
+        print "No proton imaging files to convert!"
+        sys.exit (0)
+
+     informUser ()
+
+     pictureQuality = getUserInput ()
+     Resolution, colorDepth, borderWidth, nColumns = setPGMdata (pictureQuality)
+
+     R = Resolution
+     fR = float (R)
+     MaxPixel = colorDepth - 1
+     print "Creating greyscale PGM images with ",R," x ",R," resolution and ",colorDepth," color depth"
+#
+#    ...Explanation of pattern search:
+#
+#                ProtonDetectorFile : does the string 'ProtonDetectorFile' occur anywhere in file name?
+#                [\d\.\%E\-\_]      : this represents any character of the set {0-9,.,%,E,-,_}
+#                the * afterwards   : search for repetitions of [\d\.\%E\-\_]
+#                (?!\.pgm)          : exclude string .pgm from the search
+#                \Z                 : all that comes before should be at the end of the file name
+#
+#       The (?!\.pgm)\Z prevents conversion of already produced PGM files.
+#
+     for fileName in files:
+         match = re.search ('ProtonDetectorFile[\d\.\%E\-\_]*(?!\.pgm)\Z',fileName)
+         if match and os.path.isfile (fileName):
+            print "Converting proton detector file",fileName,"..."
+#
+#    ...Accumulate pixel count.
+#
+            Pixels = [0] * R * R
+            sizePixels = len (Pixels)
+
+            bufferSize = 1
+            infile = open (fileName,'r')
+            lines = infile.readlines (bufferSize)
+            while lines != []:
+                  for line in lines:
+                      protonData = string.split (line)
+                      x = float(protonData[0])
+                      y = float(protonData[1])
+                      if 1.0 >= x >= 0.0 and 1.0 >= y >= 0.0:
+                         nx = min (int (x * fR) + 1, R)        # nx in range [1,R]
+                         ny = min (int (y * fR) + 1, R)        # ny in range [1,R]
+                         nP = (R-ny) * R + nx - 1              # nP in range [0,R*R-1]
+                         Pixels[nP] += 1
+                  lines = infile.readlines (bufferSize)
+            infile.close()
+#
+#    ...Rescale pixel count in order to produce a suitable PGM image.
+#       Two variations are currently possible:
+#
+#           1) Count all protons in the all pixels and form the average
+#              of proton count per pixel (minimum = 1). This average number
+#              gets a pixel value of half black color. Twice and larger
+#              pixel values are assigned black. Drawback -> if the majority
+#              of pixel values exceed twice the average proton count the
+#              picture will be 'too black' and hot spots (spikes in proton
+#              counts) are not visible.
+#              
+            totalProtons = sum (Pixels)
+#            print "totalProtons = ",totalProtons
+            avgProtonsPixel = max (1,totalProtons / sizePixels)
+#            print "avgProtonsPixel = ",avgProtonsPixel
+            for i in xrange (0,sizePixels):
+                Pixels[i] = min (MaxPixel , (MaxPixel * Pixels[i]) / (2 * avgProtonsPixel))
+                Pixels[i] = MaxPixel - Pixels[i]
+#
+#           2) Find the minimum and maximum proton count and assign half
+#              black color to the minumum and black to the maximum (if
+#              the minimum and maximum are the same number, then we assign
+#              black to the only proton count present.
+#
+#            totalProtons = sum (Pixels)
+#            if (totalProtons != 0):
+#                minCount = min (p for p in Pixels if p > 0)
+#                maxCount = max (Pixels)
+#                difCount = maxCount - minCount
+#            for i in xrange (0,sizePixels):
+#                if (Pixels[i] > 0 and difcount > 0):
+#                    Pixels[i] = MaxPixel / 2 + MaxPixel * (Pixels[i] - minCount) / (2 * difCount)
+#                elif (Pixels[i] > 0):
+#                    Pixels[i] = MaxPixel
+#                Pixels[i] = MaxPixel - Pixels[i]
+#
+#    ...Create detector borders on the pixel map.
+#
+            pwb = max (1,int (borderWidth * fR))  # pixel-width of border
+            
+            Pixels[0:pwb*R] = [0] * pwb * R       # the complete top border
+            for i in xrange (0,R):                # the complete left border
+                Pixels[i*R:i*R+pwb] = [0] * pwb   #
+            for i in xrange (1,R+1):              # the complete right border
+                Pixels[i*R-pwb:i*R] = [0] * pwb   #
+            Pixels[-pwb*R:] = [0] *  pwb* R       # the complete bottom border
+#
+#    ...Write the pixel map to the output file together with PGM headers.
+#
+            outName = fileName + '.pgm'
+            outfile = open (outName,'w')
+
+            outfile.write ("P2\n# CREATOR: The FLASH ascii -> greyscale PGM converter\n")
+            outfile.write (str(R) + " " + str(R) + "\n")
+            outfile.write (str(MaxPixel) + "\n")
+
+            for i in xrange (0,sizePixels,nColumns):
+                line = " ".join (str(Pixels[j]) for j in range (i,min (i+nColumns,sizePixels)))
+                outfile.write (line + "\n")
+
+            outfile.close()
+            del Pixels

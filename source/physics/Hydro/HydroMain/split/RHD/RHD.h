@@ -1,0 +1,2 @@
+#define HY_PRIMITIVE 333
+#define HY_CONSERVE  334

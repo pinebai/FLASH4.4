@@ -1,0 +1,51 @@
+
+Running in interactive mode:
+srun -N4 -n8 -p pdebug ./flash2
+
+Note: In order to produce large files, one must link to a special
+version of MPI that has the 64 bit file system offset. This is
+the library
+
+/usr/local/tools/MPI-gnat-4938/Linux_i686/mpi/lib
+
+In order to get this link in to the Makefile.h file, we 
+added a new path:
+
+MPIpath = /usr/local/tools/MPI-gnat-4938/Linux_i686/mpi/lib
+
+****Update****: The stuff below is no longer necessary. The mpi compile
+script, in this case mpiifort includes the path to a precompiled
+farg.c. So the LIB_MPI stuff has been taken out of the Makefile.h
+
+> To get that linked during the compile via the setup script
+> building a make file, we made it a library with the following
+> line in Makefile.h
+> 
+> LIB_MPI  = ./farg.o -L$(MPIpath) -lmpi
+> 
+> The astute reader may notice that we also added a "./farg.o"
+> to that line. More on that in a bit. First, though, because there
+> is now a new LIB_MPI, this information needs to get to the
+> setup script. The only solution we could figure out was to add
+> 
+> LIBRARY MPI
+> 
+> to the Config file for the problem of interest. Note that this
+> is not a pretty solution. This means that one must add this line
+> to the Config file of any problem setup to be run on alc. 
+> 
+> Now getting back to that farg thing. It turns out that the alternate
+> MPI with the 64 bit offset was most likely compiled somehow differently 
+> from the MPI with which we compile the code. This difference causes
+> the dreaded "f__xargc problem". Details of that may be found at 
+> 
+> http://www.pgroup.com/faq/link.htm
+> 
+> To make things work, and this is really fugly, one must compile the 
+> farg.f file to compile C's arg function. The following will compile 
+> the routine, and the Makefile.h is set to link this.
+> 
+> ifc -c farg.f
+> 
+> If anyone has a suggestion of a better fix for all of this, please 
+> feel free to go to it!

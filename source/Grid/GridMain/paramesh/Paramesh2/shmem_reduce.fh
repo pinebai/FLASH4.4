@@ -1,0 +1,9 @@
+      integer nreduce
+      parameter(nreduce=1)
+      common/shmemcoll/ipsync(SHMEM_REDUCE_SYNC_SIZE),                  &
+     &     ipwrk(max(nreduce/2+1,SHMEM_REDUCE_MIN_WRKDATA_SIZE)),       &
+     &     pwrk(max(nreduce/2+1,SHMEM_REDUCE_MIN_WRKDATA_SIZE))
+      integer ipsync,ipwrk
+      real pwrk
+      integer pestart, pestride, pesize
+      common /xsds/ pestart,pestride,pesize

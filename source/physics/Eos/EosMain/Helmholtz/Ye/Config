@@ -1,0 +1,8 @@
+#  Configuration file for helmholtz eos in the EOS_YE formulation
+#  [physics/Eos/EosMain/Helmholtz/Ye]
+# Maybe this should be 
+#CONFLICTS Multispecies/MultispeciesMain
+#  The idea of using Ye is that we are no longer carrying around species....
+
+PPDEFINE USE_EOS_YE
+

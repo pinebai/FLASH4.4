@@ -1,0 +1,51 @@
+##python:genLines
+def genLines(setupvars):
+    # Config file for the Opacity/OpacityMain/OPAL implementation
+    yield """
+
+REQUIRES ./Numerics
+
+# Absorption and emission opacities are handled as in the Constcm2g implementation.
+
+D op_emitConst Constcm2g value for emission opacity [cm^2/g]
+D op_absorbConst Constcm2g value for absorption opacity [cm^2/g]
+PARAMETER op_emitConst REAL 1.0
+PARAMETER op_absorbConst REAL 1.0
+
+D op_hydrogenMassFracVar Variable in unk to use as hydrogen mass fraction, probably something like "h1" or "h"
+PARAMETER op_hydrogenMassFracVar	STRING "h1"
+D op_hydrogenMassFrac Fixed value to use for hydrogen mass fraction, used if op_hydrogenMassFracVar does not exist
+PARAMETER op_hydrogenMassFrac		REAL   1.0	[0.0+ ... 1.0]
+
+D opacity_writeOpacityInfo control parameter indicating if detailed info of the opacity unit should be written out
+PARAMETER opacity_writeOpacityInfo BOOLEAN FALSE
+
+
+D opacity_useLogTables control parameter indicating use of logarithmic opacities
+PARAMETER opacity_useLogTables BOOLEAN CONSTANT TRUE
+
+
+D op_opalMaxLowT maximum temperature for which the LowT OPAL tables are to be used; above this threshold,
+D & the HightT tables are used.
+PARAMETER op_opalMaxLowT REAL 1.0e4
+
+D op_opalNumHydrogenAbundances number of hydrogen abundance ranges for which there are
+D & OPAL table files.
+
+"""
+
+    maxhydroabund = 10
+    if "op_MaxHydrogenAbundances" in setupvars:
+        maxhydroabund = int(setupvars["op_MaxHydrogenAbundances"])
+
+    yield 'PPDEFINE OP_OPAL_NUM_H_ABUNDANCES %d' % maxhydroabund
+    yield 'PARAMETER op_opalNumHydrogenAbundances INTEGER %d [0 ... %d]' % (maxhydroabund,maxhydroabund) 
+
+    for i in xrange(maxhydroabund):
+        yield 'PARAMETER  op_opalTableLowT_%s      STRING "-none-"' % (i+1)
+        yield 'PARAMETER  op_opalTableHighT_%s     STRING "-none-"' % (i+1)
+        yield 'PARAMETER  op_opalTableAbundMax_%s  REAL   %s       [0.0 ... 1.0]' % ((i+1),0.1*(i+1))
+        yield 'D   op_opalTableLowT_%s      Low temp OPAL table for hydrogen abundance range no. %s' % (i+1,i+1)
+        yield 'D   op_opalTableHighT_%s     High temp OPAL table for hydrogen abundance range no. %s' % (i+1,i+1)
+        yield 'D   op_opalTableAbundMax_%s  Upper bound of hydrogen abundance range no. %s' % (i+1,i+1)
+

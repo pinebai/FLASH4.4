@@ -1,0 +1,20 @@
+#  Configuration file for source term Polytrope (implementation level)
+#  This implements a piecewise polytropic EOS with 5 different density regimes
+
+D          usePolytrope        Runtime switch for turning the polytropic eos on/off
+PARAMETER  usePolytrope        BOOLEAN     FALSE
+
+D          polytropeKonst      press = polytropeKonst*dens^polytropeGamma1 for dens1 <= dens <= dens2
+PARAMETER  polytropeKonst      REAL   1.0
+
+PARAMETER  polytropeGamma1     REAL   1.0
+PARAMETER  polytropeGamma2     REAL   1.0
+PARAMETER  polytropeGamma3     REAL   1.0
+PARAMETER  polytropeGamma4     REAL   1.0
+PARAMETER  polytropeGamma5     REAL   1.0
+
+PARAMETER  polytropeDens1      REAL   1e99
+PARAMETER  polytropeDens2      REAL   1e99
+PARAMETER  polytropeDens3      REAL   1e99
+PARAMETER  polytropeDens4      REAL   1e99
+PARAMETER  polytropeDens5      REAL   1e99

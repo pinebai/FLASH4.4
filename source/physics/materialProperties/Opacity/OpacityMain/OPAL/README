@@ -1,0 +1,29 @@
+To uee the OPAL implementation of Opacity, lines like the following
+should be added to the flash.par files.
+(This is an example and may need to be completed.)
+
+And the necessary OPAL table files (NOT provided with the FLASH code
+release) need to be placed where they can be read by FLASH, of course.
+
+
+op_opalTableAbundMax_3  = 0.35
+op_opalTableAbundMax_4  = 0.5
+op_opalTableAbundMax_5  = 0.7
+op_opalTableAbundMax_6  = 0.8
+op_opalTableAbundMax_7  = 0.9
+op_opalTableAbundMax_8  = 0.95
+op_opalTableAbundMax_9  = 0.98
+
+op_opalTableLowT_1            = "lowT_fa05_gs98_z2m2_x00.data"
+op_opalTableLowT_2            = "lowT_fa05_gs98_z2m2_x10.data"
+op_opalTableLowT_3            = "lowT_fa05_gs98_z2m2_x20.data"
+op_opalTableLowT_5            = "lowT_fa05_gs98_z2m2_x50.data"
+#...
+op_opalTableLowT_10            = "lowT_fa05_gs98_z2m2_x98.data"
+op_opalTableHighT_1            = "gs98_z2m2_x00.data"
+op_opalTableHighT_2            = "gs98_z2m2_x10.data"
+op_opalTableHighT_3            = "gs98_z2m2_x20.data"
+op_opalTableHighT_4            = "gs98_z2m2_x35.data"
+op_opalTableHighT_5            = "gs98_z2m2_x50.data"
+#...
+op_opalTableHighT_10            = "gs98_z2m2_x98.data"

@@ -1,0 +1,118 @@
+netcdf Test_parallel_write {
+// file format: CDF-1
+dimensions:
+	dim_tot_blocks = 4 ;
+	dim_nzb = 2 ;
+	dim_nyb = 3 ;
+	dim_nxb = 2 ;
+	dim_nvar = 2 ;
+	dim_onevar = 1 ;
+variables:
+	double UNK___Two_variables_in_double_precision(dim_tot_blocks, dim_nzb, dim_nyb, dim_nxb, dim_nvar) ;
+		UNK___Two_variables_in_double_precision:minimum = 2.1, 5.3 ;
+		UNK___Two_variables_in_double_precision:maximum = 3.2, 6.4 ;
+	float UNK___One_variable_in_single_precision(dim_tot_blocks, dim_nzb, dim_nyb, dim_nxb, dim_onevar) ;
+		UNK___One_variable_in_single_precision:minimum = 2.1f ;
+		UNK___One_variable_in_single_precision:maximum = 3.2f ;
+data:
+
+ UNK___Two_variables_in_double_precision =
+  0, 0,
+  0, 0,
+  0, 0,
+  0, 0,
+  0, 0,
+  0, 0,
+  0, 0,
+  0, 0,
+  0, 0,
+  0, 0,
+  0, 0,
+  0, 0,
+  1, 1,
+  1, 1,
+  1, 1,
+  1, 1,
+  1, 1,
+  1, 1,
+  1, 1,
+  1, 1,
+  1, 1,
+  1, 1,
+  1, 1,
+  1, 1,
+  2, 2,
+  2, 2,
+  2, 2,
+  2, 2,
+  2, 2,
+  2, 2,
+  2, 2,
+  2, 2,
+  2, 2,
+  2, 2,
+  2, 2,
+  2, 2,
+  3, 3,
+  3, 3,
+  3, 3,
+  3, 3,
+  3, 3,
+  3, 3,
+  3, 3,
+  3, 3,
+  3, 3,
+  3, 3,
+  3, 3,
+  3, 3 ;
+
+ UNK___One_variable_in_single_precision =
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  2,
+  2,
+  2,
+  2,
+  2,
+  2,
+  2,
+  2,
+  2,
+  2,
+  2,
+  2,
+  3,
+  3,
+  3,
+  3,
+  3,
+  3,
+  3,
+  3,
+  3,
+  3,
+  3,
+  3 ;
+}

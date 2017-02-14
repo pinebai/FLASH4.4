@@ -1,0 +1,32 @@
+#	Config file for the PARAMESH v. 4.0 adaptive mesh-refinement library.
+
+USESETUPVARS Grid, ParameshLibraryMode
+
+IF Grid not in ["","PM40","PM3"]
+   SETUPERROR Setup Variable 'Grid' is set to something other than 'PM40' or 'PM3'
+ENDIF
+
+REQUIRES ./PM4_package/headers
+REQUIRES ./PM4_package/source
+REQUIRES ./PM4_package/mpi_source
+REQUESTS ./PM4_package/utilities/multigrid
+
+# preprocessor definition
+PPDEFINE FLASH_GRID_PARAMESH4_0
+PPDEFINE FLASH_GRID_PARAMESH3OR4
+# this one for backward compatibility - transitional, to be removed:
+PPDEFINE FLASH_GRID_PARAMESH3
+
+# compile Paramesh 4.0 in LIBRARY mode if requested
+IF ParameshLibraryMode
+	PPDEFINE LIBRARY
+ENDIF
+
+# By defining PM_UNIQUE_MPI_TAGS, we tell this PARAMESH implementation
+# to reproduce the old logic by which in various places, individual
+# MPI messages are given uniquely identifying tags based on processor
+# and block numbers. This seems to prevent occasional deadlocks observed
+# in Paramesh4.0 with high optimization levels. On the other hand, tags
+# generated with PM_UNIQUE_MPI_TAG may exceed the maximum allowed tag
+# values of some MPI implementations.
+PPDEFINE PM_UNIQUE_MPI_TAGS

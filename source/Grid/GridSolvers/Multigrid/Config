@@ -1,0 +1,39 @@
+#Config file for Grid/GridSolvers/Multigrid
+
+REQUIRES Grid/GridBoundaryConditions
+
+# Multigrid can only be used with Paramesh 
+USESETUPVARS Grid
+IF Grid not in ["","PM4DEV","PM40","PM3","PM2","PM"]
+   SETUPERROR Multigrid must be run with Paramesh only, not Uniform Grid
+ENDIF
+
+IF Grid=='PM2'
+   REQUIRES ./Paramesh2
+ENDIF
+
+
+REQUIRES ./fft
+KERNEL fft   
+
+# This section is for the Huang Greengard parameters, our only version of Multigrid
+# right now.
+
+D mg_maxCorrections      Maximum number of correction V-cycles to employ.
+D mg_maxResidualNorm    Apply V-cycle corrections until this residual norm
+D &                       is reached or mg_maxCorrections V-cycles have been
+D &                       performed.
+D mg_printNorm        If .true., print the ratio of the residual norm to
+D &                       the source norm as each V-cycle is completed.
+D quadrant              True if only one quadrant is being calculated in 2-d cylindrical coordinates
+
+PARAMETER mg_maxCorrections    INTEGER 100
+PARAMETER mg_maxResidualNorm  REAL    1.E-6
+PARAMETER mg_printNorm      BOOLEAN TRUE
+PARAMETER quadrant          BOOLEAN false 
+
+# Work variables needed by solver
+
+VARIABLE isls   # residual 
+VARIABLE icor   # correction
+

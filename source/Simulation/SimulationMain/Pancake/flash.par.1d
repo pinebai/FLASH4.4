@@ -1,0 +1,121 @@
+#  Sample runtime parameter file for the Zel'dovich pancake problem.
+
+#  Version for one-dimensional pancake
+
+#-------------------------------------------------------------------------------
+
+#  Model parameters
+
+run_comment                    =  "1D Zeldovich pancake problem"
+
+lambda                         =  3.0857E25     # Perturbation wavelength
+zcaustic                       =  5.            # Redshift of caustic formation
+Tfiducial                      =  550.          # Fiducial gas temperature
+zfiducial                      =  200.          # Fiducial redshift
+xangle                         =  0.            # X-angle of perturbation axis
+yangle                         =  90.           # Y-angle of perturbation axis
+
+#-------------------------------------------------------------------------------
+
+#  Computational domain
+
+xmin                           =  0.
+xmax                           =  3.0857E25
+
+geometry                       =  "cartesian"
+
+xl_boundary_type               =  "periodic"
+xr_boundary_type               =  "periodic"
+
+#  Refinement criteria
+
+lrefine_max                    =  8
+lrefine_min                    =  5
+refine_var_1                   =  "dens"
+refine_var_2                   =  "none"
+
+monotone                       = .false.
+convertToConsvdInMeshInterp    = .false.
+
+#-------------------------------------------------------------------------------
+
+#  I/O and timestep control
+
+basenm                         =  "pan1d_"
+log_file                       =  "pan1d.log"
+cpnumber                       =  0
+restart                        =  .false.
+#checkpointFileNumber          =  1
+
+zInitial                       =  50.
+zFinal                         =  0.
+tmax                           =  1.E99
+
+wall_clock_checkpoint          =  3500.
+nend                           =  1000000
+
+checkpointFileIntervalZ        =  15.
+checkpointFileIntervalTime     =  1.E99
+checkpointFileIntervalStep     =  1000000
+
+plotFileIntervalZ              =  15.
+plotFileIntervalTime           =  1.E99
+
+particleFileIntervalZ          =  15.
+particleFileIntervalTime       =  1.E99
+
+dtini                          =  1.E10
+dtmin                          =  1.E10
+dtmax                          =  1.E17
+
+#-------------------------------------------------------------------------------
+
+#  Hydrodynamics
+
+gamma                          =  1.66666666667
+eint_switch                    =  0.
+cfl                            =  0.8
+cvisc                          =  0.1
+nriem                          =  25
+
+small                          =  1.0E-40
+smlrho                         =  1.0E-35
+smallp                         =  1.0E-22
+smalle                         =  1.E8
+smallt                         =  1.
+smallu                         =  1.0E-40
+smallx                         =  1.0E-10
+
+#-------------------------------------------------------------------------------
+
+#  Gravity
+
+igrav                          =  1
+grav_boundary_type             = "periodic"
+mg_maxResidualNorm             =  1.0E-6
+mg_printNorm                   = .true.
+
+#-------------------------------------------------------------------------------
+
+#  Particles
+
+useParticles = .true.
+pt_maxPerProc                  =  10000
+
+pt_numX                        =  256
+pt_numY                        =  1
+pt_numZ                        =  1
+
+#-------------------------------------------------------------------------------
+
+#  Cosmology
+
+OmegaMatter                    =  1.
+OmegaBaryon                    =  0.15
+HubbleConstant                 =  1.62038E-18    # h = 0.5
+CosmologicalConstant           =  0.
+MaxScaleChange                 =  0.1
+
+#-------------------------------------------------------------------------------
+
+#  Done.

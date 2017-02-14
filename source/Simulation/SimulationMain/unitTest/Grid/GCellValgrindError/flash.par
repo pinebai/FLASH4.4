@@ -1,0 +1,32 @@
+# Setup lines:
+# ./setup unitTest/Grid/GCellValgrindError -3d -auto +nofbs  +noio -test
+# ./setup unitTest/Grid/GCellValgrindError -3d -auto +ug     +noio -test -nxb=32 -nyb=8 -nzb=16
+#
+# Run with 2 MPI ranks.  Both applications trigger valgrind errors.
+# The valgrind errors happen during custom checks in Grid_unitTest
+# immediately after Grid_fillGuardCells.
+#
+# The following setup does not cause an issue
+# ./setup unitTest/Grid/GCellValgrindError -3d -auto +pm4dev +noio -test -nxb=32 -nyb=8 -nzb=16
+
+xl_boundary_type      = "periodic"
+xr_boundary_type      = "periodic"
+yl_boundary_type      = "periodic"
+yr_boundary_type      = "periodic"
+zl_boundary_type      = "periodic"
+zr_boundary_type      = "periodic"
+
+iProcs = 1
+jProcs = 2
+kProcs = 1 
+ 
+iGridSize = 32
+jGridSize = 16
+kGridSize = 16
+
+lrefine_min = 1
+lrefine_max = 1
+nblockx = 1
+nblocky = 2
+nblockz = 1
+gr_sanitizeverbosity = 0

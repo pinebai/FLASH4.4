@@ -1,0 +1,87 @@
+# Runtime parameters for the Taylor-Green Vortex problem.
+
+
+# Inverse of Reynolds Number
+ins_invRe           = .01
+
+# Subgrid Scale model flag (0 no sgs model, 1 sgs model)
+ins_isgs            = 0
+
+# Grid dimensionality and geometry
+geometry        = "cartesian"
+
+# Size of computational volume
+xmin            =  1.570796326794897
+xmax            =  7.853981633974483
+ymin            =  1.570796326794897
+ymax            =  7.853981633974483
+
+# Convective velocities
+uconv = 1.0
+vconv = 0.0
+
+# Boundary conditions
+xl_boundary_type = "periodic"
+xr_boundary_type = "periodic"
+yl_boundary_type = "periodic"
+yr_boundary_type = "periodic"
+
+# Poisson Solver Boundary Conditions are based on the above Grid b.c.s
+
+# Simulation (grid, time, I/O) parameters
+run_comment	= "2D Taylor-Green Vortex problem"
+log_file	= "INS_Taylor_Green.log"
+basenm		= "INS_Taylor_Green_"
+restart         = .TRUE.
+checkPointFileNumber=1
+#plotFileNumber  = 1
+nend            = 110
+tmax            = 300.
+ins_cflFlg      = 1
+cfl             = 0.3
+ins_sigma       = 0.2
+ins_dtSpec      = 1.0
+dtinit          = 1.0
+tstep_change_factor = 1.
+ins_pressureCorrect= .true.
+
+#Integration Scheme:
+ins_intSchm            = 2
+
+plot_var_1	= "pres"
+plot_var_2      = "momg"
+
+pfft_setupOnce  = .false.
+
+checkpointFileIntervalTime = 5.
+checkpointFileIntervalStep = 2000
+
+plotFileIntervalTime = 5.
+plotFileIntervalStep = 100
+
+## Pfft Parameters:
+## Use Central Finite Difference discretization operator:
+gr_pfftDiffOpDiscretize = 2
+
+#-------WARNING: ONLY FOR UNIFORM GRID !!! ------------------------
+#	The parameters below are only necessary for the Uniform Grid
+#iGridSize	= 8	#defined as nxb * iprocs
+#jGridSize	= 8	#defined as nyb * jprocs
+#kGridSize	= 1	#defined as nzb * kprocs
+iProcs		= 1	#number of procs in the i direction
+jProcs		= 2	#number of procs in the j direction
+kProcs		= 1	#number of procs in the k direction
+
+# When using UG, iProcs, jProcs and kProcs must be specified.
+# These are the processors along each of the dimensions
+# FIXEDBLOCKSIZE mode ::
+#	When using fixed blocksize, iGridSize etc are redundant in
+#	runtime parameters. These quantities are calculated as 
+#	iGridSize = NXB*iprocs
+#	jGridSize = NYB*jprocs
+#	kGridSize = NZB*kprocs
+# NONFIXEDBLOCKSIZE mode ::
+#	iGridSize etc must be specified. They constitute the global
+#	number of grid points in the physical domain without taking 
+#	the guard cell into account. The local blocksize is calculated
+#	as iGridSize/iprocs  etc.

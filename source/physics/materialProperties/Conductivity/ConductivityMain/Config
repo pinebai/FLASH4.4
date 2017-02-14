@@ -1,0 +1,7 @@
+# Config file for physics/materialProperties/Conductivity/ConductivityMain
+
+DEFAULT Constant
+EXCLUSIVE Constant Constant-diff Spitzer Stellar PowerLaw PowerLaw-gray SpitzerHighZ LeeMore
+
+D	  useConductivity flags whether the conductivity material property is being used
+PARAMETER useConductivity BOOLEAN TRUE

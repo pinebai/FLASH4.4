@@ -1,0 +1,29 @@
+CCOMP = icc
+CFLAGS = -c -O2 -Wall
+LFLAGS = -o
+
+#Available defines: NO_HDF4, NO_HDF5, NEED_MPI
+#Comment this out if your hdf5 doesn't need mpi. Sfocu should run as a single
+#processor job in any case.
+
+CDEFINES = -DNO_HDF4 -DNEED_MPI
+CFLAGS += -I/usr/local/mpich-intel/include -I/usr/local/hdf5-icc/include -I/usr/local/pnetcdf-icc/include
+LIBS = -static -lhdf5 -lpnetcdf -lz -ljpeg -lm -L/usr/local/pnetcdf-icc/lib \
+-L/usr/local/mpich-intel/lib -lmpich -L/usr/local/hdf5-icc/lib \
+-L/usr/lib64 -lrt -lpthread
+
+EXENAME = sfocu
+OBJS = main.o sfocu.o test_reader.o flash_reader.o namecmp.o flash_reader_ncdf.o \
+       flash_reader_hdf5.o flash_reader_chombo.o sameblock.o options.o
+
+.SUFFIXES: .c .o
+.c.o :
+	$(CCOMP) $(CFLAGS) $(CDEFINES) $*.c
+
+default: $(EXENAME)
+
+$(EXENAME): $(OBJS)
+	$(CCOMP) $(OBJS) $(LIBS) $(LFLAGS) $(EXENAME)
+
+clean:
+	rm $(OBJS) $(EXENAME)

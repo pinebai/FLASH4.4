@@ -1,0 +1,83 @@
+!!****if* source/Grid/GridMain/paramesh/Grid_markRefineDerefine
+!!
+!! NAME
+!!  Grid_markRefineDerefine
+!!
+!! SYNOPSIS
+!!
+!!  Grid_markRefineDerefine()
+!!  
+!! DESCRIPTION 
+!!  Mark blocks for refinement or derefinement
+!!  This implementation of the routine is specifically
+!!  for the unit test for guardcell filling function of
+!!  the AMR
+!!
+!! ARGUMENTS
+!! 
+!! NOTES
+!!
+!!
+!!
+!!***
+
+subroutine Grid_markRefineDerefine()
+
+  use Grid_data, ONLY : gr_blkList, gr_blkCount, gr_maxRefine, gr_globalDomain
+  use Grid_interface, ONLY : Grid_getListOfBlocks, Grid_getBlkBoundBox
+  use tree, ONLY : newchild, refine, derefine, stay
+  use tree, ONLY: refine, derefine, lrefine
+  use Driver_interface, ONLY : Driver_abortFlash
+
+  implicit none
+
+#include "constants.h"
+#include "Flash.h"
+
+  integer :: blockID,b, i
+  real, dimension(LOW:HIGH,MDIM) :: bndbox
+  logical :: notoverlap
+  real, dimension(LOW:HIGH,MDIM) :: ref_bndBox
+  real,dimension(MDIM) :: ctr, halfBoxLen
+  real :: factor = 10.0
+
+  newchild(:) = .FALSE.
+  refine(:)   = .FALSE.
+  derefine(:) = .FALSE.
+  stay(:)     = .FALSE.
+
+  halfBoxLen(1:NDIM)  = gr_globalDomain(HIGH,1:NDIM)-gr_globalDomain(LOW,1:NDIM)
+  ctr(1:NDIM) = halfBoxLen(1:NDIM)/2.0
+  halfBoxLen(1:NDIM)  = halfBoxLen(1:NDIM)/factor
+  ref_bndBox(LOW,1:NDIM)  = ctr(1:NDIM)-halfBoxLen(1:NDIM)
+  ref_bndBox(HIGH,1:NDIM)  = ctr(1:NDIM)+halfBoxLen(1:NDIM)
+
+  call Grid_getListOfBlocks(LEAF, gr_blkList, gr_blkCount)
+  do b = 1,gr_blkCount
+     blockID=gr_blkList(b)
+     
+     call Grid_getBlkBoundBox(blockID,bndbox)
+     notoverlap=.false.
+     
+     do i = 1,NDIM
+        notoverlap=notoverlap.or.(bndBox(HIGH,i)<ref_bndBox(LOW,i))
+        notoverlap=notoverlap.or.(bndBox(LOW,i)>ref_bndBox(HIGH,i))
+     end do
+     
+     if(.not.notoverlap) then
+        if (lrefine(blockID) < gr_maxRefine ) then
+           refine(blockID)   = .true.
+           derefine(blockID) = .false.
+        else if (lrefine(blockID) == gr_maxRefine) then
+           derefine(blockID) = .false.
+        else if (gr_maxRefine <= 0) then
+           refine(blockID) = .true.
+        endif
+        
+     endif
+  end do
+  
+  
+  return
+end subroutine Grid_markRefineDerefine
+

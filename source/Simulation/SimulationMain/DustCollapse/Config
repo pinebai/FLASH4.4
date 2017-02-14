@@ -1,0 +1,27 @@
+#		Configuration file for spherical dust collapse problem
+#		(Colgate, S. A., & White, R. H. 1966, ApJ, 143, 626)
+
+REQUIRES Driver
+REQUIRES physics/Hydro
+REQUIRES physics/Gravity/GravityMain/Poisson
+REQUIRES physics/Eos/EosMain/Gamma
+
+LINKIF Grid_markRefineDerefine.F90 Grid/GridMain/paramesh
+
+
+
+
+#D sim_tAmbient	Initial ambient temperature (everywhere)
+PARAMETER sim_tAmbient     REAL    1.
+
+#D sim_initRad          Initial radius of cloud
+PARAMETER sim_initRad        REAL    0.05
+
+#D sim_initDens		Initial density of cloud
+PARAMETER sim_initDens         REAL    1.
+
+#D  sim_i/sim_j/sim_kctr	Coordinates of the center of the cloud
+PARAMETER sim_ictr		REAL	0.5
+PARAMETER sim_jctr		REAL	0.5
+PARAMETER sim_kctr		REAL	0.5
+

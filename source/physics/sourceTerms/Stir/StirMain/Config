@@ -1,0 +1,16 @@
+#	Configuration file for Source Term: Stir/StirMain
+#
+
+EXCLUSIVE Generate FromFile
+DEFAULT Generate
+
+#	Parameters:
+#
+
+D st_computeDt  whether to restrict time step based on stirring
+PARAMETER st_computeDt     BOOLEAN  FALSE
+
+
+D useStir   Runtime switch for turning stirring on/off
+PARAMETER useStir	BOOLEAN     TRUE
+

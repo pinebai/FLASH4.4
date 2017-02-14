@@ -1,0 +1,8 @@
+# Config file for the MassDiffusivity Unit
+
+DEFAULT MassDiffusivityMain
+
+D useMassDiffusivity -- allows the mass diffusivity to be turned off at
+D & runtime, even if the unit is included in the simulation
+
+PARAMETER useMassDiffusivity BOOLEAN CONSTANT FALSE

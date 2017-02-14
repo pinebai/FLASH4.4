@@ -1,0 +1,124 @@
+#       Configuration file for testing solvers of the Poisson problem.
+#       Intended primarily for BiPCGStab with various preconditioners,
+#       which can be selected with the setup variables BicgPreconditioner
+#       and (if the preconditioner is a multigrid variant) PfftSolver;
+#       should also work for UG, in which case PfftSolver selects a PFFT
+#       variant or (if none) HYPRE is used.
+#       This test should be usable for various combinations of BCs.
+REQUIRES Driver
+REQUIRES Grid/GridMain
+
+USESETUPVARS Grid
+
+USESETUPVARS BicgPreconditioner
+USESETUPVARS PfftSolver
+
+IF nDim==2
+  # Run the XY Dirichlet BCs case:
+  REQUIRES Simulation/SimulationMain/unitTest/Poisson/XYdir_2D
+ELSEIF nDim ==3
+  # Run the XYZ Neuman BCs case:
+  REQUIRES Simulation/SimulationMain/unitTest/Poisson/XYZneu_3D
+ENDIF
+
+IF Grid=='UG'
+  IF Grid=='UG' and (PfftSolver not in ["none","","SimplePeriodicSolver","SoPeriodicSolverFD","HomBcTrigSolver","Generic_Direct","DirectSolver"])
+    SETUPERROR The variable PfftSolver is not in ["none","","SimplePeriodicSolver","SoPeriodicSolverFD","HomBcTrigSolver","Generic_Direct","DirectSolver"]
+  ENDIF
+  IF PfftSolver=="SimplePeriodicSolver"
+    REQUIRES Grid/GridSolvers/Pfft/SimplePeriodicSolver
+  ELSEIF PfftSolver=="SoPeriodicSolverFD"
+    REQUIRES Grid/GridSolvers/Pfft/DirectSolver/SecondOrder_FD3p
+  ELSEIF PfftSolver=="DirectSolver"
+    REQUIRES Grid/GridSolvers/Pfft/DirectSolver
+  ELSEIF PfftSolver=="Generic_Direct"
+    REQUIRES Grid/GridSolvers/Pfft/DirectSolver/Generic_Direct
+  ELSEIF (PfftSolver=="HomBcTrigSolver")
+    REQUIRES Grid/GridSolvers/Pfft/HomBcTrigSolver
+  ELSEIF (PfftSolver=="") or (PfftSolver=="none")
+    REQUIRES Grid/GridSolvers/HYPRE/UG
+  ENDIF
+ELSE    
+  IF (BicgPreconditioner not in ["none","HYPRE"]) and (PfftSolver not in ["none","","SimplePeriodicSolver","SoPeriodicSolverFD","HomBcTrigSolver","Generic_Direct","DirectSolver"])
+    SETUPERROR The variable PfftSolver is not in ["none","","SimplePeriodicSolver","SoPeriodicSolverFD","HomBcTrigSolver","Generic_Direct","DirectSolver"]
+  ENDIF
+  IF BicgPreconditioner=='MultigridMC' or BicgPreconditioner==''
+    REQUESTS Grid/GridSolvers/BiPCGStab/poisson/PrecondMultigridMC
+    REQUESTS Grid/GridSolvers/MultigridMC/poisson
+    IF (BicgPreconditioner=='MultigridMC' or BicgPreconditioner=='') and (PfftSolver!='none')
+      REQUESTS Grid/GridSolvers/MultigridMC/poisson/PfftTopLevelSolve
+    ENDIF
+  ELSEIF BicgPreconditioner=='Multigrid' or BicgPreconditioner=='MultigridHG'
+    REQUESTS Grid/GridSolvers/BiPCGStab/poisson/PrecondMultigrid
+    REQUESTS Grid/GridSolvers/Multigrid
+    IF (BicgPreconditioner=='Multigrid' or BicgPreconditioner=='MultigridHG') and (PfftSolver!='none')
+      REQUESTS Grid/GridSolvers/Multigrid/PfftTopLevelSolve
+    ENDIF
+  ELSEIF BicgPreconditioner=='HYPRE'
+    REQUESTS Grid/GridSolvers/HYPRE/paramesh
+    REQUESTS Grid/GridSolvers/BiPCGStab/poisson/PrecondHYPRE
+  ELSEIF BicgPreconditioner=='none'
+    REQUESTS Grid/GridSolvers/BiPCGStab/poisson
+  ELSE
+    SETUPERROR The variable BicgPreconditioner is not in ["none","","MultigridMC","MultigridHG","Multigrid","HYPRE"]
+  ENDIF
+ENDIF
+
+# ----------------------------------------------
+# Pull in definitions of runtime parameters specific to grid solver testing
+# that are used by this test.
+# Also, Grid_unitTest and related code may reside there. 
+
+REQUIRES Grid/GridSolvers/unitTest
+
+PPDEFINE SPECIAL_REFINEMENT 1
+
+# ----------------------------------------------
+# THIS PART IS FOR PROBLEM DEPENDENT CONFIG FILE
+
+# Wavenumbers in x, y and z for the solution.
+
+#D   waven_x  wavenumber in the solution in x direction
+PARAMETER waven_x         REAL     1.
+
+#D   waven_y  wavenumber in the solution in y direction
+PARAMETER waven_y         REAL     1.
+
+#D   waven_z  wavenumber in the solution in z direction
+PARAMETER waven_z         REAL     1.
+
+#D   alpha_x  Phase angle for the solution in x (in rads)
+PARAMETER alpha_x         REAL     0.3141592653589793
+
+#D   alpha_y  Phase angle for the solution in y (in rads)
+PARAMETER alpha_y         REAL     0.3141592653589793
+
+##PARAMETER SPECIAL_REFINEMENT   INTEGER    1
+
+## ----------------------------------------------
+## THIS PART IS FOR PHYSICS CONFIG
+## Variables required by the Solve_Poisson module
+D vphi_variable Numerical Solution of Poisson Problem
+D vsrc_variable Source for poisson problem (taken from analytical soln.)
+D vanl_variable Analytical solution of Poisson problem
+D verr_variable Pointwise value of abs(vphi(i,j,k)-vanl(i,j,k))
+###D facb_variable Var for stencil.
+VARIABLE vphi                	# Numerical Solution of Poisson Problem
+VARIABLE vsrc            	# Source for poisson problem (taken from analytical soln.)
+VARIABLE vanl                 	# Analytical solution of Poisson problem
+VARIABLE verr               	# Pointwise value of abs(vphi(i,j,k)-vanl(i,j,k))
+###VARIABLE facb                   # Var for stencil.
+
+
+## Fluxes
+FLUX flab
+FLUX flbb
+FLUX flcb
+FLUX fldb
+
+## Use SCRATCHVAR for temporary storages
+
+## Use FACEVAR for cell interface velocity fields
+
+## Number of guardcells at each boundary
+GUARDCELLS 2

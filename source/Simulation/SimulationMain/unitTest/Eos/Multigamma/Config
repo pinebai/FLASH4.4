@@ -1,0 +1,11 @@
+#  Configuration file for Eos test
+# Simulation/SimulationMain/unitTest/Eos/Multigamma
+
+REQUIRES physics/Eos/EosMain/Multigamma
+REQUIRES Multispecies
+
+# number of species (ionmax)
+SPECIES HE4
+SPECIES NI56
+
+

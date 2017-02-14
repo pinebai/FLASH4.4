@@ -1,0 +1,22 @@
+DEFAULT RDSplit5point
+
+REQUIRES ../localAPI
+
+REQUIRES ../FlameSpeed
+
+MASS_SCALAR FLAM
+
+D useFlame  Whether the flame should be advanced.
+PARAMETER useFlame   BOOLEAN TRUE
+
+D fl_epsilon_0 lower sharpening factor for sKPP, reaction \propto (f-epsilon_0)*(1+epsilon_1-f)
+PARAMETER fl_epsilon_0 REAL 1.0e-3
+D fl_epsilon_1 upper sharpening factor for sKPP, reaction \propto (f-epsilon_0)*(1+epsilon_1-f)
+PARAMETER fl_epsilon_1 REAL 1.0e-3
+D fl_kpp_fact reaction prefactor adjustment factor for sKPP
+PARAMETER fl_kpp_fact  REAL 1.309
+D fl_b flame width parameter in units of cells
+PARAMETER fl_b         REAL 3.2
+
+D fl_initProfileAdjustWidth multiplicative adjustment of width of initial profile.  0.8 was used for some SNIa simulations, but should usually be default of 1.
+PARAMETER fl_initProfileAdjustWidth REAL 1.0

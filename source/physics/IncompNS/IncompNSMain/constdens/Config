@@ -1,0 +1,69 @@
+#       Config file for the Incompressible Navier Stoke solver.
+PPDEFINE INS_CONSTDENS
+
+
+# Runtime parameters
+
+D cfl                   Courant Number
+D ins_sigma			Viscous Condition Parameter
+# ----------------------------------------------
+# THIS PART IS FOR PROBLEM DEPENDENT CONFIG FILE
+D   ins_invRe  inverse Reynolds number
+PARAMETER ins_invRe         REAL     1.
+
+D   ins_isgs   Subgrid scale model flag
+PARAMETER ins_isgs          INTEGER  0
+
+PARAMETER ins_cflFlg           INTEGER     1    # if 1 run at constant CFL, if 0 constant timestep
+PARAMETER cfl              REAL     0.35        # CFL number (for AB2 ~ 0.3, for RK3 ~ 1.2)
+PARAMETER ins_sigma            REAL     0.25    # viscous condition parameter
+PARAMETER ins_dtSpec           REAL     0.001   # Specified constant timestep
+
+PARAMETER ins_intSchm          INTEGER     21 # if 2: 2nd order Adams-Bashforth (21 if variable), if 3: 3rd order Runge-Kutta method
+
+PARAMETER ins_pressureCorrect BOOLEAN  TRUE   # if true does pressure correction time splitting scheme (solve Poisson for DP)
+                                              # else fractional step method (solve Poisson for P).
+
+PARAMETER ins_velProlongMethod INTEGER   1 [0,1,101,102]  # if 0 injection for prolongation in update refinement, if 1 divergence 
+                                                #preserving prolongation.
+
+# Gravitational acceleration in the xi direction
+PARAMETER ins_gravX          REAL     0.
+PARAMETER ins_gravY          REAL     0.
+PARAMETER ins_gravZ          REAL     0.
+
+PARAMETER  ins_dpdx  REAL  0.00   # Value of constant dpdx.
+PARAMETER  ins_dpdy  REAL  0.00   # Value of constant dpdy.
+PARAMETER  ins_dpdz  REAL  0.00   # Value of constant dpdz.
+  
+PARAMETER  ins_constantMass BOOLEAN  FALSE  # If true, the problem will run at constant mass, and a value of bulk
+                                            # velocity on the z direction must be specified.
+PARAMETER  ins_WBREF REAL  0.00             # Reference value of bulk velocity on the z direction.
+
+PARAMETER  ins_areaSolids REAL 0.00 # Area to substract in tota area division for bulk velocity computation.
+
+# THIS PART IS FOR PHYSICS CONFIG
+# Variables required by the INS module
+VARIABLE pres                  	# pressure
+# VARIABLE preo                   # pressure storage
+VARIABLE delp            	# pressure correction
+VARIABLE dust                  	# divergence of ustar, poissons equation source term
+VARIABLE tvis               	# turbulent viscosity
+VARIABLE omgm                   # Vorticity module
+
+# Fluxes
+FLUX velc
+
+
+# Use GRIDVAR for temporary storages
+SCRATCHVAR divv
+
+
+# Use FACEVAR for cell interface velocity fields
+FACEVAR velc     
+FACEVAR rhds
+# FACEVAR velo
+
+
+# Number of guardcells at each boundary
+GUARDCELLS 2

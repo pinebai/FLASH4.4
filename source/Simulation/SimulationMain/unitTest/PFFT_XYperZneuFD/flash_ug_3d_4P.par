@@ -1,0 +1,66 @@
+# 	Runtime parameters for the x,y periodic; z Neuman Bcs Poisson problem.
+#       Default test uses  +ug -nxb=64 -nyb=16 -nzb=32 with 8 procs.
+
+# Wavenumbers in x, y and z for the solution.
+waven_x = 1.
+waven_y = 1.
+waven_z = 1.
+
+# Phase angle for the solution in x (in rads)
+alpha_x = .314159265358979
+alpha_y = .314159265358979
+
+#       Grid dimensionality and geometry
+geometry	= "cartesian"
+
+
+#       Size of computational volume
+xmin		=  0.
+xmax		=  1.
+ymin		=  0.
+ymax		=  1.
+zmin		=  0.
+zmax		=  1.
+
+gr_pfftdiffopdiscretize = 2
+
+#       Boundary conditions
+xl_boundary_type = "periodic"
+xr_boundary_type = "periodic"
+yl_boundary_type = "periodic"
+yr_boundary_type = "periodic"
+zl_boundary_type = "outflow"
+zr_boundary_type = "outflow"
+
+#      Poisson Solver Boundary Conditions
+xl_mg_boundary_type = "periodic"
+xr_mg_boundary_type = "periodic"
+yl_mg_boundary_type = "periodic"
+yr_mg_boundary_type = "periodic"
+zl_mg_boundary_type = "outflow"
+zr_mg_boundary_type = "outflow"
+
+
+#       Simulation (grid, time, I/O) parameters
+run_comment	= "x,y periodic; z Neuman BCs Poisson problem"
+log_file	= "GRID_Poisson_XYPerZneu.log"
+basenm		= "GRID_Poisson_XYPerZneu_"
+restart         = .false.
+#checkPointFileNumber=1
+#plotFileNumber  = 1
+nend            = 1
+tmax            = 1. 
+
+#plot_var_1	= "vphi"
+
+convertToConsvdInMeshInterp = .false.
+checkpointFileIntervalTime = 1.5
+#checkpointFileIntervalStep = 50
+
+pfft_setupOnce = .true.
+writeStatSummary = .true.
+eachProcWritesSummary = .true.
+
+iProcs		= 1	#number of procs in the i direction
+jProcs		= 2	#number of procs in the j direction
+kProcs		= 2	#number of procs in the k direction

@@ -1,0 +1,28 @@
+# Config file for the Heatexchange code unit.
+# The Heatexchange unit models exchange of internal energy
+# among fluid componenets in the same locations.  It only
+# makes sense to use with a model where different components
+# can have different temperatures.
+
+# Available implementations are
+
+# Immediate
+# Constant
+# ConstCoulomb
+# Spitzer
+# LeeMore
+
+EXCLUSIVE Constant ConstCoulomb Spitzer Immediate
+
+REQUIRES physics/Eos/EosMain/multiTemp
+
+DEFAULT Constant
+
+
+D useHeat   runtime control for turning the heat exchange on or off
+PARAMETER useHeatexchange    BOOLEAN TRUE
+
+D hx_logLevel controls the level of logging for some conditions.
+D & See Heatexchange.h for relevant HX_LOGLEVEL_* definitions.
+PARAMETER hx_logLevel INTEGER 700 [0 to ]
+

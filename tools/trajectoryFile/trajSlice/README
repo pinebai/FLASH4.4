@@ -1,0 +1,2 @@
+Usage: 
+trajSlice numToRead start stride filetoread filenameOut

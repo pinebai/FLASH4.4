@@ -1,0 +1,12 @@
+D cond_TemperatureExponent Temperature exponent n.
+D & For n=0 you get constant conductivity.
+D & See D. Mihalas & B. W. Mihalas 1984 p 551. 
+D & For n=6, e.g., you get nonlinear conduction as in Fig 103.1(b) there.
+PARAMETER cond_TemperatureExponent REAL 1.0
+
+D cond_K0 coefficient K0 for conductivity K = rho c_v K0 T^n ,
+D & where n is given by cond_TemperatureExponent.
+PARAMETER cond_K0 REAL 1.0
+
+PARAMETER cond_DensityExponent REAL 0.0
+

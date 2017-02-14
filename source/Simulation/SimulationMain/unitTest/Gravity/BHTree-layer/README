@@ -1,0 +1,5 @@
+This test setup tests periodic boundaries in two directions
+(xy) and isolated boundary in the z direction. It sets up a
+self-gravitating isothermal layer (sech2 density profile).
+Using it is pretty similar to the basic test BHTree (which
+sets up a BE sphere).

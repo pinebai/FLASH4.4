@@ -1,0 +1,72 @@
+#!/bin/sh -f
+
+# script to create the FLASH buildstats routine
+
+rm -f setup_buildstats.F90
+
+max_str_len=80
+long_len=400
+
+BUILD_DATE=`date | cut -c 1-$max_str_len`
+BUILD_DIR=`pwd | cut -c 1-$max_str_len`
+BUILD_MACHINE=`uname -a | cut -c 1-$max_str_len`
+SETUP_CALL=`head -1 setup_call | cut -c 1-$long_len`
+F_FLAGS=`grep "^F90:" setup_flags | cut -d' ' -f2-`
+C_FLAGS=`grep "^C:" setup_flags | cut -d' ' -f2-`
+
+cat > setup_buildstats.c << EOF
+/* !!! DO NOT EDIT, FILES WRITTEN BY SETUP SCRIPT !!!
+   
+!!****f* object/setup_buildstats
+!!
+!! NAME
+!!
+!!  setup_buildstats
+!!
+!!
+!! SYNOPSIS
+!!
+!!  call setup_buildstats(build_date, build_dir, build_machine, setup_call)
+!!
+!!  call setup_buildstats(character, character, character, character)
+!!
+!! 
+!! DESCRIPTION
+!!
+!!  Simple subroutine generated at build time that returns the build date
+!!  build directory, build machine, c and f flags and the full setup 
+!!  command used to assemble the FLASH executable.
+!!
+!!
+!!
+!!***
+*/
+
+#include "mangle_names.h"
+#include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+void FTOC(setup_buildstats)(char* build_date, 
+		    char* build_dir, 
+		    char* build_machine, 
+		    char* setup_call, 
+		    char* c_flags, 
+		    char* f_flags){
+
+
+
+     strncpy(build_date, "$BUILD_DATE",$max_str_len);
+     strncpy(build_dir, "$BUILD_DIR", $max_str_len);
+     strncpy(build_machine, "$BUILD_MACHINE", $max_str_len);
+     strncpy(setup_call, "$SETUP_CALL",$long_len);
+     strncpy(c_flags, "$C_FLAGS", $long_len);
+     strncpy(f_flags, "$F_FLAGS", $long_len);
+
+
+}
+
+EOF
+
+
+

@@ -1,0 +1,10 @@
+# Config file for a simple test of the sink particle algorithim
+
+REQUIRES Particles/ParticlesMain/active/Sink
+REQUIRES physics/sourceTerms/Polytrope/PolytropeMain
+
+PARAMETER refine_var_thresh      STRING   "none"
+PARAMETER bb_radius              REAL     5.0e16
+PARAMETER bb_dens                REAL     3.82e-18
+PARAMETER bb_cs                  REAL     1.66e4
+PARAMETER bb_omega               REAL     7.2e-13

@@ -1,0 +1,45 @@
+********************************************************************
+Unit Implementation Conflicts
+
+     Each I/O implementation must match the corresponding Grid implementation.
+     The list below explicitly states the conflicts.
+
+
+     Paramesh IO conflicts with any Uniform Grid Implementation
+     IO/IOMain/hdf5/parallel/PM CONFLICTS WITH Grid/GridMain/UG
+     IO/IOMain/hdf5/serial/PM CONFLICTS WITH Grid/GridMain/UG
+
+     Similarly any UG IO conflicts with Paramesh2 or Paramesh3 Grid Implementations
+     IO/IOMain/hdf5/parallel/UG CONFLICTS WITH Grid/GridMain/paramesh/Paramesh3
+     IO/IOMain/hdf5/parallel/UG CONFLICTS WITH Grid/GridMain/paramesh/Paramesh2
+     IO/IOMain/hdf5/serial/UG CONFLICTS WITH Grid/GridMain/paramesh/Paramesh3
+     IO/IOMain/hdf5/serial/UG CONFLICTS WITH Grid/GridMain/paramesh/Paramesh2
+
+
+******************************************************************
+Shortcuts - pre-defined setup shortcuts located in bin/setup_shortcuts
+     	 
+     Adding the +io shortcut to your setup call will cause the default				
+     IO implementation to be picked up which is IO/IOMain/hdf5/serial/PM
+          
+     +io: --with-unit=IO/IOMain  
+
+
+
+	
+    Adding the +ugio shortcut to your setup call will pick up the uniform
+    grid implementation AND the correct uniform grid serial IO implementation 
+
+    +ugio: --with-unit=Grid/GridMain/UG --with-unit=IO/IOMain/hdf5/serial/UG	
+
+
+
+
+    Adding +noio to the setup line will allow the user to run without any
+    IO implementation
+
+    +noio: --without-unit=IO/IOMain
+
+
+
+    The user is encouraged to define other setup shortcuts in bin/setup_shortcuts

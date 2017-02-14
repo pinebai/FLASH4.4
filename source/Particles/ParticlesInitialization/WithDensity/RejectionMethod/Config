@@ -1,0 +1,6 @@
+# Submodule for passive tracer particles to distribute the particles initially at
+# random positions using the gas density as the distribution function.
+
+D __doc__                   This is completely untested, don't use without further work
+
+PPDEFINE PART_INITMETHOD_REJECTION

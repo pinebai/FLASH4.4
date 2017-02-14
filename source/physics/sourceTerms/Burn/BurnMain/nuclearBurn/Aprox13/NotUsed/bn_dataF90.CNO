@@ -1,0 +1,21 @@
+
+Module Burn_dataCNO
+
+!..add these rates for the cno network
+!! these were in common block /netc13b/
+      integer          ir12cpg13n,    ir12cpg13ninv, ir13nenu13c,       &
+     &                 ir13cpg14n,    ir13cpg14ninv, ir14npg15o,        &
+     &                 ir14npg15oinv, ir15oenu15n,   ir15npa12c,        &
+     &                 ir15npa12cinv, ir15npg16o,    ir15npg16oinv,     &
+     &                 ir16opg17f,    ir16opg17finv, ir17fenu17o,       &
+     &                 ir17opa14n,    ir17opa14ninv, ir17opg18f,        &
+     &                 ir17opg18finv, ir18fenu18o,   ir18opa15n,        &
+     &                 ir18opa15ninv, ir18opg19f,    ir18opg19finv,     &
+     &                 ir19fpa16o,    ir19fpa16oinv, ir13npg14o,        &
+     &                 ir13npg14oinv, ir14oenu14n,   ir14oap17f,        &
+     &                 ir14oap17finv, ir17fpg18ne,   ir17fpg18neinv,    &
+     &                 ir18nenu18f,   ir18fpa15o,    ir18fpa15oinv,     &
+     &                 ir16oag20ne,   ir18neap21na,  ir15oag19ne,       &
+     &                 ir19nepg20na,  ir26siap29p,   ir44tiap47v        
+
+end Module Burn_dataCNO

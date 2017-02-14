@@ -1,0 +1,21 @@
+# Configuration file for the multipole Poisson solver, modified for use in
+# computing image-potential boundary values
+
+# Parameters:
+
+D         quadrant                In 2d cylindrical coords, assume symmetry
+D          &                        about grid bottom to evolve a quadrant
+D         octant                  In 3d cartesian geometry, assume symmetry
+D          &                        about left-facing volume faces
+D  mpole_lmax	Maximum multipole moment to use
+
+PARAMETER mpole_lmax	INTEGER	0
+
+PARAMETER quadrant              BOOLEAN false
+PARAMETER octant                BOOLEAN false
+
+
+# Variables needed for isolated boundary calculations
+
+VARIABLE imgm TYPE: GENERIC
+VARIABLE imgp TYPE: GENERIC

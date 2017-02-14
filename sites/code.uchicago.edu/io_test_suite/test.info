@@ -1,0 +1,713 @@
+<code>
+  <Composite>
+    <Sedov>
+      <ug>
+        <2d>
+          <hdf5>
+            <serialio>
+              setupName: Sedov
+              setupOptions: -auto -debug +ug -nxb=64 -nyb=128 +serialio -unit=Particles -noc
+              numProcs: 8
+              parfiles: <pathToSimulations>/Sedov/coldstart_ug.par
+              restartParfiles: <pathToSimulations>/Sedov/restart_ug.par
+	      checkpointBasename: sedov_hdf5_chk_
+	      comparisonNumber: 0001
+	      restartNumber: 0002
+	      comparisonBenchmark: <siteDir>/2012-09-05/Composite_Sedov_ug_2d_hdf5_parallelio/<runDir>/<checkpointBasename><comparisonNumber>
+ 	      restartBenchmark: <siteDir>/2012-09-05/Composite_Sedov_ug_2d_hdf5_parallelio/<runDir>/<checkpointBasename><restartNumber>
+            </serialio>
+            <parallelio>
+              setupName: Sedov
+              setupOptions: -auto -debug +ug -nxb=64 -nyb=128 +parallelio -unit=Particles -noc
+              numProcs: 8
+              parfiles: <pathToSimulations>/Sedov/coldstart_ug.par
+              restartParfiles: <pathToSimulations>/Sedov/restart_ug.par
+	      checkpointBasename: sedov_hdf5_chk_
+	      comparisonNumber: 0001
+	      restartNumber: 0002
+	      comparisonBenchmark: <siteDir>/2012-09-05/Composite_Sedov_ug_2d_hdf5_parallelio/<runDir>/<checkpointBasename><comparisonNumber>
+ 	      restartBenchmark: <siteDir>/2012-09-05/Composite_Sedov_ug_2d_hdf5_parallelio/<runDir>/<checkpointBasename><restartNumber>
+            </parallelio>
+            <typeio>
+              setupName: Sedov
+              setupOptions: -auto -debug +ug -nxb=64 -nyb=128 +hdf5typeio -unit=Particles -noc
+              numProcs: 8
+              parfiles: <pathToSimulations>/Sedov/coldstart_ug.par
+              restartParfiles: <pathToSimulations>/Sedov/restart_ug.par
+	      checkpointBasename: sedov_hdf5_chk_
+	      comparisonNumber: 0001
+	      restartNumber: 0002
+	      comparisonBenchmark: <siteDir>/2012-09-05/Composite_Sedov_ug_2d_hdf5_parallelio/<runDir>/<checkpointBasename><comparisonNumber>
+ 	      restartBenchmark: <siteDir>/2012-09-05/Composite_Sedov_ug_2d_hdf5_parallelio/<runDir>/<checkpointBasename><restartNumber>
+            </typeio>
+          </hdf5>
+          <pnetcdf>
+            <parallelio>
+              setupName: Sedov
+              setupOptions: -auto -debug +ug -nxb=64 -nyb=128 +pnetcdf -unit=Particles -noc
+              numProcs: 8
+              parfiles: <pathToSimulations>/Sedov/coldstart_ug.par
+              restartParfiles: <pathToSimulations>/Sedov/restart_ug.par
+	      checkpointBasename: sedov_ncmpi_chk_
+	      comparisonNumber: 0001
+	      restartNumber: 0002
+	      comparisonBenchmark: <siteDir>/2012-09-05/Composite_Sedov_ug_2d_pnetcdf_parallelio/<runDir>/<checkpointBasename><comparisonNumber>
+ 	      restartBenchmark: <siteDir>/2012-09-05/Composite_Sedov_ug_2d_pnetcdf_parallelio/<runDir>/<checkpointBasename><restartNumber>
+            </parallelio>
+            <typeio>
+              setupName: Sedov
+              setupOptions: -auto -debug +ug -nxb=64 -nyb=128 +pnettypeio -unit=Particles -noc
+              numProcs: 8
+              parfiles: <pathToSimulations>/Sedov/coldstart_ug.par
+              restartParfiles: <pathToSimulations>/Sedov/restart_ug.par
+	      checkpointBasename: sedov_ncmpi_chk_
+	      comparisonNumber: 0001
+	      restartNumber: 0002
+	      comparisonBenchmark: <siteDir>/2012-09-05/Composite_Sedov_ug_2d_pnetcdf_parallelio/<runDir>/<checkpointBasename><comparisonNumber>
+ 	      restartBenchmark: <siteDir>/2012-09-05/Composite_Sedov_ug_2d_pnetcdf_parallelio/<runDir>/<checkpointBasename><restartNumber>
+            </typeio>
+          </pnetcdf>
+        </2d>
+      </ug>
+      <nofbs>
+        <2d>
+          <hdf5>
+            <parallelio>
+              setupName: Sedov
+              setupOptions: -auto -debug +nofbs -unit=Particles -noc
+              numProcs: 8
+              parfiles: <pathToSimulations>/Sedov/coldstart_ug.par
+              restartParfiles: <pathToSimulations>/Sedov/restart_ug.par
+	      checkpointBasename: sedov_hdf5_chk_
+	      comparisonNumber: 0001
+	      restartNumber: 0002
+	      comparisonBenchmark: <siteDir>/2012-09-05/Composite_Sedov_nofbs_2d_hdf5_parallelio/<runDir>/<checkpointBasename><comparisonNumber>
+ 	      restartBenchmark: <siteDir>/2012-09-05/Composite_Sedov_nofbs_2d_hdf5_parallelio/<runDir>/<checkpointBasename><restartNumber>
+            </parallelio>
+            <typeio>
+              setupName: Sedov
+              setupOptions: -auto -debug +nofbs +hdf5typeio -unit=Particles -noc
+              numProcs: 8
+              parfiles: <pathToSimulations>/Sedov/coldstart_ug.par
+              restartParfiles: <pathToSimulations>/Sedov/restart_ug.par
+	      checkpointBasename: sedov_hdf5_chk_
+	      comparisonNumber: 0001
+	      restartNumber: 0002
+	      comparisonBenchmark: <siteDir>/2012-09-05/Composite_Sedov_nofbs_2d_hdf5_parallelio/<runDir>/<checkpointBasename><comparisonNumber>
+ 	      restartBenchmark: <siteDir>/2012-09-05/Composite_Sedov_nofbs_2d_hdf5_parallelio/<runDir>/<checkpointBasename><restartNumber>
+            </typeio>
+          </hdf5>
+          <pnetcdf>
+            <typeio>
+              setupName: Sedov
+              setupOptions: -auto -debug +nofbs +pnettypeio -unit=Particles -noc
+              numProcs: 8
+              parfiles: <pathToSimulations>/Sedov/coldstart_ug.par
+              restartParfiles: <pathToSimulations>/Sedov/restart_ug.par
+	      checkpointBasename: sedov_ncmpi_chk_
+	      comparisonNumber: 0001
+	      restartNumber: 0002
+	      comparisonBenchmark: <siteDir>/2012-09-05/Composite_Sedov_nofbs_2d_pnetcdf_typeio/<runDir>/<checkpointBasename><comparisonNumber>
+ 	      restartBenchmark: <siteDir>/2012-09-05/Composite_Sedov_nofbs_2d_pnetcdf_typeio/<runDir>/<checkpointBasename><restartNumber>
+            </typeio>
+          </pnetcdf>
+        </2d>
+      </nofbs>
+      <pm4dev>
+        <2d>
+          <hdf5>
+            <parallelio>
+              setupName: Sedov
+              setupOptions: -auto -debug +pm4dev +parallelio -unit=Particles -noc
+              transfers: object/amr_runtime_parameters
+              numProcs: 8
+              parfiles: <pathToSimulations>/Sedov/coldstart_pm.par
+              restartParfiles: <pathToSimulations>/Sedov/restart_pm.par
+	      checkpointBasename: sedov_hdf5_chk_
+	      comparisonNumber: 0001
+	      restartNumber: 0002
+	      comparisonBenchmark: <siteDir>/2012-09-05/Composite_Sedov_pm4dev_2d_hdf5_parallelio/<runDir>/<checkpointBasename><comparisonNumber>
+	      restartBenchmark: <siteDir>/2012-09-05/Composite_Sedov_pm4dev_2d_hdf5_parallelio/<runDir>/<checkpointBasename><restartNumber>
+            </parallelio>
+            <serialio>
+              setupName: Sedov
+              setupOptions: -auto -debug +pm4dev +serialio -unit=Particles -noc
+              transfers: object/amr_runtime_parameters
+              numProcs: 8
+              parfiles: <pathToSimulations>/Sedov/coldstart_pm.par
+              restartParfiles: <pathToSimulations>/Sedov/restart_pm.par
+	      checkpointBasename: sedov_hdf5_chk_
+	      comparisonNumber: 0001
+	      restartNumber: 0002
+	      comparisonBenchmark: <siteDir>/2012-09-05/Composite_Sedov_pm4dev_2d_hdf5_parallelio/<runDir>/<checkpointBasename><comparisonNumber>
+	      restartBenchmark: <siteDir>/2012-09-05/Composite_Sedov_pm4dev_2d_hdf5_parallelio/<runDir>/<checkpointBasename><restartNumber>
+            </serialio>
+            <typeio>
+              setupName: Sedov
+              setupOptions: -auto -debug +pm4dev +hdf5typeio -unit=Particles -noc
+              transfers: object/amr_runtime_parameters
+              numProcs: 8
+              parfiles: <pathToSimulations>/Sedov/coldstart_pm.par
+              restartParfiles: <pathToSimulations>/Sedov/restart_pm.par
+	      checkpointBasename: sedov_hdf5_chk_
+	      comparisonNumber: 0001
+	      restartNumber: 0002
+	      comparisonBenchmark: <siteDir>/2012-09-05/Composite_Sedov_pm4dev_2d_hdf5_parallelio/<runDir>/<checkpointBasename><comparisonNumber>
+	      restartBenchmark: <siteDir>/2012-09-05/Composite_Sedov_pm4dev_2d_hdf5_parallelio/<runDir>/<checkpointBasename><restartNumber>
+            </typeio>
+          </hdf5>
+          <pnetcdf>
+            <parallelio>
+              setupName: Sedov
+              setupOptions: -auto -debug +pm4dev +pnetcdf -unit=Particles -noc
+              transfers: object/amr_runtime_parameters
+              numProcs: 8
+              parfiles: <pathToSimulations>/Sedov/coldstart_pm.par
+              restartParfiles: <pathToSimulations>/Sedov/restart_pm.par
+	      checkpointBasename: sedov_ncmpi_chk_
+	      comparisonNumber: 0001
+	      restartNumber: 0002
+	      comparisonBenchmark: <siteDir>/2012-09-05/Composite_Sedov_pm4dev_2d_pnetcdf_parallelio/<runDir>/<checkpointBasename><comparisonNumber>
+	      restartBenchmark: <siteDir>/2012-09-05/Composite_Sedov_pm4dev_2d_pnetcdf_parallelio/<runDir>/<checkpointBasename><restartNumber>
+            </parallelio>
+            <typeio>
+              setupName: Sedov
+              setupOptions: -auto -debug +pm4dev +pnettypeio -unit=Particles -noc
+              transfers: object/amr_runtime_parameters
+              numProcs: 8
+              parfiles: <pathToSimulations>/Sedov/coldstart_pm.par
+              restartParfiles: <pathToSimulations>/Sedov/restart_pm.par
+	      checkpointBasename: sedov_ncmpi_chk_
+	      comparisonNumber: 0001
+	      restartNumber: 0002
+	      comparisonBenchmark: <siteDir>/2012-09-05/Composite_Sedov_pm4dev_2d_pnetcdf_parallelio/<runDir>/<checkpointBasename><comparisonNumber>
+	      restartBenchmark: <siteDir>/2012-09-05/Composite_Sedov_pm4dev_2d_pnetcdf_parallelio/<runDir>/<checkpointBasename><restartNumber>
+            </typeio>
+          </pnetcdf>
+        </2d>
+      </pm4dev>
+      <pm4dev_fixed>
+        <2d>
+          <hdf5>
+            <parallelio>
+              setupName: Sedov
+              setupOptions: -auto -debug +pm4dev_fixed +parallelio -unit=Particles -noc
+              numProcs: 8
+              parfiles: <pathToSimulations>/Sedov/coldstart_pm.par
+              restartParfiles: <pathToSimulations>/Sedov/restart_pm.par
+	      checkpointBasename: sedov_hdf5_chk_
+	      comparisonNumber: 0001
+	      restartNumber: 0002
+	      comparisonBenchmark: <siteDir>/2012-09-05/Composite_Sedov_pm4dev_2d_hdf5_parallelio/<runDir>/<checkpointBasename><comparisonNumber>
+	      restartBenchmark: <siteDir>/2012-09-05/Composite_Sedov_pm4dev_2d_hdf5_parallelio/<runDir>/<checkpointBasename><restartNumber>
+            </parallelio>
+            <serialio>
+              setupName: Sedov
+              setupOptions: -auto -debug +pm4dev_fixed +serialio -unit=Particles -noc
+              numProcs: 8
+              parfiles: <pathToSimulations>/Sedov/coldstart_pm.par
+              restartParfiles: <pathToSimulations>/Sedov/restart_pm.par
+	      checkpointBasename: sedov_hdf5_chk_
+	      comparisonNumber: 0001
+	      restartNumber: 0002
+	      comparisonBenchmark: <siteDir>/2012-09-05/Composite_Sedov_pm4dev_2d_hdf5_parallelio/<runDir>/<checkpointBasename><comparisonNumber>
+	      restartBenchmark: <siteDir>/2012-09-05/Composite_Sedov_pm4dev_2d_hdf5_parallelio/<runDir>/<checkpointBasename><restartNumber>
+            </serialio>
+            <typeio>
+              setupName: Sedov
+              setupOptions: -auto -debug +pm4dev_fixed +hdf5typeio -unit=Particles -noc
+              numProcs: 8
+              parfiles: <pathToSimulations>/Sedov/coldstart_pm.par
+              restartParfiles: <pathToSimulations>/Sedov/restart_pm.par
+	      checkpointBasename: sedov_hdf5_chk_
+	      comparisonNumber: 0001
+	      restartNumber: 0002
+	      comparisonBenchmark: <siteDir>/2012-09-05/Composite_Sedov_pm4dev_2d_hdf5_parallelio/<runDir>/<checkpointBasename><comparisonNumber>
+	      restartBenchmark: <siteDir>/2012-09-05/Composite_Sedov_pm4dev_2d_hdf5_parallelio/<runDir>/<checkpointBasename><restartNumber>
+            </typeio>
+          </hdf5>
+          <pnetcdf>
+            <parallelio>
+              setupName: Sedov
+              setupOptions: -auto -debug +pm4dev_fixed +pnetcdf -unit=Particles -noc
+              numProcs: 8
+              parfiles: <pathToSimulations>/Sedov/coldstart_pm.par
+              restartParfiles: <pathToSimulations>/Sedov/restart_pm.par
+	      checkpointBasename: sedov_ncmpi_chk_
+	      comparisonNumber: 0001
+	      restartNumber: 0002
+	      comparisonBenchmark: <siteDir>/2012-09-05/Composite_Sedov_pm4dev_2d_pnetcdf_parallelio/<runDir>/<checkpointBasename><comparisonNumber>
+	      restartBenchmark: <siteDir>/2012-09-05/Composite_Sedov_pm4dev_2d_pnetcdf_parallelio/<runDir>/<checkpointBasename><restartNumber>
+            </parallelio>
+            <typeio>
+              setupName: Sedov
+              setupOptions: -auto -debug +pm4dev_fixed +pnettypeio -unit=Particles -noc
+              numProcs: 8
+              parfiles: <pathToSimulations>/Sedov/coldstart_pm.par
+              restartParfiles: <pathToSimulations>/Sedov/restart_pm.par
+	      checkpointBasename: sedov_ncmpi_chk_
+	      comparisonNumber: 0001
+	      restartNumber: 0002
+	      comparisonBenchmark: <siteDir>/2012-09-05/Composite_Sedov_pm4dev_2d_pnetcdf_parallelio/<runDir>/<checkpointBasename><comparisonNumber>
+	      restartBenchmark: <siteDir>/2012-09-05/Composite_Sedov_pm4dev_2d_pnetcdf_parallelio/<runDir>/<checkpointBasename><restartNumber>
+            </typeio>
+          </pnetcdf>
+        </2d>
+      </pm4dev_fixed>
+      <pm2>
+        <2d>
+          <hdf5>
+            <parallelio>
+              setupName: Sedov
+              setupOptions: -auto -test +pm2 +parallelio -unit=Particles -noc
+              numProcs: 8
+              parfiles: <pathToSimulations>/Sedov/coldstart_pm.par
+              restartParfiles: <pathToSimulations>/Sedov/restart_pm.par
+	      checkpointBasename: sedov_hdf5_chk_
+	      comparisonNumber: 0001
+	      restartNumber: 0002
+	      comparisonBenchmark: <siteDir>/2012-09-05/Composite_Sedov_pm2_2d_hdf5_parallelio/<runDir>/<checkpointBasename><comparisonNumber>
+	      restartBenchmark: <siteDir>/2012-09-05/Composite_Sedov_pm2_2d_hdf5_parallelio/<runDir>/<checkpointBasename><restartNumber>
+            </parallelio>
+            <serialio>
+              setupName: Sedov
+              setupOptions: -auto -test +pm2 +serialio -unit=Particles -noc
+              numProcs: 8
+              parfiles: <pathToSimulations>/Sedov/coldstart_pm.par
+              restartParfiles: <pathToSimulations>/Sedov/restart_pm.par
+	      checkpointBasename: sedov_hdf5_chk_
+	      comparisonNumber: 0001
+	      restartNumber: 0002
+	      comparisonBenchmark: <siteDir>/2012-09-05/Composite_Sedov_pm2_2d_hdf5_parallelio/<runDir>/<checkpointBasename><comparisonNumber>
+	      restartBenchmark: <siteDir>/2012-09-05/Composite_Sedov_pm2_2d_hdf5_parallelio/<runDir>/<checkpointBasename><restartNumber>
+            </serialio>
+            <typeio>
+              setupName: Sedov
+              setupOptions: -auto -test +pm2 +hdf5typeio -unit=Particles -noc
+              numProcs: 8
+              parfiles: <pathToSimulations>/Sedov/coldstart_pm.par
+              restartParfiles: <pathToSimulations>/Sedov/restart_pm.par
+	      checkpointBasename: sedov_hdf5_chk_
+	      comparisonNumber: 0001
+	      restartNumber: 0002
+	      comparisonBenchmark: <siteDir>/2012-09-05/Composite_Sedov_pm2_2d_hdf5_parallelio/<runDir>/<checkpointBasename><comparisonNumber>
+	      restartBenchmark: <siteDir>/2012-09-05/Composite_Sedov_pm2_2d_hdf5_parallelio/<runDir>/<checkpointBasename><restartNumber>
+            </typeio>
+          </hdf5>
+          <pnetcdf>
+            <parallelio>
+              setupName: Sedov
+              setupOptions: -auto -test +pm2 +pnetcdf -unit=Particles -noc
+              numProcs: 8
+              parfiles: <pathToSimulations>/Sedov/coldstart_pm.par
+              restartParfiles: <pathToSimulations>/Sedov/restart_pm.par
+	      checkpointBasename: sedov_ncmpi_chk_
+	      comparisonNumber: 0001
+	      restartNumber: 0002
+	      comparisonBenchmark: <siteDir>/2012-09-05/Composite_Sedov_pm2_2d_pnetcdf_parallelio/<runDir>/<checkpointBasename><comparisonNumber>
+	      restartBenchmark: <siteDir>/2012-09-05/Composite_Sedov_pm2_2d_pnetcdf_parallelio/<runDir>/<checkpointBasename><restartNumber>
+            </parallelio>
+            <typeio>
+              setupName: Sedov
+              setupOptions: -auto -test +pm2 +pnettypeio -unit=Particles -noc
+              numProcs: 8
+              parfiles: <pathToSimulations>/Sedov/coldstart_pm.par
+              restartParfiles: <pathToSimulations>/Sedov/restart_pm.par
+	      checkpointBasename: sedov_ncmpi_chk_
+	      comparisonNumber: 0001
+	      restartNumber: 0002
+	      comparisonBenchmark: <siteDir>/2012-09-05/Composite_Sedov_pm2_2d_pnetcdf_parallelio/<runDir>/<checkpointBasename><comparisonNumber>
+	      restartBenchmark: <siteDir>/2012-09-05/Composite_Sedov_pm2_2d_pnetcdf_parallelio/<runDir>/<checkpointBasename><restartNumber>
+            </typeio>
+          </pnetcdf>
+        </2d>
+      </pm2>
+    </Sedov>
+    <OrszagTang_StaggeredMesh>
+      <pm40>
+        <2d>
+          <hdf5>
+            <serialio>
+              setupName: magnetoHD/OrszagTang
+              setupOptions: -2d -auto +usm +pm40 +hdf5 +serialIO -debug -unit=Particles -noc
+              numProcs: 8
+              parfiles: <pathToSimulations>/magnetoHD/OrszagTang/coldstart_pm_2d.par
+              restartParfiles: <pathToSimulations>/magnetoHD/OrszagTang/restart_pm_2d.par
+	      checkpointBasename: orszag_mhd_2d_hdf5_chk_
+	      comparisonNumber: 0001
+	      restartNumber: 0002
+	      comparisonBenchmark: <siteDir>/2012-09-05/Composite_OrszagTang_StaggeredMesh_pm40_2d_hdf5_parallelio/<runDir>/<checkpointBasename><comparisonNumber>
+ 	      restartBenchmark: <siteDir>/2012-09-05/Composite_OrszagTang_StaggeredMesh_pm40_2d_hdf5_parallelio/<runDir>/<checkpointBasename><restartNumber>
+            </serialio>
+            <parallelio>
+              setupName: magnetoHD/OrszagTang
+              setupOptions: -2d -auto +usm +pm40 +hdf5 +parallelIO -debug -unit=Particles -noc
+              numProcs: 8
+              parfiles: <pathToSimulations>/magnetoHD/OrszagTang/coldstart_pm_2d.par
+              restartParfiles: <pathToSimulations>/magnetoHD/OrszagTang/restart_pm_2d.par
+	      checkpointBasename: orszag_mhd_2d_hdf5_chk_
+	      comparisonNumber: 0001
+	      restartNumber: 0002
+	      comparisonBenchmark: <siteDir>/2012-09-05/Composite_OrszagTang_StaggeredMesh_pm40_2d_hdf5_parallelio/<runDir>/<checkpointBasename><comparisonNumber>
+ 	      restartBenchmark: <siteDir>/2012-09-05/Composite_OrszagTang_StaggeredMesh_pm40_2d_hdf5_parallelio/<runDir>/<checkpointBasename><restartNumber>
+            </parallelio>
+            <typeio>
+              setupName: magnetoHD/OrszagTang
+              setupOptions: -2d -auto +usm +pm40 +hdf5typeio -debug -unit=Particles -noc
+              numProcs: 8
+              parfiles: <pathToSimulations>/magnetoHD/OrszagTang/coldstart_pm_2d.par
+              restartParfiles: <pathToSimulations>/magnetoHD/OrszagTang/restart_pm_2d.par
+	      checkpointBasename: orszag_mhd_2d_hdf5_chk_
+	      comparisonNumber: 0001
+	      restartNumber: 0002
+	      comparisonBenchmark: <siteDir>/2012-09-05/Composite_OrszagTang_StaggeredMesh_pm40_2d_hdf5_parallelio/<runDir>/<checkpointBasename><comparisonNumber>
+ 	      restartBenchmark: <siteDir>/2012-09-05/Composite_OrszagTang_StaggeredMesh_pm40_2d_hdf5_parallelio/<runDir>/<checkpointBasename><restartNumber>
+            </typeio>
+          </hdf5>
+          <pnetcdf>
+            <parallelio>
+              setupName: magnetoHD/OrszagTang
+              setupOptions: -2d -auto +usm +pm40 +pnetcdf +parallelIO -debug -unit=Particles -noc
+              numProcs: 8
+              parfiles: <pathToSimulations>/magnetoHD/OrszagTang/coldstart_pm_2d.par
+              restartParfiles: <pathToSimulations>/magnetoHD/OrszagTang/restart_pm_2d.par
+	      checkpointBasename: orszag_mhd_2d_ncmpi_chk_
+	      comparisonNumber: 0001
+	      restartNumber: 0002
+	      comparisonBenchmark: <siteDir>/2012-09-05/Composite_OrszagTang_StaggeredMesh_pm40_2d_pnetcdf_parallelio/<runDir>/<checkpointBasename><comparisonNumber>
+ 	      restartBenchmark: <siteDir>/2012-09-05/Composite_OrszagTang_StaggeredMesh_pm40_2d_pnetcdf_parallelio/<runDir>/<checkpointBasename><restartNumber>
+            </parallelio>
+            <typeio>
+              setupName: magnetoHD/OrszagTang
+              setupOptions: -2d -auto +usm +pm40 +pnettypeio -debug -unit=Particles -noc
+              numProcs: 8
+              parfiles: <pathToSimulations>/magnetoHD/OrszagTang/coldstart_pm_2d.par
+              restartParfiles: <pathToSimulations>/magnetoHD/OrszagTang/restart_pm_2d.par
+	      checkpointBasename: orszag_mhd_2d_ncmpi_chk_
+	      comparisonNumber: 0001
+	      restartNumber: 0002
+	      comparisonBenchmark: <siteDir>/2012-09-05/Composite_OrszagTang_StaggeredMesh_pm40_2d_pnetcdf_parallelio/<runDir>/<checkpointBasename><comparisonNumber>
+ 	      restartBenchmark: <siteDir>/2012-09-05/Composite_OrszagTang_StaggeredMesh_pm40_2d_pnetcdf_parallelio/<runDir>/<checkpointBasename><restartNumber>
+            </typeio>
+          </pnetcdf>
+        </2d>
+      </pm40>
+      <ug>
+        <2d>
+          <hdf5>
+            <serialio>
+              setupName: magnetoHD/OrszagTang
+              setupOptions: -2d -auto +usm +ug -nxb=100 -nyb=200 +hdf5 +serialio -debug -unit=Particles -noc
+              numProcs: 8
+              parfiles: <pathToSimulations>/magnetoHD/OrszagTang/coldstart_ug_8p_2d.par
+              restartParfiles: <pathToSimulations>/magnetoHD/OrszagTang/restart_ug_8p_2d.par
+	      checkpointBasename: orszag_mhd_2d_hdf5_chk_
+	      comparisonNumber: 0001
+	      restartNumber: 0002
+	      comparisonBenchmark: <siteDir>/2012-09-05/Composite_OrszagTang_StaggeredMesh_ug_2d_hdf5_parallelio/<runDir>/<checkpointBasename><comparisonNumber>
+ 	      restartBenchmark: <siteDir>/2012-09-05/Composite_OrszagTang_StaggeredMesh_ug_2d_hdf5_parallelio/<runDir>/<checkpointBasename><restartNumber>
+            </serialio>
+            <parallelio>
+              setupName: magnetoHD/OrszagTang
+              setupOptions: -2d -auto +usm +ug -nxb=100 -nyb=200 +hdf5 +parallelio -debug -unit=Particles -noc
+              numProcs: 8
+              parfiles: <pathToSimulations>/magnetoHD/OrszagTang/coldstart_ug_8p_2d.par
+              restartParfiles: <pathToSimulations>/magnetoHD/OrszagTang/restart_ug_8p_2d.par
+	      checkpointBasename: orszag_mhd_2d_hdf5_chk_
+	      comparisonNumber: 0001
+	      restartNumber: 0002
+	      comparisonBenchmark: <siteDir>/2012-09-05/Composite_OrszagTang_StaggeredMesh_ug_2d_hdf5_parallelio/<runDir>/<checkpointBasename><comparisonNumber>
+ 	      restartBenchmark: <siteDir>/2012-09-05/Composite_OrszagTang_StaggeredMesh_ug_2d_hdf5_parallelio/<runDir>/<checkpointBasename><restartNumber>
+            </parallelio>
+            <typeio>
+              setupName: magnetoHD/OrszagTang
+              setupOptions: -2d -auto +usm +ug -nxb=100 -nyb=200 +hdf5typeio +parallelio -debug -unit=Particles -noc
+              numProcs: 8
+              parfiles: <pathToSimulations>/magnetoHD/OrszagTang/coldstart_ug_8p_2d.par
+              restartParfiles: <pathToSimulations>/magnetoHD/OrszagTang/restart_ug_8p_2d.par
+	      checkpointBasename: orszag_mhd_2d_hdf5_chk_
+	      comparisonNumber: 0001
+	      restartNumber: 0002
+	      comparisonBenchmark: <siteDir>/2012-09-05/Composite_OrszagTang_StaggeredMesh_ug_2d_hdf5_parallelio/<runDir>/<checkpointBasename><comparisonNumber>
+ 	      restartBenchmark: <siteDir>/2012-09-05/Composite_OrszagTang_StaggeredMesh_ug_2d_hdf5_parallelio/<runDir>/<checkpointBasename><restartNumber>
+            </typeio>
+          </hdf5>
+          <pnetcdf>
+            <parallelio>
+              setupName: magnetoHD/OrszagTang
+              setupOptions: -2d -auto +usm +ug -nxb=100 -nyb=200 +pnetcdf -debug -unit=Particles -noc
+              numProcs: 8
+              parfiles: <pathToSimulations>/magnetoHD/OrszagTang/coldstart_ug_8p_2d.par
+              restartParfiles: <pathToSimulations>/magnetoHD/OrszagTang/restart_ug_8p_2d.par
+	      checkpointBasename: orszag_mhd_2d_ncmpi_chk_
+	      comparisonNumber: 0001
+	      restartNumber: 0002
+	      comparisonBenchmark: <siteDir>/2012-09-05/Composite_OrszagTang_StaggeredMesh_ug_2d_pnetcdf_parallelio/<runDir>/<checkpointBasename><comparisonNumber>
+ 	      restartBenchmark: <siteDir>/2012-09-05/Composite_OrszagTang_StaggeredMesh_ug_2d_pnetcdf_parallelio/<runDir>/<checkpointBasename><restartNumber>
+            </parallelio>
+            <typeio>
+              setupName: magnetoHD/OrszagTang
+              setupOptions: -2d -auto +usm +ug -nxb=100 -nyb=200 +pnettypeio -debug -unit=Particles -noc
+              numProcs: 8
+              parfiles: <pathToSimulations>/magnetoHD/OrszagTang/coldstart_ug_8p_2d.par
+              restartParfiles: <pathToSimulations>/magnetoHD/OrszagTang/restart_ug_8p_2d.par
+	      checkpointBasename: orszag_mhd_2d_ncmpi_chk_
+	      comparisonNumber: 0001
+	      restartNumber: 0002
+	      comparisonBenchmark: <siteDir>/2012-09-05/Composite_OrszagTang_StaggeredMesh_ug_2d_pnetcdf_parallelio/<runDir>/<checkpointBasename><comparisonNumber>
+ 	      restartBenchmark: <siteDir>/2012-09-05/Composite_OrszagTang_StaggeredMesh_ug_2d_pnetcdf_parallelio/<runDir>/<checkpointBasename><restartNumber>
+            </typeio>
+          </pnetcdf>
+        </2d>
+      </ug>
+      <nofbs>
+        <2d>
+          <hdf5>
+            <parallelio>
+              setupName: magnetoHD/OrszagTang
+              setupOptions: -2d -auto +usm +nofbs +hdf5 -debug -unit=Particles -noc
+              numProcs: 8
+              parfiles: <pathToSimulations>/magnetoHD/OrszagTang/coldstart_nofbs_8p_2d.par
+              restartParfiles: <pathToSimulations>/magnetoHD/OrszagTang/restart_nofbs_8p_2d.par
+	      checkpointBasename: orszag_mhd_2d_hdf5_chk_
+	      comparisonNumber: 0001
+	      restartNumber: 0002
+	      comparisonBenchmark: <siteDir>/2012-09-05/Composite_OrszagTang_StaggeredMesh_nofbs_2d_hdf5_parallelio/<runDir>/<checkpointBasename><comparisonNumber>
+ 	      restartBenchmark: <siteDir>/2012-09-05/Composite_OrszagTang_StaggeredMesh_nofbs_2d_hdf5_parallelio/<runDir>/<checkpointBasename><restartNumber>
+            </parallelio>
+            <typeio>
+              setupName: magnetoHD/OrszagTang
+              setupOptions: -2d -auto +usm +nofbs +hdf5typeio -debug -unit=Particles -noc
+              numProcs: 8
+              parfiles: <pathToSimulations>/magnetoHD/OrszagTang/coldstart_nofbs_8p_2d.par
+              restartParfiles: <pathToSimulations>/magnetoHD/OrszagTang/restart_nofbs_8p_2d.par
+	      checkpointBasename: orszag_mhd_2d_hdf5_chk_
+	      comparisonNumber: 0001
+	      restartNumber: 0002
+	      comparisonBenchmark: <siteDir>/2012-09-05/Composite_OrszagTang_StaggeredMesh_nofbs_2d_hdf5_parallelio/<runDir>/<checkpointBasename><comparisonNumber>
+ 	      restartBenchmark: <siteDir>/2012-09-05/Composite_OrszagTang_StaggeredMesh_nofbs_2d_hdf5_parallelio/<runDir>/<checkpointBasename><restartNumber>
+            </typeio>
+          </hdf5>
+          <pnetcdf>
+            <typeio>
+              setupName: magnetoHD/OrszagTang
+              setupOptions: -2d -auto +usm +nofbs +pnettypeio -debug -unit=Particles -noc
+              numProcs: 8
+              parfiles: <pathToSimulations>/magnetoHD/OrszagTang/coldstart_nofbs_8p_2d.par
+              restartParfiles: <pathToSimulations>/magnetoHD/OrszagTang/restart_nofbs_8p_2d.par
+	      checkpointBasename: orszag_mhd_2d_ncmpi_chk_
+	      comparisonNumber: 0001
+	      restartNumber: 0002
+	      comparisonBenchmark: <siteDir>/2012-09-05/Composite_OrszagTang_StaggeredMesh_nofbs_2d_pnetcdf_typeio/<runDir>/<checkpointBasename><comparisonNumber>
+ 	      restartBenchmark: <siteDir>/2012-09-05/Composite_OrszagTang_StaggeredMesh_nofbs_2d_pnetcdf_typeio/<runDir>/<checkpointBasename><restartNumber>
+            </typeio>
+          </pnetcdf>
+        </2d>
+      </nofbs>
+    </OrszagTang_StaggeredMesh>
+    <OrszagTang_StaggeredMesh_1blk>
+      <pm40>
+        <2d>
+          <hdf5>
+            <serialio>
+              setupName: magnetoHD/OrszagTang
+              setupOptions: -2d -auto +usm +pm40 +hdf5 +serialIO -debug -unit=Particles -noc
+              numProcs: 8
+              parfiles: <pathToSimulations>/magnetoHD/OrszagTang/coldstart_pm_2d_1blk.par
+              restartParfiles: <pathToSimulations>/magnetoHD/OrszagTang/restart_pm_2d_1blk.par
+	      checkpointBasename: orszag_mhd_2d_hdf5_chk_
+	      comparisonNumber: 0001
+	      restartNumber: 0002
+	      comparisonBenchmark: <siteDir>/2012-09-05/Composite_OrszagTang_StaggeredMesh_1blk_pm40_2d_hdf5_parallelio/<runDir>/<checkpointBasename><comparisonNumber>
+ 	      restartBenchmark: <siteDir>/2012-09-05/Composite_OrszagTang_StaggeredMesh_1blk_pm40_2d_hdf5_parallelio/<runDir>/<checkpointBasename><restartNumber>
+            </serialio>
+            <parallelio>
+              setupName: magnetoHD/OrszagTang
+              setupOptions: -2d -auto +usm +pm40 +hdf5 +parallelIO -debug -unit=Particles -noc
+              numProcs: 8
+              parfiles: <pathToSimulations>/magnetoHD/OrszagTang/coldstart_pm_2d_1blk.par
+              restartParfiles: <pathToSimulations>/magnetoHD/OrszagTang/restart_pm_2d_1blk.par
+	      checkpointBasename: orszag_mhd_2d_hdf5_chk_
+	      comparisonNumber: 0001
+	      restartNumber: 0002
+	      comparisonBenchmark: <siteDir>/2012-09-05/Composite_OrszagTang_StaggeredMesh_1blk_pm40_2d_hdf5_parallelio/<runDir>/<checkpointBasename><comparisonNumber>
+ 	      restartBenchmark: <siteDir>/2012-09-05/Composite_OrszagTang_StaggeredMesh_1blk_pm40_2d_hdf5_parallelio/<runDir>/<checkpointBasename><restartNumber>
+            </parallelio>
+            <typeio>
+              setupName: magnetoHD/OrszagTang
+              setupOptions: -2d -auto +usm +pm40 +hdf5typeio -debug -unit=Particles -noc
+              numProcs: 8
+              parfiles: <pathToSimulations>/magnetoHD/OrszagTang/coldstart_pm_2d_1blk.par
+              restartParfiles: <pathToSimulations>/magnetoHD/OrszagTang/restart_pm_2d_1blk.par
+	      checkpointBasename: orszag_mhd_2d_hdf5_chk_
+	      comparisonNumber: 0001
+	      restartNumber: 0002
+	      comparisonBenchmark: <siteDir>/2012-09-05/Composite_OrszagTang_StaggeredMesh_1blk_pm40_2d_hdf5_parallelio/<runDir>/<checkpointBasename><comparisonNumber>
+ 	      restartBenchmark: <siteDir>/2012-09-05/Composite_OrszagTang_StaggeredMesh_1blk_pm40_2d_hdf5_parallelio/<runDir>/<checkpointBasename><restartNumber>
+            </typeio>
+          </hdf5>
+          <pnetcdf>
+            <parallelio>
+              setupName: magnetoHD/OrszagTang
+              setupOptions: -2d -auto +usm +pm40 +pnetcdf -debug -unit=Particles -noc
+              numProcs: 8
+              parfiles: <pathToSimulations>/magnetoHD/OrszagTang/coldstart_pm_2d_1blk.par
+              restartParfiles: <pathToSimulations>/magnetoHD/OrszagTang/restart_pm_2d_1blk.par
+	      checkpointBasename: orszag_mhd_2d_ncmpi_chk_
+	      comparisonNumber: 0001
+	      restartNumber: 0002
+	      comparisonBenchmark: <siteDir>/2012-09-05/Composite_OrszagTang_StaggeredMesh_1blk_pm40_2d_pnetcdf_parallelio/<runDir>/<checkpointBasename><comparisonNumber>
+ 	      restartBenchmark: <siteDir>/2012-09-05/Composite_OrszagTang_StaggeredMesh_1blk_pm40_2d_pnetcdf_parallelio/<runDir>/<checkpointBasename><restartNumber>
+            </parallelio>
+            <typeio>
+              setupName: magnetoHD/OrszagTang
+              setupOptions: -2d -auto +usm +pm40 +pnettypeio -debug -unit=Particles -noc
+              numProcs: 8
+              parfiles: <pathToSimulations>/magnetoHD/OrszagTang/coldstart_pm_2d_1blk.par
+              restartParfiles: <pathToSimulations>/magnetoHD/OrszagTang/restart_pm_2d_1blk.par
+	      checkpointBasename: orszag_mhd_2d_ncmpi_chk_
+	      comparisonNumber: 0001
+	      restartNumber: 0002
+	      comparisonBenchmark: <siteDir>/2012-09-05/Composite_OrszagTang_StaggeredMesh_1blk_pm40_2d_pnetcdf_parallelio/<runDir>/<checkpointBasename><comparisonNumber>
+ 	      restartBenchmark: <siteDir>/2012-09-05/Composite_OrszagTang_StaggeredMesh_1blk_pm40_2d_pnetcdf_parallelio/<runDir>/<checkpointBasename><restartNumber>
+            </typeio>
+          </pnetcdf>
+        </2d>
+      </pm40>
+    </OrszagTang_StaggeredMesh_1blk>
+    <IOMeshReplication>
+      <pm_default>
+        <3d>
+          <hdf5>
+            <parallelio>
+              setupName: unitTest/IO/IOMeshReplication
+              setupOptions: -auto -3d +parallelio -debug
+              numProcs: 8
+              parfiles: <pathToSimulations>/unitTest/IO/IOMeshReplication/coldstart_3d.par
+              restartParfiles: <pathToSimulations>/unitTest/IO/IOMeshReplication/restart_3d.par
+	      checkpointBasename: flash_hdf5_chk_
+	      comparisonNumber: 0001
+	      restartNumber: 0002
+	      comparisonBenchmark: <siteDir>/2012-09-05/Composite_IOMeshReplication_pm_default_3d_hdf5_parallelio/<runDir>/<checkpointBasename><comparisonNumber>
+ 	      restartBenchmark: <siteDir>/2012-09-05/Composite_IOMeshReplication_pm_default_3d_hdf5_parallelio/<runDir>/<checkpointBasename><restartNumber>
+            </parallelio>
+            <typeio>
+              setupName: unitTest/IO/IOMeshReplication
+              setupOptions: -auto -3d +hdf5typeio -debug
+              numProcs: 8
+              parfiles: <pathToSimulations>/unitTest/IO/IOMeshReplication/coldstart_3d.par
+              restartParfiles: <pathToSimulations>/unitTest/IO/IOMeshReplication/restart_3d.par
+	      checkpointBasename: flash_hdf5_chk_
+	      comparisonNumber: 0001
+	      restartNumber: 0002
+	      comparisonBenchmark: <siteDir>/2012-09-05/Composite_IOMeshReplication_pm_default_3d_hdf5_parallelio/<runDir>/<checkpointBasename><comparisonNumber>
+ 	      restartBenchmark: <siteDir>/2012-09-05/Composite_IOMeshReplication_pm_default_3d_hdf5_parallelio/<runDir>/<checkpointBasename><restartNumber>
+            </typeio>
+          </hdf5>
+          <pnetcdf>
+            <typeio>
+              setupName: unitTest/IO/IOMeshReplication
+              setupOptions: -auto -3d +pnettypeio -debug
+              numProcs: 8
+              parfiles: <pathToSimulations>/unitTest/IO/IOMeshReplication/coldstart_3d.par
+              restartParfiles: <pathToSimulations>/unitTest/IO/IOMeshReplication/restart_3d.par
+	      checkpointBasename: flash_ncmpi_chk_
+	      comparisonNumber: 0001
+	      restartNumber: 0002
+	      comparisonBenchmark: <siteDir>/2012-09-05/Composite_IOMeshReplication_pm_default_3d_pnetcdf_parallelio/<runDir>/<checkpointBasename><comparisonNumber>
+ 	      restartBenchmark: <siteDir>/2012-09-05/Composite_IOMeshReplication_pm_default_3d_pnetcdf_parallelio/<runDir>/<checkpointBasename><restartNumber>
+            </typeio>
+          </pnetcdf>
+        </3d>
+      </pm_default>
+      <ug>
+        <3d>
+          <hdf5>
+            <parallelio>
+              setupName: unitTest/IO/IOMeshReplication
+              setupOptions: -auto -3d +ug -nxb=16 -nyb=16 -nzb=8 +parallelio -debug
+              numProcs: 8
+              parfiles: <pathToSimulations>/unitTest/IO/IOMeshReplication/coldstart_3d.par
+              restartParfiles: <pathToSimulations>/unitTest/IO/IOMeshReplication/restart_3d.par
+	      checkpointBasename: flash_hdf5_chk_
+	      comparisonNumber: 0001
+	      restartNumber: 0002
+	      comparisonBenchmark: <siteDir>/2012-09-05/Composite_IOMeshReplication_ug_3d_hdf5_parallelio/<runDir>/<checkpointBasename><comparisonNumber>
+ 	      restartBenchmark: <siteDir>/2012-09-05/Composite_IOMeshReplication_ug_3d_hdf5_parallelio/<runDir>/<checkpointBasename><restartNumber>
+            </parallelio>
+            <typeio>
+              setupName: unitTest/IO/IOMeshReplication
+              setupOptions: -auto -3d +ug -nxb=16 -nyb=16 -nzb=8 +hdf5typeio -debug
+              numProcs: 8
+              parfiles: <pathToSimulations>/unitTest/IO/IOMeshReplication/coldstart_3d.par
+              restartParfiles: <pathToSimulations>/unitTest/IO/IOMeshReplication/restart_3d.par
+	      checkpointBasename: flash_hdf5_chk_
+	      comparisonNumber: 0001
+	      restartNumber: 0002
+	      comparisonBenchmark: <siteDir>/2012-09-05/Composite_IOMeshReplication_ug_3d_hdf5_parallelio/<runDir>/<checkpointBasename><comparisonNumber>
+ 	      restartBenchmark: <siteDir>/2012-09-05/Composite_IOMeshReplication_ug_3d_hdf5_parallelio/<runDir>/<checkpointBasename><restartNumber>
+            </typeio>
+          </hdf5>
+          <pnetcdf>
+            <typeio>
+              setupName: unitTest/IO/IOMeshReplication
+              setupOptions: -auto -3d +ug -nxb=16 -nyb=16 -nzb=8 +pnettypeio -debug
+              numProcs: 8
+              parfiles: <pathToSimulations>/unitTest/IO/IOMeshReplication/coldstart_3d.par
+              restartParfiles: <pathToSimulations>/unitTest/IO/IOMeshReplication/restart_3d.par
+	      checkpointBasename: flash_ncmpi_chk_
+	      comparisonNumber: 0001
+	      restartNumber: 0002
+	      comparisonBenchmark: <siteDir>/2012-09-05/Composite_IOMeshReplication_ug_3d_pnetcdf_parallelio/<runDir>/<checkpointBasename><comparisonNumber>
+ 	      restartBenchmark: <siteDir>/2012-09-05/Composite_IOMeshReplication_ug_3d_pnetcdf_parallelio/<runDir>/<checkpointBasename><restartNumber>
+            </typeio>
+          </pnetcdf>
+        </3d>
+      </ug>
+      <nofbs>
+        <3d>
+          <hdf5>
+            <parallelio>
+              setupName: unitTest/IO/IOMeshReplication
+              setupOptions: -auto -3d +nofbs +parallelio -debug
+              numProcs: 8
+              parfiles: <pathToSimulations>/unitTest/IO/IOMeshReplication/coldstart_3d.par
+              restartParfiles: <pathToSimulations>/unitTest/IO/IOMeshReplication/restart_3d.par
+	      checkpointBasename: flash_hdf5_chk_
+	      comparisonNumber: 0001
+	      restartNumber: 0002
+	      comparisonBenchmark: <siteDir>/2012-09-05/Composite_IOMeshReplication_nofbs_3d_hdf5_parallelio/<runDir>/<checkpointBasename><comparisonNumber>
+ 	      restartBenchmark: <siteDir>/2012-09-05/Composite_IOMeshReplication_nofbs_3d_hdf5_parallelio/<runDir>/<checkpointBasename><restartNumber>
+            </parallelio>
+            <typeio>
+              setupName: unitTest/IO/IOMeshReplication
+              setupOptions: -auto -3d +nofbs +hdf5typeio -debug
+              numProcs: 8
+              parfiles: <pathToSimulations>/unitTest/IO/IOMeshReplication/coldstart_3d.par
+              restartParfiles: <pathToSimulations>/unitTest/IO/IOMeshReplication/restart_3d.par
+	      checkpointBasename: flash_hdf5_chk_
+	      comparisonNumber: 0001
+	      restartNumber: 0002
+	      comparisonBenchmark: <siteDir>/2012-09-05/Composite_IOMeshReplication_nofbs_3d_hdf5_parallelio/<runDir>/<checkpointBasename><comparisonNumber>
+ 	      restartBenchmark: <siteDir>/2012-09-05/Composite_IOMeshReplication_nofbs_3d_hdf5_parallelio/<runDir>/<checkpointBasename><restartNumber>
+            </typeio>
+          </hdf5>
+          <pnetcdf>
+            <typeio>
+              setupName: unitTest/IO/IOMeshReplication
+              setupOptions: -auto -3d +nofbs +pnettypeio -debug
+              numProcs: 8
+              parfiles: <pathToSimulations>/unitTest/IO/IOMeshReplication/coldstart_3d.par
+              restartParfiles: <pathToSimulations>/unitTest/IO/IOMeshReplication/restart_3d.par
+	      checkpointBasename: flash_ncmpi_chk_
+	      comparisonNumber: 0001
+	      restartNumber: 0002
+	      comparisonBenchmark: <siteDir>/2012-09-05/Composite_IOMeshReplication_nofbs_3d_pnetcdf_parallelio/<runDir>/<checkpointBasename><comparisonNumber>
+ 	      restartBenchmark: <siteDir>/2012-09-05/Composite_IOMeshReplication_nofbs_3d_pnetcdf_parallelio/<runDir>/<checkpointBasename><restartNumber>
+            </typeio>
+          </pnetcdf>
+        </3d>
+      </nofbs>
+    </IOMeshReplication>
+  </Composite>
+</code>

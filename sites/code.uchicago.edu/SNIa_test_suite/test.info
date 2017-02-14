@@ -1,0 +1,52 @@
+<code>
+  <Comparison>
+    <SNIa_ddt>
+      <2d>
+        <split>
+          <oldmpole>
+            setupName: SNIa_ddt
+            setupOptions: -auto -2d -unit=Particles/ParticlesMain -test +pm4dev
+            numProcs: 4
+            parfiles: <pathToSimulations>/SNIa_ddt/flash.par_2d_test_suite
+            checkpointBasename: ddt_hdf5_chk_
+            shortPathToBenchmark: <siteDir>/2012-11-06/Comparison_SNIa_ddt_2d_split_oldmpole/<runDir>/<chkMax>
+            transfers: object/nse_pres_hmq_table.txt object/nse_dens_emq_table.txt object/SpeciesList.txt object/cc_7e8_linear_wd_plain.dat object/helm_table.dat object/CONeFlameTable.txt
+            environment: PATH=/opt/mpich2/intel/1.4.1p1/bin:/usr/local/bin:/bin:/usr/bin LD_LIBRARY_PATH=/opt/hdf5/intel/1.8.7/lib:/opt/mpich2/intel/1.4.1p1/lib:/opt/intel/composer_xe_2011_sp1.6.233/compiler/lib/intel64
+          </oldmpole>
+          <newmpole>
+            setupName: SNIa_ddt
+            setupOptions: -auto -2d -unit=Particles/ParticlesMain -test +pm4dev +newmpole
+            numProcs: 4
+            parfiles: <pathToSimulations>/SNIa_ddt/flash.par_2d_test_suite
+            checkpointBasename: ddt_hdf5_chk_
+            shortPathToBenchmark: <siteDir>/2012-11-06/Comparison_SNIa_ddt_2d_split_newmpole/<runDir>/<chkMax>
+            transfers: object/nse_pres_hmq_table.txt object/nse_dens_emq_table.txt object/SpeciesList.txt object/cc_7e8_linear_wd_plain.dat object/helm_table.dat object/CONeFlameTable.txt
+            environment: PATH=/opt/mpich2/intel/1.4.1p1/bin:/usr/local/bin:/bin:/usr/bin LD_LIBRARY_PATH=/opt/hdf5/intel/1.8.7/lib:/opt/mpich2/intel/1.4.1p1/lib:/opt/intel/composer_xe_2011_sp1.6.233/compiler/lib/intel64
+          </newmpole>
+        </split>
+        <unsplit>
+          <oldmpole>
+            setupName: SNIa_ddt
+            setupOptions: -auto -2d -unit=Particles/ParticlesMain -test +pm4dev +uhd
+            numProcs: 4
+            parfiles: <pathToSimulations>/SNIa_ddt/flash.par_2d_test_suite
+            checkpointBasename: ddt_hdf5_chk_
+            shortPathToBenchmark: <siteDir>/2012-11-06/Comparison_SNIa_ddt_2d_unsplit_oldmpole/<runDir>/<chkMax>
+            transfers: object/nse_pres_hmq_table.txt object/nse_dens_emq_table.txt object/SpeciesList.txt object/cc_7e8_linear_wd_plain.dat object/helm_table.dat object/CONeFlameTable.txt
+            environment: PATH=/opt/mpich2/intel/1.4.1p1/bin:/usr/local/bin:/bin:/usr/bin LD_LIBRARY_PATH=/opt/hdf5/intel/1.8.7/lib:/opt/mpich2/intel/1.4.1p1/lib:/opt/intel/composer_xe_2011_sp1.6.233/compiler/lib/intel64
+          </oldmpole>
+          <newmpole>
+            setupName: SNIa_ddt
+            setupOptions: -auto -2d -unit=Particles/ParticlesMain -test +pm4dev +newmpole +uhd
+            numProcs: 4
+            parfiles: <pathToSimulations>/SNIa_ddt/flash.par_2d_test_suite
+            checkpointBasename: ddt_hdf5_chk_
+            shortPathToBenchmark: <siteDir>/2012-11-06/Comparison_SNIa_ddt_2d_unsplit_newmpole/<runDir>/<chkMax>
+            transfers: object/nse_pres_hmq_table.txt object/nse_dens_emq_table.txt object/SpeciesList.txt object/cc_7e8_linear_wd_plain.dat object/helm_table.dat object/CONeFlameTable.txt
+            environment: PATH=/opt/mpich2/intel/1.4.1p1/bin:/usr/local/bin:/bin:/usr/bin LD_LIBRARY_PATH=/opt/hdf5/intel/1.8.7/lib:/opt/mpich2/intel/1.4.1p1/lib:/opt/intel/composer_xe_2011_sp1.6.233/compiler/lib/intel64
+          </newmpole>
+        </unsplit>
+      </2d>
+    </SNIa_ddt>
+  </Comparison>
+</code>

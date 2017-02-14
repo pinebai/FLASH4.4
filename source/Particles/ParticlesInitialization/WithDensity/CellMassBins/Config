@@ -1,0 +1,10 @@
+# Config file for source/Particles/ParticlesInitialization/WithDensity/CellMassBin
+#
+# For passive tracer particles to distribute the particles initially at
+# random positions using the gas density as the distribution function.
+#
+# Use ./setup ... --with-unit=Particles/ParticlesInitialization/WithDensity/CellMassBins +ptdens
+
+# because this implementation uses ut_hunt:
+REQUIRES flashUtilities/interpolation/oneDim
+

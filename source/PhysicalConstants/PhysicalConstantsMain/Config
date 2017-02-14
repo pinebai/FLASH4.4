@@ -1,0 +1,5 @@
+# Config file for /source/PhysicalConstants/PhysicalConstantsImpl
+REQUIRES RuntimeParameters
+
+D pc_unitsBase	 Base Unit system for Physical Constants -- can be "CGS" or "MKS"
+PARAMETER pc_unitsBase 	STRING		"CGS"

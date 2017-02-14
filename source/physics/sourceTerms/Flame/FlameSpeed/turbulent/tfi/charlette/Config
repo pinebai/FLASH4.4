@@ -1,0 +1,5 @@
+DEFAULT gammaFit
+EXCLUSIVE gammaFit gammaInt
+
+PARAMETER fl_fsTFIBeta            REAL     0.3333333
+PARAMETER fl_fsTFIPrandtl         REAL     1.e-5

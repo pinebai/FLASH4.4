@@ -1,0 +1,27 @@
+#
+# Define unk variables to be used by proton imaging unit. This is necessary, because Hydro is not
+# used for setup. The variables needed are the 3 components of the magnetic and electric field
+# and the boundary indicator.
+#
+VARIABLE elex
+VARIABLE eley
+VARIABLE elez
+VARIABLE magx
+VARIABLE magy
+VARIABLE magz
+VARIABLE bdry
+#
+# Parameters
+#
+
+D       sim_xCenter                    The x-coordinate of the center location
+D       sim_zCenter                    The z-coordinate of the center location
+D       sim_clockwiseB                 Should B point clockwise (inward force) from each radial position?
+D       sim_magneticFluxDensity        The value of the magnetic flux density B
+D       sim_printBlockVariables        Print what is in each block on each processor?
+
+PARAMETER  sim_xCenter                REAL     0.5
+PARAMETER  sim_zCenter                REAL     0.5
+PARAMETER  sim_clockwiseB             BOOLEAN  false
+PARAMETER  sim_magneticFluxDensity    REAL     0.0
+PARAMETER  sim_printBlockVariables    BOOLEAN  false

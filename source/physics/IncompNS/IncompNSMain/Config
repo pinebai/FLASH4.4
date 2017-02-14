@@ -1,0 +1,12 @@
+DEFAULT constdens
+
+REQUIRES Driver/DriverMain/INSfracstep
+
+REQUIRES physics/IncompNS/localAPI
+REQUESTS physics/IncompNS/IncompNSStats
+
+CHILDORDER vardens constdens extras
+
+D useIncompNS   Should the IncompNS unit be used?
+PARAMETER useIncompNS BOOLEAN TRUE
+

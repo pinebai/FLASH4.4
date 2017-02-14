@@ -1,0 +1,195 @@
+./setup IsentropicVortex -auto -2d +chombo_amr -debug -parfile=test_chombo_3lev_bugs.par -noc 
+(Run with 3 MPI processes)
+
+All MPI processes fail at exactly the same place.
+
+
+MayDay: TreeIntVectSet.cpp:1995: Assertion `bxNumPts != 0' failed. !!!
+application called MPI_Abort(MPI_COMM_WORLD, 255) - process 1
+
+Breakpoint 1, 0x00000030a3636910 in exit () from /lib64/libc.so.6
+(gdb) bt
+#0  0x00000030a3636910 in exit () from /lib64/libc.so.6
+#1  0x00007ffff7abbb09 in MPIU_Exit (exit_code=255) at exit.c:22
+#2  0x00007ffff7adf5f8 in MPID_Abort (comm=<value optimized out>, 
+    mpi_errno=<value optimized out>, exit_code=255, 
+    error_msg=0x7fffffffc5f0 "application called MPI_Abort(MPI_COMM_WORLD, 255) - process 1") at mpid_abort.c:104
+#3  0x00007ffff7a44ece in PMPI_Abort (comm=1140850688, errorcode=255)
+    at abort.c:119
+#4  0x000000000069a35d in MayDay::Abort (
+    a_msg=0x97f640 "TreeIntVectSet.cpp:1995: Assertion `bxNumPts != 0' failed.") at MayDay.cpp:87
+#5  0x00000000006824db in TreeIntVectSet::numPts (this=0xe49c28)
+    at TreeIntVectSet.cpp:1995
+#6  0x0000000000640105 in IntVectSet::numPts (this=0xe49c20)
+    at IntVectSet.cpp:487
+#7  0x0000000000649c43 in BRMeshRefine::makeBoxesParallel (this=0xe325a0, 
+    a_mesh=empty std::list, a_tags=..., a_pnd=..., a_domain=..., 
+    a_maxBoxSize=1, a_depth=0, a_totalBufferSize=3, a_minSize=100, 
+    a_procInterval=...) at BRMeshRefine.cpp:315
+#8  0x0000000000649693 in BRMeshRefine::makeBoxes (this=0xe325a0, a_mesh=..., 
+    a_tags=..., a_pnd=..., a_domain=..., a_maxBoxSize=1, a_totalBufferSize=3)
+    at BRMeshRefine.cpp:200
+#9  0x0000000000656bbb in MeshRefine::regrid (this=0xe325a0, a_newmeshes=..., 
+---Type <return> to continue, or q <return> to quit---
+    a_tags=..., a_baseLevel=0, a_topLevel=1, a_OldMeshes=...)
+    at MeshRefine.cpp:647
+#10 0x00000000004f2a2b in Chombo_Adaptive_Grid::Regrid (this=0xe32390, 
+    a_base_level=0) at chombo_adaptive_grid.C:350
+#11 0x0000000000501258 in ch_regrid (baseLevel=0) at chombo_f_c_api.C:77
+#12 0x0000000000540726 in gr_updaterefinement (gridchanged=.FALSE.)
+    at gr_updateRefinement.F90:101
+#13 0x00000000004aaa54 in grid_updaterefinement (nstep=76, 
+    time=3.7703413714849043, gridchanged=.FALSE.)
+    at Grid_updateRefinement.F90:81
+#14 0x0000000000454f8e in driver_evolveflash () at Driver_evolveFlash.F90:259
+#15 0x0000000000467ff3 in flash () at Flash.F90:51
+#16 0x000000000046806f in main (argc=1, 
+    argv=0x7fffffffe89a '/home/chris/flash/Chombo-dev/object/flash3\000')
+    at Flash.F90:43
+#17 0x00000030a361ee5d in __libc_start_main () from /lib64/libc.so.6
+#18 0x0000000000406509 in _start ()
+
+
+Failing at a seemingly innocent line:
+
+(gdb) f 7
+#7  0x0000000000649c43 in BRMeshRefine::makeBoxesParallel (this=0xe4c7a0, 
+    a_mesh=empty std::list, a_tags=..., a_pnd=..., a_domain=..., 
+    a_maxBoxSize=1, a_depth=0, a_totalBufferSize=3, a_minSize=100, 
+    a_procInterval=...) at BRMeshRefine.cpp:315
+315       long long int Ntags  = a_tags.numPts();
+
+
+(gdb) f 10
+#10 0x00000000004f2a2b in Chombo_Adaptive_Grid::Regrid (this=0xe32390, 
+    a_base_level=0) at chombo_adaptive_grid.C:350
+350                                               old_grids);
+(gdb) l
+345       int new_finest_level;
+346       new_finest_level = m_mesh_refine.regrid(new_grids,
+347                                               tags,
+348                                               a_base_level,
+349                                               top_level,
+350                                               old_grids);
+351
+352       //can only add one level at a time
+353       new_finest_level = Min(m_finest_level+1, new_finest_level);
+
+
+
+Notes:
+
+The internal state of modifiedTags (frame 9) seems to get broken 
+at this code block in MeshRefine during the new grid generation.
+
+for (int i = 0; i < all_tags.size(); ++i)
+{
+  modifiedTags[lvl] |= all_tags[i];
+  // Regain memory used (BVS,NDK 6/30/2008)
+  all_tags[i].makeEmpty();
+}
+
+This code is executed by the master processor only.  all_tags[i] 
+contains the IntVectSet for each processor i=0 to Nprocs.  The 
+broken modifiedTags is then broadcast to each processor - it is 
+queried by all processors at BRMeshRefine.cpp:315.
+
+
+
+
+
+
+./setup IsentropicVortex -auto -2d +chombo_amr -debug -parfile=test_chombo_2lev_bugs.par -noc 
+
+(Run with 5 MPI processes)
+
+Only MPI process 4 fails.
+
+
+(gdb) bt
+#0  0x00000030a3636910 in exit () from /lib64/libc.so.6
+#1  0x00007ffff7abbb09 in MPIU_Exit (exit_code=255) at exit.c:22
+#2  0x00007ffff7adf5f8 in MPID_Abort (comm=<value optimized out>, 
+    mpi_errno=<value optimized out>, exit_code=255, 
+    error_msg=0x7fffffffc7b0 "application called MPI_Abort(MPI_COMM_WORLD, 255) - process 4") at mpid_abort.c:104
+#3  0x00007ffff7a44ece in PMPI_Abort (comm=1140850688, errorcode=255)
+    at abort.c:119
+#4  0x000000000069a35d in MayDay::Abort (
+    a_msg=0x8e4068 "/home/chris/flash/chomboForFlash/current/lib/include/Vector.H:217: Assertion `n < size()' failed.") at MayDay.cpp:87
+#5  0x0000000000410632 in Vector<int>::operator[] (this=0xe18f60, n=5)
+    at /home/chris/flash/chomboForFlash/current/lib/include/Vector.H:217
+#6  0x0000000000683d57 in TreeIntVectSet::linearIn (this=0xe96618, 
+    inBuf=0xe96ac4) at TreeIntVectSet.cpp:2450
+#7  0x000000000063f543 in IntVectSet::linearIn (this=0xe96610, inBuf=0xe96ac0)
+    at IntVectSet.cpp:262
+#8  0x00000000006585c9 in void linearIn<IntVectSet>(IntVectSet&, void const*)
+    ()
+#9  0x000000000065832a in void broadcast<IntVectSet>(IntVectSet&, int) ()
+#10 0x0000000000656793 in MeshRefine::regrid (this=0xe33040, a_newmeshes=..., 
+    a_tags=..., a_baseLevel=0, a_topLevel=0, a_OldMeshes=...)
+    at MeshRefine.cpp:589
+---Type <return> to continue, or q <return> to quit---
+#11 0x00000000004f2a2b in Chombo_Adaptive_Grid::Regrid (this=0xe32e30, 
+    a_base_level=0) at chombo_adaptive_grid.C:350
+#12 0x0000000000501258 in ch_regrid (baseLevel=0) at chombo_f_c_api.C:77
+#13 0x0000000000540726 in gr_updaterefinement (gridchanged=.FALSE.)
+    at gr_updateRefinement.F90:101
+#14 0x00000000004aaa54 in grid_updaterefinement (nstep=76, 
+    time=3.7703413714849043, gridchanged=.FALSE.)
+    at Grid_updateRefinement.F90:81
+#15 0x0000000000454f8e in driver_evolveflash () at Driver_evolveFlash.F90:259
+#16 0x0000000000467ff3 in flash () at Flash.F90:51
+#17 0x000000000046806f in main (argc=1, 
+    argv=0x7fffffffe899 '/home/chris/flash/Chombo-dev/object/flash3\000')
+    at Flash.F90:43
+#18 0x00000030a361ee5d in __libc_start_main () from /lib64/libc.so.6
+#19 0x0000000000406509 in _start ()
+
+
+All other MPI processes are waiting at BoxLayoutData<FArrayBox>::unpackReceivesToMe:
+
+(gdb) bt
+#0  MPIDI_CH3I_Progress (progress_state=0x7fffffffc4b0, 
+    is_blocking=<value optimized out>) at ch3_progress.c:347
+#1  0x00007ffff7b4aa49 in MPIR_Waitall_impl (count=1, 
+    array_of_requests=0xe7e500, array_of_statuses=0xebf1b0) at waitall.c:117
+#2  0x00007ffff7b4aebe in PMPI_Waitall (count=1, array_of_requests=0xe7e500, 
+    array_of_statuses=0xebf1b0) at waitall.c:260
+#3  0x0000000000430c28 in BoxLayoutData<FArrayBox>::unpackReceivesToMe (
+    this=0xe3aeb0, a_dest=..., a_destComps=..., a_op=...)
+    at /home/chris/flash/chomboForFlash/current/lib/include/BoxLayoutDataI.H:751
+#4  0x0000000000427845 in BoxLayoutData<FArrayBox>::makeItSoEnd (
+    this=0xe3aeb0, a_dest=..., a_destComps=..., a_op=...)
+    at /home/chris/flash/chomboForFlash/current/lib/include/BoxLayoutDataI.H:306
+#5  0x000000000041fa35 in BoxLayoutData<FArrayBox>::makeItSo (this=0xe3aeb0, 
+    a_srcComps=..., a_src=..., a_dest=..., a_destComps=..., a_copier=..., 
+    a_op=...)
+    at /home/chris/flash/chomboForFlash/current/lib/include/BoxLayoutDataI.H:228
+#6  0x0000000000417939 in LevelData<FArrayBox>::copyTo (this=0xe3aeb0, 
+    srcComps=..., dest=..., destComps=..., copier=..., a_op=...)
+    at /home/chris/flash/chomboForFlash/current/lib/include/LevelDataI.H:262
+#7  0x00000000004129d8 in LevelData<FArrayBox>::copyTo (this=0xe3aeb0, 
+---Type <return> to continue, or q <return> to quit---
+    srcComps=..., dest=..., destComps=...)
+    at /home/chris/flash/chomboForFlash/current/lib/include/LevelDataI.H:212
+#8  0x0000000000624d73 in CoarseAverage::computeAverages (this=0xe3aea8, 
+    a_coarse_data=..., a_fine_data=..., a_averageType=0)
+    at CoarseAverage.cpp:145
+#9  0x0000000000624aed in CoarseAverage::averageToCoarse (this=0xe3aea8, 
+    a_coarse_data=..., a_fine_data=...) at CoarseAverage.cpp:100
+#10 0x0000000000408360 in AMRLevelFlash::postInitialize (this=0xe33500)
+    at AMRLevelFlash.C:498
+#11 0x000000000040b7ea in AMRLevelFlash::postRegrid (this=0xe33500, 
+    a_base_level=0) at AMRLevelFlash.C:1081
+#12 0x00000000004f2c21 in Chombo_Adaptive_Grid::Regrid (this=0xe32e30, 
+    a_base_level=0) at chombo_adaptive_grid.C:381
+#13 0x0000000000501258 in ch_regrid (baseLevel=0) at chombo_f_c_api.C:77
+#14 0x0000000000540726 in gr_updaterefinement (gridchanged=.FALSE.)
+    at gr_updateRefinement.F90:101
+#15 0x00000000004aaa54 in grid_updaterefinement (nstep=76, 
+    time=3.7703413714849043, gridchanged=.FALSE.)
+    at Grid_updateRefinement.F90:81
+#16 0x0000000000454f8e in driver_evolveflash () at Driver_evolveFlash.F90:259
+#17 0x0000000000467ff3 in flash () at Flash.F90:51
+#18 0x000000000046806f in main (argc=1, 
+

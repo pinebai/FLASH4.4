@@ -1,0 +1,109 @@
+#	Runtime parameters for the Huang & Greengard Poisson test problem.
+
+#	Computational volume parameters
+
+#		Grid dimensionality and geometry
+
+# INTENDED TO BE RUN IN 2D!
+
+geometry = "cartesian"
+
+#		Size of computational volume
+
+xmin		= -2.
+xmax		= 2.
+ymin		= -2.
+ymax		= 2.
+zmin		= -2.
+zmax		= 2.
+
+nblockx = 1
+nblocky = 1
+nblockz = 1
+
+#		Boundary conditions
+
+xl_boundary_type = "periodic"
+xr_boundary_type = "periodic"
+yl_boundary_type = "periodic"
+yr_boundary_type = "periodic"
+zl_boundary_type = "periodic"
+zr_boundary_type = "periodic"
+grav_boundary_type = "periodic"
+
+#	Simulation (grid, time, I/O) parameters
+
+lrefine_max     = 7
+basenm          = "poistest_7lev_"
+restart         = .false.
+
+checkpointFileIntervalTime = 999.    #trstrt          = 999.
+checkpointFileIntervalStep = 999     #nrstrt	      = 999
+plotFileIntervalTime = 999.      #tplot           = 999.
+plotfileIntervalStep = 99
+plotfileNumber = 0
+
+
+nend            = 0
+tmax            = 999.
+refine_var_1	= "dens"
+refine_var_2	= "none"
+igrav           = 1
+
+
+#IO Plotvars
+plot_var_1 = "dens"
+plot_var_2 = "game"
+plot_var_3 = "gamc"
+
+
+run_comment     = "Huang & Greengard Poisson test problem"
+log_file        = "poistest_7lev.log"
+
+sim_smlRho = 1.E-10
+
+mg_maxCorrections = 100     # same?, mgrid_max_vcycles       = 100
+mgrid_max_iter_change   = 1.E-6
+mg_maxResidualNorm = 1.E-6        #mgrid_max_residual_norm = 1.E-6
+mgrid_solve_max_iter    = 5000
+#mgrid_nsmooth           = 8
+#mgrid_smooth_tol        = 1.E-6
+#mgrid_jacobi_weight     = 1.
+mgrid_print_norm        = .true.    #same as F2.
+
+
+refine_cutoff_1   = 0.1
+derefine_cutoff_1 = 0.05
+msgbuffer       = .false.
+eint_switch     = 1.e-4
+
+## -------------------------------------------------------------##
+##  SWITCHES SPECIFIC TO THE UNSPLIT HYDRO SOLVER               ##
+#	I. INTERPOLATION SCHEME:
+order		= 2      # Interpolation order (first/second/third/fifth order)
+slopeLimiter    = "mc"   # Slope limiters (minmod, mc, vanLeer, hybrid, limited)
+LimitedSlopeBeta= 1.     # Slope parameter for the "limited" slope by Toro
+charLimiting	= .true. # Characteristic limiting vs. Primitive limiting
+
+use_avisc	= .false. # use artificial viscosity (originally for PPM)
+#cvisc		= 0.1     # coefficient for artificial viscosity
+use_flattening	= .false. # use flattening (dissipative) (originally for PPM)
+use_steepening	= .false. # use contact steepening (originally for PPM)
+use_upwindTVD	= .false. # use upwind biased TVD slope for PPM (need nguard=6)
+
+#	II. RIEMANN SOLVERS:
+RiemannSolver	= "Roe"       # Roe, HLL, HLLC, LLF, Marquina
+entropy         = .false.     # Entropy fix for the Roe solver
+
+#	III. STRONG SHOCK HANDELING SCHEME:
+shockDetect	= .false.     # Shock Detect for numerical stability
+## -------------------------------------------------------------##
+
+## ---------------------------------------------------------------##
+##  SWITCHES SPECIFIC TO THE SUPER-TIME-STEPPING (STS) ALGORITHM  ##
+##  NOTE: For details on using STS runtime parameters, please     ##
+##        refer to user's guide (Driver chapter).                 ##
+useSTS                  = .false.
+nstepTotalSTS           = 5
+nuSTS                   = 0.2
+## ---------------------------------------------------------------##

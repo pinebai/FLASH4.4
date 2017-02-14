@@ -1,0 +1,76 @@
+#	FLASH makefile definitions for ix86 Linux 
+
+#	Modified from 2/25/99 on 12/10/00 KMR
+#	Makefile.h.in the prototype for configure
+#
+# ATTN:	Changes to applicatins/libraries/etc should be made in configure.in
+#
+
+#---------------------------------------------------------------------------
+# Set library paths
+#--------------------------------------------------------------------------- 
+
+HDFPATH = @HDF_HOME@
+MPIPATH = @MPI_HOME@
+
+#---------------------------------------------------------------------------
+#	Compiler and linker commands
+#---------------------------------------------------------------------------
+
+FCOMP   = @F77@
+CCOMP   = @CC@
+CPPCOMP = @CXX@
+LINK    = @LINK@
+
+# pre-processor path
+PP     = -D
+
+#---------------------------------------------------------------------------
+#	Compiler flags
+#---------------------------------------------------------------------------
+
+FFLAGS_OPT    = @FFLAGS@ @CPPFLAGS@
+FFLAGS_DEBUG  = @FFLAGS_DEBUG@
+CFLAGS_OPT    = @CFLAGS@ @CPPFLAGS@
+CFLAGS_DEBUG  = @CFLAGS_DEBUG@
+F90FLAGS      = @F90FLAGS@
+f90FLAGS      = @f90FLAGS@
+
+MDEFS         = -WF,
+
+#---------------------------------------------------------------------------
+#	Linker flags
+#---------------------------------------------------------------------------
+
+BRENAMES = @BRENAMES@
+
+LFLAGS_OPT   = @LDFLAGS@
+LFLAGS_DEBUG = @LDFLAGS_DEBUG@
+LFLAGS_TEST  =
+
+#---------------------------------------------------------------------------
+#	Library specific linking
+#---------------------------------------------------------------------------
+
+##LIB = -L/usr/mpi/lib -L/usr/local/hdf4/lib \
+##      -lfmpich -lmpich -ljpeg -lz
+
+LIB = @LIBS@
+
+
+#---------------------------------------------------------------------------
+#	Additional machine-dependent object files
+#---------------------------------------------------------------------------
+
+MACHOBJ = @MACHOBJ@
+
+#---------------------------------------------------------------------------
+#	Additional commands
+#---------------------------------------------------------------------------
+
+MV = @MV@ -f
+AR = @AR@ -r
+RM = @RM@ -f
+CD = @CD@
+RL = @RANLIB@
+ECHO = @ECHO@

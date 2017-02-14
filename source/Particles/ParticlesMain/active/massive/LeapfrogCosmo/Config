@@ -1,0 +1,34 @@
+# Configuration for leapfrog time integration of active particles with
+# cosmological redshift
+# [/source/Particles/timeIntegration/active/LeapfrogCosmo]
+
+REQUIRES physics/Cosmology
+REQUIRES Grid/GridParticles/GridParticlesMapToMesh
+
+
+#  Properties needed for active particles.
+
+PARTICLEPROP mass     REAL       # particle mass
+PARTICLEPROP accx     REAL       # x-acceleration
+PARTICLEPROP accy     REAL       # y-acceleration
+PARTICLEPROP accz     REAL       # z-acceleration
+PARTICLEPROP oacx     REAL       # previous timestep x-acceleration
+PARTICLEPROP oacy     REAL       # previous timestep y-acceleration
+PARTICLEPROP oacz     REAL       # previous timestep z-acceleration
+
+
+#  Mesh-based solution variables needed for active particles.
+
+#  In principle this is needed only for particle-mesh-type applications,
+#  but things tend to go horribly wrong when there are no mesh-based
+#  variables defined in the code, so we put this at the top level of the
+#  active particle sub-unit to make sure there's always at least one.
+#  In any case some mesh variable is practically necessary in order to
+#  do mesh refinement, which is needed (if for nothing else) to keep the
+#  particles storage-balanced on parallel machines.
+
+#  The pden mesh variable receives mesh-mapped versions of particle
+#  quantities (e.g., particle_mass).
+
+VARIABLE pden TYPE: PER_VOLUME # particle density
+

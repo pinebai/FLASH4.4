@@ -1,0 +1,295 @@
+##python:genLines
+
+def genLines (setupvars):
+
+    yield """
+REQUIRES  flashUtilities/rng
+REQUIRES  numericalTools/Roots
+REQUIRES  physics/sourceTerms/EnergyDeposition/EnergyDepositionMain/Laser/LaserComm
+REQUESTS  physics/sourceTerms/EnergyDeposition/EnergyDepositionMain/Laser/LaserIO
+REQUIRES  physics/sourceTerms/EnergyDeposition/EnergyDepositionMain/Laser/LaserBeams
+REQUIRES  physics/sourceTerms/EnergyDeposition/EnergyDepositionMain/Laser/LaserPulses
+REQUIRES  physics/sourceTerms/EnergyDeposition/EnergyDepositionMain/Laser/LaserRaysCreate
+REQUIRES  physics/sourceTerms/EnergyDeposition/EnergyDepositionMain/Laser/LaserUtilities
+REQUIRES  physics/sourceTerms/EnergyDeposition/EnergyDepositionMain/Laser/LaserRayTrace
+
+PPDEFINE FLASH_EDEP
+
+D depo_variable  The DEPO variable stores the laser energy deposition in each cell
+D &              if ed_depoVarName is set to "depo" (which should be the default below).
+D &              If the variable is declared with TYPE: PER_VOLUME, the deposited energy is stored
+D &              as an energy density; otherwise the deposited energy stored is stored as a
+D &              specific energy (per mass unit).
+VARIABLE depo TYPE: PER_MASS
+
+D depm_mass_scalar  The DEPM mass scalar stores the laser energy deposition (per mass unit) in each cell
+D &                 if configured in and if ed_depoVarName is set to "depm".
+## MASS_SCALAR DEPM
+
+D       ed_cellStepTolerance           The allowed cell fractional error (unit = cell edge) for a ray path step
+D       ed_cellWallThicknessFactor     Fraction of the shortest cell edge defining the cell wall thickness
+D       ed_computeGradNeleX            Should the x-component of the number of electrons gradient be computed? 
+D       ed_computeGradNeleY            Should the y-component of the number of electrons gradient be computed? 
+D       ed_computeGradNeleZ            Should the z-component of the number of electrons gradient be computed? 
+D       ed_cubicInterpolationZeroDerv  Set all cubic interpolation vertex derivatives = 0 (default monotonicity)? 
+D       ed_enforcePositiveNele         Rescale the number of electrons gradient such that it is always >= 0? 
+D       ed_enforcePositiveTele         Rescale the electron temperature gradient such that it is always >= 0? 
+D       ed_gradOrder                   Gradient order. 1 = no gradient, 2 = first order differencing
+D       ed_laser3Din2D                 Use the 3D rays in a 2D cylindrical grid ray tracing?
+D       ed_laser3Din2DwedgeAngle       Wedge angle (degrees, must be < 180) for laser 3D in 2D simulations
+D       ed_maxRayCount                 Maximum number of rays per processor
+D       ed_numberOfBeams               Total number of laser beams
+D       ed_numberOfPulses              Total number of laser pulses
+D       ed_powerStepTolerance          The allowed power fractional error (unit = current power) for a ray path step
+D       ed_printBeams                  Print details about each beam?
+D       ed_printMain                   Print details about the main laser energy depoition run?
+D       ed_printPulses                 Print details about each pulse?
+D       ed_printRays                   Print details about each ray initially generated?
+D       ed_rayDeterminism              If true, the Grid Unit will use the Sieve Algorithm to move the ray particle.
+D       ed_rayZeroPower                Below this value (erg/s), the ray is considered to have zero power
+D       ed_RungeKuttaMethod            Specifies the Runge Kutta method to be used for ray tracing.
+D       ed_saveOutOfDomainRays         Should the rays exiting the domain be saved (for diagnostics) ?
+D       useEnergyDeposition            Use Laser energy deposition?
+D       threadRayTrace                 Use threading when tracing the rays through each block?
+
+PARAMETER  ed_cellStepTolerance          REAL       1.0e-06
+PARAMETER  ed_cellWallThicknessFactor    REAL       1.0e-06
+PARAMETER  ed_computeGradNeleX           BOOLEAN    true
+PARAMETER  ed_computeGradNeleY           BOOLEAN    true
+PARAMETER  ed_computeGradNeleZ           BOOLEAN    true
+PARAMETER  ed_cubicInterpolationZeroDerv BOOLEAN    false
+PARAMETER  ed_enforcePositiveNele        BOOLEAN    true
+PARAMETER  ed_enforcePositiveTele        BOOLEAN    true
+PARAMETER  ed_gradOrder                  INTEGER    2	[1,2]
+PARAMETER  ed_laser3Din2D                BOOLEAN    false
+PARAMETER  ed_laser3Din2DwedgeAngle      REAL       0.0
+PARAMETER  ed_maxRayCount                INTEGER    100
+PARAMETER  ed_numberOfBeams              INTEGER    -1
+PARAMETER  ed_numberOfPulses             INTEGER    -1
+PARAMETER  ed_powerStepTolerance         REAL       1.0e-06
+PARAMETER  ed_printBeams                 BOOLEAN    false
+PARAMETER  ed_printMain                  BOOLEAN    false
+PARAMETER  ed_printPulses                BOOLEAN    false
+PARAMETER  ed_printRays                  BOOLEAN    false
+PARAMETER  ed_rayDeterminism             BOOLEAN    false
+PARAMETER  ed_rayZeroPower               REAL       1.0e-06
+PARAMETER  ed_RungeKuttaMethod           STRING     "CashKarp45"
+PARAMETER  ed_saveOutOfDomainRays        BOOLEAN    false
+PARAMETER  useEnergyDeposition           BOOLEAN    true
+
+D	   ed_depoReuseMaxSteps Maximum number of time steps for which
+D &                             a computed energy deposition rate (stored
+D &                             in the ed_depoVar variable) can be reused.
+D &                             If 0, the rate can still be reused in the
+D &                             same timestep; this can make a difference
+D &                             when a split Driver implementation is used
+D &                             which calls EnergyDeposition more than once
+D &                             per time step. Set to -1 to completely disable
+D &                             reuse of depo rate.
+PARAMETER  ed_depoReuseMaxSteps       INTEGER    -1	[-1 ...]
+D	   ed_depoVarName       Name of the variable used for storing the computed
+D &                             deposition rate for reuse; the default is "depo".
+D &                             Note that "depo" can refer to either DEPO_VAR or
+D &                             DEPO_MSCALAR in the Flash code, depending on
+D &                             whether a VARIABLE or a MASS_SCALAR statement is
+D &                             used to declare the variable. Further note that
+D &                             if a VARIABLE statement is used, it can be
+D &                             combined with either TYPE: PER_MASS or TYPE:
+D &                             PER_VOLUME to get difference variants of reuse.
+PARAMETER  ed_depoVarName             STRING    "depo"
+
+D	   ed_irradVarName      Name of the variable used for storing the computed
+D &                             laser radiation field energy density; the default
+D &                             is "lase". Note that "lase" should refer to LASE_VAR
+D &                             in the Flash code, and a VARIABLE statement
+D &                             should be used to declare the variable. Further note
+D &                             that the VARIABLE statement should declare TYPE:
+D &                             PER_VOLUME.
+PARAMETER  ed_irradVarName             STRING    "lase"
+
+USESETUPVARS threadRayTrace
+IF threadRayTrace
+   PARAMETER threadRayTrace BOOLEAN true
+ELSE
+   PARAMETER threadRayTrace BOOLEAN false
+ENDIF
+"""
+
+    ##################################
+    #                                #
+    #     CREATE PULSE PARAMTERS     #
+    #                                #
+    ##################################
+
+    #   Set the maximum number of pulses:
+    #   ---------------------------------
+    #   The maximum number of pulses is in the variable ed_maxPulses
+    #   which is added to Flash.h via a PPDEFINE statement. The default
+    #   maximum number of pulses is 5. The user can increase this number
+    #   by using the ed_maxPulses=<new number> setup option.
+    #
+    #   Set the maximum number of pulse sections:
+    #   -----------------------------------------
+    #   Each pulse is defined by a piecewise linear function which
+    #   defines the laser power as a function of time. Each power/time
+    #   pair is called a section. The maximum number of sections per
+    #   pulse is in the variable maxPulseSections which is added to
+    #   Flash.h via a PPDEFINE statement. The default maximum number of
+    #   pulse sections is 20. The user can increase this number by using
+    #   the ed_maxPulseSections=<new number> setup option.
+    #
+    #   Loop over the maximum number of pulses:
+    #   ---------------------------------------
+    #   Create a runtime parameters to store the actual number of sections
+    #   for each pulse. Thus, ed_numSections_2 will store the number of
+    #   time/power pairs which define pulse 2.
+    #
+    #   Loop over the maximum number of sections for each pulse:
+    #   --------------------------------------------------------
+    #   We will create a runtime parameter for each time and power for
+    #   each section of each pulse
+
+    maxPulses = 5
+    if "ed_maxPulses" in setupvars:
+        maxPulses = int(setupvars["ed_maxPulses"])
+
+    maxPulseSections = 20
+    if "ed_maxPulseSections" in setupvars:
+        maxPulseSections = int(setupvars["ed_maxPulseSections"])
+
+    yield "PPDEFINE ED_MAXPULSES "        + str (maxPulses)
+    yield "PPDEFINE ED_MAXPULSESECTIONS " + str (maxPulseSections)
+
+    for i in xrange (maxPulses):
+
+        var1 = "ed_numberOfSections_" + str (i+1)
+
+        yield "D " + var1 + " The number of time/power pairs (sections) for laser pulse " + str (i+1)
+        yield "PARAMETER " + var1 + " INTEGER -1"
+
+        for j in xrange (maxPulseSections):
+
+            var1 = "ed_time_"  + str (i+1) + "_" + str (j+1)
+            var2 = "ed_power_" + str (i+1) + "_" + str (j+1)
+
+            yield "D " + var1 + " The time (s)  for laser pulse " + str (i+1) + " section " + str (j+1)
+            yield "D " + var2 + " The power (W) for laser pulse " + str (i+1) + " section " + str (j+1)
+
+            yield "PARAMETER " + var1 + " REAL -1.0"
+            yield "PARAMETER " + var2 + " REAL -1.0"
+
+
+    ##################################
+    #                                #
+    #     CREATE BEAM PARAMETERS     #
+    #                                #
+    ##################################
+
+    #   Set the maximum number of laser beams:
+    #   --------------------------------------
+    #   The maximum number of beams is in the variable maxBeams, which is added
+    #   to Flash.h via a PPDEFINE statement. The default maximum number of beams
+    #   is 6. The user can increase this number by using the ed_maxBeams=<new number>
+    #   setup option. A runtime parameter ed_numberOfBeams is then created to store
+    #   the actual number of beams. Next we loop over the maximum number of beams
+    #   and create the runtime parameters ed_<property>_<beam number> to specify
+    #   the properties of each beam.
+
+    maxBeams = 6
+    if "ed_maxBeams" in setupvars:
+        maxBeams = int(setupvars["ed_maxBeams"])
+
+    yield "PPDEFINE ED_MAXBEAMS " + str (maxBeams)
+
+    for i in xrange (maxBeams):
+
+    	var1  = "ed_lensX_"                     + str (i+1)
+    	var2  = "ed_lensY_"                     + str (i+1)
+    	var3  = "ed_lensZ_"                     + str (i+1)
+    	var4  = "ed_targetX_"                   + str (i+1)
+    	var5  = "ed_targetY_"                   + str (i+1) 
+    	var6  = "ed_targetZ_"                   + str (i+1)
+    	var7  = "ed_targetSemiAxisMajor_"       + str (i+1)
+    	var8  = "ed_targetSemiAxisMinor_"       + str (i+1)
+    	var9  = "ed_lensSemiAxisMajor_"         + str (i+1)
+    	var10 = "ed_semiAxisMajorTorsionAngle_" + str (i+1)
+    	var11 = "ed_semiAxisMajorTorsionAxis_"  + str (i+1)
+    	var12 = "ed_pulseNumber_"               + str (i+1)
+    	var13 = "ed_wavelength_"                + str (i+1)
+    	var14 = "ed_initialRaySpeed_"           + str (i+1)
+	var15 = "ed_ignoreBoundaryCondition_"   + str (i+1)
+    	var16 = "ed_crossSectionFunctionType_"  + str (i+1)
+	var17 = "ed_gaussianExponent_"          + str (i+1)
+	var18 = "ed_gaussianRadiusMajor_"       + str (i+1)
+	var19 = "ed_gaussianRadiusMinor_"       + str (i+1)
+	var20 = "ed_gaussianCenterMajor_"       + str (i+1)
+	var21 = "ed_gaussianCenterMinor_"       + str (i+1)
+    	var22 = "ed_numberOfRays_"              + str (i+1)
+    	var23 = "ed_gridType_"                  + str (i+1)
+    	var24 = "ed_gridnRadialTics_"           + str (i+1)
+    	var25 = "ed_gridnAngularTics_"          + str (i+1)
+    	var26 = "ed_gridnSemiAxisMajorTics_"    + str (i+1)
+    	var27 = "ed_gridnSemiAxisMinorTics_"    + str (i+1)
+    	var28 = "ed_gridDeltaSemiAxisMajor_"    + str (i+1)
+    	var29 = "ed_gridDeltaSemiAxisMinor_"    + str (i+1)
+
+    	yield "D " + var1  + " The x coordinate of the lens for beam "                             + str (i+1)
+    	yield "D " + var2  + " The y coordinate of the lens for beam "                             + str (i+1)
+    	yield "D " + var3  + " The z coordinate of the lens for beam "                             + str (i+1)
+    	yield "D " + var4  + " The x coordinate of the target for beam "                           + str (i+1)
+    	yield "D " + var5  + " The y coordinate of the target for beam "                           + str (i+1)
+    	yield "D " + var6  + " The z coordinate of the target for beam "                           + str (i+1)
+    	yield "D " + var7  + " Target major elliptical semiaxis length for beam "                  + str (i+1)
+    	yield "D " + var8  + " Target minor elliptical semiaxis length for beam "                  + str (i+1)
+    	yield "D " + var9  + " Lens major elliptical semiaxis length for beam "                    + str (i+1)
+   	yield "D " + var10 + " Major semiaxis/{x,y,z} axis rotation angle (in degrees) for beam "  + str (i+1)
+    	yield "D " + var11 + " {x,y,z} axis to use for rotating major semiaxis for beam"           + str (i+1)
+    	yield "D " + var12 + " The pulse number to use for beam "                                  + str (i+1)
+    	yield "D " + var13 + " The wave length [in microns] of beam "                              + str (i+1)
+    	yield "D " + var14 + " The initial ray speed [in units of c] for beam "                    + str (i+1)
+    	yield "D " + var15 + " Option to ignore domain boundary conditions for beam "              + str (i+1)
+    	yield "D " + var16 + " Function type which sets the irradiance pattern for beam "          + str (i+1)
+    	yield "D " + var17 + " The gaussian exponent for beam "                                    + str (i+1)
+    	yield "D " + var18 + " The gaussian e-folding length along the major semiaxis for beam "   + str (i+1)
+    	yield "D " + var19 + " The gaussian e-folding length along the minor semiaxis for beam "   + str (i+1)
+    	yield "D " + var20 + " The gaussian center location along the major semiaxis for beam "    + str (i+1)
+    	yield "D " + var21 + " The gaussian center location along the minor semiaxis for beam "    + str (i+1)
+    	yield "D " + var22 + " The number of rays to launch per timestep for beam "                + str (i+1)
+    	yield "D " + var23 + " The type of beam grid "                                             + str (i+1)
+    	yield "D " + var24 + " The number of radial ray positions for radial type grids "          + str (i+1)
+    	yield "D " + var25 + " The number of angular ray positions for radial type grids "         + str (i+1)
+    	yield "D " + var26 + " Number of major semiaxis ray positions for rectangular type grids " + str (i+1)
+    	yield "D " + var27 + " Number of minor semiaxis ray positions for rectangular type grids " + str (i+1)
+    	yield "D " + var28 + " The tic spacing for the major semiaxis for delta defined grids "    + str (i+1)
+    	yield "D " + var29 + " The tic spacing for the minor semiaxis for delta defined grids "    + str (i+1)
+
+    	yield "PARAMETER " + var1  + " REAL       -HUGE(1.0)"
+    	yield "PARAMETER " + var2  + " REAL       -HUGE(1.0)"
+    	yield "PARAMETER " + var3  + " REAL       -HUGE(1.0)"
+    	yield "PARAMETER " + var4  + " REAL       -HUGE(1.0)"
+    	yield "PARAMETER " + var5  + " REAL       -HUGE(1.0)"
+    	yield "PARAMETER " + var6  + " REAL       -HUGE(1.0)"
+    	yield "PARAMETER " + var7  + " REAL       -HUGE(1.0)"
+    	yield "PARAMETER " + var8  + " REAL       -HUGE(1.0)"
+    	yield "PARAMETER " + var9  + " REAL       -HUGE(1.0)"
+    	yield "PARAMETER " + var10 + " REAL       -HUGE(1.0)"
+    	yield "PARAMETER " + var11 + ' STRING     " "'
+    	yield "PARAMETER " + var12 + " INTEGER    -HUGE(1)"
+    	yield "PARAMETER " + var13 + " REAL       -HUGE(1.0)"
+    	yield "PARAMETER " + var14 + " REAL       1.0"
+    	yield "PARAMETER " + var15 + " BOOLEAN    false"
+    	yield "PARAMETER " + var16 + ' STRING     " "'
+    	yield "PARAMETER " + var17 + " REAL       -HUGE(1.0)"
+    	yield "PARAMETER " + var18 + " REAL       -HUGE(1.0)"
+    	yield "PARAMETER " + var19 + " REAL       -HUGE(1.0)"
+    	yield "PARAMETER " + var20 + " REAL        0.0"
+    	yield "PARAMETER " + var21 + " REAL        0.0"
+    	yield "PARAMETER " + var22 + " INTEGER    -HUGE(1)"
+    	yield "PARAMETER " + var23 + ' STRING     " "'
+    	yield "PARAMETER " + var24 + " INTEGER    -HUGE(1)"
+    	yield "PARAMETER " + var25 + " INTEGER    -HUGE(1)"
+    	yield "PARAMETER " + var26 + " INTEGER    -HUGE(1)"
+    	yield "PARAMETER " + var27 + " INTEGER    -HUGE(1)"
+    	yield "PARAMETER " + var28 + " REAL       -HUGE(1.0)"
+    	yield "PARAMETER " + var29 + " REAL       -HUGE(1.0)"
+

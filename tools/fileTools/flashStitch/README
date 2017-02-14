@@ -1,0 +1,43 @@
+Flash File Stitcher readme 
+
+Usage:
+flashStitcher <flags> baseName splitNumber fileNumber
+
+the -n,-s, and -i flags are presently required
+
+Arguments:
+-s : how many split files are there for the target.  
+i.e. if the file is split into four separate files, use -s 4.
+this must be specified.
+
+-z : padding for the split number.
+Flash, when it outputs a split file, denotes the split number with a _sX, 
+where x will have a constant length, using zero padding.  presently the default
+is 4 (so it would look like s0001, for example).
+
+-t : the file type.  This can be used to differentiate between different
+        file types.  Valid values are:
+        chk
+        plt_cnt
+        part (coming soon!)
+
+-n : the basename for the file to stitch together
+
+-f : the file format.  HDF5 is presently the only file format supported.
+
+-i : the output file number.
+
+
+For reference the flash naming convention for output files is:
+
+basename_(splitnumber)_format_type_filenumber
+
+The splitnumber is omitted in unsplit files.
+
+
+
+
+
+The filename passed in should be the filename with the split number remvoed.
+
+The target_filename will be overwritten with this utility, so be careful.

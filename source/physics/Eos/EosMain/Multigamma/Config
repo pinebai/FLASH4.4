@@ -1,0 +1,6 @@
+#	Config file for the Multigamma perfect-gases equation of state
+
+REQUIRES Multispecies/MultispeciesMain
+
+VARIABLE gamc  EOSMAP:   GAMC  # sound-speed gamma
+VARIABLE game  EOSMAPOUT:GAME  # energy gamma

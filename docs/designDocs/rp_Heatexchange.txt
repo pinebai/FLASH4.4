@@ -1,0 +1,93 @@
+
+physics/sourceTerms/Heatexchange
+    useHeatexchange [BOOLEAN] CONSTANT [FALSE]
+
+
+physics/sourceTerms/Heatexchange/HeatexchangeMain
+    hx_logLevel [INTEGER] [700]
+        Valid Values: 0 to INFTY
+        controls the level of logging for some conditions. See Heatexchange.h
+        for relevant HX_LOGLEVEL_* definitions.
+    useHeatexchange [BOOLEAN] [TRUE]
+
+
+physics/sourceTerms/Heatexchange/HeatexchangeMain/ConstCoulomb
+    hx_coulombLog [REAL] [1.0]
+        Valid Values: 0.0 to INFTY
+
+    hx_couplingConst13 [REAL] [0.0]
+        Valid Values: 0.0 to INFTY
+
+    hx_couplingConst23 [REAL] [1.0]
+        Valid Values: 0.0 to INFTY
+
+    hx_dtFactor [REAL] [0.5]
+        Valid Values: 0.0+ to INFTY
+
+    hx_relTol [REAL] [-1.0]
+        Valid Values: Unconstrained
+        relative tolerance for temperature errors introduced by HeatExchange.
+        This runtime parameter affects the time step computed by
+        Heatexchange_computeDt. Basically, if the max (abs) temperature
+        adjustment that would be introduced in any nonzero component in any cell
+        is less than hx_relTol, then the time step limit is relaxed. Set to a
+        negative value to inherite the value of runtime parameter eos_tolerance.
+
+physics/sourceTerms/Heatexchange/HeatexchangeMain/Constant
+    hx_couplingConst12 [REAL] [1.0]
+        Valid Values: 0.0 to INFTY
+        ion-electron heat exchange coupling constant
+    hx_couplingConst13 [REAL] [0.0]
+        Valid Values: -1.0, 0.0 to INFTY
+        ion-radiation heat exchange coupling constant (usually ignored)
+    hx_couplingConst23 [REAL] [1.0]
+        Valid Values: -1.0, 0.0 to INFTY
+        electron-radiation heat exchange coupling constant, representing
+        emission and absorption effects
+    hx_dtFactor [REAL] [0.5]
+        Valid Values: 0.0+ to INFTY
+
+    hx_relTol [REAL] [-1.0]
+        Valid Values: Unconstrained
+        relative tolerance for temperature errors introduced by HeatExchange.
+        This runtime parameter affects the time step computed by
+        Heatexchange_computeDt. Basically, if the max (abs) temperature
+        adjustment that would be introduced in any nonzero component in any cell
+        is less than hx_relTol, then the time step limit is relaxed. Set to a
+        negative value to inherite the value of runtime parameter eos_tolerance.
+
+physics/sourceTerms/Heatexchange/HeatexchangeMain/Immediate
+    hx_applyToRadiation [BOOLEAN] [FALSE]
+        Does the Immediate Heatexchange implementation apply to radiation?
+
+physics/sourceTerms/Heatexchange/HeatexchangeMain/LeeMore
+    hx_dtFactor [REAL] [0.5]
+        Valid Values: 0.0+ to INFTY
+
+    hx_ieTimeCoef [REAL] [1.0]
+        Valid Values: 0.0 to INFTY
+        Constant coefficient for scaling ion/ele coupling time
+    hx_relTol [REAL] [-1.0]
+        Valid Values: Unconstrained
+        relative tolerance for temperature errors introduced by HeatExchange.
+        This runtime parameter affects the time step computed by
+        Heatexchange_computeDt. Basically, if the max (abs) temperature
+        adjustment that would be introduced in any nonzero component in any cell
+        is less than hx_relTol, then the time step limit is relaxed. Set to a
+        negative value to inherite the value of runtime parameter eos_tolerance.
+
+physics/sourceTerms/Heatexchange/HeatexchangeMain/Spitzer
+    hx_dtFactor [REAL] [0.5]
+        Valid Values: 0.0+ to INFTY
+
+    hx_ieTimeCoef [REAL] [1.0]
+        Valid Values: 0.0 to INFTY
+        Constant coefficient for scaling ion/ele coupling time
+    hx_relTol [REAL] [-1.0]
+        Valid Values: Unconstrained
+        relative tolerance for temperature errors introduced by HeatExchange.
+        This runtime parameter affects the time step computed by
+        Heatexchange_computeDt. Basically, if the max (abs) temperature
+        adjustment that would be introduced in any nonzero component in any cell
+        is less than hx_relTol, then the time step limit is relaxed. Set to a
+        negative value to inherite the value of runtime parameter eos_tolerance.

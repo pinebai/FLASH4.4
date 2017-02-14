@@ -1,0 +1,7 @@
+REQUIRES physics/sourceTerms/Burn/BurnMain/parametricBurn
+
+VARIABLE FLDT
+
+D eos_tolerance tolerance for the Newton-Raphson iterations
+# duplicated here from the Helmholtz EosMain implementation (and others)
+PARAMETER eos_tolerance REAL    1.e-8

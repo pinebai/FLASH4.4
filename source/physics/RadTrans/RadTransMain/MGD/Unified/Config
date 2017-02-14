@@ -1,0 +1,33 @@
+##python:genLines
+
+def genLines(setupvars):
+    # Config file for RadTrans/RadTransMain/MGD/Unified implementation directory
+
+    yield """
+
+REQUESTS physics/Diffuse/DiffuseMain/Unsplit
+REQUESTS Grid/GridSolvers/HYPRE/multiScalar/coupled
+
+D rt_mgdthetaC Implicitness factor for the absorption part of the unified solver.
+D & Use -1 to indicate that the value of rt_mgdthetaImplct should be used.
+PARAMETER rt_mgdthetaC REAL -1.0 [0.0 ... 1.0,-1.0]
+
+D rt_mgdthetaD Implicitness factor for the emission part of the unified solver.
+D & Use -1 to indicate that the value of rt_mgdthetaImplct should be used.
+PARAMETER rt_mgdthetaD REAL 0.5 [0.0 ... 1.0,-1.0]
+
+D rt_tightIonCoupling Should the RadTrans implementation assume tight thermal coupling
+D & between electrons and ions?
+D & The implementation may uses this parameter to decide whether to use cv or cv_ele
+D & to linearize the relation beetween electron temperature and energy internal energy.
+PARAMETER rt_tightIonCoupling BOOLEAN FALSE
+
+"""
+    # Create storage for UNK variables for factors B, C
+    if "mgd_meshgroups" in setupvars:
+        mgd_meshgroups = int(setupvars['mgd_meshgroups'])
+        yield 'NONREP MASS_SCALAR BMGD %d rt_mgdNumGroups B???' % mgd_meshgroups
+        yield 'NONREP MASS_SCALAR CMGD %d rt_mgdNumGroups C???' % mgd_meshgroups
+        yield 'NONREP MASS_SCALAR DMGD %d rt_mgdNumGroups D???' % mgd_meshgroups
+    else:
+        yield 'SETUPERROR Must specify mgd_meshgroups to use multigroup diffusion'

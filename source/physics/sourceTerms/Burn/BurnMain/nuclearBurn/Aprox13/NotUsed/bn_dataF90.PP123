@@ -1,0 +1,8 @@
+
+Module Burn_dataPP123
+
+!..add these rates for the pp123 network
+!!  these were in common block /netc13a/
+      integer          irli7pa, irbepg, irb8ep, irbeec
+
+end Module Burn_dataPP123

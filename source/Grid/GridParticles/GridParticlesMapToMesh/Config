@@ -1,0 +1,14 @@
+# Config file for
+# [Grid/GridParticles/GridParticlesMapToMesh]
+
+DEFAULT Paramesh
+
+USESETUPVARS Grid
+
+IF Grid=='UG'
+   DEFAULT UG
+ENDIF
+
+REQUESTS Particles/ParticlesMapping/meshWeighting
+REQUESTS Particles/ParticlesMapping/meshWeighting/MapToMesh
+REQUESTS flashUtilities/contiguousConversion

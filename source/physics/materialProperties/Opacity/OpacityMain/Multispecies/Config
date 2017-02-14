@@ -1,0 +1,39 @@
+##python:genLines
+# Config file for the Opacity/OpacityMain/Multispecies implementation
+
+def genLines(setupvars):
+    yield """
+REQUIRES ./method
+REQUIRES Multispecies
+
+D opacity_ignoreLowTemp control parameter indicating if the low temperature capability should be ignored
+PARAMETER opacity_ignoreLowTemp BOOLEAN TRUE
+
+D opacity_writeOpacityInfo control parameter indicating if detailed info of the opacity unit should be written out
+PARAMETER opacity_writeOpacityInfo BOOLEAN FALSE
+
+CONFLICTS physics/materialProperties/Opacity/OpacityMain/Constant
+"""
+
+    # Check for species setupvar:
+    if "species" in setupvars:
+        species = [s.lower() for s in setupvars["species"].split(',')]
+
+        opacity_types = '["op_undefined","op_constant","op_constcm2g","op_tabpa","op_tabpe","op_tabro"]'
+        
+        for spec in species:
+            
+            yield 'PARAMETER op_' + spec + 'Absorb STRING "op_undefined" ' + opacity_types
+            yield 'PARAMETER op_' + spec + 'Emiss  STRING "op_undefined" ' + opacity_types
+            yield 'PARAMETER op_' + spec + 'Trans  STRING "op_undefined" ' + opacity_types
+            
+            yield 'PARAMETER op_' + spec + 'AbsorbConstant REAL -1.0'
+            yield 'PARAMETER op_' + spec + 'EmissConstant  REAL -1.0'
+            yield 'PARAMETER op_' + spec + 'TransConstant  REAL -1.0'
+            
+            yield 'PARAMETER op_' + spec + 'FileName  STRING "NOT SPECIFIED"'
+            yield 'PARAMETER op_' + spec + 'FileType  STRING "NOT SPECIFIED" ["ionmix","ionmix4","NOT SPECIFIED"]'
+
+
+    else:
+        yield 'SETUPERROR Command line must specify the setup variable "species" for using Multispecies opacity!'

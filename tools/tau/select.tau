@@ -1,0 +1,56 @@
+# We should check whether we need to exclude these files / 
+# routines.  Newer PDT versions may not have problems with 
+# these files / routines anymore.
+
+# Selective instrumentation: Specify an exclude/include list.
+
+BEGIN_FILE_EXCLUDE_LIST
+RuntimeParameters*
+nameValueLL*
+END_FILE_EXCLUDE_LIST
+
+
+
+# Selective instrumentation: Specify an exclude/include list.
+
+BEGIN_EXCLUDE_LIST
+INTERP  
+MONOT  
+AMR_1BLK_CC_CP_REMOTE  
+EOS  
+HYDRO_DETECTSHOCK  
+MORTON_EQUAL  
+AMR_1BLK_CC_PROL_LINEAR  
+FLATEN  
+COEFF
+MORTON_GREATER_THAN  
+MORTON_LESS_THAN  
+MPI_SET_MESSAGE_LIMITS
+PROFILER_STARTNAME
+PROFILER_STOPNAME 
+GRID_GETCELLCOORDS
+AMR_MPI_FIND_BLK_IN_BUFFER  
+GRID_PUTBLKDATA
+HY_PPM_GEOM
+RIEMAN
+STATES
+GRID_GETBLKPTR
+AVISCO
+HY_PPM_FORCE
+GRID_RELEASEBLKPTR
+GRID_GETBLKTYPE
+
+# Added as suggested by mail from Marcos Vanella 2013-05-23
+DRIVER_DRIFTBLOCK
+DRIVER_DRIFTUNK
+
+#We must exclude these routines because they include
+#TAU API timer calls, so they should not be instrumented 
+#because it will lead to overlapping timers. - CD
+TIMERS_STARTINDEX
+TIMERS_STARTSTRING
+TIMERS_STOPINDEX
+TIMERS_STOPSTRING
+TMR_FINDTIMERINDEX
+
+END_EXCLUDE_LIST

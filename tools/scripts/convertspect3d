@@ -1,0 +1,410 @@
+#!/usr/bin/env python
+
+try:
+    import tables
+except ImportError:
+    print "You must have pytables installed" 
+    raise
+
+try:
+    import netCDF4
+except ImportError:
+    print "You must have the netcdf4-python package installed"
+    raise
+
+try:
+    import numpy as np
+except ImportError:
+    print "You must have numpy installed"
+    raise
+    
+from flash.flashfile import FlashFile
+
+def convert(input_name, unknames, newnames, massfracs):
+    """
+    input_name: [str] name of FLASH checkpoint or plot file
+
+    unknames: [list(str)] list of names of UNK variables to transfer
+              to the spec3d file
+
+    massfracs: [list(str)] list of spec3d variable names which
+                           correspond to mass fractions
+    """
+
+    output_name = input_name + ".exo"
+    print "\nProcessing File:", input_name
+    print "Output Name:", output_name
+    
+    # Open FLASH file:
+    ff = FlashFile(input_name)
+
+    # Create Spect3D file:
+    rootgrp = netCDF4.Dataset(output_name, 'w', format='NETCDF3_64BIT')
+
+    nblocks = len(ff.leaves)
+    nchunk = 10
+    nxb = ff.nb[0]
+    nyb = ff.nb[1]
+    nzb = ff.nb[2]
+    ndims = ff.integerScalar("dimensionality")
+
+    print "Dimensionality = %i" % ndims
+    print "Number of Leaf Blocks = %i" % nblocks
+    print "Block Size = %i, %i, %i" % (nxb,nyb,nzb)
+
+    # Compute total number of cells:
+    ncb = nxb*nyb*nzb
+    ncells = ncb * nblocks
+
+    # Compute total number of vertexes:
+    nxv = nxb + 1
+    nyv = 1
+    nzv = 1
+    if ndims > 1: nyv = nyb + 1
+    if ndims > 2: nzv = nzb + 1
+    nvb = nxv * nyv * nzv
+
+    nverts = nblocks * (nxb+1)
+    if ndims > 1: nverts *= nyb + 1
+    if ndims > 2: nverts *= nzb + 1
+
+    # Load the geometry ...
+    # geometry = ff.stringScalar("geometry").strip()
+    geometry = ff.stringScalar("geometry").strip()
+    print "Geometry = %s" % geometry
+
+    len_string = 33
+
+    #############################
+    #                           #
+    #     CREATE DIMENSIONS     #
+    #                           #
+    #############################
+    dim_time_step = rootgrp.createDimension('time_step', None)
+    dim_len_string = rootgrp.createDimension('len_string', len_string)
+    dim_num_nodes = rootgrp.createDimension('num_nodes', nverts)
+    dim_num_dim = rootgrp.createDimension('num_dim', ndims)
+    dim_num_elem = rootgrp.createDimension('num_elem', ncells)
+    dim_num_el_blk = rootgrp.createDimension('num_el_blk', 1)
+    dim_num_elem_var = rootgrp.createDimension('num_elem_var', len(newnames))
+    dim_num_el_in_blk1 = rootgrp.createDimension('num_el_in_blk1', ncells)
+    dim_num_nod_per_el1 = rootgrp.createDimension('num_nod_per_el1', 2**ndims)
+
+
+    ############################
+    #                          #
+    #     CREATE VARIABLES     #
+    #                          #
+    ############################
+    var_times = rootgrp.createVariable('time_whole','f4',('time_step',))
+    var_connect1 = rootgrp.createVariable('connect1','i4',('num_el_in_blk1','num_nod_per_el1'))
+    if ndims == 1: var_connect1.elem_type = "BEAM2"
+    if ndims == 2: var_connect1.elem_type = "QUAD4"
+    if ndims == 3: var_connect1.elem_type = "HEX8"
+    var_coord = rootgrp.createVariable('coord', 'f4', ('num_dim', 'num_nodes'))
+    var_coor_names = rootgrp.createVariable('coor_names', 'c', ('num_dim', 'len_string'))
+    var_name_elem_var = rootgrp.createVariable('name_elem_var', 'c', ('num_elem_var', 'len_string'))
+
+    var_data = []
+    for i in xrange(len(newnames)):
+        name = "vals_elem_var" + str(i+1) + "eb1"
+        var_data.append( rootgrp.createVariable(name, 'f4', ('time_step','num_el_in_blk1')) )
+
+
+    ##########################
+    #                        #
+    #     FILL VARIABLES     #
+    #                        #
+    ##########################
+
+    # Define Avogadros Number:
+    NA = 6.0221415e+23
+
+    # Write the simulation time:
+    var_times[:] = (ff.realScalar("time"),)
+
+    # Write the coordinate names:
+    if ndims == 1:
+        if geometry == "cartesian":
+            var_coor_names[0] = "x" + "\0"*(len_string-1)
+        else:
+            raise ValueError("Bad Geometry/Dimensions")
+    if ndims == 2:
+        if geometry == "cartesian":
+            var_coor_names[0] = "x" + "\0"*(len_string-1)
+            var_coor_names[1] = "y" + "\0"*(len_string-1)
+        elif geometry == "cylindrical":
+            var_coor_names[0] = "R" + "\0"*(len_string-1)
+            var_coor_names[1] = "Z" + "\0"*(len_string-1)
+        else:
+            raise ValueError("Bad Geometry/Dimensions")
+    if ndims == 3:
+        if geometry == "cartesian":
+            var_coor_names[0] = "x" + "\0"*(len_string-1)
+            var_coor_names[1] = "y" + "\0"*(len_string-1)
+            var_coor_names[2] = "z" + "\0"*(len_string-1)
+        else:
+            raise ValueError("Bad Geometry/Dimensions")
+
+    # Write the unk variable names:
+    for i in xrange(len(newnames)):
+        var_name_elem_var[i] = newnames[i] + "\0"*(len_string-len(newnames[i]))
+
+    # nblocks -> total number of blocks in the simulation
+    # nchunk -> number of blocks to process at once
+    # ncurb -> number of blocks to process on this iteration
+
+    # Compute and set the connectivity:
+    flash_data = np.zeros((nchunk, nzb, nyb, nxb))
+    var1 = np.zeros((nchunk, nzb, nyb, nxb))
+    var2 = np.zeros((nchunk, nzb, nyb, nxb))
+
+    blockids = np.zeros((nchunk,), dtype='int')
+    xcoords = np.zeros(nchunk*nvb)
+    ycoords = np.zeros(nchunk*nvb)
+    zcoords = np.zeros(nchunk*nvb)
+    start_node = 1
+    connect = np.zeros((nchunk*ncb,2**ndims), dtype='int')
+    n = 0
+
+    def getdata(name, bids, data):
+        node = ff.var(name)
+        for i in xrange(len(bids)):
+            data[i] = node[bids[i],:,:,:]
+
+    # Note, we are only looping over leaf blocks here!
+    while n < nblocks:
+
+        # The number of blocks to process is normally just nchunk, unless
+        # we have run out of blocks in the file...
+        ncurb = min(nchunk, nblocks - n)
+
+        nc = 0
+        nv = 0
+
+        # LOOP OVER BLOCKS:
+        for m in xrange(ncurb):
+
+            # LOOP OVER VERTEXES IN BLOCK N:
+            bid = ff.leaves[n] # bid is the block ID of this leaf block...
+            blockids[m] = bid
+
+            bbox = ff.bboxes[bid]
+            dx = (bbox[0,1] - bbox[0,0]) / nxb
+            if ndims > 1: dy = (bbox[1,1] - bbox[1,0]) / nyb
+            if ndims > 2: dz = (bbox[2,1] - bbox[2,0]) / nzb
+
+            for k in xrange(nzv):
+                for j in xrange(nyv):
+                    for i in xrange(nxv):
+                        xcoords[nv] = bbox[0,0] + dx*i
+                        if ndims > 1: ycoords[nv] = bbox[1,0] + dy*j
+                        if ndims > 2: zcoords[nv] = bbox[2,0] + dz*k
+                        nv += 1                    
+
+            # LOOP OVER CELLS IN BLOCK N:
+            for k in xrange(nzb):
+                for j in xrange(nyb):
+                    for i in xrange(nxb):
+
+                        # Create connectivity information:
+                        connect[nc,0] = start_node
+                        connect[nc,1] = connect[nc,0] + 1
+                        if ndims > 1:
+                            connect[nc,2] = connect[nc,1] + nxb + 1
+                            connect[nc,3] = connect[nc,2] - 1
+                        if ndims > 2:
+                            connect[nc,4] = start_node + (nxb + 1) * (nyb + 1)
+                            connect[nc,5] = connect[nc,4] + 1
+                            connect[nc,6] = connect[nc,5] + nxb + 1
+                            connect[nc,7] = connect[nc,6] - 1
+                        nc += 1
+                        start_node += 1
+                    start_node += 1
+                start_node += nxb + 1
+            if ndims > 2:
+                start_node += (nxb + 1) * (nyb + 1)
+                        
+            n += 1
+            # print "%i %i %13.6e %13.6e %13.6e %13.6e %13.6e %13.6e" % \
+            #     (n, bid, bbox[0,0], bbox[1,0], bbox[2,0], bbox[0,1], bbox[1,1], bbox[2,1])
+            
+        # Write vertex coordinates:
+        node_start = (n-ncurb)*nvb
+        node_end = n*nvb
+        var_coord[0,node_start:node_end] = xcoords[:nv]
+        if ndims > 1: var_coord[1,node_start:node_end] = ycoords[:nv]
+        if ndims > 2: var_coord[2,node_start:node_end] = zcoords[:nv]
+
+        # Write connectivity:
+        cell_start = (n-ncurb)*ncb
+        cell_end = n*ncb
+        var_connect1[cell_start:cell_end,:] = connect[:nc,:]
+        
+        # Write unk data:
+        for l in xrange(len(unknames)):
+
+            if newnames[l] == "nele":
+                # flash_data[:ncurb,:,:,:] = NA * \
+                #     ff.var("dens")[(n-ncurb):n,:,:,:] * \
+                #     ff.var("ye")[(n-ncurb):n,:,:,:]
+
+                getdata("dens", blockids, var1)
+                getdata("ye", blockids, var2)
+
+                flash_data[:ncurb,:,:,:] = NA * \
+                    var1[:ncurb,:,:,:] * \
+                    var2[:ncurb,:,:,:]
+
+            elif newnames[l] == "nion":
+                # flash_data[:ncurb,:,:,:] = NA * \
+                #     ff.var("dens")[(n-ncurb):n,:,:,:] * \
+                #     ff.var("sumy")[(n-ncurb):n,:,:,:]
+
+                getdata("dens", blockids, var1)
+                getdata("sumy", blockids, var2)
+
+                flash_data[:ncurb,:,:,:] = NA * \
+                    var1[:ncurb,:,:,:] * \
+                    var2[:ncurb,:,:,:]
+
+            elif newnames[l] == "zbar":
+                # flash_data[:ncurb,:,:,:] = \
+                #     ff.var("ye")[(n-ncurb):n,:,:,:] / \
+                #     ff.var("sumy")[(n-ncurb):n,:,:,:]
+
+                getdata("ye", blockids, var1)
+                getdata("sumy", blockids, var2)
+                flash_data[:ncurb,:,:,:] = var1[:ncurb,:,:,:] / var2[:ncurb,:,:,:]
+
+            elif newnames[l] == "abar":
+                # flash_data[:ncurb,:,:,:] = 1/ff.var("sumy")[(n-ncurb):n,:,:,:]
+
+                getdata("sumy", blockids, var1)
+                flash_data[:ncurb,:,:,:] = 1/var1[:ncurb,:,:,:]
+
+            else:
+                getdata(unknames[l], blockids, var1)
+                flash_data[:ncurb,:,:,:] = var1[:ncurb,:,:,:]
+
+            # Convert mass fractions to partial densities for Spect3D...
+            if newnames[l] in massfracs:
+                getdata("dens", blockids, var1)            
+                flash_data[:ncurb,:,:,:] *= var1[:ncurb,:,:,:]
+
+            var_data[l][0,cell_start:cell_end] = flash_data[:ncurb].reshape(nc)
+
+    rootgrp.close()
+
+
+
+def parse_args():
+    try:
+        import argparse
+    except ImportError:
+        print "You don't have the argparse package..."
+        print "are you using a pre-2.7 version of python?"
+        raise
+
+    help_str = \
+"""
+Utility to convert FLASH output to Spec3D Input
+
+The FLASH output file (either a checkpoint or plot file) must have
+information about:\n\n
+
+  - mass fractions for each species
+  - dens (the mass density)
+  - sumy (1/abar)
+  - ye (zbar/abar)
+  - tele (the electron temperature)
+  - tion (the ion temperature)
+
+So, if you are post-processing a FLASH plot file make sure the above
+variables are included in the variable list using the appropriate
+plot_var runtime parameter in your FLASH input file.
+
+By default, this script will use the above FLASH information to
+include the following variables in the Spec3D input file:
+
+  - partial densities for each species [g/cc]
+  - the total mass density (dens) [g/cc]
+  - the ion number density (nion) [1/cc]
+  - the electron number density (nele) [1/cc]
+  - the ion temperature (tion) [eV]
+  - the electron temperature (tele) [eV]
+
+These variables will always be included in the Spec3D file. They are
+needed for most Spec3D runs. The convertspec3d script also needs to
+know the names of all of the UNK variables corresponding to each
+species. This is specified via the --species option.
+
+The output files will have the same name as the input files, but a
+".exo" extension will be appended. Thus, the FLASH checkpoint file:
+
+  lasslab_hdf5_chk_0000
+
+will become:
+
+  lasslab_hdf5_chk_0000.exo
+
+You can add additional variables to the Spec3D file using the
+"--extra" option. For example, if you want to include the radiation
+temperature (trad) and r001, you can add the option:
+
+  --extra=trad,r001
+"""
+    parser = argparse.ArgumentParser(prog="convertspec3d",
+                                     formatter_class=argparse.RawDescriptionHelpFormatter,
+                                     description=help_str)
+    
+    def csv(value):
+        return value.split(",")
+
+    parser.add_argument('file_names', type=str, nargs='+',
+                        help='FLASH checkpoint or plot file')
+
+    species_help = \
+"""
+Comma separated list of species. For example: --species=cham,targ
+"""
+    parser.add_argument('--species', type=csv, required=True,
+                        help=species_help)
+
+    extra_help = \
+"""
+Extra variables to include in the Spec3D file. Multiple variables can
+be specified as a comma separated list. For example: --extra depo,trad
+"""
+    parser.add_argument('--extra', type=csv, default=[], help=extra_help)
+    
+    args = parser.parse_args()
+
+    unknames = [ "dens", 
+                 "tele",
+                 "tion",
+                 None,
+                 None ]
+    unknames = unknames + args.species + args.extra
+
+    newnames = ["dens", 
+                "tele",
+                "tion",
+                "nion",
+                "nele"]
+    newnames = newnames + args.species + args.extra
+
+    return args.file_names, unknames, newnames, args.species
+
+            
+if __name__ == "__main__":
+
+    file_names, unknames, newnames, massfracs = parse_args()
+    
+    for fn in file_names:
+        
+        convert( input_name = fn,
+                 unknames   = unknames,
+                 newnames   = newnames,
+                 massfracs  = massfracs )
+

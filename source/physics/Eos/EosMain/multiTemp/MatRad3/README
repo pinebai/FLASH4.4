@@ -1,0 +1,21 @@
+This subtree contains "MatRad3" variants of several of the multiTemp
+Eos implementations. Normally in FLASH, "multiTemp" means 3T, with
+temperatures / energies / pressures stored in three separate
+components; with "MatRad3", the various arrays are still sized for
+three components, but the meaning is different: EOS_TEMPELE and
+EOS_TEMPRAD components are used to store matter and radiation
+components, respectively, while EOS_TEMPION is mostly ignored (and
+should be set to 0).  Same for energies (EOS_EINTELE and EOS_EINTRAD
+are used), pressures (EOS_PRESELE and EOS_PRESRAD are used); Same for
+UNK variables: TELE_VAR, EELE_VAR, PELE_VAR represent the "matter",
+not just electrons.
+
+These Eos implementations are expected to be used together with
+a RADFLAH implementation of Hydro, in particular
+  physics/Hydro/HydroMain/unsplit_rad/Hydro_Unsplit .
+
+Currently available:
+
+ * Gamma
+ * Multigamma
+ * Hemmholtz/SpeciesBased (experimental)

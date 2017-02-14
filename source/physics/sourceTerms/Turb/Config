@@ -1,0 +1,5 @@
+#	Config file for Turb, calculation of turbulent intensity
+DEFAULT TurbMain
+
+D         useTurb flags whether the Turbulence unit is being used
+PARAMETER useTurb 	BOOLEAN    TRUE

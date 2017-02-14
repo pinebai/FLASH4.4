@@ -1,0 +1,26 @@
+We can sample FLASH evolution only by setting up FLASH with
+-unit=monitors/Profiler/ProfilerMain/hpctoolkit
+
+When running this application we must tell hpcrun to initially turn
+off sampling (it is on by default): use the -ds (or --delay-sampling)
+option for hpcrun (dynamic) or set the HPCRUN_DELAY_SAMPLING
+environment variable (static).
+
+
+Background
+----------
+
+HPCToolkit supports an API for the application to start and stop
+sampling. This is useful if the application wants to profile only a
+subset of the program and ignore the rest.  This interface is process
+wide, not thread specific. And technically, when sampling is turned
+off, hpcrun continues to receive interrupts, but it doesn’t unwind the
+call stack or record samples. This API supports the following
+functions.
+
+void hpctoolkit_sampling_start(void);
+void hpctoolkit_sampling_stop(void);
+
+To use this interface, put the above function calls into your program
+where you want sampling to start and stop. Remember, starting and
+stopping apply process wide.

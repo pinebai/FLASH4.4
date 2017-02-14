@@ -1,0 +1,51 @@
+# Configuration File for setup Stirring Turbulance 
+
+REQUIRES Driver
+REQUIRES physics/sourceTerms/Stir/StirMain
+REQUIRES physics/Eos
+REQUIRES physics/Hydro
+REQUIRES Grid
+
+USESETUPVARS withParticles
+
+IF withParticles
+   PARTICLETYPE passive INITMETHOD lattice MAPMETHOD quadratic ADVMETHOD rungekutta
+
+   REQUIRES Particles/ParticlesMain
+   REQUESTS IO/IOMain
+   REQUESTS IO/IOParticles
+   REQUESTS Particles/ParticlesMapping/Quadratic
+   REQUESTS Particles/ParticlesInitialization/Lattice
+ENDIF
+
+# include IO routine only if IO unit included
+LINKIF IO_writeIntegralQuantities.F90 IO/IOMain
+LINKIF IO_writeUserArray.F90 IO/IOMain/hdf5/parallel
+LINKIF IO_readUserArray.F90 IO/IOMain/hdf5/parallel
+
+LINKIF IO_writeUserArray.F90.pnetcdf IO/IOMain/pnetcdf
+LINKIF IO_readUserArray.F90.pnetcdf IO/IOMain/pnetcdf
+
+
+D      c_ambient       reference sound speed
+D      rho_ambient     reference density
+D      mach            reference mach number
+
+PARAMETER c_ambient      REAL    1.e0
+PARAMETER rho_ambient    REAL    1.e0
+PARAMETER mach           REAL    0.3
+
+# Volume scalars contain reaction progress variables
+
+#SCALAR scal
+
+
+SCRATCHCENTERVAR mvrt
+
+USESETUPVARS nDim
+IF nDim <> 3
+  SETUPERROR At present Stir turb works correctly only in 3D.  Use ./setup StirTurb -3d blah blah
+ENDIF
+# Don't use the passive scalars causes it's trashing things
+#NUMMASSSCALARS 1
+

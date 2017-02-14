@@ -1,0 +1,9 @@
+#  Configuration file for the DPD particles module
+#  [source/Particles/ParticlesMain/active/DPD]
+
+
+D   pt_updateCycle       The frequency for update
+PARAMETER pt_dpdUpdateCycle INTEGER 1
+
+D pt_lambda   The parameter for computing intermediate velocities
+PARAMETER pt_dpdLambda REAL 0.65

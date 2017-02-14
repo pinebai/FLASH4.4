@@ -1,0 +1,177 @@
+# parameter file for runs to resolve the gibson scale
+
+#     ./setup RTFlame -3d -auto -nxb=16 -nyb=16 -nzb=16 +parallelio -unit=Particles/ParticlesMain
+
+# unburned and burned material
+# 50/50 CO
+ye_unburned = 0.5
+sumyi_unburned = 0.041667
+
+# to 50/50 O/Mg24
+#ye_burned = 0.5
+#sumyi_burned  =  0.072917
+#flame_deltae  = 2.8e17
+
+# to Ni56
+# gives Atwood number of 0.32 at density of 10^8
+ye_burned = 0.5
+sumyi_burned = 0.017857
+flame_deltae = 7.8587e17
+
+use_flame_speed = .true.
+flame_speed = 3.0e5
+
+# flame parameters (set width and sharpness)
+fl_epsilon_0            = 1.e-3
+fl_epsilon_1            = 1.e-3
+fl_kpp_fact             = 1.309e0
+fl_b                    = 3.2e0
+
+# initial stuff
+flame_initial_position = 80.0e5
+
+# we aren't using a velocity perturbation
+#vel_pert_amp = 10.e5
+#vel_pert_wavelength1 = 7.e5
+
+# parameters for perturbation of initial flame surface
+# one the size of the box
+spert_ampl1 = 2e5
+spert_wl1   = 15e5
+spert_phase1 = 0.0
+# one the size of lambda_fp = 6*pi*s^2/A/g
+# out of phase with above
+spert_ampl2 = 2e5
+spert_wl2   = 0.058594e5
+spert_phase2 = 0.235243
+
+dens_unburned = 1.e8
+temp_unburned = 1.e8
+gconst = -1.9e9
+
+########################
+## runtimes and dumptimes
+basenm		= "rtflame_256_s3_"
+
+tmax = 0.005
+dtinit = 1.e-9
+dtmin  = 1.e-9
+
+cfl = 0.8
+nend = 999999
+
+
+restart		= .false.
+checkpointFileNumber = 0
+# plotFileNumber = 0
+particleFileNumber = 0
+
+checkpointFileIntervalTime = 0.05
+wall_clock_checkpoint = 10800
+
+# I will submit the job for 6 hours (5 hours 40 mins gives us plenty of time)
+wall_clock_time_limit = 20400
+
+plot_var_1 = "dens"
+plot_var_2 = "temp"
+plot_var_3 = "flam"
+plot_var_4 = "velx"
+plot_var_5 = "vely"
+plot_var_6 = "velz"
+plotFileIntervalTime = 0
+
+particleFileIntervalTime = 0
+
+##########
+##  Grid
+geometry = "cartesian"
+
+nblockx = 54
+xmin = 0.e0
+xmax = 810e5
+nblocky = 1
+ymin = -7.5e5
+ymax = 7.5e5
+nblockz = 1
+zmin = -7.5e5
+zmax = 7.5e5
+
+xl_boundary_type = "reflect"
+xr_boundary_type = "diode"
+yl_boundary_type = "periodic"
+yr_boundary_type = "periodic"
+
+# here we are using uniform refine region
+# instead of adaptive refining
+#refine_var_1 = "dens"
+#refine_var_2 = "flam"
+
+# uniformly refined region near flame
+refine_uniform_region = .true.
+refine_region_size = 60e5
+refine_region_stepdown_size = 45e5
+refine_lead = 2e5
+refine_buf = 1e5
+
+# this leaves enough room to run for about 1 second
+sim_ParticleRefineRegion = .true.
+sim_ParticleRefineRegionLevel = 3
+sim_ParticleRefineRegionBottom = 50e5
+sim_ParticleRefineRegionTop = 400e5
+
+lrefine_min = 1
+lrefine_max = 1
+
+##########
+#  Particles
+useParticles = .true.
+pt_maxPerProc = 10000
+
+# this is enough particles for about 1 second
+pt_initialXMin = 80e5
+pt_initialXMax = 230e5
+pt_initialYMin = -7.5e5
+pt_initialYMax = 7.5e5
+pt_initialZMin = -7.5e5
+pt_initialZMax = 7.5e5
+pt_numX = 80
+pt_numY = 8
+pt_numZ = 8
+
+
+
+
+#####
+# hydro
+use_steepening = .false. # Contact Steepening for Third order PPM
+
+eachProcWritesSummary = .false.
+
+use_3dFullCTU = .true.
+transOrder = 1
+use_avisc = .true.
+cvisc = 0.1
+
+## -------------------------------------------------------------##
+##  SWITCHES SPECIFIC TO THE UNSPLIT HYDRO SOLVER               ##
+#       I. INTERPOLATION SCHEME:
+order           = 3      # Interpolation order (First/Second/Third order)
+slopeLimiter    = "mc"   # Slope limiters (minmod, mc, vanLeer, hybrid, limited)
+LimitedSlopeBeta= 1.     # Slope parameter for the "limited" slope by Toro
+charLimiting    = .true. # Characteristic limiting vs. Primitive limiting
+
+#       II. RIEMANN SOLVERS:
+RiemannSolver   = "hllc"       # Roe, HLL, HLLC, LF
+#shockInstabilityFix = .false. # Carbuncle instability fix for the Roe solver <==== this longer exist!
+EOSforRiemann  = .false.     # Call EoS for Riemann solves
+entropy        = .false.
+
+#       III. STRONG SHOCK HANDELING SCHEME:
+shockDetect     = .false.     # Shock Detect for numerical stability
+
+#       IV. GRAVITY COUPLING WITH UNSPLIT HYDRO
+use_gravHalfUpdate = .true.
+use_gravConsv      = .false.
+## -------------------------------------------------------------##
+
+reduceGcellFills = .true.

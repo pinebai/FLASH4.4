@@ -1,0 +1,28 @@
+# The setup that tests the Proton Imaging unit.
+#
+# Sample setup line:
+#
+#   ./setup unitTest/ProtonImaging
+#
+#             -auto
+#             -3d
+#             -geometry=cartesian
+#             -parfile=flash.par
+#             -maxblocks=4000
+#             +protonImaging
+#             -without-unit=physics/Hydro    (get rid of Hydro -> get rid of a ton of UNK variables using memory)
+#             -without-unit=physics/Eos      (is also not needed here)
+#             -objdir=objectProtonImaging
+#             -nxb=8
+#             -nyb=8
+#             -nzb=8
+#             +noio                          (no IO -> avoid writing huge plot and checkpoint files)
+#             pi_maxBeams=1
+#             pi_maxDetectors=1
+#             threadProtonTrace=True         (enables threading of proton tracing)
+#
+# The +protonImaging shortcut activates the inclusion of the Proton Imaging unit.
+#
+
+REQUIRES diagnostics/ProtonImaging/ProtonImagingMain
+REQUIRES Simulation/SimulationMain/unitTest/ProtonImaging/Validation1

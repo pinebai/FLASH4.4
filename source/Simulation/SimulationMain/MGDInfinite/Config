@@ -1,0 +1,81 @@
+##python:genLines
+
+# This is the Config file for the MGDInfinite simulation. See the
+# user's guide for more information
+
+def genLines(setupvars):
+    yield """
+
+USESETUPVARS Mtmmmt,species
+
+# Coniguration file for MGD Infinite Medium Test
+REQUIRES Driver
+REQUIRES physics/Hydro
+REQUESTS physics/Diffuse/DiffuseMain/Unsplit
+IF not Mtmmmt
+   REQUESTS physics/Eos/EosMain/multiTemp/Gamma
+   REQUESTS physics/materialProperties/Opacity/OpacityMain/Constant
+ENDIF
+REQUIRES physics/sourceTerms/Heatexchange/HeatexchangeMain/Spitzer
+REQUIRES physics/materialProperties/Conductivity/ConductivityMain/SpitzerHighZ
+
+LINKIF Simulation_initSpecies.F90.custom Multispecies/MultispeciesMain
+
+USESETUPVARS testctc4
+IF testctc4
+  LINKIF Opacity.F90.ctc4 Driver
+ENDIF
+
+USESETUPVARS testctc6
+IF testctc6
+  LINKIF Opacity.F90.ctc6 Driver
+ENDIF
+
+# Setup Species; if Mtmmmt is not set, the "species=" setup variable must be used instead.
+IF not Mtmmmt
+# Xenon:
+  SPECIES XE
+# Beryllium:
+  SPECIES BE
+# Polyimide:
+  SPECIES POLI
+ENDIF
+
+##########################
+#                        #
+#   RUNTIME PARAMETERS   #
+#                        #
+##########################
+D sim_rho Initial density
+PARAMETER sim_rho   REAL 1.0
+
+D sim_rho Initial electron temperature
+PARAMETER sim_tele  REAL 1.0
+
+D sim_rho Initial ion temperature
+PARAMETER sim_tion  REAL 1.0
+
+D sim_rho Initial radiation temperature
+PARAMETER sim_trad  REAL 1.0
+
+IF not Mtmmmt
+   PARAMETER sim_xeMassFrac	REAL	0.33
+   PARAMETER sim_beMassFrac	REAL	0.33
+   PARAMETER sim_poliMassFrac	REAL	0.33
+ENDIF
+"""
+
+    # Create a runtime parameter for each species representing the
+    # mass fraction of that species in each cell
+    if "species" in setupvars:
+        
+        # Create a 'species' list which has the name of each species,
+        # lowercase:
+        species = [s.lower() for s in setupvars["species"].split(',')]
+
+        for s in species:
+            yield "PARAMETER sim_%sMassFrac REAL -1.0 [0.0 ... 1.0]" % (s)
+
+    else:
+        if ("Mtmmmt" in setupvars) and setupvars["Mtmmmt"]:
+            yield 'SETUPERROR Must use species keyword to set species for this simulation'

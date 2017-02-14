@@ -1,0 +1,13 @@
+#We can obtain the Linf error from stdout.
+#grep "||Phi - PhiAnalytical||inf" stdout.txt 
+#To generate the figures in the table, run the following experiments:
+#test_UG_4p_3d_16cube.par
+#test_UG_4p_3d_32cube.par
+#test_UG_4p_3d_64cube.par or test_paramesh_3d_64cube.par
+#test_UG_4p_3d_128cube.par
+#
+#Grid_size   Linf_error
+16           0.40559942E-01
+32           0.10726259E-01
+64           0.27185068E-02
+128          0.68194028E-03

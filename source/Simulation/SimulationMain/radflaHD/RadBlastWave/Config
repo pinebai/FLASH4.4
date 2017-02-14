@@ -1,0 +1,120 @@
+# Config file for Radiating Blast Wave tests described in
+# the Castro II paper: Zhang, Howell, Almgren, Burrows, Bell 2011 ApJS, 196, 20 
+
+USESETUPVARS RadTransImpl
+
+REQUIRES Driver
+REQUIRES Grid
+##REQUIRES physics/Hydro/HydroMain/unsplit
+REQUIRES physics/Hydro/HydroMain/unsplit_rad/Hydro_Unsplit
+REQUIRES physics/Hydro/HydroMain/unsplit_rad/multiTemp
+REQUIRES physics/Eos/EosMain/multiTemp/MatRad3/Multigamma
+REQUESTS physics/Diffuse/DiffuseMain/Unsplit
+#REQUESTS physics/Gravity/GravityMain/Poisson/Multipole
+REQUESTS physics/materialProperties/Opacity/OpacityMain/Constant
+IF RadTransImpl == "ExpRelax"
+  REQUESTS physics/RadTrans/RadTransMain/MGD/ExpRelax
+ENDIF
+IF RadTransImpl == "Unified"
+  REQUESTS physics/RadTrans/RadTransMain/MGD/Unified
+ENDIF
+#REQUIRES physics/sourceTerms/Heatexchange/HeatexchangeMain/Immediate
+##REQUIRES physics/materialProperties/Conductivity/ConductivityMain/SpitzerHighZ
+#REQUIRES Simulation/SimulationComposition
+REQUIRES Multispecies
+REQUIRES flashUtilities/interpolation/oneDim
+
+#LINKIF Simulation_initSpecies.F90 Multispecies/MultispeciesMain
+
+#VARIABLE entr  EOSMAP:  ENTR  # specific entropy in kB per baryon
+#MASS_SCALAR YE    EOSMAPIN: YE
+#MASS_SCALAR SUMY    EOSMAPIN: SUMY
+
+PARAMETER nsub		INTEGER 4
+PARAMETER mass_loss	REAL 0.0
+PARAMETER vel_wind	REAL 0.0
+PARAMETER vel_mult	REAL 1.0
+PARAMETER r_exp_min	REAL 0.0
+PARAMETER r_exp_max	REAL 0.0
+PARAMETER ener_exp	REAL 1.0
+PARAMETER hole_radius	REAL 1.0
+PARAMETER shelldens     REAL 1.0
+PARAMETER rinner	REAL 1.0
+PARAMETER router	REAL 1.0
+PARAMETER bombRad	REAL 1.0
+PARAMETER bombRadIn	REAL 1.0
+PARAMETER ExpEner	REAL 1.0
+PARAMETER coremass	REAL 1.0
+PARAMETER shelltempfac  REAL 1.0
+
+PARAMETER point_mass 	REAL 0.0
+
+D sim_plotScaledPressures indicates whether Eo_wrapped should be called before variables are output
+D & to plot files and checkpoints, with the appropriate mode to make sure that
+D & radiation pressure, and related variables like pres, gamc, and game, are scaled
+D & down by a flux limiter factor (3*lambda).
+PARAMETER sim_plotScaledPressures BOOLEAN FALSE
+
+D sim_rho Initial electron temperature
+PARAMETER sim_tele  REAL 1.0
+
+D sim_rho Initial ion temperature
+PARAMETER sim_tion  REAL 1.0
+
+D sim_rho Initial radiation temperature
+PARAMETER sim_trad  REAL 1.0
+
+#VARIABLE erad
+#VARIABLE eele
+#VARIABLE eion
+#VARIABLE tele
+#VARIABLE trad
+#VARIABLE tion
+#VARIABLE pion
+#VARIABLE pele
+#VARIABLE prad
+VARIABLE flxl
+
+PARAMETER use_PnotT     BOOLEAN FALSE
+PARAMETER shellcond	BOOLEAN TRUE
+PARAMETER paircond	BOOLEAN TRUE
+
+# params for isothermal sphere
+PARAMETER t_s 		 REAL 0.0
+PARAMETER r_s		 REAL 0.0
+PARAMETER t_vac		 REAL 0.0
+PARAMETER rho_vac 	 REAL 0.0
+PARAMETER rho_s 	 REAL 0.0
+PARAMETER steep 	 REAL 0.0
+
+# params for HSE BC's
+D gconst     Gravitational constant, should be G*M(rmin)/rmin**2
+PARAMETER gconst	REAL 0.0
+PARAMETER gdirec        STRING  "x"
+
+D staticGpot	Flag for whether or not to fix the gpot in time
+PARAMETER staticGpot	BOOLEAN	FALSE
+
+# params for 1D initialization
+D model_file 	Name of input file with 1D model
+PARAMETER model_file	STRING "file.dat"
+
+SPECIES    H1	 # Properties A=1.  Z=1.  Eb=0.
+#SPECIES    HE3   # Properties A=3.  Z=2.  Eb=7.71819
+#SPECIES    HE4   # Properties A=4.  Z=2.  Eb=28.29603
+#SPECIES    C12   # Properties A=12. Z=6.  Eb=92.16294
+#SPECIES    N14   # Properties A=14. Z=7.  Eb=104.65998
+#SPECIES    O16   # Properties A=16. Z=8.  Eb=127.62093
+#SPECIES    NE20  # Properties A=20. Z=10. Eb=160.64788
+#SPECIES    MG24  # Properties A=24. Z=12. Eb=198.25790
+#SPECIES    SI28  # Properties A=28. Z=14. Eb=236.53790
+#SPECIES    S32   # Properties A=32. Z=16. Eb=271.78250
+#SPECIES    AR36  # Properties A=36. Z=18. Eb=306.72020
+#SPECIES    CA40  # Properties A=40. Z=20. Eb=342.05680
+#SPECIES    TI44  # Properties A=44. Z=22. Eb=375.47720
+#SPECIES    CR48  # Properties A=48. Z=24. Eb=411.46900
+#SPECIES    FE52  # Properties A=52. Z=26. Eb=447.70800
+#SPECIES    FE54  # Properties A=54. Z=26. Eb=471.7696
+#SPECIES    NI56  # Properties A=56. Z=28. Eb=484.00300
+#SPECIES    NEUT  # Properties A=1.  Z=0.  Eb=0.
+#SPECIES    PROT  # Properties A=1.  Z=1.  Eb=0.

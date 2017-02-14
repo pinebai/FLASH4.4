@@ -1,0 +1,42 @@
+# Configuration file for the Multipole unit test, which is a Maclaurin spheroid problem.
+# This setup avoids requirement of the gravity unit and only requires the Multipole grid solver.
+# Recommended MAXBLOCKS 1000 or greater.
+#
+# Setup line:
+#
+# 3d cartesian:    ./setup unitTest/Multipole -auto -geometry=cartesian   -3d -maxblocks=1000 -parfile=flash.par.3dcartesian   +newMpole
+# 3d cylindrical:  ./setup unitTest/Multipole -auto -geometry=cylindrical -3d -maxblocks=1000 -parfile=flash.par.3dcylindrical +newMpole
+# 2d cylindrical:  ./setup unitTest/Multipole -auto -geometry=cylindrical -2d -maxblocks=1000 -parfile=flash.par.2dcylindrical +newMpole
+# 2d spherical:    ./setup unitTest/Multipole -auto -geometry=spherical   -2d -maxblocks=1000 -parfile=flash.par.2dspherical   +newMpole
+
+LINKIF IO_outputFinal.F90 IO/IOMain
+
+# All variables
+
+VARIABLE dens TYPE: PER_VOLUME   # mass density
+VARIABLE gpot                    # calculated flash potential
+VARIABLE apot                    # analytic potential
+VARIABLE errm		         # analytical minus calculated potential 
+VARIABLE errd	                 # analytical divided by calculated potential
+VARIABLE errn	                 # analytical minus calculated potential, divided by analytical potential
+
+# Runtime parameters (default values for 3d cartesian)
+
+D  passTolerance               Allowed error for testing.  0.015 = 1.5 percent error
+D  eccentricity                Eccentricity of the ellipsoid (e)
+D  equatorialSemimajorAxis     Equatorial semimajor axis (a1)
+D  density                     Spheroid density (rho): set to -1 to generate spheroid mass of 1.0
+D  xctr                        X-coordinate of center of spheroid
+D  yctr                        Y-coordinate of center of spheroid
+D  zctr                        Z-coordinate of center of spheroid
+D  nsubzones                   Number of sub-zones per dimension
+
+PARAMETER passTolerance               REAL     0.015  [0.00000000000001 to 1.0]
+PARAMETER eccentricity                REAL     0.     [0.0 to 1.0]
+PARAMETER equatorialSemimajorAxis     REAL     1.     [0.0 to ]
+PARAMETER density                     REAL     1.     [-1.0 to ]
+PARAMETER xctr                        REAL     0.5
+PARAMETER yctr                        REAL     0.5
+PARAMETER zctr                        REAL     0.5
+PARAMETER nsubzones                   INTEGER  2      [1 to ]
+

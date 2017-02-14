@@ -1,0 +1,65 @@
+# Runtime parameters for the pipeline unit test.
+
+basenm           = "PLtest_"
+
+###############################
+#     PIPELINE PARAMETERS     #
+###############################
+
+##########################
+# SIMMULATION PARAMETERS #
+##########################
+
+sim_channelSize          = 50
+sim_itemSize             = 10
+sim_lowestNumItemsOnProc = 100
+
+#######################
+#  HYDRO PARAMETERS   #
+#######################
+#
+# No HYDRO parameters needed! HYDRO not included in setup!
+#
+#######################
+#    EOS PARAMETERS   #
+#######################
+#
+# No EOS parameters needed! EOS not included in setup!
+#
+#########################
+#   OUTPUT PARAMETERS   #
+#########################
+#
+# No IO parameters needed! IO is included in setup, but no IO is performed!
+#
+#######################
+#   TIME PARAMETERS   #
+#######################
+tmax           = 1.0e-08
+dtmin          = 1.0e-15  # irrelevant -> no Hydro
+dtinit         = 1.0e-14  # irrelevant -> no Hydro
+dtmax          = 1.0e-11  # irrelevant -> no Hydro
+nend           = 1        # irrelevant -> no Hydro
+
+#######################
+#   MESH PARAMETERS   #
+#######################
+
+geometry = cartesian
+
+xmin = 0.0
+xmax = 1.0
+ymin = 0.0
+ymax = 1.0
+zmin = 0.0
+zmax = 1.0
+
+xl_boundary_type  = "outflow"
+xr_boundary_type  = "outflow"
+yl_boundary_type  = "outflow"
+yr_boundary_type  = "outflow"
+zl_boundary_type  = "outflow"
+zr_boundary_type  = "outflow"
+
+lrefine_min = 1
+lrefine_max = 1

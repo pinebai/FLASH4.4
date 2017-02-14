@@ -1,0 +1,115 @@
+# Runtime parameters for the 3D laser quadratic tube ring unit test.
+
+basenm                        = "LaserTubeRing_"
+useEnergyDeposition           = .true.
+useHydro                      = .false.
+
+##########################
+#  PARTICLES PARAMETERS  #
+##########################
+
+keepLostParticles  = .false.
+
+#######################
+#  LASER PARAMETERS   #
+#######################
+
+ed_saveOutOfDomainRays = .true.
+
+ed_maxRayCount        = 1000000
+ed_gradOrder          = 2
+ed_printBeams         = .true.
+ed_printMain          = .true.
+ed_printPulses        = .true.
+ed_printRays          = .false.
+ed_rayZeroPower       = 1.e-100   # to ensure survival of each ray for large number of rays
+
+ed_numberOfPulses     = 1
+
+ed_numberOfSections_1 = 2
+ed_time_1_1           = 0.e+00     # in seconds
+ed_time_1_2           = 1.e-08     # in seconds
+ed_power_1_1          = 1.e-01     # in Watt (J/s)  # has to be number of rays times 1.e-07 -> each ray has 1 erg/s
+ed_power_1_2          = 1.e-01     # in Watt (J/s)  # has to be number of rays times 1.e-07 -> each ray has 1 erg/s
+
+ed_numberOfBeams      = 1
+
+ed_lensX_1                        =  5.0         # lens X coordinate
+ed_lensY_1                        = -2.0         # lens Y coordinate
+ed_lensZ_1                        =  5.0         # lens Z coordinate
+ed_targetX_1                      =  5.0         # target X coordinate
+ed_targetY_1                      =  0.0         # target Y coordinate
+ed_targetZ_1                      =  5.0         # target Z coordinate
+ed_targetSemiAxisMajor_1          =  3.0         # target major semiaxis length
+ed_targetSemiAxisMinor_1          =  3.0         # target minor semiaxis length
+ed_lensSemiAxisMajor_1            =  3.0         # lens major semiaxis length
+ed_semiAxisMajorTorsionAngle_1    =  0.0         # major semiaxis torsion angle
+ed_semiAxisMajorTorsionAxis_1     =  "z"         # major semiaxis torsion axis
+ed_pulseNumber_1                  =  1           # pulse ID number
+ed_wavelength_1                   =  1.0         # wavelength in microns
+ed_initialRaySpeed_1              =  1.0         # initial ray speed (units of c), is = 1 here
+ed_ignoreBoundaryCondition_1      =  .true.      # ignore domain boundary condition ?
+ed_crossSectionFunctionType_1     =  "uniform"   # beam cross section function type (equal weight)
+ed_gaussianExponent_1             =  1.0         # gaussian exponent
+ed_gaussianRadiusMajor_1          =  1.0         # gaussian e-folding length along major semiaxis
+ed_gaussianRadiusMinor_1          =  1.0         # gaussian e-folding length along minor semiaxis
+ed_gaussianCenterMajor_1          =  0.0         # gaussian origin location along major semiaxis
+ed_gaussianCenterMinor_1          =  0.0         # gaussian origin location along minor semiaxis
+ed_numberOfRays_1                 =  1000000     # number of rays wanted
+ed_gridType_1                     =  "radial2D"  # type of beam grid
+ed_gridnRadialTics_1              =  0           # number radial tics for radial grids
+ed_gridnAngularTics_1             =  1000000     # number of angular tics for radial grids (force rays on ring)
+
+##########################
+# SIMMULATION PARAMETERS #
+##########################
+
+sim_printBlockVariables = .false.
+
+#######################
+#    EOS PARAMETERS   #
+#######################
+eos_singleSpeciesA  = 1.0
+eos_singleSpeciesZ  = 1.0
+eosmodeInit         = "dens_temp"
+
+#########################
+#   OUTPUT PARAMETERS   #
+#########################
+
+checkpointFileIntervalStep = 1
+plotFileNumber             = 0
+plot_var_1                 = "dens"
+plot_var_2                 = "depo"
+
+#######################
+#   TIME PARAMETERS   #
+#######################
+tmax           = 1.0e-08
+dtmin          = 1.0e-15
+dtinit         = 1.0e-14
+dtmax          = 1.0e-11
+nend           = 1
+
+#######################
+#   MESH PARAMETERS   #
+#######################
+
+geometry = cartesian
+
+xmin =  0.0
+xmax = 10.0
+ymin =  0.0
+ymax = 11.1072073450784486          # this is 5pi/sqrt(2)
+zmin =  0.0
+zmax = 10.0
+
+xl_boundary_type  = "outflow"
+xr_boundary_type  = "outflow"
+yl_boundary_type  = "outflow"
+yr_boundary_type  = "outflow"
+zl_boundary_type  = "outflow"
+zr_boundary_type  = "outflow"
+
+lrefine_min = 4
+lrefine_max = 4

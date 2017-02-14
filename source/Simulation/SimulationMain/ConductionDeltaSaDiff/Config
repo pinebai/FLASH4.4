@@ -1,0 +1,75 @@
+
+#	Configuration file for ConductionDeltaSaDiff setup
+#       Introduces either a planar temperature source or
+#         3-D point source depending on initial parameter
+#         orientation. 
+
+REQUIRES Driver
+REQUIRES physics/Diffuse
+#REQUESTS Grid/GridSolvers/Multigrid_forDiffuseAdvanceByHgADI
+#REQUIRES physics/materialProperties/Conductivity/
+
+REQUIRES physics/Eos/EosMain/Gamma
+#REQUIRES physics/Eos/EosMain/multiTemp/Gamma
+#REQUIRES physics/materialProperties/Conductivity/ConductivityMain/PowerLaw-gray
+#REQUESTS physics/materialProperties/Opacity/OpacityMain/Constant
+
+VARIABLE tmpa                  # Analytical Temperature distribution
+VARIABLE diff                  # Difference between Numerical and Analytical Temp
+
+PARAMETER updateHydroFluxes BOOLEAN FALSE
+
+D orientation  1/2/3 -- planar source is oriented along x/y/z axis,
+D &            0     -- three-dimensional point source
+D rho_init     background density
+D toffset      time offset for initial condition 
+
+PARAMETER orientation	INTEGER 1       [0,1,2,3]
+PARAMETER rho_init	REAL	1.
+PARAMETER toffset       REAL    .001
+
+D sim_Q factor used for scaling the initial temperature distribution
+PARAMETER sim_Q	REAL 1.0
+
+D sim_tempBackground constant temperature background, the Gaussian peak gets added to this
+PARAMETER sim_tempBackground	REAL 0.0
+
+D sim_xctr            Temperature peak center X-coordinate
+PARAMETER sim_xctr          REAL    0.5
+
+D sim_yctr            Temperature peak center Y-coordinate
+PARAMETER sim_yctr          REAL    0.5
+
+D sim_zctr            Temperature peak center Z-coordinate
+PARAMETER sim_zctr          REAL    0.5
+
+D sim_maxTol Max allowed error
+PARAMETER sim_maxTol REAL 1.0E-3
+
+
+# The following RPs duplicated from ConductivityMain/Powerlaw
+
+D cond_TemperatureExponent Temperature exponent n.
+D & For n=0 you get constant conductivity.
+D & See D. Mihalas & B. W. Mihalas 1984 p 551. 
+D & For n=6, e.g., you get nonlinear conduction as in Fig 103.1(b) there.
+PARAMETER cond_TemperatureExponent REAL 1.0
+
+D cond_K0 coefficient K0 for conductivity K = rho c_v K0 T^n ,
+D & where n is given by cond_TemperatureExponent.
+PARAMETER cond_K0 REAL 1.0
+
+D iniCondTemperatureExponent exponent for computing the temperature curve
+D & used as initial condition. Set to 0 to get a Gaussian. Set to -999.0 to get
+D & the value of cond_TemperatureExponent.
+PARAMETER iniCondTemperatureExponent REAL -999.0
+PARAMETER iniRadDiffExp REAL 0.0
+
+# Setup MGD Variables:
+MASS_SCALAR R001
+MASS_SCALAR R002
+MASS_SCALAR R003
+MASS_SCALAR R004
+PPDEFINE MGD_NGROUPS 4
+
+LINKIF Driver_evolveFlash.F90.unsplit Driver/DriverMain/Unsplit

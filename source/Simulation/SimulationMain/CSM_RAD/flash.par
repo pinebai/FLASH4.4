@@ -1,0 +1,386 @@
+## Parameters file for jet-drive core-collapse SN
+#./setup CSM_RAD -1d -auto +spherical -nxb=16 +newMpole +mgd mgd_meshgroups=1 -objdir csmrad2 species=neut,h1,prot,he3,he4,c12,n14,o16,ne20,mg24,si28,s32,ar36,ca40,ti44,cr48,fe52,fe54,ni56 ManualSpeciesDirectives=True
+
+# Simulation basics
+basenm			       = "csm10_rad_nocond_"
+#log_file  		       = "progen.log"
+#stats_file                     = "progen.dat"
+restart			       = .false.
+checkpointFileNumber           = 0
+plotFileNumber                 = 0
+run_comment                    = "Reads in a 1D stellar profile"
+
+# IO  
+checkpointFileIntervalStep     = 1
+checkpointFileIntervalTime     = 0.
+plotFileIntervalStep           = 0
+plotFileIntervalTime           = 0.
+#wall_clock_checkpoint          = 43200.
+wall_clock_time_limit          = 60480.
+
+# Time 
+#tinitial                       = 0.0
+#tmax                            = 100000000.0
+tmax                            = 100.
+nend                            = 1000000
+tstep_change_factor            = 1.25 #2.0
+#dtinit                         = 1.E-10 #1.E-10
+dtinit                         = 1.5E-07
+#dtmax                          = 1.E5
+dtmin                          = 1.E-10
+
+# Domain 
+geometry                       = "spherical"
+#geometry                      = "cylindrical"
+#geometry		       = "cartesian"
+xmax                           = 8.35e+13 #0.9e+15
+xmin                           = 0. #4.2134e+08
+#ymax                           = 180.0
+#ymin                           = 0.0
+#zmax                           = 1.e11
+#zmin                           =-1.e11
+#xl_boundary_type               = "hydrostatic+nvrefl"
+xl_boundary_type		= "reflect"
+#xr_boundary_type               = "hydrostatic+nvout"
+xr_boundary_type                = "outflow"
+#yl_boundary_type               = "reflect"
+#yr_boundary_type               = "reflect"
+#zl_boundary_type               = "outflow"
+#zr_boundary_type               = "outflow"
+
+# Grid/Refinement
+nblockx                         = 10
+#nblocky                        = 5
+#nblockz                        = 4
+
+#UG Grid stuff
+#iGridSize	               = 4000
+#iProcs			       = 2
+
+gr_lrefineMaxRedDoByLogR       = .TRUE.
+gr_lrefineMaxRedDoByTime       = .FALSE.
+gr_lrefineMaxRedLogBase        = 2.0
+gr_lrefineMaxRedRadiusFact     = 0.12
+gr_lrefineMaxRedTRef           = 50.0
+gr_lrefineMaxRedTimeScale      = 50.0
+
+lrefine_max                    = 20
+lrefine_min                    = 1
+refine_var_1                   = "dens"
+refine_var_2                   = "temp"
+refine_var_3                   = "velx"
+refine_var_4                   = "fe54"
+refine_cutoff_1		       = 0.8
+refine_cutoff_2		       = 0.8
+refine_cutoff_3		       = 0.8
+refine_cutoff_4		       = 0.8
+
+enableMaskedGCFill = .TRUE.
+# Simulation
+model_file                     = "15sm_csm_inp_trunc.dat"
+nsub                           = 4
+vel_mult                       = 0.0
+r_exp_max                      = 0.0
+r_exp_min                      = 0.0
+mass_loss                      = 1.00e-01 #1.0e-5 # Solar masses per year
+vel_wind                       = 2.48e+07 #1.0e6  # cm/s
+use_PnotT		       = .FALSE.
+irenorm			       = 1
+
+# CSM shell and Thermal Bomb parameters
+paircond		       = .true.
+shellcond		       = .false.
+shelldens	               = 1.59e-11
+shelltempfac		       = 1.0
+rinner		               = 1.0e+15
+router	         	       = 2.0e+15
+bombRadIn		       = 0. #4.2134e+08
+bombRad		               = 5.2010+08
+ExpEner                        = 0. #1.0e+51
+coremass		       = 0.5151
+eos_maxNewton		       = 100
+#eos_tolerance		       = 1.0d-4
+
+useHeatexchange 	       = .TRUE.
+hx_dtFactor		       = 1e+13
+usediffuse		       = .true.
+
+# Hydro
+useHydro                       = .TRUE.
+cfl                            = 0.1
+interpol_order                 = 2
+updateHydroFluxes              = .TRUE.
+eintSwitch		       = 1e-4
+ppm_modifystates	       = .FALSE.
+use_cma_advection	       = .FALSE.
+
+##  SWITCHES SPECIFIC TO THE UNSPLIT HYDRO SOLVER               ##
+#       I. INTERPOLATION SCHEME:
+order           = 3      # Interpolation order (first/second/third/fifth order)
+slopeLimiter    = "mc"   # Slope limiters (minmod, mc, vanLeer, hybrid, limited)
+LimitedSlopeBeta= 1.     # Slope parameter for the "limited" slope by Toro
+charLimiting    = .true. # Characteristic limiting vs.Primitive limiting
+
+use_avisc       = .true. # use artificial viscosity (originally for PPM)
+cvisc           = 0.1     # coefficient for artificial viscosity
+use_flattening  = .true. # use flattening (dissipative) (originally for PPM)
+use_steepening  = .false. # use contact steepening (originally for PPM)
+use_upwindTVD   = .false. # use upwind biased TVD slope for PPM (need nguard=6)
+flux_correct    = .true.
+EOSforRiemann   = .false.
+transOrder      = 1
+use_auxEintEqn  = .TRUE.
+hydroComputeDtOption = -1
+
+#       II. RIEMANN SOLVERS: 
+RiemannSolver   = "HLLC"       # Roe, HLL, HLLC, LLF, Marquina
+entropy         = .true.     # Entropy fix for the Roe solver
+
+#       III. STRONG SHOCK HANDELING SCHEME:
+shockDetect     = .false.     # Shock Detect for numerical stability
+## -------------------------------------------------------------##
+
+# Gravity
+useGravity                     = .true.
+updateGravity                  = .TRUE.
+grav_boundary_type             = "isolated"
+mpole_3daxisymmetry            = .false.
+mpole_dumpMoments              = .FALSE.
+mpole_PrintRadialInfo          = .false.
+mpole_IgnoreInnerZone          = .true.
+mpole_lmax                     = 0
+mpole_ZoneRadiusFraction_1     = 1.0
+mpole_ZoneExponent_1           = 0.005
+mpole_ZoneScalar_1             = 0.5
+mpole_ZoneType_1               = "logarithmic"
+#mpole_ZoneType_1              = "exponential"
+mpole_centerOnDens             = .true.
+mpole_centerOnZero             = .false.
+point_mass                     = 0. #4.0825e+33
+point_mass_rsoft               = 0.e0
+use_gravHalfUpdate             = .TRUE. 
+mpole_rscale2 		       = 1.0e-3
+mpole_scaleType2 	       = 2
+#point_mass                     = 2.61e33
+#point_mass_rsoft               = 0.e0
+
+# EOS
+eosModeInit                    = "dens_temp_equi"
+eosMode                        = "dens_ie_gather"
+hy_eosModeAfter                = "dens_ie_gather"
+#eos_singleSpeciesA             = 1.00
+#eos_singleSpeciesZ             = 1.00
+eos_largeT                      = 1.2e11 # 1.0e11
+
+gamma                          = 1.667
+eos_coulombMult			= 1.0
+
+#gr_hyprePrintSolveInfo     = .TRUE.
+#gr_hypreInfoLevel = 0
+gr_hypreUseFloor           = .FALSE.
+
+### Multigroup diffusion options ###
+rt_useMGD        = .TRUE.
+rt_mgdNumGroups  = 1
+rt_mgdBoundEntry = "grbd_manual"
+rt_mgdBounds_1   = 0.0
+rt_mgdBounds_2   = 10000000.0
+rt_mgdXlBoundaryType = "reflecting"
+rt_mgdXrBoundaryType = "outflow"
+
+# MGD Flux limiter options:
+rt_mgdFlMode     = "fl_larsen"
+rt_mgdFlCoef     = 1.0
+
+# MGD Opacity options:
+useOpacity       = .TRUE.
+op_emitConst     = 0.0 #0.0
+op_transConst    = 0.0 #0.2e+09 #1.0e+20
+op_absorbConst   = 0.0
+
+# Electron conductivity options:
+diff_useEleCond  = .false.
+diff_eleFlMode   = "fl_none"
+diff_eleFlCoef   = 50.0
+diffusion_cutoff_density = 1e40 # 1.e-4
+dt_diff_factor   = 1.e-3
+useConductivity  = .true.
+cond_constantIsochoric = 8.6173095897729779e+17 # 1e+22 ergs/s/cm/eV
+
+# Burn
+useBurn = .FALSE.
+useShockBurn = .false.
+odeStepper = 1
+algebra = 1
+nuclearTempMin = 2.1e8
+nuclearTempMax = 1.0e12 
+nuclearDensMin = 1.0e-10
+nuclearDensMax = 1.0e14
+
+#hole_radius = 3e9
+			      			       
+# Small numbers
+smallt                         = 1.0e4
+smlrho                         = 1.E-30
+smallp                         = 1.E-30
+smalle                         = -1.E-30
+smallu                         = 1.E-10
+smallx                         = 1.E-100
+small                          = 1.E-100
+
+#Species-Specific Opacities
+
+op_tableEnergyTolerance        = 1.0e-04
+
+op_ar36Absorb                  = "op_constant"
+op_ar36AbsorbConstant	       = 0.4e-10
+op_ar36Emiss		       = "op_constant"
+op_ar36EmissConstant	       = 0.4e-10
+op_ar36LowTemp  	       = 0.0
+op_ar36Trans		       = "op_constcm2g"
+op_ar36TransConstant	       = 0.4
+
+op_c12Absorb		       = "op_constant"
+op_c12AbsorbConstant	       = 0.4e-10
+op_c12Emiss		       = "op_constant"
+op_c12EmissConstant	       = 0.4e-10
+op_c12LowTemp		       = 0.0
+op_c12Trans		       = "op_constcm2g"
+op_c12TransConstant	       = 0.4
+
+op_ca40Absorb		       = "op_constant"
+op_ca40AbsorbConstant	       = 0.4e-10
+op_ca40Emiss		       = "op_constant"
+op_ca40EmissConstant	       = 0.4e-10
+op_ca40LowTemp  	       = 0.0
+op_ca40Trans		       = "op_constcm2g"
+op_ca40TransConstant	       = 0.4
+
+op_cr48Absorb		       = "op_constant"
+op_cr48AbsorbConstant	       = 0.4e-10
+op_cr48Emiss		       = "op_constant"
+op_cr48EmissConstant	       = 0.4e-10
+op_cr48LowTemp  	       = 0.0
+op_cr48Trans		       = "op_constcm2g"
+op_cr48TransConstant	       = 0.4
+
+op_fe52Absorb		       = "op_constant"
+op_fe52AbsorbConstant	       = 0.4e-10
+op_fe52Emiss		       = "op_constant"
+op_fe52EmissConstant	       = 0.4e-10
+op_fe52LowTemp  	       = 0.0
+op_fe52Trans		       = "op_constcm2g"
+op_fe52TransConstant	       = 0.4
+
+op_fe54Absorb		       = "op_constant"
+op_fe54AbsorbConstant	       = 0.4e-10
+op_fe54Emiss		       = "op_constant"
+op_fe54EmissConstant	       = 0.4e-10
+op_fe54LowTemp  	       = 0.0
+op_fe54Trans		       = "op_constcm2g"
+op_fe54TransConstant	       = 0.4
+
+op_h1Absorb		       = "op_constant"
+op_h1AbsorbConstant	       = 0.4e-10
+op_h1Emiss		       = "op_constant"
+op_h1EmissConstant	       = 0.4e-10
+op_h1LowTemp		       = 0.0
+op_h1Trans		       = "op_constcm2g"
+op_h1TransConstant	       = 0.4e-10
+
+op_he3Absorb		       = "op_constant"
+op_he3AbsorbConstant	       = 0.4e-10
+op_he3Emiss		       = "op_constant"
+op_he3EmissConstant	       = 0.4e-10
+op_he3LowTemp		       = 0.0
+op_he3Trans		       = "op_constcm2g"
+op_he3TransConstant	       = 0.4e-10
+
+op_he4Absorb		       = "op_constant"
+op_he4AbsorbConstant	       = 0.4e-10
+op_he4Emiss		       = "op_constant"
+op_he4EmissConstant	       = 0.4e-10
+op_he4LowTemp		       = 0.0
+op_he4Trans		       = "op_constcm2g"
+op_he4TransConstant	       = 0.4e-10
+
+op_mg24Absorb		       = "op_constant"
+op_mg24AbsorbConstant	       = 0.4e-10
+op_mg24Emiss		       = "op_constant"
+op_mg24EmissConstant	       = 0.4e-10
+op_mg24LowTemp  	       = 0.0
+op_mg24Trans		       = "op_constcm2g"
+op_mg24TransConstant	       = 0.4
+
+op_n14Absorb		       = "op_constant"
+op_n14AbsorbConstant	       = 0.4e-10
+op_n14Emiss		       = "op_constant"
+op_n14EmissConstant	       = 0.4e-10
+op_n14LowTemp		       = 0.0
+op_n14Trans		       = "op_constcm2g"
+op_n14TransConstant	       = 0.4
+
+op_ne20Absorb		       = "op_constant"
+op_ne20AbsorbConstant	       = 0.4e-10
+op_ne20Emiss		       = "op_constant"
+op_ne20EmissConstant	       = 0.4e-10
+op_ne20LowTemp  	       = 0.0
+op_ne20Trans		       = "op_constcm2g"
+op_ne20TransConstant	       = 0.4
+
+op_neutAbsorb		       = "op_constant"
+op_neutAbsorbConstant	       = 0.4e-10
+op_neutEmiss		       = "op_constant"
+op_neutEmissConstant	       = 0.4e-10
+op_neutLowTemp  	       = 0.0
+op_neutTrans		       = "op_constcm2g"
+op_neutTransConstant	       = 0.4
+
+op_ni56Absorb		       = "op_constant"
+op_ni56AbsorbConstant	       = 0.4e-10
+op_ni56Emiss		       = "op_constant"
+op_ni56EmissConstant	       = 0.4e-10
+op_ni56LowTemp  	       = 0.0
+op_ni56Trans		       = "op_constcm2g"
+op_ni56TransConstant	       = 0.4
+
+op_o16Absorb		       = "op_constant"
+op_o16AbsorbConstant	       = 0.4e-10
+op_o16Emiss		       = "op_constant"
+op_o16EmissConstant	       = 0.4e-10
+op_o16LowTemp		       = 0.0
+op_o16Trans		       = "op_constcm2g"
+op_o16TransConstant	       = 0.4
+
+op_protAbsorb		       = "op_constant"
+op_protAbsorbConstant	       = 0.4e-10
+op_protEmiss		       = "op_constant"
+op_protEmissConstant	       = 0.4e-10
+op_protLowTemp  	       = 0.0
+op_protTrans		       = "op_constcm2g"
+op_protTransConstant	       = 0.4
+
+op_s32Absorb		       = "op_constant"
+op_s32AbsorbConstant	       = 0.4e-10
+op_s32Emiss		       = "op_constant"
+op_s32EmissConstant	       = 0.4e-10
+op_s32LowTemp		       = 0.0
+op_s32Trans		       = "op_constcm2g"
+op_s32TransConstant	       = 0.4
+
+op_si28Absorb		       = "op_constant"
+op_si28AbsorbConstant	       = 0.4e-10
+op_si28Emiss		       = "op_constant"
+op_si28EmissConstant	       = 0.4e-10
+op_si28LowTemp  	       = 0.0
+op_si28Trans		       = "op_constcm2g"
+op_si28TransConstant	       = 0.4
+
+op_ti44Absorb		       = "op_constant"
+op_ti44AbsorbConstant	       = 0.4e-10
+op_ti44Emiss		       = "op_constant"
+op_ti44EmissConstant	       = 0.4e-10
+op_ti44LowTemp  	       = 0.0
+op_ti44Trans		       = "op_constcm2g"
+op_ti44TransConstant	       = 0.4e-10
+

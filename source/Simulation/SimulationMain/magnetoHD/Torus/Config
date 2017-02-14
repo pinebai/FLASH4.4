@@ -1,0 +1,33 @@
+#       Configuration file for 2D Torus MHD problem
+
+
+REQUIRES physics/Hydro/HydroMain
+REQUIRES physics/Eos/EosMain/Gamma
+REQUIRES physics/Gravity/GravityMain/PointMass
+
+D   R_min        Minimum cylindrical radius for the Torus (inner rim)
+D   R_max        Radius of the Torus where pressure is maximum
+D   den_max      Maximum density of the torus (outer rim)
+D   den_cut      Minimum density to define the last contour of the magnetic vec. pot. 
+D   BETA         Plasma beta 
+D   D_Con        Density contrast between atmosphere and Torus
+D   T_Con        Temperature contrast between atmosphere and Torus
+D   R_0          "Gravitational" radius in P-W potential (for R_0 = 0 -> Newton) 
+D   R_Sphere     Radius of the sink region, must be greater than R_0 
+
+
+PARAMETER tiny         REAL     1.e-16
+
+PARAMETER R_min        REAL     3.0
+PARAMETER R_max        REAL     4.7
+PARAMETER den_max      REAL     10.0
+PARAMETER den_cut      REAL     5.0
+PARAMETER BETA         REAL     350.
+PARAMETER D_Con        REAL     1.e-4
+PARAMETER T_Con        REAL     100.0
+PARAMETER R_0          REAL     1.0
+PARAMETER R_Sphere     REAL     1.5
+
+
+VARIABLE vecz                  # vector potential Az
+VARIABLE curz                  # vector potential jz

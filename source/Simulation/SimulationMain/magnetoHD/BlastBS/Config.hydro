@@ -1,0 +1,30 @@
+#       Configuration file for MHD Blast problem
+#	Balsara, The Astrophys. Supplement Series, 151:149--184, 2004 
+
+#REQUIRES physics/MHD
+REQUIRES physics/Hydro
+REQUIRES physics/Eos/EosMain/Gamma
+
+D   tiny	    Threshold value used for numerical zero
+D   xCtr	    x center of the computational domain
+D   yCtr	    y center of the computational domain
+D   zCtr	    z center of the computatoinal domain
+D   Radius	    Radius
+D   Bx0             Initial magnitude of Bx
+
+PARAMETER tiny         REAL     1.e-16
+PARAMETER xCtr	       REAL     0.
+PARAMETER yCtr	       REAL     0.
+PARAMETER zCtr	       REAL     0.
+PARAMETER Radius       REAL     0.1
+PARAMETER Bx0	       REAL     100.
+
+
+#DUMMY FOR HYDRO
+VARIABLE MAGX
+VARIABLE MAGY
+VARIABLE MAGZ
+VARIABLE DIVB
+VARIABLE MAGP
+
+PARAMETER killdivb BOOLEAN FALSE

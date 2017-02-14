@@ -1,0 +1,63 @@
+\documentclass[10pt]{article}
+
+\addtolength{\oddsidemargin}{-1.0in}
+\usepackage{graphicx}  % if you want to include PostScript figures
+\usepackage{xspace} % for proper spacing after macros
+\usepackage{color}
+\usepackage{longtable}
+\usepackage{multirow}
+
+\begin{document}
+
+\title{Test-Suite Grid, match against old test suite gin-nag}
+
+\author{}
+
+
+\section*{List and Coverage}
+\begin{tabular}{|c|c|c|c|c|c|c|}\hline
+\# &App&old test&differences&same flash.par\\\hline
+1&OrzTang&OrszagTang\_StaggeredMesh\_UG\_hdf5&IO&yes\\\hline
+2&BlastBS&BlastBS\_8wave...&mesh (NFB)&no\\\hline
+3&BlastBS&BlastBS\_Staggered...&mesh and IO&yes\\\hline
+4&rotor&Rotor\_Stagger..UG...&NFB &mostly\\\hline
+5&CldShk&none&&\\\hline
+6&CSheet&CuurentSheet\_Staggered..&Mesh IO&yes\\\hline
+7&RT&None&&\\\hline
+8&Briowu&None&&\\\hline
+9&RHDSod&SodRHD\_pm..&mesh IO&no\\\hline
+10&RHDRiem&RHD\_Rie...&mesh IO &yes\\\hline
+11&RSHK&RadShock-rage..&IO&yes\\\hline
+12&MGDStp&mgdstep\_UG..2d&IO (par)&yes\\\hline
+13&MGDStp&mgdstep\_pm..3d&mesh&yes\\\hline
+14*&RSHK2D&None&&\\\hline
+15&SuOlson&None&&\\\hline
+16&Shafranov&None&&\\\hline
+17&WDdef&WD\_def..3d&mesh&yes\\\hline
+18 & Cellular &Cell..pm4..serial..2d&mesh&yes\\\hline 
+19&2Gamma&None&&\\\hline
+20&Plasma&plasma...&mesh (UGNFB)&mostly\\\hline
+21&Plasma&None&&\\\hline
+22&Stirturb&Stir..UG..nofbs..3d&Hydro IO&mostly\\\hline
+23&Stirturb&Stir..pm&mesh(dev) IO&yes\\\hline
+24&Neitest&Neitest...&&yes\\\hline
+25&Orbit&Orbit\_pm4..3d&Mesh (Dev)&yes\\\hline
+26&Pancake&Pancake\_ptop..2d&IO&yes\\\hline
+27&Pancake&Pancake\_pm4..2d&Hydro&mostly\\\hline
+28&Maclaurin&None&&\\\hline
+29&Sod(Se)  &Sod..sph..1d&&yes\\\hline
+30&2Gamma   &None&&\\\hline
+31&ReinickeMeyer&None&&\\\hline
+32&Sedov &Sedov\_pm4..2d&mesh hydro IO&no\\\hline 
+33&SodStep &SodStep\_pm4..2d&mesh hydro IO&yes\\\hline 
+34&Jeans &Jeans..nofbs..2d&IO&yes\\\hline 
+35&WindTunnel &Windtunnel..&mesh IO&yes\\\hline 
+36&2Blast &2Blast..pm4..1d&mesh hydro IO&yes\\\hline 
+37&SedovSelfGrav&SedovSelf..&&yes\\\hline
+38&RTFlame&RTFlame...&mesh hydro &yes \\\hline
+39&PoisParticles&PoisParticles...&&yes \\\hline
+\hline
+
+\end{tabular}
+
+\end{document}

@@ -1,0 +1,14 @@
+#OpenMP test suite
+#Launch using ./flashTest.py -v -f jobs/mainBatch
+#The file at jobs/mainBatch is this file.
+
+#Comparison tests
+Comparison/Sedov/AMR/2d/split
+Comparison/Sedov/AMR/2d/unsplit
+Comparison/RTFlame/nofbs/2d/split
+Comparison/RTFlame/AMR/2d/split
+Comparison/RTFlame/AMR/2d/unsplit
+Comparison/StirTurb/AMR/3d/split
+Comparison/StirTurb/nofbs/3d/split
+Comparison/CurrentSheet/AMR/2d/usm
+Comparison/OrszagTang/UG/2d/usm

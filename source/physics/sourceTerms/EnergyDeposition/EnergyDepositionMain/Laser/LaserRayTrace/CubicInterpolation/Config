@@ -1,0 +1,10 @@
+#
+# Set the default as     -> (P)iecewise (P)arabolic (R)ay (T)racing
+# Other option via setup -> Cubic interpolation using Runge Kutta for ray advancement
+#
+DEFAULT   PPRT
+EXCLUSIVE PPRT RK
+#
+# We require the cubic interpolation tools from the Interpolation unit
+#
+REQUIRES  numericalTools/Interpolate

@@ -1,0 +1,10 @@
+#! /bin/csh
+#PSUB -s /bin/csh               # Sets your shell in batch
+#PSUB -c up,pbatch           #
+#PSUB -ln 1                     # Number of nodes you want to use
+#PSUB -g  1                    # Number of tasksR, upto 16 tasks per node
+#PSUB -eo                       # Send std error & std out to the same file
+#PSUB -tM 2:30                  # Select your time limit, here 2 h 00 min.
+############################
+cd /g/g13/sheeler/bgl/bgl_stirturb_1_3_2006/object/run
+poe hpmcount flash3

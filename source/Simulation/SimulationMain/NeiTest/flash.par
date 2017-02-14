@@ -1,0 +1,120 @@
+# Parameters for the example setup
+rho_ambient	= 2.e-16
+t_ambient	= 1.e4
+t_perturb       = 1.e6
+radius          = .2
+vel_init        = 3.e5
+
+# use Godunov method
+igodu    = 1
+
+# position of the temperature step
+xstep    = 1.5e7
+
+# small definition
+smallx = 1e-30
+smalle = 1e-30
+smallp = 1e-30
+smlrho = 1e-30
+
+# for starting a new run
+restart         = .false.
+checkpointFileNumber = 0
+plotFileNumber = 0
+
+# dump checkpoint files every checkpointFileIntervalTime seconds
+checkpointFileIntervalTime = 50.
+
+# dump plot files every plotFileIntervalTime seconds
+plotFileIntervalTime = 50.
+
+# go for nend steps or tmax seconds, whichever comes first
+nend            = 100000000
+tmax            = 1000
+
+# initial, and minimum timesteps
+dtinit           = 1.0e-2
+dtmin           = 1.0e-20
+dtmax           = 1.0e-1
+
+
+# Grid geometry
+geometry = "cartesian"
+
+# Size of computational volume
+xmin		= 0.0
+xmax		= 1.e8
+ymin		= 0.0
+ymax		= 1.0
+zmin		= 0.0
+zmax		= 1.0
+
+# Boundary conditions
+xl_boundary_type      = "outflow"
+xr_boundary_type      = "outflow"
+
+# Variables for refinement test
+refine_var_1    = "dens"
+refine_var_2    = "pres"
+refine_var_3    = "none"
+refine_var_4    = "none"
+
+# Refinement levels
+lrefine_max     = 6
+lrefine_min     = 1
+
+# Number of lowest-level blocks
+nblockx         = 5
+nblocky         = 1
+nblockz         = 1
+
+# Hydrodynamics parameters
+cfl	        = 0.8
+
+# Simulation-specific parameters
+basenm          = "neitest_6lev_"
+run_number      = "001"
+run_comment     = "testing the NEI module in Flash 2.0"
+log_file        = "flash_neitest.log"
+
+plot_var_1 = "temp"
+plot_var_2 = "C 01"
+plot_var_3 = "C 02"
+plot_var_4 = "C 03"
+plot_var_5 = "C 04"
+plot_var_6 = "C 05"
+plot_var_7 = "C 06"
+plot_var_8 = "C 07"
+eint_switch     = 1.e-4
+ 
+
+## -------------------------------------------------------------##
+##  SWITCHES SPECIFIC TO THE UNSPLIT HYDRO SOLVER               ##
+#	I. INTERPOLATION SCHEME:
+order		= 2      # Interpolation order (first/second/third/fifth order)
+slopeLimiter    = "mc"   # Slope limiters (minmod, mc, vanLeer, hybrid, limited)
+LimitedSlopeBeta= 1.     # Slope parameter for the "limited" slope by Toro
+charLimiting	= .true. # Characteristic limiting vs. Primitive limiting
+
+use_avisc	= .false. # use artificial viscosity (originally for PPM)
+#cvisc		= 0.1     # coefficient for artificial viscosity
+use_flattening	= .false. # use flattening (dissipative) (originally for PPM)
+use_steepening	= .false. # use contact steepening (originally for PPM)
+use_upwindTVD	= .false. # use upwind biased TVD slope for PPM (need nguard=6)
+
+#	II. RIEMANN SOLVERS:
+RiemannSolver	= "Roe"       # Roe, HLL, HLLC, LLF, Marquina
+entropy         = .false.     # Entropy fix for the Roe solver
+
+#	III. STRONG SHOCK HANDELING SCHEME:
+shockDetect	= .false.     # Shock Detect for numerical stability
+## -------------------------------------------------------------##
+
+## ---------------------------------------------------------------##
+##  SWITCHES SPECIFIC TO THE SUPER-TIME-STEPPING (STS) ALGORITHM  ##
+##  NOTE: For details on using STS runtime parameters, please     ##
+##        refer to user's guide (Driver chapter).                 ##
+useSTS                  = .false.
+nstepTotalSTS           = 5
+nuSTS                   = 0.2
+## ---------------------------------------------------------------##

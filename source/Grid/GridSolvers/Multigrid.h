@@ -1,0 +1,34 @@
+
+#define MG_BEGIN_SERIES 1
+#define MG_CONTINUE_SERIES 2
+#define MG_END_SERIES 3
+#define MG_STANDALONE 4
+
+#define MG_COPY_UNK_TO_WORK 1
+#define MG_EXCHANGE_WORK 2
+#define MG_UPDATE_UNK 3
+
+#define MG_GEOM_1DCARTESIAN  1 
+#define MG_GEOM_1DCYLINDRICAL  2        
+#define MG_GEOM_1DSPHERICAL  3 
+#define MG_GEOM_2DCARTESIAN    4 
+#define MG_GEOM_2DCYLAXISYM  5 
+#define MG_GEOM_2DCYLPOLAR     6 
+#define MG_GEOM_3DCARTESIAN  7 
+#define MG_GEOM_3DCYLINDRICAL  8 
+#define MG_GEOM_3DSPHERICAL  9 
+#define MG_GEOM_INVALID        0 
+#define MG_GEOM_2DSPHAXISYM  10
+  
+#define MG_BND_PERIODIC   1 
+#define MG_BND_DIRICHLET  2 
+#define MG_BND_NEUMANN    3 
+#define MG_BND_GIVENVAL   4 
+#define MG_BND_GIVENGRAD  5 
+#define MG_BND_ISOLATED   0
+  
+  
+#define MG_NODES_ALL_NODES    0
+#define MG_NODES_LEAF_ONLY    1
+#define MG_NODES_PARENT_ONLY  2
+  

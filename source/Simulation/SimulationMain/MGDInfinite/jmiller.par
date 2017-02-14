@@ -1,0 +1,232 @@
+# Paramaters for the MGD inifinite medium simulation
+run_comment = "MGD test with infinite medium"
+log_file    = "mgdinfinite.log"
+basenm      = "mgdinfinite_"
+restart     = .false.
+
+
+##########################
+#                        #
+#     I/O PARAMETERS     #
+#                        #
+##########################
+checkpointFileIntervalTime = 1.0
+checkpointFileIntervalStep = 10
+checkpointFileNumber       = 0
+plotFileNumber             = 0
+
+
+########################################
+#                                      #
+#     RADIATION/OPACITY PARAMETERS     #
+#                                      #
+########################################
+useDiffuse      = .false.
+ 
+# Multigroup diffusion options:
+rt_useMGD       = .false.
+rt_mgdNumGroups = 4
+rt_mgdBounds_1  = 0.0
+rt_mgdBounds_2  = 2500.0
+rt_mgdBounds_3  = 3500.0
+rt_mgdBounds_4  = 5000.0
+rt_mgdBounds_5  = 100000.0
+
+useOpacity      = .false.
+op_emitConst    = 10.0
+op_transConst   = 10.0
+op_absorbConst  = 10.0
+
+rt_mgdXlBoundaryType = "outflow"
+rt_mgdXrBoundaryType = "outflow"
+rt_mgdYlBoundaryType = "outflow"
+rt_mgdYrBoundaryType = "outflow"
+rt_mgdZlBoundaryType = "outflow"
+rt_mgdZrBoundaryType = "outflow"
+
+
+####################################
+#                                  #
+#     HEAT EXCHANGE PARAMETERS     #
+#                                  #
+####################################
+useHeatexchange = .true.
+
+
+############################
+#                          #
+#     HYDRO PARAMETERS     #
+#                          #
+############################
+useHydro = .false.
+
+xl_boundary_type = "outflow"
+xr_boundary_type = "outflow"
+yl_boundary_type = "outflow"
+yr_boundary_type = "outflow"
+zl_boundary_type = "outflow"
+zr_boundary_type = "outflow"
+
+##########################
+#                        #
+#     EOS PARAMETERS     #
+#                        #
+##########################
+eosModeInit      = "dens_temp_gather"
+smallt           = 1.0
+smallx           = 1.0e-99
+eos_useLogTables = .false.
+
+##############################
+#                            #
+#     INITIAL CONDITIONS     #
+#                            #
+##############################
+
+sim_dtMassFrac = 1.0
+ms_dtA         = 2.5
+ms_dtZ         = 1.0
+
+eos_dtEosType		= "eos_tab"
+eos_dtSubType		= "ionmix4"	  
+eos_dtTableFile 	= "he-imx-005.cn4"
+
+# density conversion = 2.4088567160000007e+23
+
+# sim_rho  = 1.0e-5
+# sim_tele = 4210000
+# sim_tion = 4200000
+
+# eos_tabInterpolation = "linear"
+
+# ------------------------------------------------------------------------
+# 				Checks
+# ------------------------------------------------------------------------
+
+# # Borders
+# #      lower temp			           passed
+                           sim_rho  = 1.0e-5
+                           sim_tele = 30000
+                           sim_tion = 31000
+
+# #      upper temp			           passed
+                           # sim_rho  = 1.0e-5
+                           # sim_tele = 1.500001+09
+                           # sim_tion = 1.5+09
+
+# #      lower dens			   	   passed
+                           # sim_rho  = 5e-8
+                           # sim_tele = 421000
+                           # sim_tion = 420000
+
+# #      upper dens			           FAILED
+                           # sim_rho  = 0.0003
+                           # sim_tele = 4210000
+                           # sim_tion = 4200000
+
+
+
+# # Outside
+
+# #      lower temp			           FAILED
+                           # sim_rho  = 1.0e-5
+                           # sim_tele = 11000
+                           # sim_tion = 10000
+
+# #      upper temp			           FAILED
+                           # sim_rho  = 1.0e-5
+                           # sim_tele = 3e9
+                           # sim_tion = 3.1e9
+
+# #      lower dens			           
+#                            sim_rho  = 1.0e-5
+#                            sim_tele = 4210000
+#                            sim_tion = 4200000
+
+# #      upper dens			           
+#                            sim_rho  = 1.0e-5
+#                            sim_tele = 4210000
+#                            sim_tion = 4200000
+
+
+
+# # Border Corners
+
+# #      lower temp/lower dens		           passed
+                           # sim_rho  = 5.0e-8
+                           # sim_tele = 31000
+                           # sim_tion = 30000
+
+# #      lower temp/upper dens		           FAILED
+                           # sim_rho  = .0003
+                           # sim_tele = 31000
+                           # sim_tion = 30000
+
+# #      upper temp/lower dens		           passed
+                           # sim_rho  = 5.0e-5
+                           # sim_tele = 1.51e9
+                           # sim_tion = 1.5e9
+
+# #      upper temp/upper dens		           
+#                            sim_rho  = 1.0e-5
+#                            sim_tele = 4210000
+#                            sim_tion = 4200000
+
+
+
+# # Outside Corners
+
+# #      lower temp/lower dens		           
+#                            sim_rho  = 1.0e-5
+#                            sim_tele = 4210000
+#                            sim_tion = 4200000
+
+# #      lower temp/upper dens		           
+#                            sim_rho  = 1.0e-5
+#                            sim_tele = 4210000
+#                            sim_tion = 4200000
+
+# #      upper temp/lower dens		           
+#                            sim_rho  = 1.0e-5
+#                            sim_tele = 4210000
+#                            sim_tion = 4200000
+
+# #      upper temp/upper dens		           
+#                            sim_rho  = 1.0e-5
+#                            sim_tele = 4210000
+#                            sim_tion = 4200000
+
+
+
+
+#######################
+#   TIME PARAMETERS   #
+#######################
+dt_diff_factor = 1.0e+10 # Disable diffusion dt
+hx_dtFactor    = 0.01
+tmax           = 0.1e-08
+dtmin          = 1.0e-15
+dtinit         = 1.0e-14
+dtmax          = 0.1e-9
+nend           = 900
+
+
+###########################
+#                         #
+#     MESH PARAMETERS     #
+#                         #
+###########################
+geometry = "cartesian"
+
+# Domain size:
+xmin = 0.0
+xmax = 1.0
+
+# Total number of blocks:
+nblockx = 1
+nblocky = 1
+nblockz = 1
+
+lrefine_max = 1
+lrefine_min = 1
+refine_var_1 = "dens"

@@ -1,0 +1,49 @@
+
+physics/materialProperties/Conductivity
+    useConductivity [BOOLEAN] CONSTANT [FALSE]
+        flags whether the conductivity material property is being used
+
+physics/materialProperties/Conductivity/ConductivityMain
+    useConductivity [BOOLEAN] [TRUE]
+        flags whether the conductivity material property is being used
+
+physics/materialProperties/Conductivity/ConductivityMain/Constant
+    cond_constantIsochoric [REAL] [1.0]
+        Valid Values: Unconstrained
+
+
+physics/materialProperties/Conductivity/ConductivityMain/Constant-diff
+    diff_constant [REAL] [1.0]
+        Valid Values: Unconstrained
+
+
+physics/materialProperties/Conductivity/ConductivityMain/PowerLaw
+    cond_DensityExponent [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    cond_K0 [REAL] [1.0]
+        Valid Values: Unconstrained
+        coefficient K0 for conductivity K = rho c_v K0 T^n , where n is given by
+        cond_TemperatureExponent.
+    cond_TemperatureExponent [REAL] [1.0]
+        Valid Values: Unconstrained
+        Temperature exponent n. For n=0 you get constant conductivity. See D.
+        Mihalas & B. W. Mihalas 1984 p 551. For n=6, e.g., you get nonlinear
+        conduction as in Fig 103.1(b) there.
+
+physics/materialProperties/Conductivity/ConductivityMain/PowerLaw-gray
+    Raddiff_K0r [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    Raddiff_TemperatureExponent [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    cond_K0 [REAL] [1.0]
+        Valid Values: Unconstrained
+        coefficient K0 for conductivity K = rho c_v K0 T^n , where n is given by
+        cond_TemperatureExponent.
+    cond_TemperatureExponent [REAL] [1.0]
+        Valid Values: Unconstrained
+        Temperature exponent n. For n=0 you get constant conductivity. See D.
+        Mihalas & B. W. Mihalas 1984 p 551. For n=6, e.g., you get nonlinear
+        conduction as in Fig 103.1(b) there.

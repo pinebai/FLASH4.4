@@ -1,0 +1,36 @@
+#	Config file for the TreeRay module.
+
+REQUIRES Grid/GridSolvers/BHTree/Wunsch
+
+DEFAULT OpticalDepth
+
+PPDEFINE TREERAY
+
+D   useTreeRay       Whether TreeRay calculations should be performed.
+# Value is meant to be overridden if a TreeRayMain implementation gets included
+PARAMETER useTreeRay    BOOLEAN TRUE
+
+# healpix parameter NSIDE - controlling number of rays
+PARAMETER tr_nSide      INTEGER     1
+
+# parameters of the intersection list table
+PARAMETER tr_ilNR       INTEGER     50
+PARAMETER tr_ilNTheta   INTEGER     25
+PARAMETER tr_ilNPhi     INTEGER     50
+PARAMETER tr_ilNNS      INTEGER     25
+PARAMETER tr_ilFinePix  INTEGER     4
+
+# maximum distance for the column density calculation
+PARAMETER tr_bhMaxDist  REAL        1e99
+
+# boundary conditions for TreeRay in case Gravity is not used
+PARAMETER tr_boundary_type	  STRING  "periodic"
+
+# scaling factor for resolution of rays in radial direction
+# 1.0 means that the maximum resolution (close to the centre) will be the same
+# as the size of a single grid cell
+PARAMETER tr_bhRayRadRes  REAL        1.0
+
+# maximu allowed relative error in radiation energy density - for iterations
+PARAMETER tr_bhErrControl STRING      "erad_cell" [ "erad_cell", "erad_tot", "mion_tot" ]
+PARAMETER tr_bhRelErr REAL            0.01

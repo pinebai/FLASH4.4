@@ -1,0 +1,5 @@
+# Request the Roots unit.
+#
+#     ./setup unitTest/Roots/x2Polynomials -auto
+#
+REQUIRES  numericalTools/Roots

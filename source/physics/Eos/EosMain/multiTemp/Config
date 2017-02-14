@@ -1,0 +1,53 @@
+
+# Negotiate between different versions of Eos_getParameters.F90: let the file under Multitype win.
+# Negotiate between different versions of eos_idealGamma.F90: let the files under MatRad3 win.
+# Negotiate between different versions of eos_mgamma.F90: let the files under MatRad3 win.
+CHILDORDER Gamma Multigamma Helmholtz MatRad3 Multitype
+
+D eint1Switch  OBSOLETE - a switch which tries to ensure that internal energy calculations for component 1
+D &            in a multiple-temperature setup
+D &            maintain sufficient precision. Important only if total energy for this component
+D &            is dominated by bulk kinetic energy.
+D & A value of -1 means to use the value of eintSwitch for eint1Switch.
+D eint2Switch  OBSOLETE - a switch which tries to ensure that internal energy calculations for component 2
+D &            in a multiple-temperature setup
+D &            maintain sufficient precision. See eint1Switch.
+D & A value of -1 means to use the value of eintSwitch for eint2Switch.
+D eint3Switch  OBSOLETE - a switch which tries to ensure that internal energy calculations for component 3
+D &            in a multiple-temperature setup
+D &            maintain sufficient precision. See eint1Switch.
+D & A value of -1 means to use the value of eintSwitch for eint3Switch.
+
+PARAMETER    eint1Switch   REAL    -1.0   
+PARAMETER    eint2Switch   REAL    -1.0  
+PARAMETER    eint3Switch   REAL    -1.0  
+
+D eos_combinedTempRule determines for multiTemp Eos implementations what a call to
+D & Eos will return in the EOS_TEMP part of eosData, when Eos is called in a mode
+D & for which EOS_TEMP is an output and different component temperatures can be returned.
+D & 1 for ion temperature EOS_TEMPION;
+D & 2 for electron temperature EOS_TEMPELE;
+D & 3 for radiation temperature EOS_TEMPRAD;
+D & 0 for the temperature that would result in the same
+D &   specific internal energy as given if all components where
+D &   equilibrated at the same temperature, which may be expensive
+D &   to compute;
+D & -10 for undefined, i.e., we do not care what is returned.
+D & Currently only implemented for Multitype Eos.
+PARAMETER eos_combinedTempRule INTEGER -10 [-10, 0 ... 3]
+
+# The following are for use by all implementations of multiTemp Eos; but not all implementations
+# use them in the same way.
+D    eos_smallEion   a floor value used for the ion component of internal energy by the Eos unit
+D    eos_smallEele   a floor value used for the electron component of internal energy in the Eos unit
+D    eos_smallErad   a floor value used for the radiation component of internal energy in the Eos unit
+PARAMETER    eos_smallEion   REAL    0.0
+PARAMETER    eos_smallEele   REAL    0.0
+PARAMETER    eos_smallErad   REAL    0.0
+
+# For debugging - some Eos routines put diagnostic info into these
+# variables if they are defined.
+D tite_variable Eos_putData saves ratio of ion temperature to electron temperature here.
+D pipe_variable Eos_putData saves ratio of ion pressure to electron pressure here.
+VARIABLE TITE  # Temp. ions / temp. electrons
+VARIABLE PIPE  # Pres. ions / pres. electrons

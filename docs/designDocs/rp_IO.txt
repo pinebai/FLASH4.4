@@ -1,0 +1,248 @@
+
+IO/IOMain
+    alwaysComputeUserVars [BOOLEAN] [true]
+        Allows the user to force the computation of user variables (i.e. those
+        computed by Grid_computeUserVars) for all checkpoint files.  Defaults to
+        true.  If set to false, lone calls to IO_writeCheckpoint will not call
+        Grid_computeUserVars.  Plotfiles always call Grid_computeUserVars.
+    alwaysRestrictCheckpoint [BOOLEAN] [true]
+        Allows the user to choose whether checkpoint file data is always
+        restricted, so all ancestor blocks have valid data. The default is true.
+        It can be set to false for debugging purposes, in which case only the
+        data from IO_output will be guaranteed to have fully restricted data. 
+        See the User's guide for more information.
+    basenm [STRING] ["flash_"]
+        Valid Values: Unconstrained
+        Base name for checkpoint files
+    bytePack [BOOLEAN] [FALSE]
+        compress plotfile data to bytes !!Only implemented with UG in hdf5 !!!
+        !!Not tested
+    checkpointFileIntervalStep [INTEGER] [0]
+        Valid Values: Unconstrained
+        Checkpoint after this many steps
+    checkpointFileIntervalTime [REAL] [1.]
+        Valid Values: Unconstrained
+        Checkpoint after this much time
+    checkpointFileIntervalZ [REAL] [HUGE(1.)]
+        Valid Values: Unconstrained
+
+    checkpointFileNumber [INTEGER] [0]
+        Valid Values: Unconstrained
+        Initial checkpoint file number (used for restarts as well)
+    chkGuardCellsInput [BOOLEAN] CONSTANT [FALSE]
+        if true guardcells are read from the checkpoint file. Default is false
+        where only interior cells are read. Currently only implemented with hdf5
+        parallel paramesh IO implementation
+    chkGuardCellsOutput [BOOLEAN] CONSTANT [FALSE]
+        if true guardcells are written the checkpoint file. Default is false
+        where only interior cells are written. Currently only implemented with
+        hdf5 parallel paramesh IO implementation
+    corners [BOOLEAN] [FALSE]
+        does nothing.  However, it is part of the checkpoint file specification,
+        so we retain the checkpoint entry, but force it to be .false.. It was
+        used in FLASH2 to interpolate the data to the zone corners before
+        storing the data in the plotfile (for creating improved iso-surfaces).
+    fileFormatVersion [INTEGER] [9]
+        Valid Values: Unconstrained
+        Integer value specifying the file format type
+    forcedPlotFileNumber [INTEGER] [0]
+        Valid Values: Unconstrained
+
+    ignoreForcedPlot [BOOLEAN] [false]
+
+    io_writeMscalarIntegrals [BOOLEAN] [FALSE]
+        Should density integrals for all mass scalars be written to the
+        stats_file (.dat file)?  This runtime parameter is handled in the
+        default IO_writeIntegralQuantities implementation in IOMain, and may
+        have no effect if a simulation overrides that implementation.
+    memory_stat_freq [INTEGER] [100000]
+        Valid Values: Unconstrained
+        Specify the number of timesteps between memory statistic dumps to
+        flash.log !!NOT Yet Implemented in F3
+    outputSplitNum [INTEGER] [1]
+        Valid Values: Unconstrained
+        Split checkpoint, plotfiles, particle plots into this many files per
+        dump Not fully implemented, only hdf5 parallel. use at own risk
+    output_directory [STRING] [""]
+        Valid Values: Unconstrained
+        output dir for checkpoint file, can be absolute or relative path
+    plotFileIntervalStep [INTEGER] [0]
+        Valid Values: Unconstrained
+        Write a plotfile after this many steps
+    plotFileIntervalTime [REAL] [1.]
+        Valid Values: Unconstrained
+        Write a plotfile after this much time
+    plotFileIntervalZ [REAL] [HUGE(1.)]
+        Valid Values: Unconstrained
+        Write a plotfile after this change in z
+    plotFileNumber [INTEGER] [0]
+        Valid Values: Unconstrained
+        Initial plot file number
+    plot_grid_var_1 [STRING] ["none"]
+        Valid Values: Unconstrained
+        Allows user to output specific scratch grid vars Up to 12 choices are
+        allowed.  If plot_grid_var_X is set to "none" then no variable will be
+        saved. The parameter should have the same name as the variable
+        corresponding to it. For exampe, if a variable is declared GRID_VAR
+        vrtz, to write that grid variable to a plotfile a parameter should be
+        declared as PARAMETER plot_grid_var_X STRING "vrtz"
+    plot_grid_var_10 [STRING] ["none"]
+        Valid Values: Unconstrained
+
+    plot_grid_var_11 [STRING] ["none"]
+        Valid Values: Unconstrained
+
+    plot_grid_var_12 [STRING] ["none"]
+        Valid Values: Unconstrained
+
+    plot_grid_var_2 [STRING] ["none"]
+        Valid Values: Unconstrained
+
+    plot_grid_var_3 [STRING] ["none"]
+        Valid Values: Unconstrained
+
+    plot_grid_var_4 [STRING] ["none"]
+        Valid Values: Unconstrained
+
+    plot_grid_var_5 [STRING] ["none"]
+        Valid Values: Unconstrained
+
+    plot_grid_var_6 [STRING] ["none"]
+        Valid Values: Unconstrained
+
+    plot_grid_var_7 [STRING] ["none"]
+        Valid Values: Unconstrained
+
+    plot_grid_var_8 [STRING] ["none"]
+        Valid Values: Unconstrained
+
+    plot_grid_var_9 [STRING] ["none"]
+        Valid Values: Unconstrained
+
+    plot_var_1 [STRING] ["none"]
+        Valid Values: Unconstrained
+
+    plot_var_10 [STRING] ["none"]
+        Valid Values: Unconstrained
+
+    plot_var_11 [STRING] ["none"]
+        Valid Values: Unconstrained
+
+    plot_var_12 [STRING] ["none"]
+        Valid Values: Unconstrained
+
+    plot_var_2 [STRING] ["none"]
+        Valid Values: Unconstrained
+
+    plot_var_3 [STRING] ["none"]
+        Valid Values: Unconstrained
+
+    plot_var_4 [STRING] ["none"]
+        Valid Values: Unconstrained
+
+    plot_var_5 [STRING] ["none"]
+        Valid Values: Unconstrained
+
+    plot_var_6 [STRING] ["none"]
+        Valid Values: Unconstrained
+
+    plot_var_7 [STRING] ["none"]
+        Valid Values: Unconstrained
+
+    plot_var_8 [STRING] ["none"]
+        Valid Values: Unconstrained
+
+    plot_var_9 [STRING] ["none"]
+        Valid Values: Unconstrained
+
+    plot_var_<N>, for N=1..MAX_PLOT_VARS [STRING] ["none"]
+        Valid Values: Unconstrained
+        (automatically generated by setup)
+    plotfileGridQuantityDP [BOOLEAN] [false]
+        If true, this sets the grid variables (unk, facevars, etc.) to be output
+        in double precision in plotfiles. Default value is false.
+    plotfileMetadataDP [BOOLEAN] [false]
+        Sets the floating point grid metadata fields to be written in double
+        precision if true in plotfiles.  Default value is false
+    prof_file [STRING] ["profile.dat"]
+        Valid Values: Unconstrained
+        !!NOT yet implemented yet in F3
+    rolling_checkpoint [INTEGER] [10000]
+        Valid Values: Unconstrained
+        Checkpoint file number cycling span. Only the last rolling_checkpoint
+        files are kept.
+    rss_limit [REAL] [-1.0]
+        Valid Values: Unconstrained
+        Maximum value (in MB) of largest resident set size (rss) before we
+        checkpoint and exit. Negative for no limit.  Only active if memory
+        statistics are being kept.
+    stats_file [STRING] ["flash.dat"]
+        Valid Values: Unconstrained
+        Name of the file integral quantities are written to (.dat file)
+    summaryOutputOnly [BOOLEAN] [false]
+        Makes FLASH write integrated quantities, i.e. summary data, only. FLASH
+        will only write a checkpoint, plot, or particle file if the user creates
+        a .dump_plotfile, .dump_checkpoint, .dump_restart, or
+        .dump_particle_file file.  A .kill file will still kill FLASH.
+    typeMatchedXfer [BOOLEAN] [true]
+        Ensures that floating point data transfers are type matched when using
+        HDF5.  This prevents HDF5 reverting to independent parallel I/O.
+    useCollectiveHDF5 [BOOLEAN] [true]
+        If true, all non-header, non-list datasets will be written using HDF5's
+        collective output mode otherwise, the independent access mode is used. 
+        Default value is true.
+    useLegacyLabels [BOOLEAN] [true]
+        If true, this stores mesh labels e.g. 'dens', 'pres' in a IO library
+        dataspace of 4 characters.  We may want to set it to false to use larger
+        labels e.g. 'density'
+    wall_clock_checkpoint [REAL] [43200.]
+        Valid Values: Unconstrained
+        Checkpoint after XX seconds (wallclock time) This is useful to ensure
+        that the job outputs a restart file before a queue window closes.
+    wr_integrals_freq [INTEGER] [1]
+        Valid Values: Unconstrained
+        Number of timesteps between writing to flash.dat
+
+IO/IOMain/hdf5/parallel/PM
+    chkGuardCellsInput [BOOLEAN] [false]
+        if true guardcells are read from the checkpoint file. Default is false
+        where only interior cells are read. Currently only implemented with hdf5
+        parallel paramesh IO implementation.
+    chkGuardCellsOutput [BOOLEAN] [false]
+        if true guardcells are written the checkpoint file. Default is false
+        where only interior cells are written. Currently only implemented with
+        hdf5 parallel paramesh IO implementation.
+
+IO/IOMain/hdf5/parallel/PM_argonne
+    packMeshChkReadHDF5 [BOOLEAN] [false]
+
+    packMeshChkWriteHDF5 [BOOLEAN] [false]
+
+    packMeshPlotWriteHDF5 [BOOLEAN] [true]
+        If true, this specifies that we pack the
+
+IO/IOMain/pnetcdf/typeSelection
+    asyncMeshChkReadPnet [BOOLEAN] [false]
+
+    asyncMeshChkWritePnet [BOOLEAN] [false]
+
+    asyncMeshPlotWritePnet [BOOLEAN] [false]
+        If true, this uses non blocking I/O writes
+
+IO/IOParticles
+    particleFileIntervalStep [INTEGER] [0]
+        Valid Values: Unconstrained
+        write a particle file after this many steps
+    particleFileIntervalTime [REAL] [1.]
+        Valid Values: Unconstrained
+        Write a particle plot after this much time
+    particleFileIntervalZ [REAL] [HUGE(1.)]
+        Valid Values: Unconstrained
+        write a particle file after this change in redshift
+    particleFileNumber [INTEGER] [0]
+        Valid Values: Unconstrained
+        Initial particle plot file number
+    writeParticleAll [BOOLEAN] [true]
+        Write the complete particles array to a particle file.
+    writeParticleSubset [BOOLEAN] [false]
+        Write user-defined subset(s) of the particles array to

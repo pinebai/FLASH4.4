@@ -1,0 +1,8 @@
+CONFLICTS Grid/GridMain/paramesh/Paramesh2
+CONFLICTS Grid/GridMain/paramesh/Paramesh3
+CONFLICTS Grid/GridMain/paramesh/Paramesh4dev
+CONFLICTS Grid/GridMain/paramesh/paramesh4
+CONFLICTS Grid/GridMain/paramesh/paramesh4/Paramesh4.0
+CONFLICTS Grid/GridMain/paramesh/paramesh4/Paramesh4dev
+
+PPDEFINE IO_HDF5_PARALLEL_UG

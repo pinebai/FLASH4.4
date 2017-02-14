@@ -1,0 +1,6 @@
+#  Configuration file for Eos test
+#  Simulation/SimulationMain/unitTest/Eos/Gamma
+
+REQUIRES physics/Eos/EosMain/Gamma
+
+

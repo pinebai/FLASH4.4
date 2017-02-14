@@ -1,0 +1,283 @@
+#Config file for Grid/GridMain/paramesh
+
+# Requires use of the Grid SetupVariable
+USESETUPVARS Grid
+
+IF Grid not in ["","PM4DEV","PM40","PM4","PM3","PM2","PM"]
+   SETUPERROR The variable Grid is not in ["","PM4DEV","PM40","PM4","PM3","PM2","PM"]
+ENDIF
+
+DEFAULT paramesh4
+
+IF Grid=='PM2'
+   DEFAULT Paramesh2
+ENDIF
+
+# interpolation comes after paramesh4 source while linking so it can override!
+CHILDORDER paramesh4 interpolation
+
+CONFLICTS IO/IOMain/hdf5/parallel/UG
+CONFLICTS IO/IOMain/hdf5/serial/UG
+
+# define preprocessor symbol FLASH_GRID_PARAMESH
+PPDEFINE FLASH_GRID_PARAMESH
+
+# Lines that begin with 'D' as in 'Description' will end up as
+# comment lines in the setup_params file.  setup_params is
+# written by the setup script and holds all the default 
+# values of parameters.  
+
+# !!! If you add a parameter, please add a description line
+# Format is D <parameter name> <description>
+
+
+D nblockx num initial blocks in x dir
+PARAMETER nblockx       INTEGER 1    
+
+D nblocky num initial blocks in y dir   
+PARAMETER nblocky       INTEGER 1    
+
+D nblockz num initial blocks in z dir   
+PARAMETER nblockz       INTEGER 1       
+
+D lrefine_min_init minimum AMR refinement level for initialization
+PARAMETER lrefine_min_init   INTEGER 1 [ 1 ... ]
+
+D lrefine_max maximum AMR refinement level
+PARAMETER lrefine_max   INTEGER 1 [ 1 ... ]
+
+D lrefine_min minimum AMR refinement level
+PARAMETER lrefine_min   INTEGER 1 [ 1 ... ]       
+
+D nrefs refine/derefine AMR grid every nrefs timesteps
+PARAMETER nrefs         INTEGER 2
+                                        
+D refine_var_count count of maximum allowed variable to be used
+D as refinement criterion
+PARAMETER refine_var_count INTEGER 4
+
+D refine_var_1 indicates 1st variable on which to refine
+PARAMETER refine_var_1 STRING "none"
+
+D refine_cutoff_1 threshold value to trigger refinement for refine_var_1
+PARAMETER refine_cutoff_1 REAL 0.8
+
+D derefine_cutoff_1 threshold value to trigger derefinement for refine_var_1
+PARAMETER derefine_cutoff_1 REAL 0.2
+
+D refine_filter_1 prevents error calculations to determine refinement from diverging numerically for refine_var_1
+PARAMETER refine_filter_1 REAL 0.01
+
+
+
+D refine_var_2 indicates 2nd variable on which to refine
+PARAMETER refine_var_2 STRING "none"
+
+D refine_cutoff_2 threshold value to trigger refinement for refine_var_2
+PARAMETER refine_cutoff_2 REAL 0.8
+
+D derefine_cutoff_2 threshold value to trigger derefinement for refine_var_2
+PARAMETER derefine_cutoff_2 REAL 0.2
+
+D refine_filter_2 prevents error calculations to determine refinement from diverging numerically for refine_var_1
+PARAMETER refine_filter_2 REAL 0.01
+
+
+D refine_var_3 indicates 3rd variable on which to refine
+PARAMETER refine_var_3 STRING "none"
+
+D refine_cutoff_3 threshold value to trigger refinement for refine_var_3
+PARAMETER refine_cutoff_3 REAL 0.8
+
+D derefine_cutoff_3 threshold value to trigger derefinement for refine_var_3
+PARAMETER derefine_cutoff_3 REAL 0.2
+
+D refine_filter_3 prevents error calculations to determine refinement from diverging numerically for refine_var_3
+PARAMETER refine_filter_3 REAL 0.01
+
+D refine_var_4 indicates 4th variable on which to refine
+PARAMETER refine_var_4 STRING "none"
+
+D refine_cutoff_4 threshold value to trigger refinement for refine_var_4
+PARAMETER refine_cutoff_4 REAL 0.8
+
+D derefine_cutoff_4 threshold value to trigger derefinement for refine_var_4
+PARAMETER derefine_cutoff_4 REAL 0.2
+
+D refine_filter_4 prevents error calculations to determine refinement from diverging numerically for refine_var_4
+PARAMETER refine_filter_4 REAL 0.01
+
+D refine_on_particle_count if true, the count of particles in blocks act as a refinement criterion
+PARAMETER refine_on_particle_count BOOLEAN FALSE
+
+D max_particles_per_blk   integer  if the number of particles in a block exceeds this, it must refine  when particle count is a refinement criterion
+PARAMETER max_particles_per_blk INTEGER 100
+
+D min_particles_per_blk   integer  if the number of particles in a block is below this, it may derefine when particle count is a refinement criterion
+PARAMETER min_particles_per_blk INTEGER 1
+
+D flux_correct turns on or off flux correction
+PARAMETER flux_correct BOOLEAN true
+
+D small             Cutoff value ... DEV: for what?
+PARAMETER small		REAL	1.E-10
+
+D smlrho            Cutoff value for density	
+PARAMETER smlrho	REAL	1.E-10	
+
+D smallp            Cutoff value for pressure
+PARAMETER smallp	REAL	1.E-10	
+
+D smallt            Cutoff value for temperature
+PARAMETER smallt	REAL	1.E-10	
+
+D smallu            Cutoff value for velocity
+PARAMETER smallu	REAL	1.E-10	
+
+D interpol_order  the default interpolation order when using
+D & "monotonic" interpolation routines
+PARAMETER interpol_order  INTEGER  2   [0,1,2]
+
+D convertToConsvdInMeshInterp indicates if appropriate variables are
+D & converted to conserved form during propagation within the interpolation
+D & routines invoked by Paramesh. This applies to interpolation (both
+D & "prolongation" and "restriction") in the course of refinement, 
+D & derefinement, or guardcell filling.
+D & This is the newer way of ensuring that solution variables are
+D & interpolated in the correct form. It avoids unnecessary
+D & conversions back and force and should replace the old
+D & mechanism enabled by runtime parameter "convertToConsvdForMeshCalls".
+D & However, it is only available with PARAMESH 3 or later.
+PARAMETER convertToConsvdInMeshInterp BOOLEAN TRUE
+
+D earlyBlockDistAdjustment If true, let Paramesh redistribute blocks
+D & across processors early, so that the block distribution chosen by
+D & Paramesh will be in effect when time evolution begins after restart.
+D & If earlyBlockDistAdjustment is false, the block distribution enacted
+D & by the IO unit when it read a checkpoint file will normally still be
+D & in effect when time evolution begins after a restart.
+D & This flag is ignored if not restarting from a checkpoint.
+PARAMETER earlyBlockDistAdjustment BOOLEAN TRUE
+
+D lrefine_del Try to reduce the maximum refinement level by this number
+D & of levels on a restart.
+PARAMETER lrefine_del INTEGER 0 [ 0 ... ]
+
+D gr_lrefineMaxRedDoByLogR Softly force effectively a lower lrefine_max
+D & depending on distance from center. See gr_lrefineMaxRedRadiusFact.
+PARAMETER gr_lrefineMaxRedDoByLogR BOOLEAN FALSE
+
+D gr_lrefineMaxRedRadiusFact factor that determines a minimum resolution
+D & (and thus maximum refinement level) based on distance from a center.
+D & See x_refine_center, y_refine_center, z_refine_center for the center
+D & coordinates.  This is approximately (linearly) equivalent to requiring
+D & a minimum *angular* resolution, within the limits set by the global
+D & lrefine_min and lrefine_max.  Only used when gr_lrefineMaxRedDoByLogR
+D & is TRUE.
+PARAMETER gr_lrefineMaxRedRadiusFact REAL 0.0 [ 0.0 ... ]
+
+D x_refine_center First coordinate of center for distance-based refinement patterns
+D y_refine_center Second coordinate of center for distance-based refinement patterns
+D z_refine_center Third coordinate of center for distance-based refinement patterns
+PARAMETER x_refine_center REAL 0.0
+PARAMETER y_refine_center REAL 0.0
+PARAMETER z_refine_center REAL 0.0
+
+D gr_lrefineMaxRedDoByTime Lower the effective lrefine_max as a function of time.
+D & See runtime parameters gr_lrefineMaxRedTRef, gr_lrefineMaxRedTimeScale,
+D & and gr_lrefineMaxRedLogBase.
+PARAMETER gr_lrefineMaxRedDoByTime BOOLEAN FALSE
+
+D gr_lrefineMaxRedTimeScale the time scale for effectively lowering lrefine_max:
+D & The first reduction takes place at t=gr_lrefineMaxRedTRef+gr_lrefineMaxRedTimeScale.
+PARAMETER gr_lrefineMaxRedTimeScale REAL 1.0	[ TINY ... ]
+
+D	 gr_lrefineMaxRedTRef reference time for time-based max level reduction.
+D & The effective reduction of lrefine_max only kicks in for times greater than
+D & gr_lrefineMaxRedTRef. The first time lrefine_max is effectively
+D & lowered actually happens at t=gr_lrefineMaxRedTRef+gr_lrefineMaxRedTimeScale.
+PARAMETER gr_lrefineMaxRedTRef	REAL	0.0
+
+D	 gr_lrefineMaxRedLogBase Logarithm base for determining when repeated
+D & reductions in effective lrefine_max should happen. The nth reduction will
+D & happen at 
+D & t=gr_lrefineMaxRedTRef+gr_lrefineMaxRedTimeScale*gr_lrefineMaxRedLogBase**(n-1).
+PARAMETER gr_lrefineMaxRedLogBase	REAL	10.0	[ 1.0 ... ]
+
+D	 gr_restrictAllMethod select a method to use for data restriction all the
+D & way up the tree of blocks.  This this global data restriction is usually done when
+D & IO_output is called, before the actual writing of plot or checkpoint data, so
+D & that non-leaf blocks in plot and checkpoint files will have meaningful data.
+D & Data restrictions that happen as part of guard cell filling or within multigrid
+D & solvers are not affected by this setting.
+D & For PARAMESH 2, this runtime parameter is currently ignored.
+D & With PARAMESH 4, the following values are recognized:  0: No restriction is done.
+D & 1: The original method, implemented in gr_restrictTree. 2: New method, implemented
+D & using mpi_amr_restrict_fulltree. 3: New method, implemented using Grid_restrictByLevels.
+PARAMETER gr_restrictAllMethod	INTEGER	3	[ 0 ... 3 ]
+
+
+D gr_lrefineMaxByTime This parameter activates the ability to manually
+D & specify values for lrefine_max as a function of time. You can change
+D & the value of lrefine_max a total of 20 times. The parameters
+D & gr_lrefmaxTime_N (where N is a number from 1 to 20) tell FLASH the 
+D & times at which lrefine_max changes will occur. The analogous parameters
+D & gr_lrefmaxTimeValue_N (where N is a number from 1 to 20) tell FLASH  
+D &
+D & the value of lrefine_max to use at time gr_lrefmaxTime_N. For example,
+D & specifying the following lines in your flash.par file tells FLASH to
+D & use an lrefine_max value of 10 at t = 1.0e-09 s and a value of 11 at t
+D & = 2.0e-09 s:
+D &
+D & gr_lrefmaxTime_1 = 1.0e-09
+D & gr_lrefmaxTimeValue_1 = 10
+D & gr_lrefmaxTime_2 = 2.0e-09
+D & gr_lrefmaxTimeValue_2 = 10
+D & .
+D & NOTE: the time values must be in sequential order!
+PARAMETER gr_lrefineMaxByTime BOOLEAN FALSE
+
+PPDEFINE GR_LREFMAXTIMES 20
+
+PARAMETER gr_lrefmaxTime_1  REAL -1.0
+PARAMETER gr_lrefmaxTime_2  REAL -1.0
+PARAMETER gr_lrefmaxTime_3  REAL -1.0
+PARAMETER gr_lrefmaxTime_4  REAL -1.0
+PARAMETER gr_lrefmaxTime_5  REAL -1.0
+PARAMETER gr_lrefmaxTime_6  REAL -1.0
+PARAMETER gr_lrefmaxTime_7  REAL -1.0
+PARAMETER gr_lrefmaxTime_8  REAL -1.0
+PARAMETER gr_lrefmaxTime_9  REAL -1.0
+PARAMETER gr_lrefmaxTime_10 REAL -1.0
+PARAMETER gr_lrefmaxTime_11 REAL -1.0
+PARAMETER gr_lrefmaxTime_12 REAL -1.0
+PARAMETER gr_lrefmaxTime_13 REAL -1.0
+PARAMETER gr_lrefmaxTime_14 REAL -1.0
+PARAMETER gr_lrefmaxTime_15 REAL -1.0
+PARAMETER gr_lrefmaxTime_16 REAL -1.0
+PARAMETER gr_lrefmaxTime_17 REAL -1.0
+PARAMETER gr_lrefmaxTime_18 REAL -1.0
+PARAMETER gr_lrefmaxTime_19 REAL -1.0
+PARAMETER gr_lrefmaxTime_20 REAL -1.0
+
+PARAMETER gr_lrefmaxTimeValue_1  INTEGER -1
+PARAMETER gr_lrefmaxTimeValue_2  INTEGER -1
+PARAMETER gr_lrefmaxTimeValue_3  INTEGER -1
+PARAMETER gr_lrefmaxTimeValue_4  INTEGER -1
+PARAMETER gr_lrefmaxTimeValue_5  INTEGER -1
+PARAMETER gr_lrefmaxTimeValue_6  INTEGER -1
+PARAMETER gr_lrefmaxTimeValue_7  INTEGER -1
+PARAMETER gr_lrefmaxTimeValue_8  INTEGER -1
+PARAMETER gr_lrefmaxTimeValue_9  INTEGER -1
+PARAMETER gr_lrefmaxTimeValue_10 INTEGER -1
+PARAMETER gr_lrefmaxTimeValue_11 INTEGER -1
+PARAMETER gr_lrefmaxTimeValue_12 INTEGER -1
+PARAMETER gr_lrefmaxTimeValue_13 INTEGER -1
+PARAMETER gr_lrefmaxTimeValue_14 INTEGER -1
+PARAMETER gr_lrefmaxTimeValue_15 INTEGER -1
+PARAMETER gr_lrefmaxTimeValue_16 INTEGER -1
+PARAMETER gr_lrefmaxTimeValue_17 INTEGER -1
+PARAMETER gr_lrefmaxTimeValue_18 INTEGER -1
+PARAMETER gr_lrefmaxTimeValue_19 INTEGER -1
+PARAMETER gr_lrefmaxTimeValue_20 INTEGER -1
+

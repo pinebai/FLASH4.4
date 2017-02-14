@@ -1,0 +1,9 @@
+#Configuration for cosomology test
+
+REQUIRES Driver
+REQUIRES physics/Cosmology/CosmologyMain
+REQUIRES physics/Cosmology/unitTest
+#REQUIRES physics/Hydro
+
+PARAMETER eintSwitch REAL 0.0
+

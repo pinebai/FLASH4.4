@@ -1,0 +1,29 @@
+# Makefile to create a program which tests the contiguous 
+# conversion procedures independently of FLASH.
+
+MF      = UnitTest_Makefile
+FC      = gfortran
+FFLAGS  = -g -std=f95 -Wall -pedantic-errors -fbounds-check \
+	-fimplicit-none -Wconversion -Wunderflow \
+	-Wimplicit-interface -fbacktrace -fdump-core -Werror \
+	-ffpe-trap=invalid,zero,overflow,underflow \
+	-finit-real=nan -finit-integer=-9999
+INCLS   =
+LIBS    =
+SRC     = ut_conversionInterface.F90 \
+	ut_convertToArrayIndicies.F90 \
+	ut_convertToMemoryOffset.F90 \
+	UnitTest_ContiguousConversion.F90
+
+OBJ     = $(SRC:.F90=.o)
+EXE     = UnitTest_ContiguousConversion
+
+
+all:    $(OBJ)
+	$(FC) $(FFLAGS) -o $(EXE) $(OBJ) $(LIBS)
+
+%.o:    %.F90
+	$(FC) -c $< $(FFLAGS) $(INCLS) -o $@
+
+clean:
+	rm -f $(OBJ) $(EXE) *.mod

@@ -1,0 +1,6 @@
+#Config for Grid/GridParticles/UG
+
+REQUIRES Grid/GridMain/UG
+
+SUGGEST IO/IOParticles/hdf5/serial   IO/IOParticles/hdf5/parallel   IO/IOParticles/pnetcdf
+

@@ -1,0 +1,21 @@
+This is the original PFFT test.
+
+In order for this test to succeed we have provided a custom
+Grid_solvePoisson.  We have used the same Grid_solvePoisson as was in
+trunk at version 9289.  We have done this because this test is not a
+standard finite difference problem (as is currently handled by the PFFT
+solver).
+
+Marcos mentioned that this test may be a spectral problem because the
+solutions at the end of the unit test are exceptionally good, e.g:
+
+ Processor 0 the result is T 7.993605777301127E-15 7.993605777301127E-15
+     Returned from Grid_unitTest
+ Processor 1 the result is T 1.421085471520200E-14 1.421085471520200E-14
+     Returned from Grid_unitTest
+ Processor 2 the result is T 1.421085471520200E-14 1.421085471520200E-14
+
+You would never get solutions this good when approximating a function
+on a finite-differenced grid!
+
+What shall we do with this test???

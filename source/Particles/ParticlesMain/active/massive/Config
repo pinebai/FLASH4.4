@@ -1,0 +1,32 @@
+#  Configuration file for the active particle subunit.  Active particles
+#  contribute to force fields and respond to them by accelerating.
+# [/source/Particles/timeIntegration/active]
+
+REQUIRES Grid/GridParticles/GridParticlesMapToMesh
+REQUESTS Particles/ParticlesForces/longRange/gravity/ParticleMesh
+
+
+EXCLUSIVE Leapfrog LeapfrogCosmo Euler
+
+#  Submodules:
+
+#    shortRange            Methods for handling short-range forces.
+#    longRange             Methods for handling long-range forces.
+
+DEFAULT Leapfrog
+
+
+#DEV: CD. The PartIntegrator variable makes sense only if 
+#we have one particle type.  It seems it was never used anyway, 
+#as PartIntegrator is not in any setup shortcut or test suite 
+#setup line.
+#USESETUPVARS PartIntegrator
+#IF PartIntegrator == "LeapFrog"
+#  DEFAULT LeapFrogActive
+#ELSEIF PartIntegrator == "LeapFrogCosmo"
+#  DEFAULT LeapFrogCosmoActive
+#ELSEIF PartIntegrator == "EulerActive"
+#  DEFAULT EulerActive
+#ELSEIF PartIntegrator <> ""
+#  SETUPERROR PartIntegrator has an invalid value
+#ENDIF

@@ -1,0 +1,140 @@
+
+PARTICLETYPE ACTIVE INITMETHOD CUSTOM MAPMETHOD WEIGHTED ADVMETHOD CHARGED 
+REQUIRES Particles/ParticlesMapping/meshWeighting/CIC
+
+REQUIRES flashUtilities/rng
+
+VARIABLE pden TYPE: PER_VOLUME   # grid mass density [kg/m^3]
+VARIABLE cden TYPE: PER_VOLUME   # grid charge density [C/m^3]
+
+# Grid cell magnetic field [T] 
+VARIABLE grbx  TYPE: GENERIC
+VARIABLE grby  TYPE: GENERIC
+VARIABLE grbz  TYPE: GENERIC
+
+# Grid cell magnetic field [T].   Temporary storage for leapfrogging
+VARIABLE gbx0  TYPE: GENERIC
+VARIABLE gby0  TYPE: GENERIC
+VARIABLE gbz0  TYPE: GENERIC
+
+# Grid cell magnetic field [T].   Background field
+VARIABLE gbx1  TYPE: GENERIC
+VARIABLE gby1  TYPE: GENERIC
+VARIABLE gbz1  TYPE: GENERIC
+
+# Grid cell electric field [V/m] 
+VARIABLE grex  TYPE: GENERIC
+VARIABLE grey  TYPE: GENERIC
+VARIABLE grez  TYPE: GENERIC
+
+# Grid cell reduced electric field [V/m]
+# Without resistive term, for moving the ions 
+VARIABLE gepx  TYPE: GENERIC 
+VARIABLE gepy  TYPE: GENERIC 
+VARIABLE gepz  TYPE: GENERIC 
+
+# Grid total current density vector [C/m^2/s = A/m^2] 
+VARIABLE grjx  TYPE: PER_VOLUME
+VARIABLE grjy  TYPE: PER_VOLUME
+VARIABLE grjz  TYPE: PER_VOLUME
+
+# Grid ionic current density vector [C/m^2/s] 
+VARIABLE gjix  TYPE: PER_VOLUME
+VARIABLE gjiy  TYPE: PER_VOLUME
+VARIABLE gjiz  TYPE: PER_VOLUME
+
+# Resistivity [Ohm m]
+VARIABLE gres  TYPE: PER_VOLUME
+
+PARTICLEPROP specie REAL  # type of particle 
+# For active particles "mass" is defined
+PARTICLEPROP mass   REAL     # mass of the particle [kg]
+PARTICLEPROP charge REAL     # charge of the particle [C]
+
+# Particle current vector [C/m^2/s]
+PARTICLEPROP jx REAL
+PARTICLEPROP jy REAL
+PARTICLEPROP jz REAL
+
+# Particle magnetic field [T]
+PARTICLEPROP bx REAL
+PARTICLEPROP by REAL
+PARTICLEPROP bz REAL
+
+# Particle background magnetic field [T]
+PARTICLEPROP bx1 REAL
+PARTICLEPROP by1 REAL
+PARTICLEPROP bz1 REAL
+
+# Particle electric field [V/m]
+PARTICLEPROP ex REAL
+PARTICLEPROP ey REAL
+PARTICLEPROP ez REAL
+
+# Particle temporary vector (for positions and velocity). 
+PARTICLEPROP tmpx REAL
+PARTICLEPROP tmpy REAL
+PARTICLEPROP tmpz REAL
+
+# Needed by Particles_longRangeForce.F90
+PARTICLEPROP accx     REAL       # x-acceleration
+PARTICLEPROP accy     REAL       # y-acceleration
+PARTICLEPROP accz     REAL       # z-acceleration
+
+### plasma parameters 
+D    pt_picPname_1   Name of species number 1
+PARAMETER pt_picPname_1 STRING "H+"
+D    pt_picPmass_1   Mass of particle species 1 [amu]
+PARAMETER pt_picPmass_1 REAL 1.0   [0 to ]
+D    pt_picPcharge_1 Charge of particle species 1 [e]
+PARAMETER pt_picPcharge_1 REAL 1.0
+D    pt_picPdensity_1 Initial number density for particle species 1 [m^-3]
+PARAMETER pt_picPdensity_1 REAL 1.0   [0 to ]
+D    pt_picPtemp_1 Initial temperature for particle species 1 [K]
+PARAMETER pt_picPtemp_1 REAL 1.5e5   [0 to ]
+D    pt_picPvelx_1 Initial x bulk velocity for particle species 1 [m/s]
+PARAMETER pt_picPvelx_1 REAL 0.0
+D    pt_picPvely_1 Initial y bulk velocity for particle species 1 [m/s]
+PARAMETER pt_picPvely_1 REAL 0.0
+D    pt_picPvelz_1 Initial z bulk velocity for particle species 1 [m/s]
+PARAMETER pt_picPvelz_1 REAL 0.0
+D    pt_picPpc_1 Macro particles per cell of species 1
+PARAMETER pt_picPpc_1 INTEGER 0 
+
+D    pt_picPname_2   Name of species number 2
+PARAMETER pt_picPname_2 STRING "H+ beam"
+D    pt_picPmass_2   Mass of particle species 2 [amu]
+PARAMETER pt_picPmass_2 REAL 1.0   [0 to ]
+D    pt_picPcharge_2 Charge of particle species 2 [e]
+PARAMETER pt_picPcharge_2 REAL 1.0
+D    pt_picPdensity_2 Initial number density for particle species 2 [m^-3]
+PARAMETER pt_picPdensity_2 REAL 0.0   [0 to ]
+D    pt_picPtemp_2 Initial temperature for particle species 2 [K]
+PARAMETER pt_picPtemp_2 REAL 0.0   [0 to ]
+D    pt_picPvelx_2 Initial x bulk velocity for particle species 1 [m/s]
+PARAMETER pt_picPvelx_2 REAL 0.0
+D    pt_picPvely_2 Initial y bulk velocity for particle species 1 [m/s]
+PARAMETER pt_picPvely_2 REAL 0.0
+D    pt_picPvelz_2 Initial z bulk velocity for particle species 1 [m/s]
+PARAMETER pt_picPvelz_2 REAL 0.0
+D    pt_picPpc_2 Macro particles per cell of species 2
+PARAMETER pt_picPpc_2 INTEGER 0 
+
+
+D    pt_picTe Initial electron temperature [K]
+PARAMETER pt_picTe REAL 0.0         [0 to ]
+D    resistivity Plasma resistivity [C/(m*s)]
+PARAMETER pt_picResistivity REAL 0.0
+D    resistivity Plasma hyperresistivity [?]
+PARAMETER pt_picResistivityHyper REAL 0.0
+D    pt_picGam     Adiabatic exponent for electrons
+PARAMETER pt_picGam REAL -1.0
+
+D    pt_picCdensMin Minimum charge density as a fraction of the initial
+PARAMETER pt_picCdensMin REAL 0.0
+D    pt_picNsub       number of B-field update subcycles (must be odd)
+PARAMETER pt_picNsub INTEGER 3
+
+D    pt_picRng_seed   Seed for the RNG if >= 0; if < 0, do not
+D &  explicitly initialize the RNG seed for the hybrid PIC implementation.
+PARAMETER pt_picRng_seed              INTEGER 0

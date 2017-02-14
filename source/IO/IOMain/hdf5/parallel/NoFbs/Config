@@ -1,0 +1,2 @@
+CONFLICTS IO/IOParticles/hdf5/serial IO/IOParticles/pnetcdf
+PPDEFINE IO_HDF5_PARALLEL_NOFBS

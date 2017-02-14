@@ -1,0 +1,16 @@
+#Nightly tests run on lenovolaptop
+#Launch using ./flashTest.py -v -f jobs/mainBatch
+#The file at jobs/mainBatch is this file.
+
+#Unit tests
+#Eos - Single processor
+UnitTest/Eos/Multigamma/Chombo/AMR/3d
+UnitTest/Eos/Multigamma/Chombo/UG/3d
+
+#PFFT - Multiple processors and periodic BCs.
+UnitTest/PFFT_PoissonFD/Chombo/UG/3d
+
+#Comparison Tests
+#Sedov - Multiple processors and outflow BCs.
+Comparison/Sedov/Chombo/AMR/2d
+Comparison/Sedov/Chombo/UG/2d

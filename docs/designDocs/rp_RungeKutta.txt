@@ -1,0 +1,8 @@
+
+numericalTools/RungeKutta/RungeKuttaMain
+    rk_stepSizeConfinementFactor [REAL] [0.5]
+        Valid Values: 0.5 to 1.0
+        Reduction factor for step size reduction for confined RK runs
+    rk_stepSizeSafetyFactor [REAL] [0.9]
+        Valid Values: 0.5 to 1.0
+        The build in safety factor for new step size estimate

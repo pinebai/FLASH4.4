@@ -1,0 +1,25 @@
+
+physics/materialProperties/MagneticResistivity
+    useMagneticResistivity [BOOLEAN] CONSTANT [FALSE]
+        flags whether the magnetic resistivity material property is being used
+
+physics/materialProperties/MagneticResistivity/MagneticResistivityMain
+    useMagneticResistivity [BOOLEAN] [TRUE]
+        flags whether the magnetic resistivity material property is being used
+
+physics/materialProperties/MagneticResistivity/MagneticResistivityMain/Constant
+    resistivity [REAL] [0.0]
+        Valid Values: Unconstrained
+
+
+physics/materialProperties/MagneticResistivity/MagneticResistivityMain/SpitzerHighZ
+    res_coef [REAL] [1.0]
+        Valid Values: 0.0 to INFTY
+        Constant coefficient for scaling the final resistivity
+    res_ieTimeCoef [REAL] [1.0]
+        Valid Values: 0.0 to INFTY
+        Constant coefficient for scaling ion/ele coupling time
+    res_maxRes [REAL] [-1.0]
+        Valid Values: -1.0, 0.0 to INFTY
+        Ceiling value applied to the magnetic resistivities; use -1.0 to
+        disable.

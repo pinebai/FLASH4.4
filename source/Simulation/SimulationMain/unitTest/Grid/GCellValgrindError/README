@@ -1,0 +1,8 @@
+Setup
+./setup unitTest/Grid/GCellValgrindError -3d -auto +nofbs  +noio -test
+
+Run
+mpiexec -n 2 $valgrind_mpich_log ./flash4 
+
+$ echo $valgrind_mpich_log
+valgrind --tool=memcheck --log-file=valgrind.log.%q{PMI_RANK} --time-stamp=yes --track-origins=yes --run-libc-freeres=yes

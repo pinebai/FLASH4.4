@@ -1,0 +1,8 @@
+REQUIRES physics/sourceTerms/Burn/BurnMain/parametricBurn/CONe2NSE
+
+PARAMETER rep_ne_frac       REAL         0.01
+PARAMETER max_dens          REAL         4.e9
+PARAMETER max_c_frac        REAL         1.0
+PARAMETER min_c_frac        REAL         0.3
+PARAMETER num_ldens         INTEGER      20
+PARAMETER num_c_frac        INTEGER      9

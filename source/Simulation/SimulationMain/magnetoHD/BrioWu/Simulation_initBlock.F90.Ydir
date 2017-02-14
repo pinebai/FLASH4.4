@@ -1,0 +1,277 @@
+!!****if* source/Simulation/SimulationMain/magnetoHD/BrioWu/Simulation_initBlock
+!!
+!! NAME
+!!
+!!  Simulation_initBlock
+!!
+!!
+!! SYNOPSIS
+!!
+!!  Simulation_initBlock(integer(in) :: blockID)
+!!
+!!
+!!
+!! DESCRIPTION
+!!
+!!  
+!!  Initializes fluid data for a specified block.
+!!  This version sets up the Brio-Wu MHD problem.
+!!
+!! 
+!!  Reference:   Brio, M. and Wu, C. C., J. Comput. Phys., 75, 400, 1988
+!!
+!! 
+!! ARGUMENTS
+!!
+!!  blockID -          the number of the block to update
+!!
+!! 
+!!
+!!***
+
+
+subroutine Simulation_initBlock(blockID)
+
+  use Simulation_data, ONLY : sim_gCell,   sim_posn,   sim_xcos,   sim_ycos,   sim_zcos,    &
+                              sim_rhoLeft, sim_uLeft,  sim_vLeft,  sim_wLeft,  sim_pLeft,   &
+                              sim_rhoRight,sim_uRight, sim_vRight, sim_wRight, sim_pRight,  &
+                              sim_bNormal, sim_gamma,  sim_smallX, sim_smallP, sim_killdivb,&
+                              sim_byLeft,  sim_byRight,sim_bzLeft, sim_bzRight, sim_meshMe
+
+  use Grid_interface, ONLY : Grid_getBlkIndexLimits, &
+                             Grid_getCellCoords, &
+                             Grid_getBlkPtr,     &
+                             Grid_releaseBlkPtr
+
+  implicit none
+
+#include "constants.h"
+#include "Flash.h"
+
+
+  !!$ Arguments -------------------
+  integer, intent(in) :: blockID
+  !!$------------------------------
+
+  integer :: i, j, k, n, istat, sizeX, sizeY, sizeZ
+  integer, dimension(2,MDIM) :: blkLimits, blkLimitsGC
+  real :: xx, xxL, xxR, yy, zz, lposn0, lposn
+  real, allocatable, dimension(:) :: xCoord,yCoord,zCoord, yCoordL, yCoordR
+  real :: enerZone, ekinZone, eintZone
+  real, pointer, dimension(:,:,:,:) :: solnData, facexData,faceyData
+
+
+  ! dump some output to stdout listing the paramters
+  if (sim_meshMe == MASTER_PE) then
+1    format (1X, 1P, 4(A7, E13.7, :, 1X))
+2    format (1X, 1P, 2(A7, E13.7, 1X), A7, I13)
+  endif
+
+  call Grid_getBlkIndexLimits(blockId,blkLimits,blkLimitsGC)
+
+  sizeX = blkLimitsGC(HIGH,IAXIS)-blkLimitsGC(LOW,IAXIS)+1
+  sizeY = blkLimitsGC(HIGH,JAXIS)-blkLimitsGC(LOW,JAXIS)+1
+  sizeZ = blkLimitsGC(HIGH,KAXIS)-blkLimitsGC(LOW,KAXIS)+1
+
+  allocate(xCoord(sizeX), stat=istat)
+  allocate(yCoordL(sizeX),stat=istat)  
+  allocate(yCoordR(sizeX),stat=istat)
+  allocate(yCoord(sizeY), stat=istat)
+  allocate(zCoord(sizeZ), stat=istat)
+
+  xCoord  = 0.0
+  yCoordL = 0.0
+  yCoordR = 0.0
+  yCoord  = 0.0
+  zCoord  = 0.0
+
+  if (NDIM == 3) call Grid_getCellCoords(KAXIS, blockID, CENTER,sim_gCell, zCoord, sizeZ)
+  if (NDIM >= 2) call Grid_getCellCoords(JAXIS, blockID, CENTER,sim_gCell, yCoord, sizeY)
+  call Grid_getCellCoords(IAXIS, blockID, CENTER,     sim_gCell, xCoord,  sizeX)
+  call Grid_getCellCoords(JAXIS, blockID, LEFT_EDGE,  sim_gCell, yCoordL, sizeY)
+  call Grid_getCellCoords(JAXIS, blockID, RIGHT_EDGE, sim_gCell, yCoordR, sizeY)
+!------------------------------------------------------------------------------
+
+  call Grid_getBlkPtr(blockID,solnData,CENTER)
+
+#if NFACE_VARS > 0
+  if (sim_killdivb) then
+     call Grid_getBlkPtr(blockID,facexData,FACEX)
+     call Grid_getBlkPtr(blockID,faceyData,FACEY)
+  endif
+#endif
+
+  ! Loop over cells in the block.
+  do k = blkLimitsGC(LOW,KAXIS),blkLimitsGC(HIGH,KAXIS)
+     !Cell left and right edges, width, and center (z-direction).
+     
+     zz = zCoord(k)
+     
+     !Where along the x-axis the shock intersects the xz-plane at
+     !the current value of z.
+     
+     lposn0 = sim_posn - zz*sim_zcos/sim_xcos
+     
+     do j = blkLimitsGC(LOW,JAXIS),blkLimitsGC(HIGH,JAXIS)
+        !Cell left and right edges, width, and center (y-direction).
+        yy = yCoord(j)
+        !The position of the shock in the current yz-row.
+        lposn = lposn0 - yy*sim_ycos/sim_xcos
+        lposn = 0.5
+        do i = blkLimitsGC(LOW,IAXIS),blkLimitsGC(HIGH,IAXIS)
+           !Cell left and right edges, width, and center (x-direction).
+           
+           ! Multiple species
+           !solnData(SPECIES_BEGIN,i,j,k)=1.0e0-(NSPECIES-1)*sim_smallX
+           do n=SPECIES_BEGIN,SPECIES_END
+              solnData(n,i,j,k)=sim_smallX
+           enddo
+
+           xx  = yCoord (j)
+           xxL = yCoordL(j)
+           xxR = yCoordR(j)
+
+           !Initialize cells to the left of the initial shock.
+           if (xxR .lt. lposn) then
+              solnData(DENS_VAR,i,j,k)  = sim_rhoLeft
+              solnData(PRES_VAR,i,j,k)  = sim_pLeft
+              solnData(VELX_VAR,i,j,k)  = sim_uLeft * sim_xcos
+              solnData(VELY_VAR,i,j,k)  = sim_vLeft * sim_ycos
+              solnData(VELZ_VAR,i,j,k)  = sim_wLeft * sim_zcos
+              
+              !Quick and dirty. Fix angles later.
+              solnData(MAGY_VAR,i,j,k)  = sim_bNormal
+              solnData(MAGX_VAR,i,j,k)  = sim_byLeft
+              solnData(MAGZ_VAR,i,j,k)  = sim_bzLeft
+
+
+              ! Cell face-centered variables for StaggeredMesh scheme
+#if NFACE_VARS > 0
+              if (sim_killdivb) then
+                 faceyData(MAG_FACE_VAR,i,j,k)=sim_bNormal
+                 facexData(MAG_FACE_VAR,i,j,k)=sim_byLeft
+              endif
+#endif
+
+              ! Initialize cells which straddle the shock.  Treat them as
+              ! though 1/2 of the cell lay to the left and 1/2 lay to the right.
+           elseif ((xxL .lt. lposn) .and. (xxR .gt. lposn)) then
+              
+              solnData(DENS_VAR,i,j,k)  = 0.5 * (sim_rhoLeft+ sim_rhoRight)
+              solnData(PRES_VAR,i,j,k)  = 0.5 * (sim_pLeft  + sim_pRight)
+              solnData(VELX_VAR,i,j,k)  = 0.5 * (sim_uLeft  + sim_uRight) * sim_xcos
+              solnData(VELY_VAR,i,j,k)  = 0.5 * (sim_vLeft  + sim_vRight) * sim_ycos
+              solnData(VELZ_VAR,i,j,k)  = 0.5 * (sim_wLeft  + sim_wRight) * sim_zcos
+              
+              ! Quick and dirty. Fix agnles later.
+              solnData(MAGY_VAR,i,j,k)  = sim_bNormal
+              solnData(MAGX_VAR,i,j,k)  = 0.5 * (sim_byLeft+sim_byRight)
+              solnData(MAGZ_VAR,i,j,k)  = 0.5 * (sim_bzLeft+sim_bzRight)
+
+              ! Cell face-centered variables for StaggeredMesh scheme
+#if NFACE_VARS > 0
+              if (sim_killdivb) then
+                 faceyData(MAG_FACE_VAR,i,j,k)=sim_bNormal
+                 facexData(MAG_FACE_VAR,i,j,k)=0.5 * (sim_byLeft+sim_byRight)
+              endif
+#endif
+
+              ! Initialize cells to the right of the initial shock.               
+           else
+                  
+              solnData(DENS_VAR,i,j,k)  = sim_rhoRight
+              solnData(PRES_VAR,i,j,k)  = sim_pRight
+              solnData(VELX_VAR,i,j,k)  = sim_uRight * sim_xcos
+              solnData(VELY_VAR,i,j,k)  = sim_vRight * sim_ycos
+              solnData(VELZ_VAR,i,j,k)  = sim_wRight * sim_zcos
+              
+              ! Quick and dirty. Fix agnles later.
+              solnData(MAGY_VAR,i,j,k)  = sim_bNormal
+              solnData(MAGX_VAR,i,j,k)  = sim_byRight
+              solnData(MAGZ_VAR,i,j,k)  = sim_bzRight
+
+              ! Cell face-centered variables for StaggeredMesh scheme
+#if NFACE_VARS > 0
+              if (sim_killdivb) then
+                 faceyData(MAG_FACE_VAR,i,j,k)=sim_bNormal
+                 facexData(MAG_FACE_VAR,i,j,k)=sim_byRight
+              endif
+#endif
+
+           endif
+
+           solnData(DIVB_VAR,i,j,k)  = 0.
+           solnData(MAGP_VAR,i,j,k)  = 0.5*(solnData(MAGX_VAR,i,j,k) **2 &
+                                          + solnData(MAGY_VAR,i,j,k) **2 &
+                                          + solnData(MAGZ_VAR,i,j,k) **2)
+
+           ! Compute the gas energy and set the gamma-values needed for the EOS
+           ekinZone = 0.5 * dot_product(solnData(VELX_VAR:VELZ_VAR,i,j,k),&
+                                        solnData(VELX_VAR:VELZ_VAR,i,j,k))
+
+           ! specific internal energy
+           eintZone = solnData(PRES_VAR,i,j,k)/(sim_gamma-1.)/solnData(DENS_VAR,i,j,k)
+
+           ! total specific gas energy
+           enerZone = eintZone + ekinZone
+
+           ! Take a limit value
+           enerZone = max(enerZone, sim_smallP)
+
+           solnData(ENER_VAR,i,j,k)=enerZone
+           solnData(EINT_VAR,i,j,k)=eintZone
+           solnData(GAMC_VAR,i,j,k)=sim_gamma
+           solnData(GAME_VAR,i,j,k)=sim_gamma
+
+        enddo
+     enddo
+  enddo
+
+
+#if NFACE_VARS > 0
+           if (sim_killdivb) then
+
+              do k=blkLimitsGC(LOW,KAXIS),blkLimitsGC(HIGH,KAXIS)
+                 i=blkLimitsGC(HIGH,IAXIS)+1
+                 do j=blkLimitsGC(LOW,JAXIS),blkLimitsGC(HIGH,JAXIS)
+                    facexData(MAG_FACE_VAR,i,j,k)=sim_bNormal
+                 enddo
+
+                 j=blkLimitsGC(HIGH,JAXIS)+1
+                 do i=blkLimitsGC(LOW,IAXIS),blkLimitsGC(HIGH,IAXIS)
+
+                    xx  = xCoord (i)
+                    xxL = yCoordL(i)
+                    xxR = yCoordR(i)
+
+                    if (xxR .lt. lposn) then
+                       facexData(MAG_FACE_VAR,i,j,k)=sim_byLeft
+                    elseif ((xxL .lt. lposn) .and. (xxR .gt. lposn)) then
+                       facexData(MAG_FACE_VAR,i,j,k)=0.5 * (sim_byLeft+sim_byRight)
+                    else
+                       facexData(MAG_FACE_VAR,i,j,k)=sim_byRight
+                    endif
+                 enddo
+              enddo
+
+           endif
+#endif
+
+  ! Release pointer
+  call Grid_releaseBlkPtr(blockID,solnData,CENTER)
+
+#if NFACE_VARS > 0
+  if (sim_killdivb) then
+     call Grid_releaseBlkPtr(blockID,facexData,FACEX)
+     call Grid_releaseBlkPtr(blockID,faceyData,FACEY)
+  endif
+#endif
+
+
+  deallocate(xCoord)
+  deallocate(yCoordL)
+  deallocate(yCoordR)
+  deallocate(yCoord)
+  deallocate(zCoord)
+  
+end subroutine Simulation_initBlock

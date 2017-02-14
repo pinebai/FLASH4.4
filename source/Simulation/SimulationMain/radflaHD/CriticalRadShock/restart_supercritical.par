@@ -1,0 +1,235 @@
+# PARAMETER FILE
+## Parameters file for radiative shock problem with grey nonequilibrium diffusion
+#
+#example use with species:
+# ./setup radflaHD/CriticalRadShock -auto -1d -maxblocks=500 mgd_meshgroups=1 -objdir=CritRadShock_new species=h1 ManualSpeciesDirectives=True +parallelio +uhd3tr
+#
+#example use without species:
+# ./setup radflaHD/CriticalRadShock -auto -1d -maxblocks=500 mgd_meshgroups=1 -objdir=CritRadShock_new +parallelio +uhd3tr IgnoreSpecies=True
+
+run_comment = "Radiative shock problem with grey nonequilibrium diffusion"
+log_file    = "supercritical_shock.log"
+basenm      = "supercritical_shock_"
+restart     = .TRUE.
+
+#########################
+#   OUTPUT PARAMETERS   #
+#########################
+checkpointFileIntervalTime = 500 # 1e15
+plotfileIntervalTime       = 1e3
+
+checkpointFileIntervalStep = 0
+plotfileIntervalStep       = 0
+
+checkpointFileNumber       = 11
+plotFileNumber             = 6
+
+nend                       = 1000000
+
+plot_var_1  = "dens"
+plot_var_2  = "temp"
+plot_var_3  = "pres"
+plot_var_4  = "prad"
+plot_var_5  = "ener"
+plot_var_6  = "eint"
+plot_var_7  = "eele"
+plot_var_8  = "erad"
+plot_var_9  = "trad"
+plot_var_10 = "tele"
+plot_var_11 = "fllm"
+plot_var_12 = "velx"
+plot_var_13 = "tion"
+plot_var_14 = "eion"
+
+##########################
+#   PHYSICS PARAMETERS   #
+##########################
+useHydro             = .true.
+useHeatexchange      = .false.
+useDiffuse           = .false.
+useConductivity      = .false.
+useEnergyDeposition  = .false.
+useRadiationPressure = .false.
+useIonizingRadiation = .false.
+
+### Material and EOS parameters:
+# Because of two matter fluids, mu = eos_singleSpeciesA / 2.0
+eos_singleSpeciesA = 1.0
+# ALWAYS set eos_singleSpeciesZ to 1.0
+eos_singleSpeciesZ = 1.0
+#eos_mu_mol = 0.5
+eosModeInit        = "dens_temp_gather"
+eosMode            = "dens_ie_recal_gather"
+hy_eosModeAfter    = "dens_ie_gather"
+gamma              = 1.66666666667
+gammaEle           = 1.66666666667
+gammaIon           = 1.66666666667
+eos_smallEele                   = 1.0e-31
+eos_smallErad                   = 0.0
+# What does TEMP_VAR represent:
+# 1 = Ions, 2 = Electrons, 3 = Radiation
+# 0 = Average if these equilibrated (expensive to compute)
+eos_combinedTempRule = 2
+
+### Multigroup diffusion options ###
+rt_useMGD        = .true.
+rt_computeDt     = .true.
+rt_mgdthetaD     = 0.5
+rt_mgdNumGroups  = 1
+rt_mgdBoundEntry = "grbd_manual"
+rt_mgdBounds_1   = 0.0
+rt_mgdBounds_2   = 10000000.0
+
+# HYPRE solver: print number of iters and final residual norm
+gr_hyprePrintSolveInfo = .false.
+
+# MGD Flux limiter options:
+rt_mgdFlMode     = "fl_levermorepomraning1981" # "fl_levermorepomraning1981" 
+rt_mgdFlCoef     = 1.0
+
+# Dimensions of the box:
+xmin = 0.0
+xmax = +7e10
+ymin = 0.0
+ymax = +2e10
+zmin = 0.0
+zmax = +2e10
+
+# Simulation setup parameters
+sim_rho  = 7.78e-10
+sim_tgas = 10.0
+sim_trad = 10.0
+sim_velx = -2.e6   # subcritical: 6 km/s; supercritical: 20 km/s
+
+# Set boundary conditions:
+xl_boundary_type = "reflecting"
+xr_boundary_type = "outflow"
+yl_boundary_type = "periodic"
+yr_boundary_type = "periodic"
+zl_boundary_type = "periodic"
+zr_boundary_type = "periodic"
+# NOTE: FLASH4 doesn't have the best set of radiation boundary
+# conditions available. They are 'reflecting/neumann', 'dirichlet', and 'vacuum'
+# 'neumann' or 'reflecting' : zero flux at boundary
+# 'dirichlet'               : fixed value at the boundary (set below as radiation temperature)
+# 'vacuum'                  : flux across boundary is twice the boundary energy value
+rt_mgdXlBoundaryType = "reflecting"
+rt_mgdXrBoundaryType = "vacuum"
+rt_mgdYlBoundaryType = "vacuum"
+rt_mgdYrBoundaryType = "vacuum"
+rt_mgdZlBoundaryType = "vacuum"
+rt_mgdZrBoundaryType = "vacuum"
+
+# The following apply only with "dirichlet" boundary
+# conditions and must be commented out otherwise
+rt_mgdXlBoundaryTemp = 10.0
+rt_mgdXrBoundaryTemp = 10.0
+rt_mgdYlBoundaryTemp = 10.0
+rt_mgdYrBoundaryTemp = 10.0
+rt_mgdZlBoundaryTemp = 10.0
+rt_mgdZrBoundaryTemp = 10.0
+
+
+#######################
+#   TIME PARAMETERS   #
+#######################
+dt_diff_factor = 1.0e+10
+rt_dtFactor    = 1.0e+10
+tmax           = 5.5e3
+dtinit         = 1.0e-10
+dtmin          = 1.0e-20
+dtmax          = 1.0e2
+
+#############################
+#   REFINEMENT PARAMETERS   #
+#############################
+lrefine_min     = 6
+lrefine_max     = 10
+refine_var_1 = "dens"
+refine_var_2 = "tele"
+refine_var_3 = "trad"
+
+interpol_order                 = 2
+
+#######################
+#   MESH PARAMETERS   #
+#######################
+geometry = cartesian
+
+# Total number of blocks:
+nblockx = 1
+nblocky = 1
+nblockz = 1
+
+# Number of processors in each logical direction:
+iProcs = 1
+jProcs = 1
+kProcs = 1
+
+# Number of cells (only used in non-fixed blocksize mode):
+iGridSize = 2000
+jGridSize = 2000
+kGridSize = 2000
+
+# MGD Opacity options:
+op_rosseland_mean_opacities_file = "RosselandMeanOpacities.dat"
+op_planck_mean_opacities_file = "PlanckMeanOpacities.dat"
+op_emitConst     = 3.115e-10
+op_transConst    = 3.115e-10
+op_absorbConst   = 3.115e-10
+
+# Hydro options:
+#smlrho              = 1.e-23
+#shockInstabilityFix = .false. # Carbuncle instability fix for the Roe solver
+cfl                            = 0.6
+updateHydroFluxes              = .TRUE.
+eintSwitch		       = 1e-4
+ppm_modifystates	       = .FALSE.
+use_cma_advection	       = .FALSE.
+
+##  SWITCHES SPECIFIC TO THE UNSPLIT HYDRO SOLVER               ##
+#       I. INTERPOLATION SCHEME:
+order           = 3          # Interpolation order (first/second/third/fifth order)
+slopeLimiter    = "minmod"   # Slope limiters (minmod, mc, vanLeer, hybrid, limited)
+LimitedSlopeBeta= 1.         # Slope parameter for the "limited" slope by Toro
+charLimiting    = .true.     # Characteristic limiting vs.Primitive limiting
+
+use_avisc	= .true.     # use artificial viscosity (originally for PPM)
+cvisc		=  0.1       # coefficient for artificial viscosity
+use_flattening  = .true.     # use flattening (dissipative) (originally for PPM)
+use_steepening  = .false.    # use contact steepening (originally for PPM)
+use_upwindTVD	= .false.    # use upwind biased TVD slope for PPM (need nguard=6)
+flux_correct	= .true.
+EOSforRiemann	= .false.
+transOrder	= 1
+use_auxEintEqn  = .TRUE.
+hydroComputeDtOption = -1
+hy_fPresInMomFlux = 0.0      # Percentage of pressure gradient for the momentum equation that is handled in momentum fluxes
+
+hy_3tmode = "castrolike"
+
+#       II. RIEMANN SOLVERS: 
+RiemannSolver   = "HLL"     # Roe, HLL, HLLC, LLF, Marquina
+entropy         = .true.     # Entropy fix for the Roe solver
+
+#       III. STRONG SHOCK HANDELING SCHEME:
+shockDetect     = .false.    # Shock Detect for numerical stability
+
+#ppmEintFluxConstructionMeth     = 0
+#ppmEintCompFluxConstructionMeth = 0 #(or 1) #Advect like any old mass scalar
+#ppmEnerFluxConstructionMeth     = 0
+
+
+hy_3Ttry_Arelated = .true.
+hy_3Ttry_B = 0
+hy_3Ttry_B_rad = 0
+#hy_3Ttry_D = 2.0 # (1.0) Trust Eele (and Erad), discard Eion # (2.0) Trust combined Eint, recalibrate all components
+#hy_3Ttry_E = 1
+#hy_3Ttry_F = 2
+#hy_3Ttry_G = 0
+#hy_3Ttry_Q = 0
+
+### Heat Exchange
+hx_dtFactor                    = 1.0e99
+hx_ieTimeCoef                  = 1.0e-6
+#hx_relTol                      = -1.0

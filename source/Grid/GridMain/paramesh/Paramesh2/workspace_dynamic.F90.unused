@@ -1,0 +1,64 @@
+!!****ih* source/Grid/GridMain/paramesh/Paramesh2/workspace_dynamic
+!!
+!! NAME
+!!
+!!    workspace(dynamic)
+!!
+!!
+!! SYNOPSIS
+!!
+!!   workspace_init(nguard, nxb, nyb, nzb, k2d, k3d)
+!!   workspace_init(integer,integer,integer,integer,integer,integer)
+!!
+!! DESCRIPTION
+!!
+!!   Allocates work space dynamically for use with paramesh 2.0
+!!  
+!! ARGUMENTS
+!!   nguard      number of guard cells
+!!   nxb         blocksize along x
+!!   nyb         blocksize along y
+!!   nzb         blocksize along z 
+!!   k2d 
+!!   k3d
+!!
+!!***
+module workspace
+	
+  integer, save :: len_wblock
+  integer, save :: ilw,iuw,jlw,juw,klw,kuw
+  integer, save :: nguard_work,ngw2
+
+
+  real, save, target, dimension(:,:,:,:) :: work
+  real, save, target, dimension(:,:,:)   :: recv1
+  real, save, target, dimension(:,:,:)   :: send1
+  real, save, target, dimension(:,:,:)   :: temp1
+
+contains
+
+  subroutine workspace_init(nguard, nxb, nyb, nzb, k2d, k3d)
+
+    integer :: nguard, nxb, nyb, nzb, k2d, k3d
+
+    ilw         = 1
+    iuw         = nxb+ngw2
+    
+    jlw         = 1
+    juw         = nyb+ngw2
+
+    klw         = 1
+    kuw         = nzb+ngw2*k3d
+
+    nguard_work = nguard
+    ngw2        = 2*nguard_work
+    
+    len_wblock=(nxb+ngw2)*(nyb+ngw2)*(nzb+ngw2*k3d)
+
+    allocate(work(ilw:iuw,jlw:juw,klw:kuw,maxblocks))
+    allocate(recv1(ilw:iuw,jlw:juw,klw:kuw))
+    allocate(send1(ilw:iuw,jlw:juw,klw:kuw))
+    allocate(temp1(ilw:iuw,jlw:juw,klw:kuw))
+
+  end subroutine workspace_init
+end module workspace

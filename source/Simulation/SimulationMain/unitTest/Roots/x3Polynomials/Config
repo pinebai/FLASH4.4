@@ -1,0 +1,9 @@
+# Request the Roots unit.
+#
+#     ./setup unitTest/Roots/x3Polynomials -auto
+#
+REQUIRES  numericalTools/Roots
+
+D       sim_printInfo       Should details about solving each polynomial be printed
+
+PARAMETER  sim_printInfo        BOOLEAN     false

@@ -1,0 +1,20 @@
+#!/bin/csh
+# Sample LCRM script to be submitted with psub
+# Based on Cal's script for the December 2006 DAT.
+#
+#PSUB -r gravtest          # sets job name (limit of 7 characters)
+#PSUB -tM 120h           # sets maximum total CPU to 96 hours
+#PSUB -lt 120h            # sets maximum per cpu to 12 hours
+#PSUB -b chidat           # sets bank account
+#PSUB -ln 32               # use 300 nodes
+#PSUB -g  256             # use 8 procs per node
+#PSUB -x                    # export current env var settings
+#PSUB -eo                   # Send std error & std out to the same file
+#PSUB -me                   # Send mail at job termination.
+##PSUB -nr                   # do NOT rerun job after system reboot
+#PSUB                       # no more psub commands
+# job commands start here
+set echo
+#setenv LDR_CNTRL LARGE_PAGE_DATA=Y   #to use large pages
+#cd /p/gup1/gjordan/grav_test
+./flash3 

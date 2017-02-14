@@ -1,0 +1,31 @@
+# Configuration file for two-particle orbit test problem.
+# source/Simulation/SimulationMain/Orbit
+
+REQUIRES Driver
+REQUIRES Grid
+REQUIRES Grid/GridParticles
+REQUESTS IO
+REQUESTS IO/IOParticles
+
+REQUESTS Grid/GridSolvers
+REQUESTS physics/Gravity/GravityMain/Poisson
+
+
+PARTICLETYPE active INITMETHOD custom MAPMETHOD weighted ADVMETHOD leapfrog
+REQUIRES Particles/ParticlesMain/active/massive/Leapfrog
+#REQUIRES Particles/ParticlesForces/longRange/gravity/ParticleMesh
+REQUESTS Particles/ParticlesMapping/meshWeighting/CIC
+REQUESTS Particles/ParticlesMapping/meshWeighting/MapToMesh
+
+
+# Parameters:
+D ext_field      external field (TRUE) or self-grav (FALSE)?
+D separation     particle separation (2*radius)
+D ptmass	 point mass if external field
+
+PARAMETER ext_field             BOOLEAN TRUE
+PARAMETER separation            REAL    1.   
+PARAMETER ptmass		REAL    1.
+PARAMETER num_particles		INTEGER 2
+
+

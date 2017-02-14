@@ -1,0 +1,17 @@
+#	Configuration file for the "aprox13" alpha-chain burn network.
+#    [/source/physics/sourceTerms/Burn/BurnMain/nuclearBurn/Aprox13]
+
+SPECIES he4
+SPECIES c12
+SPECIES o16
+SPECIES ne20
+SPECIES mg24
+SPECIES si28
+SPECIES s32
+SPECIES ar36
+SPECIES ca40
+SPECIES ti44
+SPECIES cr48
+SPECIES fe52   
+SPECIES ni56
+

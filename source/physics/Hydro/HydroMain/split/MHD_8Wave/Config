@@ -1,0 +1,88 @@
+# Config file for the 8Wave MHD unit.
+# Note: It requires a regular driver which is the same as the hydro case.
+
+REQUIRES Driver/DriverMain/Split
+REQUIRES physics/Eos
+DEFAULT divbDiffuse
+
+
+# Variables required by the MHD module
+VARIABLE dens TYPE: PER_VOLUME EOSMAP: DENS # density
+VARIABLE velx TYPE: PER_MASS   EOSMAPIN:VELX # x-velocity
+VARIABLE vely TYPE: PER_MASS   EOSMAPIN:VELY # y-velocity
+VARIABLE velz TYPE: PER_MASS   EOSMAPIN:VELZ # z-velocity
+VARIABLE pres                  EOSMAP: PRES # pressure
+VARIABLE ener TYPE: PER_MASS   EOSMAP: ENER # specific total energy (T+U)
+VARIABLE gamc                  EOSMAP: GAMC # sound-speed gamma
+VARIABLE magx TYPE: PER_VOLUME # x-magnetic field
+VARIABLE magy TYPE: PER_VOLUME # y-magnetic field
+VARIABLE magz TYPE: PER_VOLUME # z-magnetic field
+VARIABLE divb                  # divergence of B
+VARIABLE temp                  EOSMAP: TEMP # temperature
+VARIABLE eint TYPE: PER_MASS   EOSMAP: EINT # specific internal energy (U)
+VARIABLE magp                  # magnetic pressure
+
+
+# Flux
+FLUX dens
+FLUX xmom
+FLUX ymom
+FLUX zmom
+FLUX magx
+FLUX magy
+FLUX magz
+FLUX ener
+
+# Magnetic Resistivity
+SCRATCHVAR RESI 
+
+USESETUPVARS SupportWeno, SupportPpmUpwind
+IF SupportWeno
+  SETUPERROR The MHD_8Wave split Hydro implementation does not support WENO, try +usm
+ELSEIF SupportPpmUpwind
+  SETUPERROR The MHD_8Wave split Hydro implementation does not support PPM Upwind, try +usm
+ENDIF
+
+# Number of guard cells
+GUARDCELLS 2
+
+
+# MHD Parameters
+PARAMETER killdivb     BOOLEAN    TRUE       # Enable/Disable DivB cleaning
+PARAMETER irenorm      INTEGER    0          # Renormalize abundances
+
+
+D small   Cutoff value
+D smlrho  Cutoff value for density
+D smallp  Cutoff value for pressure
+D smalle  Cutoff value for energy
+D smallt  Cutoff value for temperature
+D smallu  Cutoff value for velocity
+D smallx  Cutoff value for abundances
+D RoeAve  Switch for choosing between Roe averages and a simple arithmetic averages
+
+
+# Driver Parameters
+PARAMETER small         REAL    1.E-10
+PARAMETER smlrho        REAL    1.E-10
+PARAMETER smallp        REAL    1.E-10
+PARAMETER smalle        REAL    1.E-10
+PARAMETER smallt        REAL    1.E-10
+PARAMETER smallu        REAL    1.E-10
+PARAMETER smallx        REAL    1.E-10
+PARAMETER RoeAvg        BOOLEAN TRUE         # Choose either Roe or arithmetic average
+PARAMETER hall_parameter    REAL  0.0        # Hall parameter
+PARAMETER hyperResistivity  REAL  0.0        # HyperResistivity
+
+USESETUPVARS ParameshLibraryMode, Grid
+# Link in this file only if Paramesh LIBRARY mode or PM4DEV is requested
+IF ParameshLibraryMode or (Grid in ["","PM4DEV"])
+	DATAFILES amr_runtime_parameters.tpl
+ENDIF
+
+#Signal that a 2-dim problem really means a 2.5-dim problem
+PPDEFINE	FLASH_2P5DIM
+
+#Signal that the Hydro implementation is an 8Wave MHD one.
+# (used for flux handlings in paramesh_preprocessor.fh)
+PPDEFINE FLASH_HYDRO_8WAVE

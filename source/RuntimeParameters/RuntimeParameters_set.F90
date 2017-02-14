@@ -1,0 +1,91 @@
+!!****f* source/RuntimeParameters/RuntimeParameters_set
+!!
+!! NAME
+!!  RuntimeParameters_set
+!!
+!! SYNOPSIS
+!!
+!!  RuntimeParameters_set(char*(in) :: name,
+!!               real/int/str/log(in) :: value) 
+!!
+!! DESCRIPTION
+!!
+!!  This is an overloaded function. RuntimeParameters_set under the
+!!  hood implements RuntimeParameters_setReal
+!!  RuntimeParameters_setInt, RuntimeParameters_setStr
+!!  RuntimeParameters_setLog.  
+!!
+!!  Parameters are added to the runtime database.
+!!
+!!  This routine is normally called from RuntimeParameters_read and
+!!  other internal IO routines.  We have left it in the API interface
+!!  for user flexibility.
+!!  
+!! ARGUMENTS
+!!
+!!  name:       name
+!!  value:      name value
+!!
+!!
+!! EXAMPLE
+!!
+!!  use RuntimeParameters, ONLY : RuntimeParameters_set
+!!  
+!!     integer :: lrefine_max
+!!
+!!     lrefine_max = 6
+!!     call RuntimeParameters_set('lrefine_max', lrefine_max) 
+!!
+!! NOTES
+!!   
+!!  Because RuntimeParameters_set is an overloaded function, a user calling
+!!  the routine must USE the interface RuntimeParameters_interface. 
+!!
+!!
+!!
+!!
+!!***
+
+subroutine RuntimeParameters_setReal (name, value)
+  
+implicit none
+  character(len=*), intent(in)          :: name
+  real, intent(in)                      :: value
+  logical                               :: current_val = .TRUE.
+
+end subroutine RuntimeParameters_setReal
+
+
+  
+
+  
+subroutine RuntimeParameters_setInt (name, value)
+
+implicit none
+  character(len=*), intent(in)           :: name
+  integer, intent(in)                    :: value
+  logical                               :: current_val = .TRUE.
+  
+end subroutine RuntimeParameters_setInt
+
+
+
+subroutine RuntimeParameters_setStr (name, value)
+implicit none
+  character(len=*),intent(in)             :: name, value
+  logical                               :: current_val = .TRUE.
+end subroutine RuntimeParameters_setStr
+
+
+
+
+
+
+subroutine RuntimeParameters_setLog (name, value)
+implicit none
+  character(len=*),intent(in)              :: name
+  logical,intent(in)                       :: value
+  logical                               :: current_val = .TRUE.
+end subroutine RuntimeParameters_setLog
+
+

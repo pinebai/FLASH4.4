@@ -1,0 +1,148 @@
+# Config file for the Unsplit Staggered Mesh MHD solver unit.
+
+USESETUPVARS threadBlockList, threadWithinBlock
+IF threadBlockList
+   REQUIRES physics/Hydro/HydroMain/unsplit/MHD_StaggeredMesh/threadBlockList
+ENDIF
+IF threadWithinBlock
+   REQUIRES physics/Hydro/HydroMain/unsplit/MHD_StaggeredMesh/threadWithinBlock
+ENDIF
+IF threadBlockList and threadWithinBlock
+#   SETUPERROR "Choose either threadBlockList or threadWithinBlock - different versions of hy_uhd_unsplit"
+    CHILDORDER threadWithinBlock threadBlockList
+ENDIF
+
+VARIABLE magx TYPE: PER_VOLUME 		      # x-magnetic field
+VARIABLE magy TYPE: PER_VOLUME 		      # y-magnetic field
+VARIABLE magz TYPE: PER_VOLUME 		      # z-magnetic field
+VARIABLE divb                  		      # divergence of B
+VARIABLE magp                	              # magnetic pressure
+
+# Uncomment the following secondary variables if needed
+#VARIABLE totp			# total pressure (pres + magp)
+#VARIABLE beta			# plasma beta
+#VARIABLE vecz			# vector potential Az
+#VARIABLE curx			# current density jx
+#VARIABLE cury			# current density jy
+#VARIABLE curz			# current density jz
+#VARIABLE elex			# vector potential Ex
+#VARIABLE eley			# vector potential Ey
+#VARIABLE elez			# vector potential Ez
+
+
+# Fluxes
+FLUX F01Dens
+FLUX F02Xmom
+FLUX F03Ymom
+FLUX F04Zmom
+FLUX F05Ener
+FLUX F06Magx
+FLUX F07Magy
+FLUX F08Magz
+FLUX F09P
+FLUX F10Eint
+FLUX F11VOLU
+
+
+# Use SCRATCHVAR for temporary storages
+USESETUPVARS physicsMode,nDim
+
+IF physicsMode <> 'hydro' and (nDim=='' or nDim == 2)
+ SCRATCHVAR Ez
+ENDIF
+IF physicsMode <> 'hydro' and nDim == 3
+ SCRATCHVAR Ex
+ SCRATCHVAR Ey
+ SCRATCHVAR Ez
+ENDIF
+
+
+USESETUPVARS FullScratchUseInUSM
+
+IF FullScratchUseInUSM or (physicsMode <> 'hydro' and (nDim=='' or nDim >= 2))
+
+ PPDEFINE FLASH_UHD_NEED_SCRATCHVARS
+
+ # DO NOT use SCRATCH_CTR array of the Grid unit for interface states!
+ # Use memory allocation mechanism implemented within the Hydro unit instead.
+ENDIF
+
+IF physicsMode <> 'hydro' and (nDim=='' or nDim >= 2)
+ # Use FACEVAR for cell interface magnetic fields
+ FACEVAR Mag  # Face-centered divergence-free magnetic fields at each n time step
+ FACEVAR Magi # Interface states for face-centered div-free magnetic fields at each n+1/2 time step
+ENDIF
+
+# Runtime parameters for the Unsplit Staggered Mesh solver:
+D killdivb		Switch for maintaing solenoidal field
+D killdivb8w		Switch for maintaing solenoidal field using Powell's 8wave
+D E_modification	Switch for modified electric fields calculation from flux
+D E_upwind		Switch for upwind update for induction equations
+D energyFix             Switch for an energy correction for CT scheme
+D ForceHydroLimit	Switch to force B=0 limit, i.e., the solver will not update B fields
+D prolMethod		Injection or Balsara's method in prolongation
+D use_Biermann		Switch to add the Battery term for B-field generation
+D use_Biermann1T	Switch to add the 1T Battery term for B-field generation 
+D hy_biermannSource     Switch to implement battery term as an external source 
+D hy_bier1TZ            Ionization number to use for 1T Biermann Battery term
+D hy_bier1TA            Atomic number to use for 1T Biermann Battery term
+D hy_biermannCoef   Coefficient of Biermann Battery flux
+D conserveAngField      Turn on/off alternate formulation for toroidal induction 
+
+# Runtime Parameters for unsplit USM-MHD solver
+PARAMETER killdivb             BOOLEAN  TRUE            # Turn on/off  DivB cleaning
+PARAMETER killdivb8w           BOOLEAN  FALSE           # Turn on/off  Powell's DivB cleaning 
+PARAMETER E_modification       BOOLEAN  TRUE            # Turn on/off electric field modification
+PARAMETER E_upwind             BOOLEAN  FALSE           # Turn on/off upwind update for induction equations
+PARAMETER energyFix	       BOOLEAN  FALSE           # Turn on/off an energy correction for CT scheme
+PARAMETER ForceHydroLimit      BOOLEAN  FALSE           # Turn on/off a hydro limiting switch
+PARAMETER prolMethod           STRING  "INJECTION_PROL" # Prolongation method: injection_prol/Balsara_prol
+PARAMETER use_Biermann         BOOLEAN   FALSE          # Biermann Battery Term
+PARAMETER use_Biermann1T       BOOLEAN   FALSE          # 1T Biermann Battery Term
+PARAMETER hy_biermannSource    BOOLEAN   FALSE          # enable Battery Source (vs. flux)
+PARAMETER hy_bier1TZ           REAL     -1.0            # Zbar value for 1T Biermann Battery Term
+PARAMETER hy_bier1TA           REAL     -1.0            # Abar value for 1T Biermann Battery Term
+PARAMETER hy_biermannCoef      REAL     1.0             # Coefficient of Biermann Battery flux
+PARAMETER conserveAngField     BOOLEAN  FALSE           # Turn on/off alternate formulation for toroidal induction  
+
+# Needed for PARAMESH_PREPROCESSOR.FH and amr_set_runtime_parameters
+IF (nDim=='' or nDim > 1) and physicsMode <> 'hydro'
+ PPDEFINE	FLASH_NFIELD_DIVF 	1 	# Number of variables for divergence-free prolongagion 
+						# (only for MAG, not MAGI)
+ PPDEFINE	FLASH_MHD_DIM		1
+ PPDEFINE	FLASH_NEDGE_VAR		1
+ PPDEFINE	DIVERGENCE_FREE
+ PPDEFINE	FLASH_2P5DIM            	# Signal that a 2-dim problem really means a 2.5-dim 
+						# problem
+ PPDEFINE	FLASH_MHD_BALSARA_PROL  	# Signal that enables a prolongation of facevars using 
+						# Balsara's algorithm
+ELSEIF nDim == 1 or physicsMode == 'hydro'
+ PPDEFINE	FLASH_NFIELD_DIVF 	0
+ PPDEFINE	FLASH_MHD_DIM		0
+ PPDEFINE	FLASH_NEDGE_VAR		0
+ENDIF
+
+
+
+#Signal that the unsplit implementation is an Unsplit Staggered Mesh (USM)-MHD one
+# (used in UHD.h)
+PPDEFINE FLASH_USM_MHD
+
+USESETUPVARS ParameshLibraryMode, Grid
+# Link in this file only if Paramesh LIBRARY mode or PM4DEV is requested
+IF ParameshLibraryMode or (Grid in ["","PM4DEV"])
+	DATAFILES amr_runtime_parameters.tpl
+ENDIF
+
+
+USESETUPVARS ThreeT
+
+D hallVelocity          Switch to use u_ele = u - J/(ne qe)
+PARAMETER hallVelocity         BOOLEAN  FALSE           # Turn on/off Hall velocity modification in Eele/Etot
+
+IF ThreeT
+FLUX F12EI1A
+FLUX F13EI2A
+FLUX F14EI3A
+ENDIF
+

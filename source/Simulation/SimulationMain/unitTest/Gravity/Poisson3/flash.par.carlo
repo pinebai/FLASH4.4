@@ -1,0 +1,98 @@
+# Runtime parameters for the Maclaurin spheroid problem.
+
+#-------------------------------------------------------------------------------
+
+# Parameters for initial model
+
+angular_velocity          = 0.        # Dimensionless angular velocity (Omega)
+density                   = 0.2387326163   # Spheroid density (rho) - makes mass of 1
+eccentricity              = 0.0       # Eccentricity of spheroid (e)
+equatorial_semimajor_axis = 1.0       # Equatorial semimajor axis (a1)
+
+xctr                      = 2.0       # Coordinates of center of spheroid
+yctr                      = 2.0
+zctr                      = 2.0
+
+nsubzones                 = 2         # Number of averaging sub-zones per dimen.
+
+#-------------------------------------------------------------------------------
+
+# Computational volume parameters
+
+xmin                      = 0.        # Physical dimensions of the box
+xmax                      = 4.
+ymin                      = 0.
+ymax                      = 4.
+zmin                      = 0.
+zmax                      = 4.
+
+xl_boundary_type          = "outflow" # Boundary conditions
+xr_boundary_type          = "outflow"
+yl_boundary_type          = "outflow"
+yr_boundary_type          = "outflow"
+zl_boundary_type          = "outflow"
+zr_boundary_type          = "outflow"
+grav_boundary_type        = "isolated"
+
+#-------------------------------------------------------------------------------
+
+# Adaptive mesh parameters
+
+lrefine_max               = 4         # Maximum refinement level
+lrefine_min               = 1         # Minimum refinement level
+
+refine_var_1              = "dens"    # Refinement variables
+refine_var_2              = "pres"
+
+Nblockx                   = 1         # Number of top-level blocks
+Nblocky                   = 1
+Nblockz                   = 1
+
+conserved_var             = .true.    # Interpolate conserved variables?
+monotone                  = .false.   # Impose monotonicity on interpolants?
+
+#-------------------------------------------------------------------------------
+
+# Time and I/O parameters
+
+run_comment               = "Maclaurin spheroid test"
+                                      # Comment to use in log file
+basenm                    = "maclaurin_"
+                                      # Base name for output files
+
+restart                   = .false.   # Start from checkpoint file?
+checkpointFileNumber      = 0         # Initial checkpoint file number
+
+checkpointFileIntervalTime = 0.1      # Checkpoint simulation-time interval
+checkpointFileIntervalStep = 200       # Checkpoint step interval
+wall_clock_checkpoint      = 3600.     # Checkpoint wall-clock interval
+
+dtinit                    = 1.0E-3    # Initial time step
+dtmin                     = 1.0E-3    # Minimum time step
+dtmax                     = 1.0E-1    # Maximum time step
+
+nend                      = 1      # Maximum number of steps to take
+tmax                      = 1.0       # Maximum time to run
+
+plot_var_1                = "dens"
+plot_var_2                = "pres"
+plot_var_3                = "temp"
+plot_var_4                = "ener"
+plot_var_5                = "eint"
+
+#-------------------------------------------------------------------------------
+
+# Physics/solver parameters
+
+gamma                     = 1.6666667 # Ratio of specific heats
+cfl                       = 0.8       # Courant timestep parameter
+
+igrav                     = 1         # Turn on gravity?
+mpole_lmax                = 0         # Maximum multipole moment
+mpole_dumpMoments          = true      # output the moment array
+
+
+#-------------------------------------------------------------------------------
+
+# End
+eintSwitch     = 1.e-4

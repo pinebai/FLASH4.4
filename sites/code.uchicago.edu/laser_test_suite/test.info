@@ -1,0 +1,175 @@
+<code>
+  <UnitTest>
+    <Laser_quadraticTube>
+      <testII>
+        <2d>
+          <async>
+            <mpi_only>
+              setupName: unitTest/Laser_quadraticTube/testII
+              setupOptions: -auto -2d -geometry=cartesian -maxblocks=600 ed_maxPulses=1 ed_maxPulseSections=2 ed_maxBeams=1 +noio +asyncLaser -noc
+              numProcs: 6
+              parfiles: <pathToSimulations>/unitTest/Laser_quadraticTube/testII/flash.par.2D
+              environment: PATH=/opt/mpich2/intel/1.4.1p1/bin:/usr/local/bin:/bin:/usr/bin LD_LIBRARY_PATH=/opt/hdf5/intel/1.8.7/lib:/opt/mpich2/intel/1.4.1p1/lib:/opt/intel/composer_xe_2011_sp1.6.233/compiler/lib/intel64
+            </mpi_only>
+            <multithreaded>
+              setupName: unitTest/Laser_quadraticTube/testII
+              setupOptions: -auto -2d -geometry=cartesian -maxblocks=600 ed_maxPulses=1 ed_maxPulseSections=2 ed_maxBeams=1 +noio +asyncLaser -noc +threadRT
+              numProcs: 2
+              parfiles: <pathToSimulations>/unitTest/Laser_quadraticTube/testII/flash.par.2D
+              environment: OMP_NUM_THREADS=3 OMP_STACKSIZE=16M PATH=/opt/mpich2/intel/1.4.1p1/bin:/usr/local/bin:/bin:/usr/bin LD_LIBRARY_PATH=/opt/hdf5/intel/1.8.7/lib:/opt/mpich2/intel/1.4.1p1/lib:/opt/intel/composer_xe_2011_sp1.6.233/compiler/lib/intel64
+            </multithreaded>
+          </async>
+          <sync>
+            <mpi_only>
+              setupName: unitTest/Laser_quadraticTube/testII
+              setupOptions: -auto -2d -geometry=cartesian -maxblocks=600 +laser ed_maxPulses=1 ed_maxPulseSections=2 ed_maxBeams=1 +noio -noc
+              numProcs: 6
+              parfiles: <pathToSimulations>/unitTest/Laser_quadraticTube/testII/flash.par.2D
+              environment: PATH=/opt/mpich2/intel/1.4.1p1/bin:/usr/local/bin:/bin:/usr/bin LD_LIBRARY_PATH=/opt/hdf5/intel/1.8.7/lib:/opt/mpich2/intel/1.4.1p1/lib:/opt/intel/composer_xe_2011_sp1.6.233/compiler/lib/intel64
+            </mpi_only>
+          </sync>
+        </2d>
+        <3d>
+          <async>
+            <mpi_only>
+              setupName: unitTest/Laser_quadraticTube/testII
+              setupOptions: -auto -3d -geometry=cartesian -maxblocks=600 ed_maxPulses=1 ed_maxPulseSections=2 ed_maxBeams=1 +noio +asyncLaser -noc
+              numProcs: 6
+              parfiles: <pathToSimulations>/unitTest/Laser_quadraticTube/testII/flash.par.3D
+              environment: PATH=/opt/mpich2/intel/1.4.1p1/bin:/usr/local/bin:/bin:/usr/bin LD_LIBRARY_PATH=/opt/hdf5/intel/1.8.7/lib:/opt/mpich2/intel/1.4.1p1/lib:/opt/intel/composer_xe_2011_sp1.6.233/compiler/lib/intel64
+            </mpi_only>
+          </async>
+          <sync>
+            <mpi_only>
+              setupName: unitTest/Laser_quadraticTube/testII
+              setupOptions: -auto -3d -geometry=cartesian -maxblocks=600 +laser ed_maxPulses=1 ed_maxPulseSections=2 ed_maxBeams=1 +noio -noc
+              numProcs: 6
+              parfiles: <pathToSimulations>/unitTest/Laser_quadraticTube/testII/flash.par.3D
+              environment: PATH=/opt/mpich2/intel/1.4.1p1/bin:/usr/local/bin:/bin:/usr/bin LD_LIBRARY_PATH=/opt/hdf5/intel/1.8.7/lib:/opt/mpich2/intel/1.4.1p1/lib:/opt/intel/composer_xe_2011_sp1.6.233/compiler/lib/intel64
+            </mpi_only>
+          </sync>
+        </3d>
+      </testII>
+    </Laser_quadraticTube>
+  </UnitTest>
+  <Comparison>
+    <LaserSlab>
+      <1d>
+        <async>
+          <one_beam>
+            <mpi_only>
+              setupName: LaserSlab
+              setupOptions: LaserSlab -1d -auto +pm4dev +hdf5typeio -nxb=16 +mtmmmt +mgd +uhd3t species=cham,targ mgd_meshgroups=6 +asyncLaser -noc
+              numProcs: 6
+              parfiles: <pathToSimulations>/LaserSlab/test_1d.par
+              checkpointBasename: lassslab_hdf5_chk_
+              shortPathToBenchmark: <siteDir>/2013-06-24/Comparison_LaserSlab_1d_async_one_beam_mpi_only/<runDir>/<chkMax>
+              transfers: object/al-imx-003.cn4 object/he-imx-005.cn4
+              environment: PATH=/opt/mpich2/intel/1.4.1p1/bin:/usr/local/bin:/bin:/usr/bin LD_LIBRARY_PATH=/opt/hdf5/intel/1.8.7/lib:/opt/mpich2/intel/1.4.1p1/lib:/opt/intel/composer_xe_2011_sp1.6.233/compiler/lib/intel64
+	      errTol: 1.0e-7 -I * -s depo
+            </mpi_only>
+          </one_beam>
+        </async>
+      </1d>
+      <2d>
+        <async>
+          <one_beam>
+            <mpi_only>
+              setupName: LaserSlab
+              setupOptions: -2d -auto +pm4dev +hdf5typeio -geometry=cylindrical -nxb=16 -nyb=16 +mtmmmt +mgd +uhd3t species=cham,targ mgd_meshgroups=6 +asyncLaser -noc
+              numProcs: 6
+              parfiles: <pathToSimulations>/LaserSlab/coldstart_pm_rz.par
+              checkpointBasename: lassslab_hdf5_chk_
+              shortPathToBenchmark: <siteDir>/2012-11-30/Comparison_LaserSlab_2d_async_one_beam_mpi_only/<runDir>/<chkMax>
+              transfers: object/al-imx-003.cn4 object/he-imx-005.cn4
+              environment: PATH=/opt/mpich2/intel/1.4.1p1/bin:/usr/local/bin:/bin:/usr/bin LD_LIBRARY_PATH=/opt/hdf5/intel/1.8.7/lib:/opt/mpich2/intel/1.4.1p1/lib:/opt/intel/composer_xe_2011_sp1.6.233/compiler/lib/intel64
+	      errTol: 1.0e-11 -I * -s depo
+            </mpi_only>
+            <multithreaded>
+              setupName: LaserSlab
+              setupOptions: -2d -auto +pm4dev +hdf5typeio -geometry=cylindrical -nxb=16 -nyb=16 +mtmmmt +mgd +uhd3t species=cham,targ mgd_meshgroups=6 +asyncLaser -noc +threadRT
+              numProcs: 2
+              parfiles: <pathToSimulations>/LaserSlab/coldstart_pm_rz.par
+              checkpointBasename: lassslab_hdf5_chk_
+              shortPathToBenchmark: <siteDir>/2012-11-30/Comparison_LaserSlab_2d_async_one_beam_mpi_only/<runDir>/<chkMax>
+              transfers: object/al-imx-003.cn4 object/he-imx-005.cn4
+              environment: OMP_NUM_THREADS=3 OMP_STACKSIZE=16M PATH=/opt/mpich2/intel/1.4.1p1/bin:/usr/local/bin:/bin:/usr/bin LD_LIBRARY_PATH=/opt/hdf5/intel/1.8.7/lib:/opt/mpich2/intel/1.4.1p1/lib:/opt/intel/composer_xe_2011_sp1.6.233/compiler/lib/intel64
+	      errTol: 1.0e-11 -I * -s depo
+            </multithreaded>
+          </one_beam>
+          <two_beam>
+            <mpi_only>
+              setupName: LaserSlab
+              setupOptions: -2d -auto +pm4dev +hdf5typeio -geometry=cylindrical -nxb=16 -nyb=16 +mtmmmt +mgd +uhd3t species=cham,targ mgd_meshgroups=6 +asyncLaser -noc
+              numProcs: 6
+              parfiles: <pathToSimulations>/LaserSlab/coldstart_pm_rz_laser_stress_test.par
+              checkpointBasename: lassslab_hdf5_chk_
+              shortPathToBenchmark: <siteDir>/2012-11-30/Comparison_LaserSlab_2d_async_two_beam_mpi_only/<runDir>/<chkMax>
+              transfers: object/al-imx-003.cn4 object/he-imx-005.cn4
+              environment: PATH=/opt/mpich2/intel/1.4.1p1/bin:/usr/local/bin:/bin:/usr/bin LD_LIBRARY_PATH=/opt/hdf5/intel/1.8.7/lib:/opt/mpich2/intel/1.4.1p1/lib:/opt/intel/composer_xe_2011_sp1.6.233/compiler/lib/intel64
+	      errTol: 1.0e-7 -I * -s depo
+            </mpi_only>
+            <multithreaded>
+              setupName: LaserSlab
+              setupOptions: -2d -auto +pm4dev +hdf5typeio -geometry=cylindrical -nxb=16 -nyb=16 +mtmmmt +mgd +uhd3t species=cham,targ mgd_meshgroups=6 +asyncLaser -noc +threadRT
+              numProcs: 3
+              parfiles: <pathToSimulations>/LaserSlab/coldstart_pm_rz_laser_stress_test.par
+              checkpointBasename: lassslab_hdf5_chk_
+              shortPathToBenchmark: <siteDir>/2012-11-30/Comparison_LaserSlab_2d_async_two_beam_mpi_only/<runDir>/<chkMax>
+              transfers: object/al-imx-003.cn4 object/he-imx-005.cn4
+              environment: OMP_NUM_THREADS=2 OMP_STACKSIZE=16M PATH=/opt/mpich2/intel/1.4.1p1/bin:/usr/local/bin:/bin:/usr/bin LD_LIBRARY_PATH=/opt/hdf5/intel/1.8.7/lib:/opt/mpich2/intel/1.4.1p1/lib:/opt/intel/composer_xe_2011_sp1.6.233/compiler/lib/intel64
+	      errTol: 1.0e-7 -I * -s depo
+            </multithreaded>
+          </two_beam>
+        </async>
+      </2d>
+      <3dIn2d>
+        <async>
+          <one_beam>
+            <mpi_only>
+              setupName: LaserSlab
+              setupOptions: -2d -auto +pm4dev +hdf5typeio -geometry=cylindrical -nxb=16 -nyb=16 +mtmmmt +mgd +uhd3t species=cham,targ mgd_meshgroups=6 +asyncLaser useGridParticles=True -noc
+              numProcs: 6
+              parfiles: <pathToSimulations>/LaserSlab/3Din2D.par
+              checkpointBasename: lassslab_hdf5_chk_
+              shortPathToBenchmark: <siteDir>/2013-04-10/Comparison_LaserSlab_3dIn2d_async_one_beam_mpi_only/<runDir>/<chkMax>
+              transfers: object/al-imx-003.cn4 object/he-imx-005.cn4
+              environment: PATH=/opt/mpich2/intel/1.4.1p1/bin:/usr/local/bin:/bin:/usr/bin LD_LIBRARY_PATH=/opt/hdf5/intel/1.8.7/lib:/opt/mpich2/intel/1.4.1p1/lib:/opt/intel/composer_xe_2011_sp1.6.233/compiler/lib/intel64
+	      errTol: 1.0e-12 -I * -s depo
+            </mpi_only>
+          </one_beam>
+        </async>
+      </3dIn2d>
+    </LaserSlab>
+    <Nif2013>
+      <2d>
+        <async>
+          <mpi_only>
+            setupName: Nif2013
+            setupOptions: -auto -noc -2d +hdf5typeio species=cham,targ +mtmmmt +uhd3t -maxblocks=2100 +asyncLaser -noc
+            numProcs: 6
+            parfiles: <pathToSimulations>/Nif2013/nif2013-2Dsym-performance.par
+            checkpointBasename: nif2013_hdf5_chk_
+            shortPathToBenchmark: <siteDir>/2012-11-30/Comparison_Nif2013_2d_async_mpi_only/<runDir>/<chkMax>
+            transfers: object/c_cu-imx-001.cn4 object/he-imx-005.cn4
+            environment: PATH=/opt/mpich2/intel/1.4.1p1/bin:/usr/local/bin:/bin:/usr/bin LD_LIBRARY_PATH=/opt/hdf5/intel/1.8.7/lib:/opt/mpich2/intel/1.4.1p1/lib:/opt/intel/composer_xe_2011_sp1.6.233/compiler/lib/intel64
+	    errTol: 1.0e-11 -I * -s depo
+          </mpi_only>
+        </async>
+        <async_grid_particles>
+          <mpi_only>
+            setupName: Nif2013
+            setupOptions: -auto -noc -2d +hdf5typeio species=cham,targ +mtmmmt +uhd3t -maxblocks=2100 +asyncLaser useGridParticles=True -noc
+            numProcs: 6
+            parfiles: <pathToSimulations>/Nif2013/nif2013-2Dsym-performance.par
+            checkpointBasename: nif2013_hdf5_chk_
+            shortPathToBenchmark: <siteDir>/2012-11-30/Comparison_Nif2013_2d_async_mpi_only/<runDir>/<chkMax>
+            transfers: object/c_cu-imx-001.cn4 object/he-imx-005.cn4
+            environment: PATH=/opt/mpich2/intel/1.4.1p1/bin:/usr/local/bin:/bin:/usr/bin LD_LIBRARY_PATH=/opt/hdf5/intel/1.8.7/lib:/opt/mpich2/intel/1.4.1p1/lib:/opt/intel/composer_xe_2011_sp1.6.233/compiler/lib/intel64
+	    errTol: 1.0e-11 -I * -s depo
+          </mpi_only>
+        </async_grid_particles>
+      </2d>
+    </Nif2013>
+  </Comparison>
+</code>

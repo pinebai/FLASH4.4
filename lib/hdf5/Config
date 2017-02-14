@@ -1,0 +1,5 @@
+# Library configuration file
+
+LIBRARY mpi
+TYPE EXTERNAL
+

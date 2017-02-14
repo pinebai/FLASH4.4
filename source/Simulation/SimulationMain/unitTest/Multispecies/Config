@@ -1,0 +1,21 @@
+#            Configuration file for testing Multispecies unit
+#            SMALL similar to air
+#            BIG similar to SF6
+#            ZERO has a nasty zero value for Z = numPositive, and <1 for GAMMA
+#            NEG has a nasty negative value for both Z and GAMMA
+# This test does not use Grid -- it also therefore tests stub implementations
+
+REQUIRES Driver/DriverMain
+REQUIRES Multispecies/MultispeciesMain/unitTest
+
+# number of species (ionmax)
+# Species SMAL should read SMALL.  However, there is a check
+# in the setup script to ensure the species name does not 
+# exceed 4 characters.  Apparently, Paramesh only works 
+# with strings of up to 4 characters long.
+
+SPECIES BIG
+SPECIES SMAL
+SPECIES ZERO
+SPECIES NEG
+

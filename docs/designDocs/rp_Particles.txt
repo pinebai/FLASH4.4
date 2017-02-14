@@ -1,0 +1,290 @@
+
+Particles
+    useParticles [BOOLEAN] [FALSE]
+        Whether to advance particles [TRUE] or not [FALSE]
+
+Particles/ParticlesInitialization
+    pt_resetTag [BOOLEAN] [FALSE]
+
+
+Particles/ParticlesInitialization/Lattice
+    __doc__
+        Lattice uniformly distributes the particles throughout physical domain
+    pt_initialRadius [REAL] [-1.0]
+        Valid Values: Unconstrained
+        maximum distance from center of domain for particle initialization -- by
+        default = -1.0 (i.e. no minimum)
+    pt_initialXMax [REAL] [1.0]
+        Valid Values: Unconstrained
+        maximum value in x for particle initialization -- by default = xmax
+    pt_initialXMin [REAL] [0.0]
+        Valid Values: Unconstrained
+        minimum value in x for particle initialization -- by default = xmin
+    pt_initialYMax [REAL] [1.0]
+        Valid Values: Unconstrained
+        maximum value in y for particle initialization -- by default = ymax
+    pt_initialYMin [REAL] [0.0]
+        Valid Values: Unconstrained
+        minimum value in y for particle initialization -- by default = ymin
+    pt_initialZMax [REAL] [1.0]
+        Valid Values: Unconstrained
+        maximum value in z for particle initialization -- by default = zmax
+    pt_initialZMin [REAL] [0.0]
+        Valid Values: Unconstrained
+        minimum value in z for particle initialization -- by default = zmin
+    pt_numX [INTEGER] [1]
+        Valid Values: Unconstrained
+
+    pt_numY [INTEGER] [1]
+        Valid Values: Unconstrained
+
+    pt_numZ [INTEGER] [1]
+        Valid Values: Unconstrained
+
+
+Particles/ParticlesInitialization/WithDensity
+    pt_numParticlesWanted [INTEGER] [100]
+        Valid Values: Unconstrained
+        Number of tracer particles to use (not guaranteed to get exactly this
+        many)
+    pt_pRand [INTEGER] [1]
+        Valid Values: Unconstrained
+        A number which affects the initial seed for the random number generator.
+        We set the default value to 1 to make it more likely that the initial
+        seed is within the integer range given by the IBM XL documentation which
+        is "A valid seed must be a whole number between 1.0 and 2147483647.0
+        (2.0**31-1)", as long as the number of MPI tasks is less than that
+        value.
+
+Particles/ParticlesInitialization/WithDensity/RejectionMethod
+    __doc__
+        This is completely untested, don't use without further work
+
+Particles/ParticlesMain
+    particle_attribute_1 [STRING] ["none"]
+        Valid Values: Unconstrained
+
+    particle_attribute_10 [STRING] ["none"]
+        Valid Values: Unconstrained
+
+    particle_attribute_2 [STRING] ["none"]
+        Valid Values: Unconstrained
+
+    particle_attribute_3 [STRING] ["none"]
+        Valid Values: Unconstrained
+
+    particle_attribute_4 [STRING] ["none"]
+        Valid Values: Unconstrained
+
+    particle_attribute_5 [STRING] ["none"]
+        Valid Values: Unconstrained
+
+    particle_attribute_6 [STRING] ["none"]
+        Valid Values: Unconstrained
+
+    particle_attribute_7 [STRING] ["none"]
+        Valid Values: Unconstrained
+
+    particle_attribute_8 [STRING] ["none"]
+        Valid Values: Unconstrained
+
+    particle_attribute_9 [STRING] ["none"]
+        Valid Values: Unconstrained
+
+    pt_dtChangeTolerance [REAL] [0.4]
+        Valid Values: 0.0 to INFTY
+        EstiMidpoint does predictor step if time step change is less than this
+        percentage. Set to 0 to always do Euler, set to huge number to always
+        use estim. midpoints
+    pt_dtFactor [REAL] [0.5]
+        Valid Values: Unconstrained
+        Factor multiplying dx/|v| in setting particle timestep limit
+    pt_logLevel [INTEGER] [700]
+        Valid Values: 0 to INFTY
+        controls the level of logging for some conditions. See Particles.h for
+        relevant PT_LOGLEVEL_* definitions.
+    pt_maxPerProc [INTEGER] [1000]
+        Valid Values: Unconstrained
+        Maximum number of particles per processor -- too small will cause a
+        crash at reallocation
+    pt_numAtOnce [INTEGER] [1]
+        Valid Values: Unconstrained
+        To be used when reading the particles from some file
+    pt_small [REAL] [1.0E-10]
+        Valid Values: Unconstrained
+        If velocities are greater than this, then time stepping may be limited
+    useParticles [BOOLEAN] [TRUE]
+        Whether to advance particles [TRUE] or not [FALSE]
+
+Particles/ParticlesMain/active/DPD
+    pt_dpdLambda [REAL] [0.65]
+        Valid Values: Unconstrained
+
+    pt_dpdUpdateCycle [INTEGER] [1]
+        Valid Values: Unconstrained
+
+
+Particles/ParticlesMain/active/Sink
+    jeans_ncells_deref [REAL] [64.0]
+        Valid Values: Unconstrained
+
+    jeans_ncells_ref [REAL] [32.0]
+        Valid Values: Unconstrained
+
+    refineOnJeansLength [BOOLEAN] [TRUE]
+
+    refineOnSinkParticles [BOOLEAN] [TRUE]
+
+    sink_AdvanceSerialComputation [BOOLEAN] [TRUE]
+
+    sink_EwaldFieldNx [INTEGER] [64]
+        Valid Values: Unconstrained
+        number of x cells in Ewald correction field
+    sink_EwaldFieldNy [INTEGER] [64]
+        Valid Values: Unconstrained
+        number of y cells in Ewald correction field
+    sink_EwaldFieldNz [INTEGER] [64]
+        Valid Values: Unconstrained
+        number of z cells in Ewald correction field
+    sink_EwaldFileName [STRING] ["sink_ewald.txt"]
+        Valid Values: Unconstrained
+        Filename for storing the Ewald field (used on restart)
+    sink_EwaldSeriesN [INTEGER] [5]
+        Valid Values: Unconstrained
+        Ewald series max integer n, h
+    sink_GasAccretionChecks [BOOLEAN] [TRUE]
+
+    sink_accretion_radius [REAL] [1.0e14]
+        Valid Values: Unconstrained
+        accretion radius of sink particle
+    sink_convergingFlowCheck [BOOLEAN] [TRUE]
+
+    sink_density_thresh [REAL] [1.0e-14]
+        Valid Values: Unconstrained
+        density threshold for sink creation and accretion
+    sink_dt_factor [REAL] [0.5]
+        Valid Values: Unconstrained
+        glocal timestep safety factor for sinks
+    sink_integrator [STRING] ["leapfrog"]
+        Valid Values: Unconstrained
+        time step integrator (euler, leapfrog)
+    sink_jeansCheck [BOOLEAN] [TRUE]
+
+    sink_maxSinks [INTEGER] [1024]
+        Valid Values: Unconstrained
+        maximum number of sink particles
+    sink_merging [BOOLEAN] [FALSE]
+        activate/deactivate sink particle merging
+    sink_negativeEtotCheck [BOOLEAN] [TRUE]
+
+    sink_offDomainSupport [BOOLEAN] [FALSE]
+
+    sink_potentialMinCheck [BOOLEAN] [TRUE]
+
+    sink_softening_radius [REAL] [1.0e14]
+        Valid Values: Unconstrained
+        gravitational softening radius
+    sink_softening_type_gas [STRING] ["linear"]
+        Valid Values: Unconstrained
+        gravitational softening gas--sinks
+    sink_softening_type_sinks [STRING] ["spline"]
+        Valid Values: Unconstrained
+        gravitational softening sinks--sinks
+    sink_subdt_factor [REAL] [0.01]
+        Valid Values: Unconstrained
+        timestep safety factor for subcycling
+    useSinkParticles [BOOLEAN] [FALSE]
+        switch sink particles on/off
+
+Particles/ParticlesMain/active/charged/HybridPIC
+    pt_picCdensMin [REAL] [0.0]
+        Valid Values: Unconstrained
+        Minimum charge density as a fraction of the initial
+    pt_picGam [REAL] [-1.0]
+        Valid Values: Unconstrained
+        Adiabatic exponent for electrons
+    pt_picNsub [INTEGER] [3]
+        Valid Values: Unconstrained
+        number of B-field update subcycles (must be odd)
+    pt_picPcharge_1 [REAL] [1.0]
+        Valid Values: Unconstrained
+        Charge of particle species 1 [e]
+    pt_picPcharge_2 [REAL] [1.0]
+        Valid Values: Unconstrained
+        Charge of particle species 2 [e]
+    pt_picPdensity_1 [REAL] [1.0]
+        Valid Values: 0 to INFTY
+        Initial number density for particle species 1 [m^-3]
+    pt_picPdensity_2 [REAL] [0.0]
+        Valid Values: 0 to INFTY
+        Initial number density for particle species 2 [m^-3]
+    pt_picPmass_1 [REAL] [1.0]
+        Valid Values: 0 to INFTY
+        Mass of particle species 1 [amu]
+    pt_picPmass_2 [REAL] [1.0]
+        Valid Values: 0 to INFTY
+        Mass of particle species 2 [amu]
+    pt_picPname_1 [STRING] ["H+"]
+        Valid Values: Unconstrained
+        Name of species number 1
+    pt_picPname_2 [STRING] ["H+ beam"]
+        Valid Values: Unconstrained
+        Name of species number 2
+    pt_picPpc_1 [INTEGER] [0]
+        Valid Values: Unconstrained
+        Macro particles per cell of species 1
+    pt_picPpc_2 [INTEGER] [0]
+        Valid Values: Unconstrained
+        Macro particles per cell of species 2
+    pt_picPtemp_1 [REAL] [1.5e5]
+        Valid Values: 0 to INFTY
+        Initial temperature for particle species 1 [K]
+    pt_picPtemp_2 [REAL] [0.0]
+        Valid Values: 0 to INFTY
+        Initial temperature for particle species 2 [K]
+    pt_picPvelx_1 [REAL] [0.0]
+        Valid Values: Unconstrained
+        Initial x bulk velocity for particle species 1 [m/s]
+    pt_picPvelx_2 [REAL] [0.0]
+        Valid Values: Unconstrained
+        Initial x bulk velocity for particle species 1 [m/s]
+    pt_picPvely_1 [REAL] [0.0]
+        Valid Values: Unconstrained
+        Initial y bulk velocity for particle species 1 [m/s]
+    pt_picPvely_2 [REAL] [0.0]
+        Valid Values: Unconstrained
+        Initial y bulk velocity for particle species 1 [m/s]
+    pt_picPvelz_1 [REAL] [0.0]
+        Valid Values: Unconstrained
+        Initial z bulk velocity for particle species 1 [m/s]
+    pt_picPvelz_2 [REAL] [0.0]
+        Valid Values: Unconstrained
+        Initial z bulk velocity for particle species 1 [m/s]
+    pt_picResistivity [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    pt_picResistivityHyper [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    pt_picRng_seed [INTEGER] [0]
+        Valid Values: Unconstrained
+        Seed for the RNG if >= 0; if < 0, do not explicitly initialize the RNG
+        seed for the hybrid PIC implementation.
+    pt_picTe [REAL] [0.0]
+        Valid Values: 0 to INFTY
+        Initial electron temperature [K]
+
+Particles/ParticlesMain/passive/EstiMidpoint2
+    pt_dtChangeToleranceDown [REAL] [0.8]
+        Valid Values: 0.00 to 1.01
+        controls Euler vs. estimated midpoint step in
+        EstiMidpoint2Passive/Particles_advance when time step increases.
+    pt_dtChangeToleranceUp [REAL] [5.0]
+        Valid Values: 0.00 to INFTY
+        controls Euler vs. estimated midpoint step in
+        EstiMidpoint2Passive/Particles_advance when time step increases.
+
+Particles/ParticlesMapping/meshWeighting/CIC
+    smearLen [INTEGER] [1]
+        Valid Values: Unconstrained
+

@@ -1,0 +1,62 @@
+Sedov-type Blast problems:
+
+========
+Scripts:
+========
+
+To install the scripts do the following:
+
+-Copy the contents of oscripts to your object directory
+-Copy all .par files to your object directory
+-Make a dumps subdirectory in your object directory; checkpoint and plotfiles will be dumped there
+-Copy the contents of dscripts to your dumps subdirectory
+
+
+===============
+Parameter Space
+===============
+
+The current parameter space has been included into this setup:
+
+Physical geometry:
+------------------
+
+1d: planar, cylindrical, spherical
+
+2d: cylindrical, spherical
+
+3d: spherical
+
+
+Mesh geometry:
+--------------
+
+1d: cartesian, cylindrical, spherical
+
+2d: cartesian, cylindrical, polar, spherical
+
+3d: cartesian
+
+
+Atmospherical conditions:
+-------------------------
+
+-Constant desnity,
+-Exponential decay density, constant pressure
+
+
+Source conditions:
+------------------
+
+-Constant density, constant pressure
+
+
+Misc comments:
+--------------
+
+The original intent of this class of problems was to verify the behavior
+of FLASH 3 in various physical geometries, mesh geometries, and initial
+conditions. Unforunately, due to time to time contraints, much of this
+effort has to be abandoned at this time. Initial conditions that included
+uniform gravity has been discontinued. The filed suffixed with .old contain
+some hints to the original effort.

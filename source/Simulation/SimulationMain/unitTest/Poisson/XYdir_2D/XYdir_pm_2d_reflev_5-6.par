@@ -1,0 +1,99 @@
+# Runtime parameters for the x,y Dirichlet BCs Poisson problem.
+
+# maximum acceptable error norms for passing the test
+gr_testTolLinf =  1.84003e-4
+gr_testTolL2   =  8.43536e-5
+
+# Wavenumbers in x, y for the solution.
+waven_x = 1.
+waven_y = 1.
+
+
+# Phase angle for the solution in x (in rads)
+alpha_x = 0.
+alpha_y = 0.
+
+#       Grid dimensionality and geometry
+geometry	= "cartesian"
+
+
+#       Size of computational volume
+xmin		=  0.
+xmax		=  1.
+ymin		=  0.
+ymax		=  1.
+
+#       Boundary conditions
+xl_boundary_type = "dirichlet"
+xr_boundary_type = "dirichlet"
+yl_boundary_type = "dirichlet"
+yr_boundary_type = "dirichlet"
+
+
+#      Poisson Solver Boundary Conditions
+xl_mg_boundary_type = "dirichlet"
+xr_mg_boundary_type = "dirichlet"
+yl_mg_boundary_type = "dirichlet"
+yr_mg_boundary_type = "dirichlet"
+
+
+#       Simulation (grid, time, I/O) parameters
+run_comment	= "x,y Dirichlet BCs Poisson problem"
+log_file	= "GRID_Poisson_Dir2D.log"
+basenm		= "GRID_Poisson_Dir2D_"
+restart         = .false.
+#checkPointFileNumber=1
+#plotFileNumber  = 1
+nend            = 1
+tmax            = 1. 
+
+plot_var_1	= "vphi"
+plot_var_2      = "vanl"
+plot_var_3      = "verr"
+
+convertToConsvdInMeshInterp = .false.
+writeStatSummary = .true.
+eachProcWritesSummary = .true.
+
+#	AMR parameters
+nblockx	        = 1
+nblocky	        = 1
+nblockz         = 1
+lrefine_min	= 5 
+lrefine_max     = 6
+#nrefs           = 1
+#refine_var_1    = "vsrc"
+
+
+#	Flux Conservation for AMR
+flux_correct    = .true.
+
+# Multigrid Convergence tolerance
+# Ricker Multigrid Convergence tolerance
+#mg_maxResidualNorm = 1.e-10
+
+# Martin and Cartwright Multigrid Convergence tolerance and parameters:
+mgrid_smoother   = 1
+mgrid_npresmooth = 1
+mgrid_npossmooth = 4
+mgrid_print_norm = .true.
+mgrid_max_residual_norm = 1.e-12
+mgrid_max_vcycles = 300
+
+# BiPCGStab Parameters:
+bipcgs_max_residual_norm = 1.e-12
+bipcgs_max_cycles = 1000
+bipcgs_print_norm = .true.
+
+# Pfft Parameters:
+# Use Central Finite Difference discretization operator: 
+gr_pfftDiffOpDiscretize = 2
+gr_mgpfftDiffOpDiscretize = 2
+
+# Force Direct solve in this level:
+#maxDirectSolveLevel=1
+
+# Setup of pfft:
+pfft_setupOnce = .false.
+
+

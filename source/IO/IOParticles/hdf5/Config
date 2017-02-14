@@ -1,0 +1,20 @@
+#Config for IO/IOParticles/hdf5
+
+REQUIRES IO/IOMain/hdf5
+
+CONFLICTS IO/IOMain/pnetcdf
+CONFLICTS IO/IOMain/direct
+
+USESETUPVARS parallelIO, fixedBlockSize
+
+DEFAULT serial
+
+IF parallelIO
+   DEFAULT parallel
+ENDIF
+
+IF not fixedBlockSize
+   DEFAULT parallel
+ENDIF
+
+EXCLUSIVE serial parallel

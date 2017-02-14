@@ -1,0 +1,16 @@
+
+REQUESTS flashUtilities/general
+REQUESTS flashUtilities/nameValueLL
+REQUESTS flashUtilities/interpolation/oneDim
+REQUESTS flashUtilities/contiguousConversion
+
+REQUIRES Driver
+REQUESTS IO
+
+USESETUPVARS AllowAlternativeFiles
+IF not AllowAlternativeFiles
+   EXCLUSIVE *
+ENDIF
+
+D basenm       Base name for output files	
+PARAMETER basenm	STRING	"flash_" 

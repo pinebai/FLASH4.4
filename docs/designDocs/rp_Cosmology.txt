@@ -1,0 +1,57 @@
+
+physics/Cosmology
+    useCosmology [BOOLEAN] CONSTANT [FALSE]
+        whether to use the Cosmology implementation or not
+
+physics/Cosmology/CosmologyMain
+    CosmologicalConstant [REAL] [0.7]
+        Valid Values: Unconstrained
+        Ratio of the mass density equivalent in the cosmological constant (or
+        dark energy) to the closure density at the present epoch
+    HubbleConstant [REAL] [2.1065E-18]
+        Valid Values: Unconstrained
+        Value of the Hubble constant (\dot{a}/a) in sec^-1 at the present epoch
+    MaxScaleChange [REAL] [HUGE]
+        Valid Values: Unconstrained
+        Maximum permitted fractional change in the scale factor during each
+        timestep
+    OmegaBaryon [REAL] [0.05]
+        Valid Values: Unconstrained
+        Ratio of baryonic mass density to closure density at the present epoch
+        (must be <= OmegaMatter!)
+    OmegaMatter [REAL] [0.3]
+        Valid Values: Unconstrained
+        Ratio of total mass density to closure density at the present epoch
+    OmegaRadiation [REAL] [5.E-5]
+        Valid Values: Unconstrained
+        Ratio of total radiation density to closure density at the present epoch
+    computeRedshiftOnly [BOOLEAN] [FALSE]
+
+    useCosmology [BOOLEAN] [TRUE]
+        Are we using cosmological expansion?
+
+physics/Cosmology/unitTest
+    computeDtCorrect [REAL] [169450294720534.7]
+        Valid Values: Unconstrained
+
+    massToLengthCorrect [REAL] [4959457362.186973]
+        Valid Values: Unconstrained
+
+    redshiftToTimeCorrect [REAL] [1129631001610459.]
+        Valid Values: Unconstrained
+
+    solveFriedmannCorrect [REAL] [1.9608074571151239E-002]
+        Valid Values: Unconstrained
+
+    utDt [REAL] [10000000000.00000]
+        Valid Values: Unconstrained
+
+    utOldScaleFactor [REAL] [1.9607958853385455E-002]
+        Valid Values: Unconstrained
+
+    utScaleFactor [REAL] [1.9608074569174569E-002]
+        Valid Values: Unconstrained
+
+    utSimTime [REAL] [1129641001610459.]
+        Valid Values: Unconstrained
+

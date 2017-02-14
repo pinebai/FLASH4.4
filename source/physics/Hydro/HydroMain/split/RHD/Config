@@ -1,0 +1,63 @@
+#	Config file for the RHD.
+
+# DWL: PLUTO would be  a better choice for doing Relativistic Hydro than FLASH.
+
+REQUIRES Driver/DriverMain/Split
+REQUIRES physics/Eos/EosMain/Gamma/RHD
+
+
+# Variables required by the RHD
+VARIABLE dens TYPE: PER_VOLUME EOSMAP: DENS # density
+VARIABLE velx TYPE: PER_MASS   EOSMAPIN:VELX # x-velocity
+VARIABLE vely TYPE: PER_MASS   EOSMAPIN:VELY # y-velocity
+VARIABLE velz TYPE: PER_MASS   EOSMAPIN:VELZ # z-velocity
+VARIABLE pres                  EOSMAP: PRES # pressure
+VARIABLE ener TYPE: PER_MASS   EOSMAP: ENER # specific total energy (T+U)
+VARIABLE gamc                  EOSMAP: GAMC # sound-speed gamma
+VARIABLE temp                  EOSMAP: TEMP # temperature
+VARIABLE eint TYPE: PER_MASS   EOSMAP: EINT # specific internal energy (U)
+
+
+# Flux
+FLUX dens    # was rhoflx
+FLUX xmom    # was uflx   -- x momentum
+FLUX ymom    # was utflx  -- y momentum
+FLUX zmom    # was uttflx -- z momentum
+FLUX ener    # was eflx
+
+USESETUPVARS SupportWeno, SupportPpmUpwind
+IF SupportWeno
+  SETUPERROR The RHD split Hydro implementation does not support WENO
+ELSEIF SupportPpmUpwind
+  SETUPERROR The RHD split Hydro implementation does not support PPM Upwind
+ENDIF
+
+# Number of guard cells
+GUARDCELLS 4 # RHD requires 4 guard cell size!
+
+
+# RHD Parameters
+D cfl		Courant number
+D reconType	Order of reconstruction
+
+PARAMETER reconType	INTEGER    2         # 1=Linear, 2=Parabolic (PPM)
+
+D small             Cutoff value
+D smlrho            Cutoff value for density
+D smallp            Cutoff value for pressure
+D smalle            Cutoff value for energy
+D smallt            Cutoff value for temperature
+D smallu            Cutoff value for velocity
+D smallx            Cutoff value for abundances
+
+
+# Driver Parameters
+PARAMETER small         REAL    1.E-10
+PARAMETER smlrho        REAL    1.E-10
+PARAMETER smallp        REAL    1.E-10
+PARAMETER smalle        REAL    1.E-10
+PARAMETER smallt        REAL    1.E-10
+PARAMETER smallu        REAL    1.E-10
+PARAMETER smallx        REAL    1.E-10
+
+PPDEFINE FLASH_HYDRO_RHD

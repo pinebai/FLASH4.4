@@ -1,0 +1,19 @@
+LIBRARY NCMPI
+
+REQUIRES Driver
+
+USESETUPVARS IO, typeIO
+
+IF IO not in ["","pnetcdf"]
+   SETUPERROR The setup variable 'IO' is set to something other than 'pnetcdf'
+ENDIF
+
+EXCLUSIVE *
+
+IF typeIO
+   REQUIRES ./typeSelection
+ELSE
+   REQUIRES ./explicitCopy
+ENDIF
+
+PPDEFINE FLASH_IO_PNETCDF

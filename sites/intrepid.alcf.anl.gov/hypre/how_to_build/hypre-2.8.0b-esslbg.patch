@@ -1,0 +1,39 @@
+diff -rupN hypre-2.8.0b-original/src/configure hypre-2.8.0b/src/configure
+--- hypre-2.8.0b-original/src/configure	2013-07-18 05:15:19.333464192 +0000
++++ hypre-2.8.0b/src/configure	2013-07-18 05:15:22.973421871 +0000
+@@ -5625,7 +5625,7 @@ _ACEOF
+ 
+       fi
+ 
+-      if test $blas_lib = "-lessl"
++      if test $blas_lib = "-lessl" -o $blas_lib = "-lesslbg"
+       then
+ 
+ cat >>confdefs.h <<\_ACEOF
+@@ -5672,7 +5672,7 @@ fi;
+ #***************************************************************
+ #   Set possible BLAS library names
+ #***************************************************************
+-  BLAS_LIB_NAMES="blas essl dxml cxml mkl scs atlas complib.sgimath sunmath"
++  BLAS_LIB_NAMES="blas essl esslbg dxml cxml mkl scs atlas complib.sgimath sunmath"
+ 
+ #***************************************************************
+ #   Set search paths for BLAS library
+@@ -5812,7 +5812,7 @@ _ACEOF
+ 
+   fi
+ 
+-  if test "$BLASLIBS" = "essl"; then
++  if test "$BLASLIBS" = "essl" -o "$BLASLIBS" = "esslbg"; then
+ 
+ cat >>confdefs.h <<\_ACEOF
+ #define HYPRE_USING_ESSL 1
+@@ -5869,7 +5869,7 @@ fi
+ if test "$hypre_user_chose_lapack" = "yes"
+ then
+    for lapack_lib in $LAPACKLIBS; do
+-      if test $lapack_lib = "-lessl"
++      if test $lapack_lib = "-lessl" -o $lapack_lib = "-lesslbg"
+       then
+ 
+ cat >>confdefs.h <<\_ACEOF

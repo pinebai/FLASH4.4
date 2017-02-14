@@ -1,0 +1,171 @@
+!!****if* source/Particles/ParticlesMain/MidpointPassive/Particles_advance
+!!
+!! NAME
+!!
+!!  Particles_advance
+!!
+!! SYNOPSIS
+!!
+!!  Particles_advance(real INTENT(in) :: dtOld,
+!!                    real INTENT(in) :: dtNew)
+!!
+!! DESCRIPTION
+!!
+!!  Time advancement routine for the particle module.
+!!  
+!!  This version implements 2nd-order midpoint advancement for
+!!  passive particles. SCHEMATICALLY:
+!!      x(t) = x(t-2) + 2*dt*v(t-1)
+!!  or, for cases where the time step can change
+!!      x(t) = x(t-2) + (dt(t-1)+dt(t-2))*v(t-1)
+!!
+!!
+!! In more detail:
+!! (a) Normal case:
+!!     x(t+dtNew) = x(t-dtOld) + (dtOld+dtNew)* v(x(t), t+dtNew)
+!! Note that this is different from the usual "midpoint" method, which would have
+!!     x(t+dtNew) = x(t-dtOld) + (dtOld+dtNew)* v(x(t), t)
+!!
+!! (b) Initial step (first call): "Euler step"
+!!     x(t+dtNew) = x(t)       +        dtNew * v(x(t), t+dtNew)
+!! Note that this is different from the usual Euler forward method, which would have
+!!     x(t+dtNew) = x(t)       +        dtNew * v(x(t), t)
+!!
+!! Also, the velocity components are left as
+!!      v(t+dtNew)  =                     v(x(t),      t+dtNew)
+!! instead of being updated to the most recent information for the updated location as in:
+!!      v(t+dtNew)  =                     v(x(t+dtNew),t+dtNew)
+!!
+!! ARGUMENTS
+!!
+!!   dtOld : previous time interval 
+!!   dtNew : current time interval
+!!
+!! PARAMETERS
+!!
+!!  
+!!***
+
+!===============================================================================
+
+subroutine Particles_advance (dtOld,dtNew)
+    
+  use Particles_data, ONLY: particles, pt_numLocal, pt_maxPerProc, useParticles, &
+       pt_gcMaskForAdvance,pt_gcMaskSize,pt_myPe
+  use Grid_interface, ONLY : Grid_moveParticles,Grid_fillGuardCells,&
+                             Grid_mapMeshToParticles
+  
+  implicit none
+  
+#include "constants.h"
+#include "Flash.h"
+  
+  real, INTENT(in)  :: dtOld, dtNew
+  integer       :: i, nstep, myPE
+  real          :: posXminus1, posYminus1, posZminus1
+  logical, save :: first_call = .true.
+  
+!!--------------------------------------------------------------------------------------
+  
+  ! Don't do anything if runtime parameter isn't set
+      if (.not.useParticles ) return
+
+  ! Prepare guardcell data needed for particle interpolation.
+  !
+  ! Experimentation (with the old way of advancing Grid particles)
+  ! has shown that at least 2 layers of guardcells need to be filled
+  ! with updated data for vel[xyz] and density, in order to get the
+  ! same results as for a full guardcell fill, when using native grid interpolation. - KW
+  call Grid_fillGuardCells(pt_myPe, CENTER, ALLDIR,&
+       maskSize=pt_gcMaskSize,mask=pt_gcMaskForAdvance)
+
+   !! If this is the first sweep through, calculate the new positions by an Euler step.
+   !! Then save them for the next jump step
+   if (first_call) then
+
+      ! Map the updated (xyz sweep) velocity field onto the current particle positions to
+      ! obtain the particle velocities at the midpoints
+
+      call Grid_mapMeshToParticles(particles,pt_numLocal,pt_maxPerProc,&
+                                   VELX_VAR, VELX_PART_PROP,&
+                                   POSX_PART_PROP,POSY_PART_PROP,POSZ_PART_PROP)
+      if (NDIM > 1) call Grid_mapMeshToParticles(particles,pt_numLocal,pt_maxPerProc,&
+                                          VELY_VAR, VELY_PART_PROP, &
+                                          POSX_PART_PROP,POSY_PART_PROP,POSZ_PART_PROP)
+      if (NDIM == 3) call Grid_mapMeshToParticles(particles,pt_numLocal,pt_maxPerProc,&
+                                          VELZ_VAR, VELZ_PART_PROP, &
+                                          POSX_PART_PROP,POSY_PART_PROP,POSZ_PART_PROP)
+
+      ! Save the initial positions for the second time step and update the particle positions
+      do i = 1, pt_numLocal
+         particles(POS2PREVX_PART_PROP,i) = particles(POSX_PART_PROP,i)
+         particles(POSX_PART_PROP,i) = particles(POSX_PART_PROP,i) + &
+              dtNew * particles(VELX_PART_PROP,i)
+         if (NDIM .GT. 1) then
+            particles(POS2PREVY_PART_PROP,i) = particles(POSY_PART_PROP,i)
+            particles(POSY_PART_PROP,i) = particles(POSY_PART_PROP,i) + &
+                 dtNew * particles(VELY_PART_PROP,i)
+         endif 
+         if (NDIM .EQ. 3) then
+            particles(POS2PREVZ_PART_PROP,i) = particles(POSZ_PART_PROP,i)
+            particles(POSZ_PART_PROP,i) = particles(POSZ_PART_PROP,i) + &
+                  dtNew * particles(VELZ_PART_PROP,i)
+        endif
+      enddo  !! end of loop over all particles
+     
+      first_call = .false.
+
+      !! end of initial call and Euler step
+
+   else  ! (.not. first_call)
+
+      !! Subsequent sweeps, calculate the final value from the midpoint velocity and two previous location
+      !! Also save positions for the next step
+
+      !! Calculate the velocity at the (previous) particle locations 
+      call Grid_mapMeshToParticles(particles,pt_numLocal,pt_maxPerProc,&
+                                   VELX_VAR, VELX_PART_PROP, &
+                                   POSX_PART_PROP,POSY_PART_PROP,POSZ_PART_PROP)
+      if (NDIM > 1) call Grid_mapMeshToParticles(particles,pt_numLocal,pt_maxPerProc,&
+                                          VELY_VAR, VELY_PART_PROP, &
+                                          POSX_PART_PROP,POSY_PART_PROP,POSZ_PART_PROP)
+      if (NDIM == 3) call Grid_mapMeshToParticles(particles,pt_numLocal,pt_maxPerProc,&
+                                          VELZ_VAR, VELZ_PART_PROP, &
+                                          POSX_PART_PROP,POSY_PART_PROP,POSZ_PART_PROP)
+
+      !! Update positions using the locations from two steps ago and the velocity
+      !!    just calculated
+      !! Complicated by needing to save the current particle position for future use
+      !!    in a temporary variable
+      do i = 1, pt_numLocal
+         posXminus1 = particles(POSX_PART_PROP,i)
+         particles(POSX_PART_PROP,i) = particles(POS2PREVX_PART_PROP,i) + & 
+              (dtOld + dtNew) * particles(VELX_PART_PROP,i)
+         particles(POS2PREVX_PART_PROP,i) = posXminus1
+
+         if (NDIM .GT. 1) then
+            posYminus1 = particles(POSY_PART_PROP,i)
+            particles(POSY_PART_PROP,i) = particles(POS2PREVY_PART_PROP,i) + &
+                (dtOld + dtNew) * particles(VELY_PART_PROP,i)
+            particles(POS2PREVY_PART_PROP,i) = posYminus1
+            
+         endif
+         if (NDIM .EQ. 3) then
+            posZminus1 = particles(POSZ_PART_PROP,i)
+            particles(POSZ_PART_PROP,i) = particles(POS2PREVZ_PART_PROP,i) + &
+              (dtOld + dtNew) * particles(VELZ_PART_PROP,i)
+            particles(POS2PREVZ_PART_PROP,i) = posZminus1
+         endif
+      enddo     
+
+      ! Move the particles to new blocks given the updated positions
+      call Grid_moveParticles(particles,pt_numLocal,pt_maxPerProc) 
+
+   endif  ! end of sweep split
+
+!!--------------------------------------------------------------------------------------
+
+   return
+  
+end subroutine Particles_advance
+

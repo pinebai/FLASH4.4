@@ -1,0 +1,15 @@
+# Config file for the Heatexchange code unit.
+# The Heatexchange unit models exchange of internal energy
+# amoing fluid componenets in the same locations.  It only
+# makes sense to use with a model where different components
+# can have different temperatures.
+
+# Available implementations are
+
+# Constant
+
+DEFAULT HeatexchangeMain
+
+D useHeat   runtime control for turning the heat exchange on or off
+PARAMETER useHeatexchange   BOOLEAN CONSTANT FALSE
+

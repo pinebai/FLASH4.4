@@ -1,0 +1,10 @@
+# Config file for the Deleptonize unit
+
+DEFAULT DeleptonizeMain
+
+D useDeleptonize   runtime control for turning the deleptonization on or off
+PARAMETER useDeleptonize    BOOLEAN FALSE
+
+#localAPI
+CHILDORDER localAPI
+

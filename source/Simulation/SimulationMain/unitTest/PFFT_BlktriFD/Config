@@ -1,0 +1,49 @@
+#       Configuration file for a 3d x periodic; y,z Neuman BCs Poisson problem.
+
+REQUIRES Driver
+REQUIRES Grid/GridMain
+
+
+USESETUPVARS Grid
+
+IF Grid=='UG'
+   REQUESTS Grid/GridSolvers/Pfft/DirectSolver
+ELSE
+   REQUESTS Grid/GridSolvers/Multigrid/PfftTopLevelSolve
+ENDIF
+
+
+# ----------------------------------------------
+# THIS PART IS FOR PROBLEM DEPENDENT CONFIG FILE
+
+# Wavenumbers in x, y and z for the solution.
+
+#D   waven_x  wanenumber in the solution in x direction
+PARAMETER waven_x         REAL     1.
+
+#D   waven_y  wanenumber in the solution in y direction
+PARAMETER waven_y         REAL     1.
+
+#D   waven_z  wanenumber in the solution in z direction
+PARAMETER waven_z         REAL     1.
+
+#D   alpha_x  Phase angle for the solution in x (in rads)
+PARAMETER alpha_x         REAL     0.
+
+
+## ----------------------------------------------
+## THIS PART IS FOR PHYSICS CONFIG
+## Variables required by the Solve_Poisson module
+VARIABLE vphi                	# Numerical Solution of Poisson Problem
+VARIABLE vsrc            	# Source for poisson problem (taken from analytical soln.)
+VARIABLE vanl                 	# Analytical solution of Poisson problem
+VARIABLE verr               	# Pointwise value of abs(vphi(i,j,k)-vanl(i,j,k))
+
+## Fluxes
+
+## Use SCRATCHVAR for temporary storages
+
+## Use FACEVAR for cell interface velocity fields
+
+## Number of guardcells at each boundary
+GUARDCELLS 4

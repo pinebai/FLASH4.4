@@ -1,0 +1,21 @@
+# Configuration settings and vars for BiPCGStab:
+
+
+# Paremeters needed by BiPCGStab solver
+PARAMETER bipcgs_max_residual_norm REAL    1.E-6
+PARAMETER bipcgs_max_cycles        INTEGER 1000
+PARAMETER bipcgs_print_norm        BOOLEAN FALSE
+
+
+# Work variables needed by BiPCGStab solver
+VARIABLE BIRO    # Contains initial residual vector ro. 
+VARIABLE BIRI    # Contains residual vectors ri and ri-1.
+VARIABLE BIVI    # Contains vectors vi and vi-1.
+VARIABLE BIPI    # Contains vectors pi and pi-1.
+VARIABLE BISI    # Contains vector si.
+VARIABLE BIZI    # Contains vector zi.
+VARIABLE BIYI    # Contains vector yi.
+
+
+# Flux variable
+FLUX flxbc

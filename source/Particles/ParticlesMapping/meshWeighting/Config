@@ -1,0 +1,17 @@
+#  Configuration file for particle <--> mesh mapping submodule.
+#  [/source/Particles/ParticlesMapping/meshWeighting]
+
+#  Submodules:
+
+#    NGP           Nearest-grid-point (NGP) interpolation
+#    CIC           Cloud-in-cell (CIC) interpolation
+#    TSC           Triangular-shaped-cloud (TSC) interpolation
+#    CIC_1DSpherical     CIC interpolation on a 1D spherical mesh
+#    CIC_2DCylAxi  CIC interpolation on a 2D cylindrical, axisymmetric mesh
+#    CIC_AMR       Experimental CIC method for adaptively refined meshes to
+#                    avoid trouble with self-forces at refinement boundaries
+
+DEFAULT CIC
+
+EXCLUSIVE NGP CIC TSC CIC_1DSpherical CIC_2DCylAxi CIC_AMR
+

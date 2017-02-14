@@ -1,0 +1,4 @@
+#  Configuration file for Helmholtz-derived multi-temperature  EOS, with Species used
+#  [physics/Eos/EosMain/Helmholtz/SpeciesBased]
+REQUESTS Multispecies/MultispeciesMain
+REQUIRES physics/Eos/EosMain/multiTemp/Helmholtz/SpeciesBased

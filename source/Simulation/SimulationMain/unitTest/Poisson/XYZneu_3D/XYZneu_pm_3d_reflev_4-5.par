@@ -1,0 +1,102 @@
+# Runtime parameters for the x, y and z Neuman Poisson problem.
+
+# maximum acceptable error norms for passing the test
+gr_testTolLinf =  9.40003e-4
+gr_testTolL2   =  3.14762e-4
+
+# Number of waves in x, y and z for the solution.
+waven_x = 1.
+waven_y = 1.
+waven_z = 1.
+
+# Phase angle for the solution in x (in rads)
+alpha_x = 0.
+alpha_y = 0.
+
+#       Grid dimensionality and geometry
+geometry	= "cartesian"
+
+#       Size of computational volume
+xmin		=  0.
+xmax		=  1.
+ymin		=  0.
+ymax		=  1.
+zmin		=  0.
+zmax		=  1.
+
+#       Boundary conditions
+xl_boundary_type = "outflow"
+xr_boundary_type = "outflow"
+yl_boundary_type = "outflow"
+yr_boundary_type = "outflow"
+zl_boundary_type = "outflow"
+zr_boundary_type = "outflow"
+
+#      Poisson Solver Boundary Conditions
+xl_mg_boundary_type = "outflow"
+xr_mg_boundary_type = "outflow"
+yl_mg_boundary_type = "outflow"
+yr_mg_boundary_type = "outflow"
+zl_mg_boundary_type = "outflow"
+zr_mg_boundary_type = "outflow"
+
+#       Simulation (grid, time, I/O) parameters
+run_comment	= "x,y,z Neuman BCs Poisson problem"
+log_file	= "GRID_Poisson_XYZNeu.log"
+basenm		= "GRID_Poisson_XYZNeu_"
+restart         = .false.
+#checkPointFileNumber=1
+#plotFileNumber  = 1
+nend            = 1
+tmax            = 1. 
+
+plot_var_1	= "vphi"
+plot_var_2      = "vanl"
+plot_var_3      = "verr"
+
+convertToConsvdInMeshInterp = .false.
+writeStatSummary = .true.
+eachProcWritesSummary = .true.
+
+#	AMR parameters
+nblockx	        = 1
+nblocky	        = 1
+nblockz         = 1
+lrefine_min	= 4
+lrefine_max     = 5
+#nrefs           = 1
+#refine_var_1    = "vsrc"
+
+#	Flux Conservation for AMR
+flux_correct    = .true.
+
+# Multigrid Convergence tolerance
+# Rickers Multigrid HG:
+#mg_maxResidualNorm = 1.e-12
+
+# Martin and Cartwright Multigrid:
+mgrid_smoother   = 1
+mgrid_npresmooth = 1
+mgrid_npossmooth = 4
+mgrid_print_norm = .true.
+mgrid_max_residual_norm = 1.e-12
+mgrid_max_vcycles = 300
+
+# BiPCGStab Parameters:
+bipcgs_max_residual_norm = 1.e-12
+bipcgs_max_cycles = 1000
+bipcgs_print_norm = .true.
+
+# Pfft Parameters:
+# Use Central Finite Difference discretization operator:
+gr_pfftDiffOpDiscretize = 2
+gr_mgDiffOpDiscretize   = 2
+
+
+# Force Direct solve in this level:
+#maxDirectSolveLevel=1
+
+# Setup of pfft:
+pfft_setupOnce = .false.
+
+

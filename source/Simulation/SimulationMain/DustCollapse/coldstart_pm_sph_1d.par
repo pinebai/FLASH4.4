@@ -1,0 +1,78 @@
+#	Runtime parameters for the dust collapse problem.
+
+#	Parameters for initial model
+
+sim_initDens	= 1.E9
+sim_initRad	= 6.5E8
+sim_tAmbient	= 1.E9
+sim_ictr	= 0.
+
+#		Gas ratio of specific heats
+
+gamma           = 1.6666667
+
+#	Computational volume parameters
+
+#		Grid dimensionality and geometry
+
+geometry = "spherical"
+
+#		Size of computational volume
+
+xmin		= 0.
+xmax		= 1.4E9
+Nblockx		= 4
+
+#		Boundary conditions
+
+xl_boundary_type = "reflect"
+xr_boundary_type = "outflow"
+grav_boundary_type = "isolated"
+
+#	Simulation (grid, time, I/O) parameters
+
+cfl		= 0.8
+lrefine_max     = 8
+basenm          = "dustcoll_"
+restart         = .false.
+
+checkpointFileIntervalTime          = 0.0358
+checkpointFileIntervalStep    =  25000
+
+plotFileIntervalTime     = 1000.
+
+nend            = 25000
+
+#tmax            = 0.0637
+tmax            = 0.0358
+
+refine_var_1	= "dens"
+refine_var_2	= "none"
+
+mpole_lmax	= 0
+useGravity        = .true.
+
+run_comment     = "Dust collapse problem"
+log_file        = "dustcoll.log"
+
+smlrho          = 1.E5
+smallp          = 1.E5
+smalle          = 1.E1
+smallt          = 1.E-7
+
+dtinit           = 1.E-5
+dtmax           = 1.E-2
+nriem           = 100
+cvisc           = 0.
+eintSwitch     = 1.E-4
+memory_stat_freq = 1
+
+convertToConsvdForMeshCalls   = .true.
+#monotone        = .true.
+
+order           = 3
+slopeLimiter    = "mc"   # Slope limiters (minmod, mc, vanLeer, hybrid, limited)
+
+use_avisc       = .FALSE.
+use_flattening  = .TRUE.
+use_steepening	= .TRUE. # use contact steepening (originally for PPM)

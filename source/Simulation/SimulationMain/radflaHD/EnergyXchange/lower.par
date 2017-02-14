@@ -1,0 +1,148 @@
+# Parameters based on Turner & Stone (2001) equilibration test
+# Section 5.1 Heating & Cooling
+#
+# Radiation energy density: 1e12 ergs/cm^3
+# Matter energy density:    1e10 ergs/cm^3 (upper set)
+#                           1e02 ergs/cm^3 (lower set)
+# These correspond to:
+#
+# 1e12 erg/cm^3 rad  == 3390679.311181686 K
+# 1e10 erg/cm^3 eint == 481088877.3213741 K 
+# 1e02 erg/cm^3 eint == 4.810888773213741 K
+#
+# rho = 1e-7 g/cm^3
+# opacity = 4.e-8 cm^-1
+
+# Paramaters for the MGD inifinite medium simulation
+run_comment = "MGD test with infinite medium"
+log_file    = "mgdinfinite.log"
+basenm      = "mgdinfinite_"
+restart     = .false.
+
+
+##########################
+#                        #
+#     I/O PARAMETERS     #
+#                        #
+##########################
+checkpointFileIntervalTime = 1.0
+checkpointFileIntervalStep = 100
+checkpointFileNumber       = 0
+plotFileNumber             = 0
+
+
+########################################
+#                                      #
+#     RADIATION/OPACITY PARAMETERS     #
+#                                      #
+########################################
+useDiffuse      = .false.
+useConductivity = .false.
+
+# Multigroup diffusion options:
+rt_useMGD       = .true.
+rt_mgdNumGroups = 1
+rt_mgdBounds_1  = 0.0
+rt_mgdBounds_2  = 100000.0
+#rt_mgdBounds_2  = 2500.0
+#rt_mgdBounds_3  = 3500.0
+#rt_mgdBounds_4  = 5000.0
+#rt_mgdBounds_5  = 100000.0
+rt_mgdFlCoef     = 0.0
+
+useOpacity      = .true.
+op_emitConst    = 4.e-8
+op_transConst   = 4.e-8
+op_absorbConst  = 4.e-8
+
+rt_mgdXlBoundaryType = "reflecting"
+rt_mgdXrBoundaryType = "reflecting"
+rt_mgdYlBoundaryType = "reflecting"
+rt_mgdYrBoundaryType = "reflecting"
+rt_mgdZlBoundaryType = "reflecting"
+rt_mgdZrBoundaryType = "reflecting"
+
+############################
+#                          #
+#     HYDRO PARAMETERS     #
+#                          #
+############################
+useHydro = .false.
+
+xl_boundary_type = "reflecting"
+xr_boundary_type = "reflecting"
+yl_boundary_type = "reflecting"
+yr_boundary_type = "reflecting"
+zl_boundary_type = "reflecting"
+zr_boundary_type = "reflecting"
+
+
+##########################
+#                        #
+#     EOS PARAMETERS     #
+#                        #
+##########################
+eosModeInit          = "dens_temp_gather"
+eosMode              = "dens_ie_gather"
+gamma                = 1.66666666666667
+smallt               = 1.0
+smallx               = 1.0e-99
+# mu 0.6
+eos_singleSpeciesA   = 1.2
+eos_singleSpeciesZ   = 1.0
+eos_combinedTempRule = 2
+
+
+##############################
+#                            #
+#     INITIAL CONDITIONS     #
+#                            #
+##############################
+# cV_ele = 247469200.0 erg/g/K
+# cV_ion = 247469200.0 erg/g/K
+# T_ele  = E_ele / cV_ele / rho
+# T_ion  = E_ion / cV_ion / rho
+# E_ele + E_ion = E_int_matter = 1.0e2 (lower) or 1.0e10 (upper)
+# E_ele = E_ion = E_int_matter / 2
+sim_rho  = 1.0e-7 
+sim_trad = 3390679.311181686  # Erad = 1e12 erg/cm^3
+#sim_tele = 404090690.8819361  # upper
+#sim_tion = 404090690.8819361  # upper
+sim_tele = 4.040906908819361  # lower
+sim_tion = 4.040906908819361  # lower
+
+
+###########################
+#                         #
+#     TIME PARAMETERS     #
+#                         #
+###########################
+dt_diff_factor = 1.0e+10 # Disable diffusion dt
+hx_dtFactor    = 1.0e99
+hx_ieTimeCoef  = 1.0e-9
+tmax           = 1.0e-5
+dtmin          = 1.0e-15
+dtinit         = 1.0e-14
+dtmax          = 1.0e-8
+nend           = 10000000
+
+
+###########################
+#                         #
+#     MESH PARAMETERS     #
+#                         #
+###########################
+geometry = cartesian
+
+# Domain size:
+xmin = 0.0
+xmax = 1.0
+
+# Total number of blocks:
+nblockx = 1
+nblocky = 1
+nblockz = 1
+
+lrefine_max = 1
+lrefine_min = 1
+refine_var_1 = "dens"

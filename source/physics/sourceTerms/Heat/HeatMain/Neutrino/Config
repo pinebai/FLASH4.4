@@ -1,0 +1,15 @@
+# Config file for local neutrino heating/cooling as in Murphy & Burrows (2008).
+# FLASH implementation by S.M. Couch (2013, ApJ, 765, 29).
+
+REQUIRES Driver
+REQUESTS physics/Eos/EosNuclear
+
+D	  Lneut	        Parametric neutrino luminosity
+PARAMETER Lneut		REAL	0.0
+D	  Tneut		Neutrino temperature in MeV
+PARAMETER Tneut		REAL	0.0
+D	  bounce_time	The time of bounce in s.
+PARAMETER bounce_time   REAL    0.0
+D	  heatTimeFac   For adjusting the heating time step size
+PARAMETER heatTimeFac	REAL	1.0e4
+

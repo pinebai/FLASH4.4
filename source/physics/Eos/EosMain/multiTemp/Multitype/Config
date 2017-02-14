@@ -1,0 +1,33 @@
+#	Config file for the Multigamma ideal-gas-based 3T  equation of state
+
+REQUIRES Multispecies/MultispeciesMain
+
+REQUESTS physics/Eos/EosMain/multiTemp/Gamma
+REQUESTS physics/Eos/EosMain/multiTemp/Gamma/Ye
+
+SUGGEST physics/Eos/EosMain/Tabulated
+
+CONFLICTS physics/Eos/EosMain/multiTemp/Multigamma
+
+
+D eos_tolerance  tolerance for the Newton-Raphson iterations
+PARAMETER eos_tolerance REAL    1.e-8
+
+D eos_maxNewton  maximum number of Newton-Raphson iterations to try.
+PARAMETER eos_maxNewton INTEGER 50
+
+D eos_forceConstantInput Newton-Raphson loop in Eos can allow input EINT or PRES 
+D &              to change on output to preserve equilibrium.  This switch 
+D &              forces a constant input of EINT or PRES
+PARAMETER eos_forceConstantInput BOOLEAN false 
+
+D eos_largeT default upper bracket bound and used to fake
+D &           temperature if it tries to go too high.
+D & Used in some Helmholtz and Multitype implementations of Eos.
+PARAMETER eos_largeT REAL 1.e14
+
+PARAMETER eos_maxFactorUp   REAL 1.5848932
+PARAMETER eos_maxFactorDown REAL 0.6309573
+
+REQUESTS physics/Hydro/HydroMain/split/PPM/multiTemp
+

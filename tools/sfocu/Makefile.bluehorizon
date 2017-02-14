@@ -1,0 +1,24 @@
+CCOMP = gcc
+LFLAGS = -o
+CDEFINES = 
+
+CFLAGS = -c \
+         -I/rmount/usr/local/apps/HDF/include \
+         -I/usr/local/apps/hdf5-1.4.3-sprs/include
+
+LIBS = -L/rmount/usr/local/apps/HDF/lib -lmfhdf -ldf -ljpeg -lz \
+       -L/usr/local/apps/hdf5-1.4.3-sprs/lib -lhdf5 \
+       -lm
+
+EXENAME = sfocu
+OBJS = main.o sfocu.o flash_reader.o namecmp.o flash_reader_hdf4.o flash_reader_hdf5.o flash_reader_chombo.o sameblock.o options.o
+
+.SUFFIXES: .c .o
+.c.o :
+	$(CCOMP) $(CFLAGS) $(CDEFINES) $*.c
+
+default: $(OBJS)
+	$(CCOMP) $(OBJS) $(LIBS) $(LFLAGS) $(EXENAME)
+
+clean:
+	rm $(OBJS) $(EXENAME)

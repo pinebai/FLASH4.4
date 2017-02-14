@@ -1,0 +1,180 @@
+# Paramaters for the Lowrie Radiative shock problem with grey nonequilibrium diffusion
+run_comment = "Radiative shock problem with grey nonequilibrium diffusion"
+log_file    = "GreyRadshock.log"
+basenm      = "greyRadshock_"
+restart     = .false.
+
+
+#########################
+#   OUTPUT PARAMETERS   #
+#########################
+checkpointFileIntervalTime = 1.0
+checkpointFileIntervalStep = 20
+checkpointFileNumber       = 0
+plotFileNumber             = 0
+
+
+##########################
+#   PHYSICS PARAMETERS   #
+##########################
+useHeatexchange = .false.
+useDiffuse      = .true.
+
+# Material and EOS parameters:
+eosModeInit        = "dens_temp_gather"
+gamma              = 1.66666666666667 
+#eos_singleSpeciesA = 4.0026032497
+#eos_singleSpeciesZ = 2.0
+
+
+### Multigroup diffusion options ###
+rt_useMGD        = .true.
+rt_mgdNumGroups  = 1
+rt_mgdBoundEntry = "grbd_manual"
+rt_mgdBounds_1   = 0.0
+rt_mgdBounds_2   = 1000000.0
+
+# MGD Flux limiter options:
+rt_mgdFlMode     = "fl_none"
+rt_mgdFlCoef     = 1.0
+
+# MGD Opacity options
+op_emitConst     = 422.994704725968
+op_transConst    = 788.031929499636 
+op_absorbConst   = 422.994704725968
+
+# Electron conductivity options:
+diff_useEleCond  = .false.
+diff_eleFlMode   = "fl_harmonic"
+diff_eleFlCoef   = 50.0
+useConductivity  = .true.
+cond_constantIsochoric = 8.6173095897729779e+17 # 1e+22 ergs/s/cm/eV
+
+# Initial conditions:
+xmin = -3e-2
+xmax = +3e-2
+
+sim_rho1  = 1.0
+sim_tele1 = 1.160455e+07 # 1000 eV
+sim_tion1 = 5802275.0    #  500 eV
+sim_trad1 = 1.160455e+07 # 1000 eV
+
+sim_rho2  = 1.0
+sim_tele2 = 1.160455e+03 #  0.1 eV
+sim_tion2 = 5802275.0    #  500 eV
+sim_trad2 = 1.160455e+03 #  0.1 eV
+
+# Set boundary conditions:
+xl_boundary_type = "outflow"
+xr_boundary_type = "outflow"
+yl_boundary_type = "outflow"
+yr_boundary_type = "outflow"
+zl_boundary_type = "outflow"
+zr_boundary_type = "outflow"
+rt_mgdXlBoundaryType = "outflow"
+rt_mgdXrBoundaryType = "outflow"
+rt_mgdYlBoundaryType = "outflow"
+rt_mgdYrBoundaryType = "outflow"
+rt_mgdZlBoundaryType = "outflow"
+rt_mgdZrBoundaryType = "outflow"
+
+#######################
+#   TIME PARAMETERS   #
+#######################
+#tstep_change_factor = 1.01
+dt_diff_factor = 1.0e+10
+rt_dtFactor    = 1.0e+10
+tmax           = 0.07 #2.0e-11
+dtinit         = 1.0e-20
+dtmin          = 1.0e-20
+#dtmax          = 1.0e-14
+nend           = 7000 
+
+
+#######################
+#   MESH PARAMETERS   #
+#######################
+geometry = cartesian
+
+# Total number of blocks:
+nblockx = 1
+nblocky = 1
+nblockz = 1
+
+# Number of processes in each logical direction:
+iProcs = 1
+jProcs = 1
+kProcs = 1
+
+# Number of cells (only used in non-fixed blocksize mode):
+iGridSize = 2000
+jGridSize = 1
+kGridSize = 1
+
+# Hydro options:
+useHydro            = .true.
+order               = 2      # Interpolation order (First/Second order)
+slopeLimiter        = "mc"   # Slope limiters (minmod, mc, vanLeer, hybrid, limited)
+LimitedSlopeBeta    = 1.     # Slope parameter for the "limited" slope by Toro
+charLimiting        = .true. # Characteristic limiting vs. Primitive limiting
+RiemannSolver       = "Roe"       # Roe, HLL, HLLC, LF
+shockInstabilityFix = .false. # Carbuncle instability fix for the Roe solver
+shockDetect         = .false.     # Shock Detect for numerical stability
+cvisc               = 0.1
+use_steepening      = .FALSE.
+ppmEintFluxConstructionMeth     = 0
+ppmEintCompFluxConstructionMeth = 5 #(or 1) #Advect like any old mass scalar
+ppmEnerFluxConstructionMeth     = 0
+eintSwitch      = 1.e-4
+eint1Switch     = 1e30 #1000000.
+eint2Switch     = 1e30 #1000000.
+eint3Switch     = 1e30
+hy_eosModeAfter = "dens_ie_gather"
+
+eosModeInit        = "dens_temp_gather"
+eosMode            = "dens_ie_gather"
+
+
+hy_3Ttry_Arelated = .TRUE.
+hy_3Ttry_B = 1
+hy_3Ttry_D = 2.0
+hy_3Ttry_E = 1
+hy_3Ttry_F = 2
+hy_3Ttry_G = 0
+hy_3Ttry_Q = 0
+
+
+#hy_3Ttry_B_rad=0    #   Do not implement work term for radiation energy
+#hy_3Ttry_D=3.0      #   Consolidate component energies, trusting Eint and Erad
+
+nblockx = 4
+lrefine_min     = 4
+lrefine_max     = 8
+refine_var_1 = "dens"
+refine_var_2 = "tele"
+
+#eos_singleSpeciesA = 100000.0
+#eos_singleSpeciesZ = 99999.0
+
+eos_singleSpeciesA = 2.0
+eos_singleSpeciesZ = 1.0
+
+useHeatexchange = .true.
+
+#hx_couplingConst12 = 1.0e30
+#hx_couplingConst13 = 0.0
+#hx_couplingConst23 = 0.0
+#hx_dtFactor = 0.5
+
+hx_dtFactor                    = 1.0e99
+hx_ieTimeCoef                  = 1.0e-6
+#hx_relTol                      = -1.0
+
+sim_M0   = 2.0
+sim_P0   = 1.0e-4
+sim_temp = 1.1604505E6 # 100 eV
+sim_rho  = 1.0
+
+
+
+

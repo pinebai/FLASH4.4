@@ -1,0 +1,111 @@
+DEFAULT paramesh
+
+USESETUPVARS Grid
+IF Grid=='UG'
+   DEFAULT UG
+ENDIF
+
+CHILDORDER paramesh UG multiScalar
+
+EXCLUSIVE paramesh UG
+
+D gr_hypreSolverType : Type of HYPRE solver to be used.
+PARAMETER gr_hypreSolverType STRING "HYPRE_PCG" [HYPRE_PCG,HYPRE_AMG,HYPRE_GMRES,HYPRE_BICGSTAB,HYPRE_SPLIT,hypre_pcg,hypre_amg,hypre_gmres,hypre_bicgstab,hypre_split]
+
+D gr_hyprePcType Type of HYPRE Preconditioner to be used.
+PARAMETER gr_hyprePCType STRING "HYPRE_AMG" [HYPRE_NONE, HYPRE_ILU,HYPRE_AMG,HYPRE_PARASAILS,hypre_ilu,hypre_amg,hypre_parasails,hypre_none]
+
+D gr_hypreRelTol Relative tolerence r_tol of HYPRE linear solver.
+PARAMETER gr_hypreRelTol REAL 1.0e-8
+
+D gr_hypreAbsTol If > 0.0, directly sets a_tol (absolute tolerance) for the HYPRE iterative solver.
+D & Convergence criteria:  <C*r,r>  <= max( a_tol^2, r_tol^2 * <C*b,b> ).
+D & Note: default for a_tol is 0.0, so relative residual criteria is used unless
+D & user specifies a_tol, or sets r_tol = 0.0, which means absolute
+D & tol only is checked. See also gr_hypreSolverAutoAbsTolFact, for another
+D & way of setting a_tol.
+D & Currently only used when gr_hypreSolverType is "HYPRE_PCG".
+PARAMETER gr_hypreAbsTol REAL	0.0
+
+D gr_hypreSolverAutoAbsTolFact If not 0.0, automatically set a_tol (absolute tolerance)
+D & for the HYPRE iterative solver.
+D & If also gr_hypreAbsTol > 0, then the maximum of gr_hypreAbsTol and the automatically
+D & determined value is taken.
+D & See description of gr_hypreAbsTol for the use if a_tool in the HYPRE solver.
+D & If gr_hypreSolverAutoAbsTolFact > 0, then set f = gr_hypreSolverAutoAbsTolFact.
+D & If gr_hypreSolverAutoAbsTolFact < 0, then set f = |gr_hypreSolverAutoAbsTolFact|*gr_hypreRelTol.
+D & In either case, the automatically determined value for a_tol is f*sqrt(<Cest*bfloor,bfloor>). Here
+D & <Cest*bfloor,bfloor> is a rough estimate of the smallest possible value of the inverse of the diagonal
+D & part of the matrix C representing the preconditioner.
+D & In that estimate, bfloor is a vector that represents a worst-case
+D & tolerable error in b (the RHS of the equation to be solved,
+D & A*x=b). Currently, bfloor is set to a vector whose every element
+D & is set to gr_hypreFloor.
+D & If gr_hypreAbsTol > 0 in addition to gr_hypreSolverAutoAbsTolFact .ne. 0.0, then the maximum of
+D & gr_hypreAbsTol and the automatically determined value is taken.
+D & Currently only used when gr_hypreSolverType is "HYPRE_PCG".
+PARAMETER gr_hypreSolverAutoAbsTolFact REAL	0.0
+
+D gr_hypreMaxIter Max iterations of linear solver.
+PARAMETER gr_hypreMaxIter INTEGER 500
+
+D   gr_hyprePrintSolveInfo : Flag to output solver specific
+D & information such as Relative Residue, num-iterations.
+PARAMETER gr_hyprePrintSolveInfo BOOLEAN FALSE
+
+D   gr_hypreInfoLevel : Flag to output solver specific
+D & information such as Relative Residue, num-iterations.
+PARAMETER gr_hypreInfoLevel INTEGER 1
+
+D  gr_hypreUseFloor whether to apply gr_hypreFloor to floor results from HYPRE.
+D & Should probably be TRUE when using HYPRE to advance diffusion, FALSE otherwise.
+D & However, flooring will always be turned off when using the HYPRE implementation of
+D & Grid_solvePoisson, independent of the value of the gr_hypreUseFloor runtime parameter.
+PARAMETER gr_hypreUseFloor BOOLEAN TRUE
+
+D  gr_hypreFloor floor value for using HYPRE to advance diffusion.
+PARAMETER gr_hypreFloor REAL 1.0e-12
+
+D gr_hypreUse2Norm whether to use L2 norm for exit condition in iterative solver (instead of L1 norm).
+D & Currently only used when gr_hypreSolverType is "HYPRE_PCG".
+PARAMETER gr_hypreUse2Norm BOOLEAN FALSE
+
+D gr_hypreCfTol If > 0.0, enable in the iterative HYPRE solver an
+D & pptional test to see if adequate progress is being made.
+D & The average convergence factor is recorded and compared
+D & against the tolerance 'cf_tol'. The weighting factor is
+D & intended to pay more attention to the test when an accurate
+D & estimate for average convergence factor is available.
+D & Currently only used when gr_hypreSolverType is "HYPRE_PCG".
+D & Example suggested values: something like 0.5, 0.8, 0.9, 0.95, 0.99.
+PARAMETER gr_hypreCfTol	   REAL	       0.0
+
+D gr_hypreRecomputeResidual If TRUE, don't trust the convergence test until we've recomputed
+D & the residual from scratch.  This is expensive in the usual case where an
+D & the norm is the energy norm.
+D & This calculation is coded on the assumption that the accuracy of the residual r is only a
+D & concern for problems where CG takes many iterations.
+D & Currently only used when gr_hypreSolverType is "HYPRE_PCG".
+PARAMETER gr_hypreRecomputeResidual	BOOLEAN	FALSE
+
+D gr_hypreRecomputeResidualP If > 0, recompute the residual every gr_hypreRecomputeResidualP
+D & iterations.
+D & Currently only used when gr_hypreSolverType is "HYPRE_PCG".
+PARAMETER gr_hypreRecomputeResidualP INTEGER -1
+
+D gr_hypreRelChange
+D & At user request, don't treat an approximation of the solution x in the HYPRE
+D & iterative solver  as converged unless x didn't change
+D & much in the last iteration.
+D & Currently only used when gr_hypreSolverType is "HYPRE_PCG".
+PARAMETER gr_hypreRelChange	BOOLEAN		FALSE
+
+D gr_hypreAnisoDiffusion If TRUE, we use HYPRE to advance the solution of an anisotropic diffusion
+D & problem.  This mode is meant to be used for anisotropic thermal conduction in the presence
+D & of magnetic fields, hence it is probably only useful for MHD setups.  If FALSE, only
+D & isotropic diffusion problems are solved with HYPRE (available for both hydro and MHD).
+D & ANISOTRTOPIC DIFFUSION IS NOT YET PROPERLY IMPLEMENTED, AND NOT IMPLEMENTED AT ALL FOR AMR.
+PARAMETER gr_hypreAnisoDiffusion BOOLEAN         FALSE
+
+
+LIBRARY hypre

@@ -1,0 +1,204 @@
+
+Setup Variables are variables whose value is set from the command line.
+The Config files can use the values of these variables (not change them)
+to make decisions. For example, based on the value of the variable 
+"Grid", the Grid/GridMain/Config can decide to make
+UG or paramesh the default. 
+
+There are two kinds of setup Variables: 
+
+* Those automatically created by the setup script
+* Those specified in the command line
+
+Variables queried by the Config file if not initialized is
+assumed to be "" (empty string)
+
+Automatic Setup Variables for Code Units
+----------------------------------------
+
+For every top level unit, X, setup creates a boolean variable
+called "withX".  This variable is set to True IFF some subunit of 
+X is EXPLICTLY INCLUDED IN THE COMMAND LINE OF THE SETUP SCRIPT.
+
+For example, the "IO/IOMain/Config" automatically includes "IO/IOParticles"
+if it finds "withParticles=True".
+
+Other Setup Variables
+---------------------
+
+* Other setup variables can generally be specified in the command line.
+  In some cases (marked ++ below), they are also generated automatically
+  by the setup script as a result of using some other options.
+* Specifying values for arbitrary variables is useful only if there
+  is some config file which uses the variable, except for some
+  cases (marked +++ below) where the setup script itself takes
+  some additional action. 
+* If any of these variables are not specified, they are set to "".
+  To ensure this, the USESETUPVARS Config keyword should be used
+  in the Config file before testing the variable's value.
+  The Config files are set up so that, if a variable is set to "",
+  the FLASH default gets picked.
+* All choices are orthogonal. However certain combinations which 
+  are not implemented will raise a Setup Error.
+* Setting the values of these variables does not imply that
+  the Top level unit using it is automatically added.
+* If you set the variable and include the top level unit,
+  the variable ensures that the right implementation gets picked up.
+
+USEFUL VARIABLES 
+----------------
+
+* Name  : Grid
+  Type  : String
+  Values: UG, PM40, PM4DEV, PM2, Samrai
+
+  Selects which Grid to include by default. 
+
+* Name  : IO
+  Type  : String
+  Values: hdf5, pnetcdf, MPIHybrid, MPIDump, direct
+
+  Selects what kind of IO to use. 
+
+* Name  : parallelIO
+  Type  : Boolean
+  Values: True, False
+
+  Selects if we should use parallelIO or serialIO. 
+
+
+DEV:CD (Looks like the following were never used (always empty strings).  
+Harder to introduce now because we have multiple particle types)
+--------------------------------------------------------------
+* Name  : PartMapping
+  Type  : String
+  Values: meshWeighting, CIC, Quadratic
+
+  Selects which Particle mapping to be used. 
+
+* Name  : PartIntegrator
+  Type  : String
+  Values: Midpoint, EulerPassive, PredictorCorrector, PredCorrFLASH2, 
+          Leapfrog, LeapfrogCosmo, EulerActive, ParticleMesh, DPMTA, Charged
+
+  Selects the type of time integration.
+
+* Name  : PartInit
+  Type  : String
+  Values: withDensity, Lattice
+
+  Selects the initial location of the particles
+--------------------------------------------------------------
+
+
+
+* Name  : fixedBlockSize
+  Type  : Boolean
+  Remark: Automatically set based on -nofbs and -fbs   (++)
+  
+  Is fixed block size being used? selecting -nofbs and -fbs
+  setup option adjusts the value of this variable as well.
+
+* Name  : nDim
+  Type  : integer
+  Values: 1, 2, 3
+  Remark: Automatically set based on -1d, 2d, and -3d  (++)
+
+* Name  : GridIndexReorder
+  Type  : Boolean
+  Remark: Automatically set based on -index-reorder    (++)
+
+  If set to True, var index is after space indices in unk and related data structures.
+
+* Name  : nxb
+* Name  : nyb
+* Name  : nzb
+* Name  : maxBlocks
+  Type  : integer
+  Remark: Automatically set by setup script            (++)
+
+
+* Name  : ParameshLibraryMode
+  Type  : Boolean
+  Remark: If true, the setup script will generate file
+          amr_runtime_parameters from template amr_runtime_parameters.tpl
+          found in either the object directory (preferred) or the
+          setup script (bin) directory.                (+++)
+
+  Selects whether Paramesh4 should be compiled in LIBRARY mode,
+  i.e., with the preprocessor symbol LIBRARY defined.
+
+* Name  : PfftSolver
+  Type  : String
+  Values: ,SimplePeriodicSolver,SoPeriodicSolverFD,HomBcTrigSolver,Generic_Direct,DirectSolver
+
+  PfftSolver selects a PFFT solver variant when the hybrid
+  (i.e, Multigrid with PFFT) Poisson solver is used.
+
+* Name  : SplitDriver
+  Type  : Boolean
+  Remark: Automatically set True by +splitHydro shortcut
+
+  If true, a Split Driver implementation is requested.
+
+* Name  : Mtmmmt
+  Type  : Boolean
+  Remark: Automatically set True by +mtmmmt shortcut
+
+  When set, this option activates the MTMMMT EOS
+
+* Name  : mgd_meshgroups
+  Type  : Integer
+  Remark: Required when MGD is used
+
+  mgd_meshgroups * meshCopyCount sets the MAXIMUM number of radiation
+  groups that can be used in a simulation. The ACTUAL number of groups
+  (which must be less than mgd_meshgroups * meshCopyCount) is set by
+  the rt_mgdNumGroups runtime parameter.
+
+* Name  : species
+  Type  : Comma seperated list of strings (e.g. species=air,sf6)
+  Remark: Required by certain units which use multispecies unit
+
+  This setup variable can be used as an alternative specifying species
+  using the SPECIES Config file directive by listing the species in
+  the setup command. Some units, like the Multispecies Opacity unit,
+  will ONLY work when the species setup variable is set. This is
+  because they use the species name to automatically create runtime
+  paramters which include the species names.
+
+* Name  : ed_maxPulses
+  Type  : Integer
+  Remark: Maximum number of laser pulses (defaults to 5)
+
+* Name  : ed_maxBeams
+  Type  : Integer
+  Remark: Maximum number of laser beams (defaults to 6)
+
+* Name  : ExtraGravVars
+  Type  : Boolean
+
+  If true, unsplit Hydro and sink Particles are requested to use extra
+  solution variables for storing an intermediate state of gravity.
+
+* Name  : MoreDataFiles
+  Type  : Boolean
+  Remark: Link or copy more DATAFILES (defaults to False, since FLASH 4.4)
+
+  If true, link or copy more data files to the object directory from
+  the source tree. Data files often contain precomputed tabular data
+  used by several code units, and are linked or copied using the
+  DATAFILES Config directive. Some units check the value of
+  MoreDataFiles to decide whether some optional data files
+  should be linked or copied. This may apply to data files that
+  are intended as examples; data files that are essential to the
+  functioning of a unit implementation should always be linked
+  or copied if they are available in the source tree.
+
+* Name  : IgnoreLabDependencies
+  Type  : Boolean
+
+  If true, ignore certain dependencies that are normally added
+  automatically, to help users avoid unphysical situations, based
+  on typical Lab use cases.
+

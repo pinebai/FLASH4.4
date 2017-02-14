@@ -1,0 +1,4 @@
+LIBRARY SLATEC
+
+D fl_fsTFIetol controls the accuracy of the integrator
+PARAMETER fl_fsTFIetol     REAL   1.e-3

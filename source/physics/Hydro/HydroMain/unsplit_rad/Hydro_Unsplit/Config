@@ -1,0 +1,60 @@
+# Config file for the Unsplit Hydro solver unit.
+
+# We must use a special customized version of hy_uhd_unsplit.
+USESETUPVARS threadBlockList, threadWithinBlock
+IF threadBlockList
+   REQUIRES physics/Hydro/HydroMain/unsplit_rad/Hydro_Unsplit/threadBlockList
+ENDIF
+IF threadWithinBlock
+   REQUIRES physics/Hydro/HydroMain/unsplit_rad/Hydro_Unsplit/threadWithinBlock
+ENDIF
+IF threadBlockList and threadWithinBlock
+#   SETUPERROR "Choose either threadBlockList or threadWithinBlock - different versions of hy_uhd_unsplit"
+    CHILDORDER threadWithinBlock threadBlockList
+ENDIF
+
+# Fluxes
+FLUX F01Dens
+FLUX F02Xmom
+FLUX F03Ymom
+FLUX F04Zmom
+FLUX F05Ener
+FLUX F06P
+FLUX F07Eint
+FLUX F08VOLU
+
+USESETUPVARS Grid
+USESETUPVARS FullScratchUseInUHD
+
+IF FullScratchUseInUHD
+PPDEFINE FLASH_UHD_NEED_SCRATCHVARS
+
+ENDIF
+
+
+#Signal that the unsplit_rad implementation is an Unsplit Hydro
+# (used in UHD.h)
+PPDEFINE FLASH_UHD_HYDRO
+
+
+USESETUPVARS ParameshLibraryMode
+# Link in this file only if Paramesh LIBRARY mode or PM4DEV is requested
+IF ParameshLibraryMode or (Grid in ["","PM4DEV"])
+	DATAFILES amr_runtime_parameters.tpl
+ENDIF
+
+
+
+# These Following options are all specific to 3T simulations...
+USESETUPVARS ThreeT
+
+IF ThreeT
+FLUX F09PRADPhys
+FLUX F10FLXL
+FLUX F11PMAT
+FLUX F12EI1A
+FLUX F13EI2A
+FLUX F14EI3A
+
+ENDIF
+

@@ -1,0 +1,5 @@
+D gr_mgDiffOpDiscretize Spatial Differential operator discretization:
+D &  gr_mgDiffOpDiscretize=2 for 2nd order central;
+D &  gr_mgDiffOpDiscretize=4 for 4th order central.
+PARAMETER gr_mgDiffOpDiscretize INTEGER 2 [2,4]
+

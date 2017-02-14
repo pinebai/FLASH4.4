@@ -1,0 +1,187 @@
+#Config file for Grid/GridMain
+
+# Check for 3T simulation ...
+USESETUPVARS ThreeT
+
+# Requires use of the Grid SetupVariable
+USESETUPVARS Grid
+
+IF Grid not in ["","PM4DEV","PM40","PM3","PM2","UG","Samrai","Chombo"]
+   SETUPERROR The variable Grid is not in ["","PM4DEV","PM40","PM3","PM2","UG","Samrai","Chombo"]
+ENDIF
+
+REQUIRES Grid/localAPI
+REQUESTS Grid/GridBoundaryConditions
+
+DEFAULT paramesh
+
+IF Grid=='UG'
+   DEFAULT UG
+ENDIF
+IF Grid=='Samrai'
+   DEFAULT Samrai
+ENDIF
+IF Grid=='Chombo'
+   DEFAULT Chombo
+ENDIF
+
+# Lines that begin with 'D' as in 'Description' will end up as
+# comment lines in the setup_params file.  setup_params is
+# written by the setup script and holds all the default 
+# values of parameters.  
+
+# !!! If you add a parameter, please add a description line
+# Format is D <parameter name> <description>
+
+
+
+D convertToConsvdForMeshCalls indicates if appropriate variables are
+D & converted from primitive to conserved form during propagation
+D & before control is passed to Paramesh for refinement, derefinement,
+D & or guardcell filling.  This is the old way of ensuring that
+D & solution variables are in the correct form for interpolation. It
+D & involves unnecessary conversions back and forth and should be
+D & obsoleted by the newer mechanism enabled by runtime parameter
+D & "convertToConsvdInMeshInterp".  The name is a replacement for the
+D & old "conserved_var" which many people have found to be very
+D & confusing terminology.
+PARAMETER convertToConsvdForMeshCalls BOOLEAN FALSE
+
+D xmin physical domain lower bound in x dir
+PARAMETER xmin          REAL    0.      
+
+D xmax physical domain upper bound in x dir
+PARAMETER xmax          REAL    1.
+
+D ymin physical domain lower bound in y dir      
+PARAMETER ymin          REAL    0.      
+
+D ymax physical domain upper bound in y dir
+PARAMETER ymax          REAL    1. 
+
+D zmin physical domain lower bound in z dir     
+PARAMETER zmin          REAL    0.
+
+D zmax physical domain lower bound in x dir      
+PARAMETER zmax          REAL    1.      
+
+
+
+# The mesh geometry is taken from the geometry parameter.
+# A recognized geometry may or may not be compatible with
+# the way a given FLASH instance was built.
+
+
+D geometry     Grid geometry
+PARAMETER geometry STRING "cartesian" [ cartesian, polar ,cylindrical,spherical ]
+
+D geometryOverride whether to bypass some geometry sanity checks -
+D & use at your own risk.
+PARAMETER geometryOverride BOOLEAN FALSE
+
+D unbiased_geometry attempt to remove floating point bias from geometry discretization.
+D & Not implemented in FLASH3.
+PARAMETER unbiased_geometry BOOLEAN FALSE
+
+D xl_boundary_type lower (left) boundary condition in x dir
+PARAMETER xl_boundary_type STRING "periodic"
+
+D xr_boundary_type upper (right) boundary condition in x dir
+PARAMETER xr_boundary_type STRING "periodic"
+
+D yl_boundary_type lower boundary condition in y dir
+PARAMETER yl_boundary_type STRING "periodic"
+
+D yr_boundary_type upper boundary condition in y dir
+PARAMETER yr_boundary_type STRING "periodic"
+
+D zl_boundary_type lower boundary condition in z dir
+PARAMETER zl_boundary_type STRING "periodic"
+
+D zr_boundary_type upper boundary condition in z dir
+PARAMETER zr_boundary_type STRING "periodic"
+
+
+
+D bndPriorityOne indicates which direction (IAXIS, JAXIS, or KAXIS) gets
+D & top priority when applying boundary conditions in corner guardcells
+D & We define three values for edges left, center, right, of which center 
+D & represents interior, while left and right represent the corresponding
+D & guardcells. We define a corner where more than one dimension has its
+D & its guardcells, so the application must determine which direction gets
+D & to fill them. In 2-D, there are four corners: (left,left),
+D & (left,right), (right,left) and (right,right). In 3-D case, the following
+D & corners are possible : (left,left,left),(left,left,center),
+D & (left,left,right),(left,center,left),
+D & (left,center,right),(left,right,left),
+D & (left,right,center),(left,right,right)
+D & (center,left,left),(center,left,right),
+D & (center,right,left),(center,right,right),
+D & (right,left,left),(right,left,center),
+D & (right,left,right),(right,center,left),
+D & (right,center,right),(right,right,left),
+D & (right,right,center),(right,right,right)
+PARAMETER bndPriorityOne INTEGER 1 [1,2,3]
+
+D bndPriorityTwo the second priority dimension in applying boundary conditions
+PARAMETER bndPriorityTwo INTEGER 2 [1,2,3]
+
+D bndPriorityThree the least priority dimension in applying boundary conditions
+PARAMETER bndPriorityThree INTEGER 3 [1,2,3]
+
+D gr_bcEnableApplyMixedGds whether to enable the Grid_bcApplyToRegionMixedGds interface
+D & for implementing boundary conditions with access to the variables of mixed
+D & GDSs (in particlular, cell-centered UNK varsiables and face variables).
+D & This only has an effect if the GridBoundaryConditions subunit is included and
+D & the simulation actually supplies an implementation of Grid_bcApplyToRegionMixedGds.
+PARAMETER gr_bcEnableApplyMixedGds BOOLEAN TRUE
+
+D eosMode determines how to operate on thermodynamic quantities.
+D & Possible values are "dens_ie", where density and internal energy
+D & are supplied and pressure and temperature are returned;
+D & "dens_pres", where density and pressure are given and energy and
+D & temperature are computed;  and "dens_temp", where density and temperature 
+D & are given and pressure and energy are computed.
+D & Other values may also be available as, depending
+D & on whether a multiTemp Eos is used and on implementation of
+D & additional physics. For 3T simulations, the best choice is 
+D & "dens_ie_recal_gather", since this mode will ensure that 
+D & total energy is conserved when refinement changes occur.
+
+IF ThreeT
+# This if-statement just checks whether the +3t setup shortcut has been used. 
+# If it has, then the default value of eosMode is changed from dens_ie to 
+# dens_ie_recal_gather
+PARAMETER eosMode STRING "dens_ie_recal_gather"["dens_ie","dens_pres","dens_temp","dens_ie_all","dens_ie_scatter","dens_ie_gather","dens_ie_sele_gather","dens_temp_equi","dens_temp_all","dens_temp_gather","dens_ie_recal_gather","dens_ie_mat_gather_pradscale"]
+ELSE
+PARAMETER eosMode STRING "dens_ie"["dens_ie","dens_pres","dens_temp","dens_ie_all","dens_ie_scatter","dens_ie_gather","dens_ie_sele_gather","dens_temp_equi","dens_temp_all","dens_temp_gather","dens_ie_recal_gather"]
+ENDIF
+
+
+D eosModeInit determines how to operate on thermodynamic quantities
+D & for the initial conditions.  A call to Simulation_initBlock sets
+D & initial conditions on each block, and an eos call follows which
+D & ensures the initial values are thermodynamically consistent.  The
+D & value of eosModeInit determines the mode in which these eos calls
+D & operate.  Possible values are "dens_ie", where density and
+D & internal energy are supplied and pressure and temperature are
+D & returned; "dens_pres", where density and pressure are given and
+D & energy and temperature are computed; and "dens_temp", where
+D & density and temperature are given and pressure and energy are
+D & computed.  Other values may also be available as, depending
+D & on whether a multiTemp Eos is used and on implementation of
+D & additional physics.
+
+PARAMETER eosModeInit STRING "dens_ie"["dens_ie","dens_pres","dens_temp","dens_ie_all","dens_ie_scatter","dens_ie_gather","dens_temp_equi","dens_temp_all","dens_temp_gather","eos_nop"]
+
+
+D smallx            Cutoff value for abundances
+PARAMETER smallx	REAL	1.E-10	
+
+D smalle            Cutoff value for energy
+PARAMETER smalle	REAL	1.E-10	
+
+D Attempt to reduce the number of guard cell fills
+PARAMETER reduceGcellFills BOOLEAN FALSE
+
+EXCLUSIVE paramesh UG Chombo

@@ -1,0 +1,6 @@
+#Config file for Grid/GridBoundaryConditions/OneRow/Flash3HSE
+
+# Maybe?
+REQUIRES Grid/GridBoundaryConditions/Flash2HSE
+REQUIRES Grid/GridBoundaryConditions/Flash3HSE
+

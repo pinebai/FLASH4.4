@@ -1,0 +1,10 @@
+# Config file for the Opacity/OpacityMain implementation
+
+DEFAULT  Multispecies
+REQUIRES physics/materialProperties/Opacity/localAPI
+
+D         useOpacity flags whether the Opacity unit is being used at all
+PARAMETER useOpacity BOOLEAN TRUE
+
+# Constants is only temporary while we migrate to the new opacity unit.
+EXCLUSIVE Multispecies Constant Constcm2g ConstPerGroup BremsstrahlungAndThomson OPAL

@@ -1,0 +1,82 @@
+#  Runtime parameter file for the isentropic vortex problem
+#  2d UG problem on 4 procs.  
+
+
+
+
+pt_numX	= 30
+pt_numY	= 30
+
+pt_maxPerProc = 900
+
+useParticles = .true.
+
+pt_initialXMin = 0.0
+pt_initialXMax = 10.0
+pt_initialYMin = 0.0
+pt_initialYMax = 10.0
+pt_initialZMin = 0.0
+pt_initialZMax = 10.0
+
+iprocs = 2
+jprocs = 2
+
+
+#		simulation parameters
+convertToConsvdInMeshInterp = .true.
+basenm          = "isentropic_vortex_"
+log_file        = "isentropic_vortex.log"
+restart         = .false.
+checkpointFileIntervalTime = 0.0
+checkpointFileIntervalStep = 100
+checkpointFileNumber = 0	
+
+nend            = 200
+tmax            = 10.
+
+
+cfl		= .95
+
+#		problem parameters
+
+gamma           = 1.4
+rho_ambient     = 1.0
+p_ambient       = 1.0
+u_ambient       = 1.0
+v_ambient       = 1.0
+
+dtmin           = 2.5e-02
+dtmax           = 2.5e-02
+dtinit           = 2.5e-02
+
+vortex_strength	= 5.0
+xctr            = 5.0
+yctr            = 5.0
+
+xmin            = 0.0
+xmax            = 10.0
+ymin            = 0.0
+ymax            = 10.0
+
+nx_subint       = 1
+ny_subint       = 1
+
+geometry        = "cartesian"
+
+xl_boundary_type = "periodic"
+xr_boundary_type = "periodic"
+zl_boundary_type = "periodic"
+zr_boundary_type = "periodic"
+
+smlrho          = 1.e-100
+smallp          = 1.e-100
+smalle          = 1.e-100
+smallt          = 1.e-100
+
+nriem           = 5
+convertToConsvdForMeshCalls   = .true.
+use_steepening  = .false.
+cvisc           = 0.
+eintSwitch     = 0.
+
+plot_var_1 = "dens"

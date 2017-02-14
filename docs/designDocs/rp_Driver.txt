@@ -1,0 +1,130 @@
+
+Driver/DriverMain
+    allowDtSTSDominate [BOOLEAN] [FALSE]
+        allow a situation in which dt_STS becomes larger than dt_Hydro
+        (dt_advection) (assuming that diffusion dt is smaller than advection dt)
+        upto advection one, but not faster than the advection advancement. This
+        will be useful in solving PDE systems that are hyperbolic + parabolic.
+        FALSE will use the STS algorithm to even accelerate advection time
+        advancement, which in turn, will use larger advection dt than advection
+        dt from CFL limits. This will be useful in solving only hyperbolic PDE
+        systems in general. When hyperbolic + parabolic PDE system is to be
+        solved, then we suggest that users use less agressive super time
+        stepping method by using useSTSforDiffusion = TRUE.
+    dr_abortPause [INTEGER] [2]
+        Valid Values: 0 to INFTY
+        When Driver_abortFlash is called to abnormally end execution, and
+        dr_abortPause is grater than zero, the FLASH Driver_abortFlash code will
+        sleep for dr_abortPause seconds after writing explanatory messages (to
+        standard output and, possibly, to log files) but before calling
+        MPI_ABORT. See also eachProcWritesOwnAbortLog for controlling the
+        generation of per-processor log files.
+    dr_dtMinBelowAction [INTEGER] [1]
+        Valid Values: 0, 1
+        Action to take when computed new timestep is below dr_dtMinContinue. Use
+        0 for none (abort immediately), 1 for "write checkpoint then abort"
+    dr_dtMinContinue [REAL] [0.0]
+        Valid Values: 0.0 to INFTY
+        Minimum computed timestep to continue the simulation
+    dr_printTStepLoc [BOOLEAN] [TRUE]
+
+    dr_shortenLastStepBeforeTMax [BOOLEAN] [FALSE]
+        If TRUE, make the dt for the last time step shorter if necassary so as
+        to avoid overshooting tmax.
+    dr_tstepSlowStartFactor [REAL] [0.1]
+        Valid Values: 0.0 to INFTY
+        The initial dt is set to be at most the timestep computed by CFL
+        conditions applied to certain operators multiplied with this factor.
+    drift_break_inst [INTEGER] [0]
+        Valid Values: Unconstrained
+
+    drift_trunc_mantissa [INTEGER] [2]
+        Valid Values: Unconstrained
+        number of mantissa bits to exclude from hash (3 bits ~ 1 sigdig)
+    drift_tuples [BOOLEAN] [FALSE]
+        should block data be written in python tuples format
+    drift_verbose_inst [INTEGER] [0]
+        Valid Values: Unconstrained
+
+    dtinit [REAL] [1.E-10]
+        Valid Values: Unconstrained
+        Initial timestep
+    dtmax [REAL] [1.E5]
+        Valid Values: Unconstrained
+        Maximum timestep
+    dtmin [REAL] [1.E-10]
+        Valid Values: Unconstrained
+        Minimum timestep
+    eachProcWritesOwnAbortLog [BOOLEAN] [FALSE]
+        Should each process writes messages to its own log file when
+        Driver_abortFlash gets called to abnormally end execution? If true, each
+        process in which Driver_abortFlash is called will attempt to write an
+        explanatory message to its own log file, whether that file already
+        existed or needs to be newly created.  If false, the Driver_abortFlash
+        message will appear only in the regular log file (if the Logfile code
+        unit is used), and normally only when Driver_abortFlash is called by the
+        process with PE 0.
+    iProcs [INTEGER] [1]
+        Valid Values: Unconstrained
+        number of procs in the i dir
+    jProcs [INTEGER] [1]
+        Valid Values: Unconstrained
+        number of procs in the j dir
+    kProcs [INTEGER] [1]
+        Valid Values: Unconstrained
+        number of procs in the k dir
+    meshCopyCount [INTEGER] [1]
+        Valid Values: Unconstrained
+        The number of copies of full computational mesh that
+    nbegin [INTEGER] [1]
+        Valid Values: 1 to INFTY
+        First timestep
+    nend [INTEGER] [100]
+        Valid Values: Unconstrained
+        Maximum number of timesteps to take
+    nstepTotalSTS [INTEGER] [5]
+        Valid Values: Unconstrained
+
+    nuSTS [REAL] [0.1]
+        Valid Values: Unconstrained
+        nu stability parameter for super time stepping algorithm
+    restart [BOOLEAN] [FALSE]
+        Is this a restart run?
+    sweepOrder [INTEGER] [123]
+        Valid Values: 123, 132, 213, 231, 312, 321
+        Determine the order of the directional sweeps
+    threadBlockListBuild [BOOLEAN] CONSTANT [TRUE]
+
+    threadDriverBlockList [BOOLEAN] [TRUE]
+
+    threadDriverWithinBlock [BOOLEAN] [TRUE]
+
+    threadRayTraceBuild [BOOLEAN] CONSTANT [TRUE]
+
+    threadWithinBlockBuild [BOOLEAN] CONSTANT [TRUE]
+
+    tinitial [REAL] [0.0]
+        Valid Values: Unconstrained
+        Initial simulation time
+    tmax [REAL] [0.2]
+        Valid Values: Unconstrained
+        Maximum simulation time
+    tstep_change_factor [REAL] [2.0]
+        Valid Values: 0.0+ to INFTY
+        The initial time step dt is multiplied with this factor at every
+        timestep, until it is limited by CFL condition, allowing users to
+        specify a very conservative initial dt and letting it grow by specifying
+        a tstep_change_factor > 1.0.
+    useSTS [BOOLEAN] [FALSE]
+        Do we want to use super time stepping (STS) algorithm?
+    useSTSforDiffusion [BOOLEAN] [FALSE]
+        TRUE will use the STS algorithm to accelerate diffusion time advancement
+    wall_clock_time_limit [REAL] [604800.]
+        Valid Values: -1.0, 0.0 to INFTY
+        Total wall clock time limit (seconds). Use -1.0 for no limit.
+    zFinal [REAL] [0.0]
+        Valid Values: Unconstrained
+        The final redshift in a simulation.  The simulation will stop
+    zInitial [REAL] [-1.0]
+        Valid Values: Unconstrained
+        The initial redshift in a simulation.  < 0 if not being used.

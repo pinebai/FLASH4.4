@@ -1,0 +1,81 @@
+#       Configuration file for the RT flame problem
+
+REQUIRES Driver
+REQUIRES physics/Hydro
+REQUIRES physics/Gravity/GravityMain/Constant
+REQUIRES physics/sourceTerms/Flame/FlameEffects/EIP
+REQUIRES flashUtilities/contourSurface
+
+# TFI flamespeed only makes sense in 3d
+USESETUPVARS nDim
+IF nDim <> 3
+  REQUESTS physics/sourceTerms/Flame/FlameSpeed/Constant
+ELSE
+  REQUESTS physics/sourceTerms/Flame/FlameSpeed/Constant/TFI
+ENDIF
+
+
+USESETUPVARS withParticles
+
+IF withParticles
+   PARTICLETYPE passive INITMETHOD lattice MAPMETHOD weighted
+
+   REQUIRES Particles/ParticlesMain
+   REQUESTS Particles/ParticlesMapping/meshWeighting/CIC
+   REQUESTS Particles/ParticlesInitialization/Lattice
+   REQUESTS IO/IOMain/
+   REQUESTS IO/IOParticles
+ENDIF
+
+
+PARAMETER temp_unburned  REAL 1e8
+PARAMETER dens_unburned  REAL 1e8
+
+PARAMETER vel_pert_amp   REAL 0.0
+PARAMETER vel_pert_wavelength1  REAL 1.0
+
+PARAMETER spert_ampl1    REAL 0.0
+PARAMETER spert_wl1      REAL 1.0
+PARAMETER spert_phase1   REAL 0.0
+PARAMETER spert_ampl2    REAL 0.0
+PARAMETER spert_wl2      REAL 1.0
+PARAMETER spert_phase2   REAL 0.0
+
+
+PARAMETER flame_initial_position  REAL 0.0
+
+D refine_uniform_region Select whether to refine a selected region uniformly or use standard-style refinement checks (configured with other parameters)
+PARAMETER refine_uniform_region   BOOLEAN FALSE
+D refine_region_size Total size of refine region (See source for diagram of parameter meanings)
+PARAMETER refine_region_size      REAL 60e5
+D refine_region_stepdown_size Distance behind fully refined region that is one lower refinement level
+PARAMETER refine_region_stepdown_size  REAL 45e5
+D refine_lead Distance above highest burned cell which refined region will reach
+PARAMETER refine_lead             REAL 2e5
+D refine_buf Buffer to prevent refinement pattern jitter
+PARAMETER refine_buf              REAL 1e5
+
+PARAMETER sim_ParticleRefineRegion         BOOLEAN FALSE
+PARAMETER sim_ParticleRefineRegionLevel    INTEGER 2
+PARAMETER sim_ParticleRefineRegionBottom   REAL    60e5
+PARAMETER sim_ParticleRefineRegionTop      REAL    200e5
+
+PARTICLEPROP   flam               REAL
+PARTICLEPROP   dens               REAL
+PARTICLEPROP   temp               REAL
+
+PARTICLEMAP  TO temp  FROM VARIABLE   temp
+PARTICLEMAP  TO dens  FROM VARIABLE   dens
+PARTICLEMAP  TO flam  FROM MASS_SCALAR   FLAM
+
+D particles_attribute_1 specification of which particle_attributes 
+D & to output. The same description is valid for particles_attributes_2...etc
+PARAMETER particle_attribute_1 STRING "dens"
+PARAMETER particle_attribute_2 STRING "temp"
+PARAMETER particle_attribute_4 STRING "flam"
+
+VARIABLE turb
+VARIABLE fspd
+
+# temporary while false is the default for debugging
+#PARAMETER enableMaskedGCFill BOOLEAN TRUE

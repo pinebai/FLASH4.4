@@ -1,0 +1,8 @@
+REQUIRES flashUtilities/interpolation/oneDim
+
+# table for flame speed lookup
+
+D fl_fsCONeTableName  name of table containing nuclear flame speed table
+PARAMETER fl_fsCONeTableName	STRING "CONeFlameTable.txt"
+
+DATAFILES CONeFlameTable.txt

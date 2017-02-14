@@ -1,0 +1,169 @@
+# Parameters file for core-collapse SN
+
+# Simulation basics
+basenm			       = "ccsn2d_"
+restart			       = .false.
+checkpointFileNumber           = 0
+plotFileNumber                 = 0
+run_comment                    = "CoreCollapse 2D with leakage"
+#output_directory	       = "output"
+
+
+# IO  
+checkpointFileIntervalStep     = 0
+checkpointFileIntervalTime     = 0.001 
+plotFileIntervalStep           = 0
+plotFileIntervalTime           = 0.
+# wall_clock_checkpoint          = 43200.
+wall_clock_time_limit          = 21000.
+
+# Time 
+tinitial                       = 0.0
+tmax                           = 1.0
+nend                           = 100000000
+tstep_change_factor            = 1.5
+dtinit                         = 1.E-8
+dtmax                          = 1.E5
+dtmin                          = 1.E-20
+
+# Domain 
+geometry                       = "cylindrical"
+xmax                           = 1.e9
+xmin                           = 0.0
+ymin			       =-1.e9
+ymax			       = 1.e9
+xl_boundary_type               = "reflect"
+xr_boundary_type               = "outflow"
+yl_boundary_type               = "outflow"
+yr_boundary_type               = "outflow"
+
+# Grid/Refinement
+nblockx                        = 5
+nblocky                        = 10
+nblockz                        = 1
+
+gr_lrefineMaxRedDoByLogR       = .true.
+gr_lrefineMaxRedDoByTime       = .FALSE.
+gr_lrefineMaxRedLogBase        = 10.0
+gr_lrefineMaxRedRadiusFact     = 0.15
+gr_lrefineMaxRedTRef           = 2.0
+gr_lrefineMaxRedTimeScale      = 0.5
+
+lrefine_max                    = 9
+lrefine_min                    = 1
+refine_var_1                   = "dens"
+refine_var_2                   = "pres"
+refine_var_3                   = "none"
+refine_var_4                   = "none"
+refine_cutoff_1		       = 0.8
+refine_cutoff_2		       = 0.8
+refine_cutoff_3		       = 0.8
+refine_cutoff_4		       = 0.8
+
+# Simulation
+model_file                     = "s15s7b2_short"
+nsub                           = 4
+vel_mult                       = 1.0
+
+# Hydro
+useHydro                       = .TRUE.
+cfl                            = 0.5
+interpol_order                 = 1
+updateHydroFluxes              = .TRUE.
+eintSwitch		       = 0.0 # Always use Etot
+convertToConsvdForMeshCalls   = .false.
+converttoconsvdinmeshinterp   = .false.
+
+##  SWITCHES SPECIFIC TO THE UNSPLIT HYDRO SOLVER               ##
+#       I. INTERPOLATION SCHEME:
+order           = 3      # Interpolation order (first/second/third/fifth order)
+slopeLimiter    = "hybrid"   # Slope limiters (minmod, mc, vanLeer, hybrid, limited)
+LimitedSlopeBeta= 1.     # Slope parameter for the "limited" slope by Toro
+charLimiting    = .true. # Characteristic limiting vs.Primitive limiting
+
+use_avisc       = .true. # use artificial viscosity (originally for PPM)
+cvisc           = 0.1    # coefficient for artificial viscosity
+use_flattening  = .true. # use flattening (dissipative) (originally for PPM)
+use_steepening  = .false. # use contact steepening (originally for PPM)
+use_upwindTVD   = .false. # use upwind biased TVD slope for PPM (need nguard=6)
+flux_correct    = .true.
+EOSforRiemann   = .false.
+transOrder      = 1
+use_auxEintEqn  = .TRUE.
+hydroComputeDtOption = -1
+
+#       II. RIEMANN SOLVERS: 
+RiemannSolver   = "hybrid"       # Roe, HLL, HLLC, LLF, Marquina
+entropy         = .false.     # Entropy fix for the Roe solver
+
+#       III. STRONG SHOCK HANDELING SCHEME:
+shockDetect     = .true.     # Shock Detect for numerical stability
+## -------------------------------------------------------------##
+
+# Gravity
+useGravity                     = .true.
+updateGravity                  = .TRUE.
+grav_boundary_type             = "isolated"
+mpole_3daxisymmetry            = .false.
+mpole_dumpMoments              = .FALSE.
+mpole_PrintRadialInfo	       = .false.
+mpole_IgnoreInnerZone	       = .false.
+mpole_lmax                     = 16
+mpole_ZoneRadiusFraction_1     = 1.0
+mpole_ZoneExponent_1           = 0.005
+mpole_ZoneScalar_1	       = 0.5
+mpole_ZoneType_1	       = "logarithmic"
+point_mass                     = 0.0
+point_mass_rsoft               = 0.e0
+use_gravHalfUpdate             = .TRUE. 
+use_gravConsv		       = .FALSE.
+use_gravPotUpdate	       = .FALSE.
+
+
+# EOS
+eos_file = "LS220_240r_140t_50y_analmu_20120628_SVNr28.h5"
+eosMode                        = "dens_ie"
+eosModeInit                    = "dens_temp"
+
+# Deleptonization
+useDeleptonize		       = .true.
+delep_Enu		       = 10.0 # MeV
+delep_rhoOne		       = 3.0e7 #3.0e7 
+delep_rhoTwo		       = 2.0e13 #2.0e13
+delep_yOne		       = 0.5
+delep_yTwo		       = 0.278 #0.278
+delep_yc		       = 0.035 #0.035
+bounceTime		       = 0.0 #0.248
+postBounce		       = .false.
+useEntr 		       = .true.
+
+# RadTrans/Leakage
+useRadTrans		      = .true.
+leak_doHeat		      = .true.
+leak_heatFac		      = 1.0
+leak_radMax		      = 3.e8
+leak_radLog		      = 1.5e7
+leak_dx			      = 0.5e5			      
+leak_thtMax		      = 1.
+leak_numRad		      = 1000
+leak_numTht		      = 37
+leak_reducedTime	      = 0.020
+leak_reducedSteps	      = 4
+
+# Neutrino Heating/Cooling
+useHeat			       = .false.
+Lneut			       = 2.2e52
+Tneut			       = 4.0 #MeV
+heatTimeFac		       = 1.0e4
+useHalfState		       = .false.
+			      			       
+# Small numbers
+smallt                         = 1.2e8
+smlrho                         = 1.1e3
+smallp                         = 1.E-20
+smalle                         = 1.E1
+smallu                         = 1.E-10
+smallx                         = 1.E-100
+small                          = 1.E-100
+
+

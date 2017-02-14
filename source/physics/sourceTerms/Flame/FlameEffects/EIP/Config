@@ -1,0 +1,7 @@
+REQUIRES physics/Eos/EosMain/Helmholtz/ExternalAbarZbar
+
+PARAMETER flame_deltae   REAL  0.0
+PARAMETER ye_unburned    REAL  0.5
+PARAMETER sumyi_unburned REAL  1.0
+PARAMETER ye_burned      REAL  0.5
+PARAMETER sumyi_burned   REAL  1.0

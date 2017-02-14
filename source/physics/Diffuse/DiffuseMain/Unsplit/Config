@@ -1,0 +1,23 @@
+REQUESTS physics/Hydro
+REQUIRES Grid/GridSolvers/HYPRE
+
+D cond_variable holds "diffusion coefficient" for advancing diffusion problem
+VARIABLE COND  # Conductivity in Cell (i)
+
+D Implicitness parameter
+PARAMETER diff_thetaImplct REAL 0.5 [0.0 ... 1.0]
+
+D Implicitness parameter for ion conduction
+PARAMETER diff_ionThetaImplct REAL 0.5 [0.0 ... 1.0]
+
+SCRATCHCENTERVAR DFLX
+IF nDim >= 2
+   SCRATCHCENTERVAR DFLY
+   IF nDim == 3
+      SCRATCHCENTERVAR DFLZ
+   ENDIF
+ENDIF
+
+D diff_updateEnergy update EINT and recompute TEMP.
+PARAMETER diff_updEint BOOLEAN FALSE
+

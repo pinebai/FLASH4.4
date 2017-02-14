@@ -1,0 +1,580 @@
+
+diagnostics/ProtonImaging
+    useProtonImaging [BOOLEAN] CONSTANT [FALSE]
+        flag indicating whether to use the ProtonImaging unit
+
+diagnostics/ProtonImaging/ProtonImagingMain
+    pi_3Din2D [BOOLEAN] [false]
+        Use the 3D protons in a 2D cylindrical grid proton tracing?
+    pi_3Din2DwedgeAngle [REAL] [0.0]
+        Valid Values: Unconstrained
+        Wedge angle (degrees, must be < 180) for 3D in 2D simulations
+    pi_IOaddDetectorScreens [BOOLEAN] [false]
+        If true, the frame of the detector screen(s) will be added to the plot
+    pi_IOaddProtonsCapsule2Domain [BOOLEAN] [false]
+        If true, the proton path from capsule to domain will be added to the
+        plot
+    pi_IOaddProtonsDomain2Screen [BOOLEAN] [false]
+        If true, the proton path from domain to screen will be added to the plot
+    pi_IOmaxBlockCrossingNumber [INTEGER] [5]
+        Valid Values: Unconstrained
+        The (estimated) maximum number of complete block crossings for each
+        proton
+    pi_IOnumberOfProtons2Plot [INTEGER] [0]
+        Valid Values: Unconstrained
+        Number of IO protons that are to be plotted
+    pi_RungeKuttaMethod [STRING] ["CashKarp45"]
+        Valid Values: Unconstrained
+        The Runge Kutta method to be used for proton tracing.
+    pi_beamApertureAngle_1 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        Aperture angle (conical opening, in degrees) of beam 1
+    pi_beamCapsuleGrainLevel_1 [INTEGER] [-HUGE(1)]
+        Valid Values: Unconstrained
+        The grain level of capsule for beam 1
+    pi_beamCapsuleRadius_1 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        Radius of spherical capsule for beam 1
+    pi_beamCapsuleX_1 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        The x coordinate of the capsule center for beam 1
+    pi_beamCapsuleY_1 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        The y coordinate of the capsule center for beam 1
+    pi_beamCapsuleZ_1 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        The z coordinate of the capsule center for beam 1
+    pi_beamDetector_1 [INTEGER] [-HUGE(1)]
+        Valid Values: Unconstrained
+        The target detector of the beam 1
+    pi_beamNoBoundaryCondition_1 [BOOLEAN] [false]
+        Option to ignore domain boundary conditions for beam 1
+    pi_beamNumberOfProtons_1 [INTEGER] [-HUGE(1)]
+        Valid Values: Unconstrained
+        The number of protons in the beam 1
+    pi_beamProtonEnergy_1 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        The energy of the protons in the beam (in MeV) 1
+    pi_beamTargetRadius_1 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        Radius of target area for beam 1
+    pi_beamTargetX_1 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        The x coordinate of the target (direction) for beam 1
+    pi_beamTargetY_1 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        The y coordinate of the target (direction) for beam 1
+    pi_beamTargetZ_1 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        The z coordinate of the target (direction) for beam 1
+    pi_beamTime2Launch_1 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        The simulation time at which the beam should launch its protons 1
+    pi_cellStepTolerance [REAL] [1.0e-06]
+        Valid Values: Unconstrained
+        The allowed cell fractional error (units = cell edge) for a proton path
+        step
+    pi_cellWallThicknessFactor [REAL] [1.0e-06]
+        Valid Values: Unconstrained
+        Fraction of the shortest cell edge defining the cell wall thickness
+    pi_detectorAlignWRTbeamNr_1 [INTEGER] [-HUGE(1)]
+        Valid Values: Unconstrained
+        Place detector screen along beam nr? If <= 0, no placing 1
+    pi_detectorCenterX_1 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        The x coordinate of the square detector center 1
+    pi_detectorCenterY_1 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        The y coordinate of the square detector center 1
+    pi_detectorCenterZ_1 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        The z coordinate of the square detector center 1
+    pi_detectorDGwriteFormat [STRING] ["es15.5"]
+        Valid Values: Unconstrained
+        Format string for writing out diagnostic variables to detector file(s)
+    pi_detectorDist2BeamCapsule_1 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        Distance from beam capsule center (if detector placed along beam) 1
+    pi_detectorFileNameTimeStamp [BOOLEAN] [true]
+        If true, a time stamp is added to each detector file name
+    pi_detectorNormalX_1 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        The x coordinate of the square detector normal vector 1
+    pi_detectorNormalY_1 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        The y coordinate of the square detector normal vector 1
+    pi_detectorNormalZ_1 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        The z coordinate of the square detector normal vector 1
+    pi_detectorPinholeDist2Det_1 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        The pinhole center distance from the detector center 1
+    pi_detectorPinholeRadius_1 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        The pinhole radius 1
+    pi_detectorSideLength_1 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        The side length of the square detector 1
+    pi_detectorSideTiltingAngle_1 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        Side tilting angle (degrees) from tilting axis 1
+    pi_detectorSideTiltingAxis_1 [STRING] [" "]
+        Valid Values: Unconstrained
+        Global tilting axis to be used for side tilting 1
+    pi_detectorXYwriteFormat [STRING] ["es20.10"]
+        Valid Values: Unconstrained
+        Format string for writing out proton (x,y) pairs to detector file(s)
+    pi_flagDomainMissingProtons [BOOLEAN] [true]
+        Should domain missing protons be flagged (program aborted)?
+    pi_ignoreElectricalField [BOOLEAN] [true]
+        If true, the effect of the electrical field is ignored (default).
+    pi_maxProtonCount [INTEGER] [100000]
+        Valid Values: Unconstrained
+        Maximum number of protons per processor
+    pi_numberOfBeams [INTEGER] [-1]
+        Valid Values: Unconstrained
+        Total number of proton beams
+    pi_numberOfDetectors [INTEGER] [-1]
+        Valid Values: Unconstrained
+        Total number of proton detectors
+    pi_opaqueBoundaries [BOOLEAN] [false]
+        If true, the protons do not go through cells belonging to boundaries
+    pi_printBeams [BOOLEAN] [false]
+        Print details about each beam?
+    pi_printDetectors [BOOLEAN] [false]
+        Print details about each detector?
+    pi_printMain [BOOLEAN] [false]
+        Print details about the proton imaging run?
+    pi_printProtons [BOOLEAN] [false]
+        Print details about each proton initially generated?
+    pi_protonDeterminism [BOOLEAN] [false]
+        If true, the Grid Unit will use Sieve Algorithm to move the proton
+        particle.
+    pi_randomNumberSeedIncrement [INTEGER] [1]
+        Valid Values: Unconstrained
+        Sets the seed increment for the random number generator
+    pi_randomNumberSeedInitial [INTEGER] [1]
+        Valid Values: Unconstrained
+        Sets the initial seeds for the random number generator
+    pi_recalculateCellData [BOOLEAN] [false]
+        If true, the proton imaging calculates its own cell data for each block
+    pi_recordOffScreenProtons [BOOLEAN] [false]
+        If true, the protons missing the detector screen will also be recorded.
+    pi_screenProtonBucketSize [INTEGER] [100000]
+        Valid Values: Unconstrained
+        Bucket size for flushing out screen protons to disk.
+    pi_screenProtonDiagnostics [BOOLEAN] [false]
+        If true, calculates/records extra diagnostic values for the screen
+        protons.
+    pi_timeResolvedProtonImaging [BOOLEAN] [false]
+        If true, time resolved proton imaging over many timesteps is invoked.
+    pi_useIOprotonPlot [BOOLEAN] [false]
+        This flag controls whether IO proton plotting should be used
+    pi_useParabolicApproximation [BOOLEAN] [false]
+        If true, the parabolic path approximation is used (enhanced
+        performance).
+    threadProtonTrace [BOOLEAN] [true]
+        Use threading when tracing the protons through each block?
+    useProtonImaging [BOOLEAN] [true]
+        Use the proton imaging?
+
+diagnostics/ProtonImaging/ProtonImagingMain/oldOneTimeStep
+    pi_3Din2D [BOOLEAN] [false]
+        Use the 3D protons in a 2D cylindrical grid proton tracing?
+    pi_3Din2DwedgeAngle [REAL] [0.0]
+        Valid Values: Unconstrained
+        Wedge angle (degrees, must be < 180) for 3D in 2D simulations
+    pi_IOaddBeamCapsules [BOOLEAN] [false]
+        If true, the frame of the beam capsule(s) will be added to the plot
+    pi_IOaddDetectorScreens [BOOLEAN] [false]
+        If true, the frame of the detector screen(s) will be added to the plot
+    pi_IOaddProtonsCapsule2Domain [BOOLEAN] [false]
+        If true, the proton path from capsule to domain will be added to the
+        plot
+    pi_IOaddProtonsDomain2Screen [BOOLEAN] [false]
+        If true, the proton path from domain to screen will be added to the plot
+    pi_IOmaxBlockCrossingNumber [INTEGER] [5]
+        Valid Values: Unconstrained
+        The (estimated) maximum number of complete block crossings for each
+        proton
+    pi_IOnumberOfProtons2Plot [INTEGER] [0]
+        Valid Values: Unconstrained
+        Number of IO protons that are to be plotted
+    pi_IOresolutionCapsuleFrame [REAL] [1.0e-02]
+        Valid Values: Unconstrained
+        The capsule frame resolution to plot the frame of the beam capsule(s)
+    pi_IOresolutionScreenFrame [REAL] [1.0e-02]
+        Valid Values: Unconstrained
+        The screen frame resolution to plot the frame of the detector screen(s)
+    pi_RungeKuttaMethod [STRING] ["CashKarp45"]
+        Valid Values: Unconstrained
+        The Runge Kutta method to be used for proton tracing.
+    pi_beamApertureAngle_1 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        Aperture angle (conical opening, in degrees) of beam 1
+    pi_beamApertureAngle_2 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        Aperture angle (conical opening, in degrees) of beam 2
+    pi_beamApertureAngle_3 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        Aperture angle (conical opening, in degrees) of beam 3
+    pi_beamApertureAngle_4 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        Aperture angle (conical opening, in degrees) of beam 4
+    pi_beamApertureAngle_5 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        Aperture angle (conical opening, in degrees) of beam 5
+    pi_beamApertureAngle_6 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        Aperture angle (conical opening, in degrees) of beam 6
+    pi_beamCapsuleGrainLevel_1 [INTEGER] [-HUGE(1)]
+        Valid Values: Unconstrained
+        The grain level of capsule for beam 1
+    pi_beamCapsuleGrainLevel_2 [INTEGER] [-HUGE(1)]
+        Valid Values: Unconstrained
+        The grain level of capsule for beam 2
+    pi_beamCapsuleGrainLevel_3 [INTEGER] [-HUGE(1)]
+        Valid Values: Unconstrained
+        The grain level of capsule for beam 3
+    pi_beamCapsuleGrainLevel_4 [INTEGER] [-HUGE(1)]
+        Valid Values: Unconstrained
+        The grain level of capsule for beam 4
+    pi_beamCapsuleGrainLevel_5 [INTEGER] [-HUGE(1)]
+        Valid Values: Unconstrained
+        The grain level of capsule for beam 5
+    pi_beamCapsuleGrainLevel_6 [INTEGER] [-HUGE(1)]
+        Valid Values: Unconstrained
+        The grain level of capsule for beam 6
+    pi_beamCapsuleRadius_1 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        Radius of spherical capsule for beam 1
+    pi_beamCapsuleRadius_2 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        Radius of spherical capsule for beam 2
+    pi_beamCapsuleRadius_3 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        Radius of spherical capsule for beam 3
+    pi_beamCapsuleRadius_4 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        Radius of spherical capsule for beam 4
+    pi_beamCapsuleRadius_5 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        Radius of spherical capsule for beam 5
+    pi_beamCapsuleRadius_6 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        Radius of spherical capsule for beam 6
+    pi_beamCapsuleX_1 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        The x coordinate of the capsule center for beam 1
+    pi_beamCapsuleX_2 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        The x coordinate of the capsule center for beam 2
+    pi_beamCapsuleX_3 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        The x coordinate of the capsule center for beam 3
+    pi_beamCapsuleX_4 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        The x coordinate of the capsule center for beam 4
+    pi_beamCapsuleX_5 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        The x coordinate of the capsule center for beam 5
+    pi_beamCapsuleX_6 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        The x coordinate of the capsule center for beam 6
+    pi_beamCapsuleY_1 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        The y coordinate of the capsule center for beam 1
+    pi_beamCapsuleY_2 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        The y coordinate of the capsule center for beam 2
+    pi_beamCapsuleY_3 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        The y coordinate of the capsule center for beam 3
+    pi_beamCapsuleY_4 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        The y coordinate of the capsule center for beam 4
+    pi_beamCapsuleY_5 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        The y coordinate of the capsule center for beam 5
+    pi_beamCapsuleY_6 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        The y coordinate of the capsule center for beam 6
+    pi_beamCapsuleZ_1 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        The z coordinate of the capsule center for beam 1
+    pi_beamCapsuleZ_2 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        The z coordinate of the capsule center for beam 2
+    pi_beamCapsuleZ_3 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        The z coordinate of the capsule center for beam 3
+    pi_beamCapsuleZ_4 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        The z coordinate of the capsule center for beam 4
+    pi_beamCapsuleZ_5 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        The z coordinate of the capsule center for beam 5
+    pi_beamCapsuleZ_6 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        The z coordinate of the capsule center for beam 6
+    pi_beamDetector_1 [INTEGER] [-HUGE(1)]
+        Valid Values: Unconstrained
+        The target detector of the beam 1
+    pi_beamDetector_2 [INTEGER] [-HUGE(1)]
+        Valid Values: Unconstrained
+        The target detector of the beam 2
+    pi_beamDetector_3 [INTEGER] [-HUGE(1)]
+        Valid Values: Unconstrained
+        The target detector of the beam 3
+    pi_beamDetector_4 [INTEGER] [-HUGE(1)]
+        Valid Values: Unconstrained
+        The target detector of the beam 4
+    pi_beamDetector_5 [INTEGER] [-HUGE(1)]
+        Valid Values: Unconstrained
+        The target detector of the beam 5
+    pi_beamDetector_6 [INTEGER] [-HUGE(1)]
+        Valid Values: Unconstrained
+        The target detector of the beam 6
+    pi_beamNoBoundaryCondition_1 [BOOLEAN] [false]
+        Option to ignore domain boundary conditions for beam 1
+    pi_beamNoBoundaryCondition_2 [BOOLEAN] [false]
+        Option to ignore domain boundary conditions for beam 2
+    pi_beamNoBoundaryCondition_3 [BOOLEAN] [false]
+        Option to ignore domain boundary conditions for beam 3
+    pi_beamNoBoundaryCondition_4 [BOOLEAN] [false]
+        Option to ignore domain boundary conditions for beam 4
+    pi_beamNoBoundaryCondition_5 [BOOLEAN] [false]
+        Option to ignore domain boundary conditions for beam 5
+    pi_beamNoBoundaryCondition_6 [BOOLEAN] [false]
+        Option to ignore domain boundary conditions for beam 6
+    pi_beamNumberOfProtons_1 [INTEGER] [-HUGE(1)]
+        Valid Values: Unconstrained
+        The number of protons in the beam 1
+    pi_beamNumberOfProtons_2 [INTEGER] [-HUGE(1)]
+        Valid Values: Unconstrained
+        The number of protons in the beam 2
+    pi_beamNumberOfProtons_3 [INTEGER] [-HUGE(1)]
+        Valid Values: Unconstrained
+        The number of protons in the beam 3
+    pi_beamNumberOfProtons_4 [INTEGER] [-HUGE(1)]
+        Valid Values: Unconstrained
+        The number of protons in the beam 4
+    pi_beamNumberOfProtons_5 [INTEGER] [-HUGE(1)]
+        Valid Values: Unconstrained
+        The number of protons in the beam 5
+    pi_beamNumberOfProtons_6 [INTEGER] [-HUGE(1)]
+        Valid Values: Unconstrained
+        The number of protons in the beam 6
+    pi_beamProtonEnergy_1 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        The energy of the protons in the beam (in MeV) 1
+    pi_beamProtonEnergy_2 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        The energy of the protons in the beam (in MeV) 2
+    pi_beamProtonEnergy_3 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        The energy of the protons in the beam (in MeV) 3
+    pi_beamProtonEnergy_4 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        The energy of the protons in the beam (in MeV) 4
+    pi_beamProtonEnergy_5 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        The energy of the protons in the beam (in MeV) 5
+    pi_beamProtonEnergy_6 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        The energy of the protons in the beam (in MeV) 6
+    pi_beamTargetRadius_1 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        Radius of target area for beam 1
+    pi_beamTargetRadius_2 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        Radius of target area for beam 2
+    pi_beamTargetRadius_3 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        Radius of target area for beam 3
+    pi_beamTargetRadius_4 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        Radius of target area for beam 4
+    pi_beamTargetRadius_5 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        Radius of target area for beam 5
+    pi_beamTargetRadius_6 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        Radius of target area for beam 6
+    pi_beamTargetX_1 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        The x coordinate of the target (direction) for beam 1
+    pi_beamTargetX_2 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        The x coordinate of the target (direction) for beam 2
+    pi_beamTargetX_3 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        The x coordinate of the target (direction) for beam 3
+    pi_beamTargetX_4 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        The x coordinate of the target (direction) for beam 4
+    pi_beamTargetX_5 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        The x coordinate of the target (direction) for beam 5
+    pi_beamTargetX_6 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        The x coordinate of the target (direction) for beam 6
+    pi_beamTargetY_1 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        The y coordinate of the target (direction) for beam 1
+    pi_beamTargetY_2 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        The y coordinate of the target (direction) for beam 2
+    pi_beamTargetY_3 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        The y coordinate of the target (direction) for beam 3
+    pi_beamTargetY_4 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        The y coordinate of the target (direction) for beam 4
+    pi_beamTargetY_5 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        The y coordinate of the target (direction) for beam 5
+    pi_beamTargetY_6 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        The y coordinate of the target (direction) for beam 6
+    pi_beamTargetZ_1 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        The z coordinate of the target (direction) for beam 1
+    pi_beamTargetZ_2 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        The z coordinate of the target (direction) for beam 2
+    pi_beamTargetZ_3 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        The z coordinate of the target (direction) for beam 3
+    pi_beamTargetZ_4 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        The z coordinate of the target (direction) for beam 4
+    pi_beamTargetZ_5 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        The z coordinate of the target (direction) for beam 5
+    pi_beamTargetZ_6 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        The z coordinate of the target (direction) for beam 6
+    pi_beamTime2Launch_1 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        The simulation time at which the beam should launch its protons 1
+    pi_beamTime2Launch_2 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        The simulation time at which the beam should launch its protons 2
+    pi_beamTime2Launch_3 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        The simulation time at which the beam should launch its protons 3
+    pi_beamTime2Launch_4 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        The simulation time at which the beam should launch its protons 4
+    pi_beamTime2Launch_5 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        The simulation time at which the beam should launch its protons 5
+    pi_beamTime2Launch_6 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        The simulation time at which the beam should launch its protons 6
+    pi_cellStepTolerance [REAL] [1.0e-06]
+        Valid Values: Unconstrained
+        The allowed cell fractional error (units = cell edge) for a proton path
+        step
+    pi_cellWallThicknessFactor [REAL] [1.0e-06]
+        Valid Values: Unconstrained
+        Fraction of the shortest cell edge defining the cell wall thickness
+    pi_detectorAlignWRTbeamNr_1 [INTEGER] [-HUGE(1)]
+        Valid Values: Unconstrained
+        Place detector screen along beam nr? If <= 0, no placing 1
+    pi_detectorCenterX_1 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        The x coordinate of the square detector center 1
+    pi_detectorCenterY_1 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        The y coordinate of the square detector center 1
+    pi_detectorCenterZ_1 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        The z coordinate of the square detector center 1
+    pi_detectorDGwriteFormat [STRING] ["es15.5"]
+        Valid Values: Unconstrained
+        Format string for writing out diagnostic variables to detector file(s)
+    pi_detectorDist2BeamCapsule_1 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        Distance from beam capsule center (if detector placed along beam) 1
+    pi_detectorFileNameTimeStamp [BOOLEAN] [true]
+        If true, a time stamp is added to each detector file name
+    pi_detectorNormalX_1 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        The x coordinate of the square detector normal vector 1
+    pi_detectorNormalY_1 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        The y coordinate of the square detector normal vector 1
+    pi_detectorNormalZ_1 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        The z coordinate of the square detector normal vector 1
+    pi_detectorPinholeDist2Det_1 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        The pinhole center distance from the detector center 1
+    pi_detectorPinholeRadius_1 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        The pinhole radius 1
+    pi_detectorSideLength_1 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        The side length of the square detector 1
+    pi_detectorSideTiltingAngle_1 [REAL] [-HUGE(1.0)]
+        Valid Values: Unconstrained
+        Side tilting angle (degrees) from tilting axis 1
+    pi_detectorSideTiltingAxis_1 [STRING] [" "]
+        Valid Values: Unconstrained
+        Global tilting axis to be used for side tilting 1
+    pi_detectorXYwriteFormat [STRING] ["es20.10"]
+        Valid Values: Unconstrained
+        Format string for writing out proton (x,y) pairs to detector file(s)
+    pi_flagDomainMissingProtons [BOOLEAN] [true]
+        Should domain missing protons be flagged (program aborted)?
+    pi_ignoreElectricalField [BOOLEAN] [true]
+        If true, the effect of the electrical field is ignored (default).
+    pi_maxProtonCount [INTEGER] [100000]
+        Valid Values: Unconstrained
+        Maximum number of protons per processor
+    pi_numberOfBeams [INTEGER] [-1]
+        Valid Values: Unconstrained
+        Total number of proton beams
+    pi_numberOfDetectors [INTEGER] [-1]
+        Valid Values: Unconstrained
+        Total number of proton detectors
+    pi_opaqueBoundaries [BOOLEAN] [false]
+        If true, the protons do not go through cells belonging to boundaries
+    pi_printBeams [BOOLEAN] [false]
+        Print details about each beam?
+    pi_printDetectors [BOOLEAN] [false]
+        Print details about each detector?
+    pi_printMain [BOOLEAN] [false]
+        Print details about the proton imaging run?
+    pi_printProtons [BOOLEAN] [false]
+        Print details about each proton initially generated?
+    pi_protonDeterminism [BOOLEAN] [false]
+        If true, the Grid Unit will use the Sieve Algorithm to move the proton
+        particle.
+    pi_randomNumberSeedIncrement [INTEGER] [1]
+        Valid Values: Unconstrained
+        Sets the seed increment for the random number generator
+    pi_randomNumberSeedInitial [INTEGER] [1]
+        Valid Values: Unconstrained
+        Sets the initial seeds for the random number generator
+    pi_recalculateCellData [BOOLEAN] [false]
+        If true, the proton imaging calculates its own cell data for each block
+    pi_recordOffScreenProtons [BOOLEAN] [false]
+        If true, the protons missing the detector screen will also be recorded.
+    pi_screenProtonBucketSize [INTEGER] [100000]
+        Valid Values: Unconstrained
+        Bucket size for flushing out screen protons to disk.
+    pi_screenProtonDiagnostics [BOOLEAN] [false]
+        If true, calculates/records extra diagnostic values for the screen
+        protons.
+    pi_useIOprotonPlot [BOOLEAN] [false]
+        This flag controls whether IO proton plotting should be used
+    pi_useParabolicApproximation [BOOLEAN] [false]
+        If true, the parabolic path approximation is used (enhanced
+        performance).
+    threadProtonTrace [BOOLEAN] [true]
+        Use threading when tracing the protons through each block?
+    useProtonImaging [BOOLEAN] [true]
+        Use the proton imaging?

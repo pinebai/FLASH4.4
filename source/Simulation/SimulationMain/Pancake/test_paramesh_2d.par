@@ -1,0 +1,145 @@
+#  Parameter file for the Zel'dovich pancake problem.
+#  Version for two-dimensional pancake
+
+#-------------------------------------------------------------------------------
+
+#  Model parameters
+
+run_comment                    =  "2D Zeldovich pancake problem"
+
+lambda                         =  3.0857E25     # Perturbation wavelength
+zcaustic                       =  5.            # Redshift of caustic formation
+Tfiducial                      =  550.          # Fiducial gas temperature
+zfiducial                      =  200.          # Fiducial redshift
+xangle                         =  0.0 # X-angle of perturbation axis
+yangle                         =  90.0 # Y-angle of perturbation axis
+
+#-------------------------------------------------------------------------------
+
+#  Computational domain
+
+xmin                           =  0.
+xmax                           =  4.36384E25
+ymin                           =  0.
+ymax                           =  4.36384E25
+
+geometry                       =  "cartesian"
+
+xl_boundary_type               =  "periodic"
+xr_boundary_type               =  "periodic"
+yl_boundary_type               =  "periodic"
+yr_boundary_type               =  "periodic"
+
+#  Refinement criteria
+
+lrefine_max                    =  6
+lrefine_min                    =  2
+refine_var_1                   =  "pden"
+refine_var_2                   =  "none"
+
+monotone                       = .false.
+convertToConsvdInMeshInterp                  = .false.
+
+#-------------------------------------------------------------------------------
+
+#  I/O and timestep control
+
+basenm                         =  "pan2d_"
+log_file                       =  "pan2d.log"
+cpnumber                       =  0
+restart                        =  .false.
+#checkpointFileNumber          =  1
+
+zInitial                       =  50.
+zFinal                         =  0.
+tmax                           =  1.E99
+
+wall_clock_checkpoint          =  3500.
+nend                           =  1000000
+
+checkpointFileIntervalZ        =  15.
+checkpointFileIntervalTime     =  1.E99
+checkpointFileIntervalStep     =  1000000
+
+plotFileIntervalZ              =  15.
+plotFileIntervalTime           =  1.E99
+
+particleFileIntervalZ          =  15.
+particleFileIntervalTime       =  1.E99
+
+dtinit                         =  1.E10
+dtmin                          =  1.E10
+dtmax                          =  1.E17
+
+#-------------------------------------------------------------------------------
+
+#  Hydrodynamics
+
+gamma                          =  1.66666666667
+eintSwitch                     =  0.
+cfl                            =  0.8
+cvisc                          =  0.1
+nriem                          =  25
+
+small                          =  1.0E-40
+smlrho                         =  1.0E-35
+smallp                         =  1.0E-22
+smalle                         =  1.E8
+smallt                         =  1.
+smallu                         =  1.0E-40
+smallx                         =  1.0E-10
+
+#-------------------------------------------------------------------------------
+
+#  Gravity
+
+
+igrav                          =  1
+grav_boundary_type             = "periodic"
+mg_maxResidualNorm             = 1.0E-6
+mg_printNorm                   = .true.
+
+#-------------------------------------------------------------------------------
+
+#  Particles
+
+useParticles = .true.
+pt_maxPerProc            =  500000
+
+pt_numX                  =  128
+pt_numY                  =  128
+pt_numZ                  =  1
+
+#-------------------------------------------------------------------------------
+
+#  Cosmology
+
+OmegaMatter                    =  1.
+OmegaBaryon                    =  0.15
+HubbleConstant                 =  1.62038E-18    # h = 0.5
+CosmologicalConstant           =  0.
+MaxScaleChange                 =  0.1
+
+#-------------------------------------------------------------------------------
+
+## -------------------------------------------------------------##
+##  SWITCHES SPECIFIC TO THE UNSPLIT HYDRO SOLVER               ##
+#       I. INTERPOLATION SCHEME:
+order           = 2      # Interpolation order (First/Second order)
+slopeLimiter    = "mc"   # Slope limiters (minmod, mc, vanLeer, hybrid, limited)
+LimitedSlopeBeta= 1.     # Slope parameter for the "limited" slope by Toro
+charLimiting    = .true. # Characteristic limiting vs. Primitive limiting
+
+
+#       II. RIEMANN SOLVERS:
+RiemannSolver   = "hllc"       # Roe, HLL, HLLC, LF
+shockInstabilityFix = .false. # Carbuncle instability fix for the Roe solver
+
+
+#       III. STRONG SHOCK HANDELING SCHEME:
+shockDetect     = .true.     # Shock Detect for numerical stability
+## -------------------------------------------------------------##
+
+
+
+#  Done.

@@ -1,0 +1,48 @@
+Notes on the particle trajectory file format.
+
+v0.1
+
+Goal:  Aggregate particle data from a single run so that it can be used
+       in post-processing efficiently (i.e. reduced disk-access)
+
+
+Fields:
+
+Simulation info -- As in FLASH output
+lists (runtime parameters/scalars) as in Flash output
+
+Simulation time: length: number of datapoionts (num particle files)
+	   Extract the times from the files as we go through them.  Each
+	   entry here should correspond to the simulation time.
+
+particle names: As in FLASH output
+
+partcles: NPROPS x nTimeSteps x numParticles
+
+below was orignal consideration, now using the modified particles dataset.
+Particle_nnnn:  length: num timesteps s x num Particle Properties
+	       Copy over the particle data (the numPartProps) from each file
+	       encoutnered.  nnnn corresponds to the tag number for that 
+	       particle.  There should be a number of these fields equal to
+	       the global number of particles in a run.
+
+	       Need to make sure that particles that have left the domain
+	       are properly handled.  Check the block number?
+               Sorter does nothing to particle data.  If number disappears, 
+	       write straight -1.'s to particle data.  May have to reconstruct
+	       last known position later.  I could only see this happening on
+	       a restart. 
+
+Notes on size:
+
+Initial runs:
+10K particles/run
+20 properties
+10K particleFiles/run
+
+~16GB particle data/run
+
+Full-scale: as initial runs except:
+1M particles/run
+This will most liley require revisions and extensions to the format due to 
+estimated file size.

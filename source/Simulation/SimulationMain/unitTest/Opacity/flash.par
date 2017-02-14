@@ -1,0 +1,24 @@
+# Runtime parameters for the opacity unit test.
+
+basenm                        = "OpacityUnitTest_"
+useOpacity                    = .true.
+opacity_useLogTables          = .true.
+opacity_writeOpacityInfo      = .true.
+
+# Multigroup diffusion options (energy bounds in eV):
+rt_useMGD       = .FALSE.
+rt_mgdNumGroups = 5
+rt_mgdBounds_1  = 1.0e-01
+rt_mgdBounds_2  = 1.0e+00
+rt_mgdBounds_3  = 1.0e+01
+rt_mgdBounds_4  = 1.0e+02
+rt_mgdBounds_5  = 1.0e+03
+rt_mgdBounds_6  = 1.0e+04
+
+op_sp1Filename              = "xe-005grp-lte.imx"
+op_sp1Filetype              = "ionmix"
+
+op_sp1Emiss = "op_tabpe"
+op_sp1Absorb = "op_tabpa"
+op_sp1Trans = "op_tabro"
+

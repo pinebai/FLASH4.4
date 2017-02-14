@@ -1,0 +1,21 @@
+REQUIRES IO/IOTypes/hdf5
+
+D packMeshPlotWriteHDF5 If true, this specifies that we pack the 
+D plot file data into a contiguous buffer before performing the data write.
+D This is only applicable to HDF5 I/O implementation in experimental mode.  
+D This is because the HDF5 group try to avoid data copies at all costs even
+D if it means missing out on optimisations, such as collective I/O.   It 
+D applies to experimental mode only which uses datatypes to pick up data, and 
+D not standard mode which already packs the data.  This option packs the 
+D data described by the datatype in the same way as pnetcdf, which costs more 
+D memory, but allows usage of collective I/O.  Default value is true.
+
+PARAMETER packMeshPlotWriteHDF5 BOOLEAN true
+
+D Same as packMeshPlotWriteHDF5 except for checkpoint files writes.
+PARAMETER packMeshChkWriteHDF5 BOOLEAN false
+
+D Same as packMeshPlotWriteHDF5 except for checkpoint files read.
+PARAMETER packMeshChkReadHDF5 BOOLEAN false
+
+PPDEFINE FLASH_IO_EXPERIMENTAL

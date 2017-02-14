@@ -1,0 +1,9 @@
+USESETUPVARS threadBlockList, threadWithinBlock, threadRayTrace
+
+#libmpihpm.a is for pure MPI codes on BG/Q.
+#libmpihpm_smp.a is for mixed MPI+OpenMP codes on BG/Q.
+IF threadBlockList or threadWithinBlock or threadRayTrace
+  LIBRARY mpi mpihpm_smp
+ELSE
+  LIBRARY mpi mpihpm
+ENDIF

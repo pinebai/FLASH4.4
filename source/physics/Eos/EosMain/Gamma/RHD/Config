@@ -1,0 +1,6 @@
+#	Config file for the perfect-gas equation of state, RHD variation
+# [physics/Eos/EosMain/Gamma/RHD]
+
+# Suggest to use the RHD Hydro
+REQUESTS physics/Hydro/HydroMain/split/RHD
+

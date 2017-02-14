@@ -1,0 +1,4 @@
+REQUIRES IO/IOMain/direct/UG
+
+CONFLICTS Grid/GridMain/paramesh
+

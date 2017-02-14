@@ -1,0 +1,30 @@
+Three layers:
+
+FLASH (Fortran 2003)
+Language interface (C++ without name decoration)
+Chombo interface (C++)
+
+
+Some notes:
+
+This test allocates a contiguous array in C++ using malloc, and then
+initializes the array with values 0,1,2,3 ..., 23 in contiguous memory
+locations in C++.  We use Fortran 2003 features to obtain a pointer to
+the address of the first element of the allocated memory.  Then in
+Fortran we construct a Fortran 90 4D pointer object from the raw
+memory address.  Finally, we iterate through the contiguous memory
+locations in Fortran and check that we pick up the anticipated values
+in the 4D array.
+
+The language interface file contains a collection of functions that
+operate on a chombo interface object.  These functions are given C
+linkage so that they can be called by Fortran.  The initialization
+function (called by FLASH's driver_init_flash) allocates a chombo
+interface object on the heap, and then a finalization function (called
+by FLASH's driver_finalize_flash) frees this object.  This way all
+Chombo data / metadata stays in scope whilst we are in FLASH's
+driver_evolve_flash.
+
+
+The chombo interface file contains an object that will eventually
+interact with the chombo library.

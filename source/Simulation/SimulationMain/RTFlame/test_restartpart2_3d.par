@@ -1,0 +1,109 @@
+# basic example configuration file for
+# Rayleigh-Taylor flame setup with fixed lower boundary (aka AFL, k95)
+# this will work in 1d or 2d, or 3d
+# suggested to use 16 cell blocks
+# example setup with particles:
+#     ./setup RTFlame -2d -auto -nxb=16 -nyb=16 --unit=Particles/ParticlesMain
+
+# unburned and burned material
+# 50/50 CO
+ye_unburned = 0.5
+sumyi_unburned = 0.041667
+
+# to 50/50 O/Mg24
+ye_burned = 0.5
+sumyi_burned  =  0.072917
+flame_deltae  = 2.8e17
+
+# to Ni56
+# ye_burned = 0.5
+# sumyi_burned = 0.017857
+# flame_deltae = 7.8587e17
+
+use_flame_speed = .true.
+flame_speed = 20.e5
+
+# flame parameters (set width and sharpness)
+fl_epsilon_0            = 1.e-3
+fl_epsilon_1            = 1.e-3
+fl_kpp_fact             = 1.309e0
+fl_b                    = 3.2e0
+
+# initial stuff
+flame_initial_position = 20.0e5
+#vel_pert_amp = 10.e5
+#vel_pert_wavelength1 = 7.e5
+spert_ampl1 = 2e5
+spert_wl1   = 15e5
+spert_phase1 = 0.0
+spert_ampl2 = 2e5
+spert_wl2   = 1.25e5
+spert_phase2 = 0.235243
+
+dens_unburned = 1.e8
+temp_unburned = 1.e8
+gconst = -1.9e9
+
+########################
+## runtimes and dumptimes
+basenm  = "rtflame_"
+
+tmax = 1.0
+dtinit = 1.e-9
+dtmin  = 1.e-9
+
+cfl = 0.8
+nend = 99999
+
+
+restart = .false.
+checkpointFileNumber = 0
+plotFileNumber = 0
+
+checkpointFileIntervalTime = 1e-2
+
+plot_var_1 = "dens"
+plotFileIntervalTime = 1e-2
+ParticleFileIntervalTime = 1e-2
+
+##########
+##  Grid
+geometry = "cartesian"
+
+nblockx = 100
+xmin = 0.e0
+xmax = 135e5
+nblocky = 1
+ymin = -7.5e5
+ymax = 7.5e5
+nblockz = 1
+zmin = -7.5e5
+zmax = 7.5e5
+
+xl_boundary_type = "reflect"
+xr_boundary_type = "outflow"
+yl_boundary_type = "periodic"
+yr_boundary_type = "periodic"
+
+refine_var_1 = "dens"
+refine_var_2 = "flam"
+
+lrefine_min = 1
+lrefine_max = 2
+
+
+
+# particles
+
+useParticles = .true.
+pt_maxPerProc = 50000
+
+pt_initialXMin = 20e5
+pt_initialXMax = 80e5
+pt_initialYMin = -7.5e5
+pt_initialYMax = 7.5e5
+pt_initialZMin = -7.5e5
+pt_initialZMax = 7.5e5
+pt_numX = 80
+pt_numY = 20
+pt_numZ = 20

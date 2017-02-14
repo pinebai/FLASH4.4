@@ -1,0 +1,16 @@
+#!/bin/bash
+#$ -V				      # Inherit the submission environment
+#$ -cwd 			      # Start job in submission dir
+#$ -N test   			      # Job name
+#$ -e $JOB_NAME.e$JOB_ID              # Name of the error file
+#$ -o $JOB_NAME.o$JOB_ID	      # Name of the output file
+#$ -pe 16way 32                       # mode and total number of cores (16cores/node)
+#$ -q normal                          # Queue name
+#$ -l h_rt=01:00:00		      # runtime (hh:mm:ss) - 1 hour
+
+# we are using the default (pgi) mpi run environment
+module unload gcc
+module load phdf5
+
+ibrun ./flash3
+

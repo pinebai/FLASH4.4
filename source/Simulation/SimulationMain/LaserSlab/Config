@@ -1,0 +1,81 @@
+# Coniguration file for LaserSlab simulation
+REQUIRES Driver
+REQUIRES physics/Hydro
+
+USESETUPVARS ThreeT
+
+IF ThreeT
+   REQUESTS physics/Diffuse/DiffuseMain/Unsplit
+
+   REQUESTS physics/sourceTerms/Heatexchange/HeatexchangeMain/Spitzer
+   REQUESTS physics/materialProperties/Conductivity/ConductivityMain/SpitzerHighZ
+ENDIF
+
+# This simulation requires specifying the species via the setup
+# line. You must include the species setup variable:
+#
+# species=cham,targ
+#
+# An example of a setup line for this simulation is:
+#
+# ./setup -auto LaserSlab -2d +hdf5typeio \
+#         -nxb=16 -nyb=16 +mtmmmt +laser species=cham,targ
+# 
+
+DATAFILES al-imx-002.cn4
+DATAFILES al-imx-003.cn4
+DATAFILES he-imx-005.cn4
+
+##########################
+#                        #
+#   RUNTIME PARAMETERS   #
+#                        #
+##########################
+
+
+D sim_initGeom Use a spherical target if sphere, default to slab
+PARAMETER sim_initGeom STRING "slab" ["slab","sphere"]
+                              
+D sim_targetRadius The radius to use for the target
+PARAMETER sim_targetRadius REAL 0.0050
+
+D sim_targetHeight The height of the target off y-axis
+PARAMETER sim_targetHeight REAL 0.0250
+
+D sim_vacuumHeight The thickness of the vacuum region in front of the target
+PARAMETER sim_vacuumHeight REAL 0.0200
+
+# Target material defaults set for aluminum at room temperature:
+D sim_rhoTarg Initial target density
+PARAMETER sim_rhoTarg   REAL 2.7
+
+D sim_teleTarg Initial target electron temperature
+PARAMETER sim_teleTarg  REAL 290.11375
+
+D sim_tionTarg Initial target ion temperature
+PARAMETER sim_tionTarg  REAL 290.11375
+
+D sim_tradTarg Initial target radiation temperature
+PARAMETER sim_tradTarg  REAL 290.11375
+
+D sim_zminTarg target minimum zbar allowed
+PARAMETER sim_zminTarg  REAL 0.0
+
+D sim_eosTarg chamber EOS type
+PARAMETER sim_eosTarg   STRING "eos_tab" ["eos_tab","eos_gam"]
+
+# Chamber material defaults set for Helium at pressure 1.6 mbar:
+D sim_rhoCham Initial chamber density
+PARAMETER sim_rhoCham   REAL 2.655e-07
+
+D sim_teleCham Initial chamber electron temperature
+PARAMETER sim_teleCham  REAL 290.11375
+
+D sim_tionCham Initial chamber ion temperature
+PARAMETER sim_tionCham  REAL 290.11375
+
+D sim_tradCham Initial chamber radiation temperature
+PARAMETER sim_tradCham  REAL 290.11375
+
+D sim_eosCham chamber EOS type
+PARAMETER sim_eosCham   STRING "eos_gam" ["eos_tab","eos_gam"]

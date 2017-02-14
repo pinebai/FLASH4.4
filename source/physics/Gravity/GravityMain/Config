@@ -1,0 +1,18 @@
+#	Config file for the gravity module.  Available sub-modules are:
+
+#	  Constant	Spatially/temporally constant gravitational field
+#	  PlanePar	1/r^2 field for a distant point source
+#	  PointMass	1/r^2 field for an arbitrarily placed point source
+#	  Poisson	Field for a self-gravitating matter distribution
+#   UserDefined A user-defined field
+
+REQUIRES Driver
+
+DEFAULT Constant
+
+PPDEFINE GRAVITY
+
+EXCLUSIVE Constant PlanePar PointMass Poisson UserDefined
+
+D useGravity   Should the gravity calculations be performed?
+PARAMETER useGravity BOOLEAN TRUE

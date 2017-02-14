@@ -1,0 +1,13 @@
+rho_left	sim_rhoLeft
+rho_right	sim_rhoRight
+rho_mid		sim_rhoMid
+p_left		sim_pLeft
+p_right		sim_pRight
+p_mid		sim_pMid
+u_left		sim_uLeft
+u_right		sim_uRight
+u_mid		sim_uMid
+xangle		sim_xangle
+yangle		sim_yangle
+posnL		sim_posnL
+posnR		sim_posnR

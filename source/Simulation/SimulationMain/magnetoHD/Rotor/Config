@@ -1,0 +1,34 @@
+#       Configuration file for the MHD Rotor problem
+#	(Balsara and Spicer, JCP, 149:270--292, 1999)
+#	(Balsara, The Astrophys Suppl Series, 151:148--184, 2004)
+
+REQUIRES physics/Hydro/HydroMain
+REQUIRES physics/Eos/EosMain/Gamma
+
+USESETUPVARS withParticles
+
+IF withParticles
+   PARTICLETYPE passive INITMETHOD lattice MAPMETHOD quadratic ADVMETHOD rungekutta
+
+   REQUIRES Particles/ParticlesMain
+   REQUESTS IO/IOMain
+   REQUESTS IO/IOParticles
+   REQUESTS Particles/ParticlesMapping/Quadratic
+   REQUESTS Particles/ParticlesInitialization/Lattice
+ENDIF
+
+D   tiny	    Threshold value used for numerical zero
+D   xCtr	    x center of the computational domain
+D   yCtr	    y center of the computational domain
+D   zCtr	    z center of the computatoinal domain
+D   Radius	    Radius
+D   perturbZ        small perturbation of velocity fields in z-direciton
+
+PARAMETER tiny         REAL     1.e-16
+PARAMETER xCtr	       REAL     0.
+PARAMETER yCtr	       REAL     0.
+PARAMETER zCtr	       REAL     0.
+PARAMETER Radius       REAL     0.115
+PARAMETER perturbZ     REAL     0.2
+
+#VARIABLE FLAG

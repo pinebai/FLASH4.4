@@ -1,0 +1,19 @@
+object                 
+cubed 
+40 40 40        ; global size of the problem along each dimension
+8               ; The size of the datatype, usually the data are real*8
+1               ; The number of records in each file
+3               ; The number of files to compare
+
+
+The first two lines are the pathnames to the files being compared.
+In this instance, if the utility is running from $FLASHHOME, then the 
+files are in $FLASHHOME/object and $FLASHHOME/cube. The files are
+always named FL3xxxx, where xxxx in the file number. 
+Griddump's interface is Grid_dump(vars,numvars,blockId,gcell), where
+For this utility to be usable, the call should always be made with 
+gcell = .false., the utility only compares the interior domain
+correctly. The variable numvars determines the number on line 6 of the
+input. Each variable dumped in a single call to Grid_dump represents a
+record. The last line is determined by the number of times Grid_dump
+is called in the run, since each time it is called it generates a new file.

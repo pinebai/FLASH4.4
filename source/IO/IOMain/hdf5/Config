@@ -1,0 +1,28 @@
+LIBRARY HDF5
+
+DEFAULT serial
+
+USESETUPVARS parallelIO, IO
+
+IF IO not in ["","hdf5"]
+   SETUPERROR The variable 'IO' is set to something other than 'hdf5'
+ENDIF
+
+IF parallelIO
+   DEFAULT parallel
+ENDIF
+
+IF not fixedBlockSize
+   DEFAULT parallel
+ENDIF
+
+#The following IF condition only gets triggered when the user explicitly
+#tries to combine +nofbs with +serialIO or parallelIO=False.  Note: It
+#didn't seem to work when nested inside the "IF not fixedBlockSize" above.
+IF not parallelIO and not fixedBlockSize
+   SETUPERROR No serial I/O implementation for NoFBS UG
+ENDIF
+
+EXCLUSIVE serial parallel
+
+PPDEFINE FLASH_IO_HDF5

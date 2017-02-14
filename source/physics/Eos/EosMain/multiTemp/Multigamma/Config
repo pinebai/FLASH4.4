@@ -1,0 +1,30 @@
+#	Config file for the Multigamma ideal-gas-based 3T  equation of state
+
+REQUIRES Multispecies/MultispeciesMain
+
+VARIABLE gamc  EOSMAP:   GAMC  # sound-speed gamma
+VARIABLE game  EOSMAPOUT:GAME  # energy gamma
+
+
+D gammaEle       Ratio of specific heats for electron component
+PARAMETER gammaEle         REAL    1.6666666666666667 [0.0 to ]
+
+D gammaRad       Ratio of specific heats for radiation component
+PARAMETER gammaRad         REAL    1.3333333333333333 [0.0 to ]
+
+
+D eos_tolerance  tolerance for the Newton-Raphson iterations
+PARAMETER eos_tolerance REAL    1.e-8
+
+D eos_maxNewton  maximum number of Newton-Raphson iterations to try.
+PARAMETER eos_maxNewton INTEGER 50
+
+D eos_forceConstantInput Newton-Raphson loop in Eos can allow input EINT or PRES 
+D &              to change on output to preserve equilibrium.  This switch 
+D &              forces a constant input of EINT or PRES
+PARAMETER eos_forceConstantInput BOOLEAN false 
+
+USESETUPVARS SplitDriver
+IF SplitDriver
+  REQUESTS physics/Hydro/HydroMain/split/PPM/multiTemp
+ENDIF

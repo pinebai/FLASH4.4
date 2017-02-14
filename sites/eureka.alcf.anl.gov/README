@@ -1,0 +1,13 @@
+Copy the softenvrc to ~/.softenvrc.
+By default it will setup your environment for visit and serial HDF5.
+
+For your environment to be consistent with a FLASH binary produced
+with the default Makefile.h you should run
+> MY_ENV=mx resoft
+
+Note that this can be done on the login nodes and compute nodes.  The
+script run_script.sh gives an example of how we do this for the
+compute nodes.
+
+To use a non-mx version of MPI run
+> MY_ENV=nomx resoft

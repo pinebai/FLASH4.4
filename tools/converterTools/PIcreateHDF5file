@@ -1,0 +1,98 @@
+#!/usr/bin/env python
+
+import os
+import re
+import string
+import sys
+
+def usage ():
+    print " Usage: ./PIcreateHDF5file <plot filenames>  (extracts relevant HDF5 info from plot files)"
+    print "        ./PIcreateHDF5file all               (extracts relevant HDF5 info from all plot files)"
+
+def informUser ():
+    print "\n"
+    print "************************************************************************************"
+    print "*    Wellcome to the Proton Imaging HDF5 plot files -> HDF5 chk files extractor    *"
+    print "************************************************************************************"
+    print "\n"
+    print " Extracts relevant HDF5 info from plot files and creates new PI HDF5 chk files:"
+    print "\n"
+    print "     a) plot file name must be of the form:     <basenm>_hdf5_plt_cnt_<xxxx> "
+    print "     b) created chk file name is of the form:   <basenm>PI_hdf5_chk_<xxxx>"
+    print "\n"
+    print " where <basenm> is the base name of the simulation and <xxxx> is a counting number"
+    print " Plot file names with other structure than mentioned above will be ignored! "
+    print "\n"
+
+if __name__ == "__main__":
+
+     argList = sys.argv[1:]   # gets a list of all arguments
+     sizeArgList = len (argList)
+
+     if (sizeArgList == 0):
+         usage ()
+         sys.exit (0)
+     if (argList[0] == "all"):
+         files = os.listdir (os.curdir)
+     else:
+         files = argList
+
+     nFiles = 0
+     for fileName in files:
+         match = re.search ('_hdf5_plt_cnt_[0-9]*\Z',fileName)
+         if match and os.path.isfile (fileName):
+            nFiles += 1
+
+     if nFiles == 0:
+        print "No HDF5 PI checkpoint files to create!"
+        sys.exit (0)
+
+     informUser ()
+#
+#    ...Explanation of pattern search:
+#
+#                _hdf5_plt_cnt_   : does the string '_hdf5_plt_cnt_' occur anywhere in file name?
+#                [0-9]            : this represents any character of the set {0-9}
+#                the * afterwards : search for repetitions of [0-9]
+#                \Z               : all that comes before should be at the end of the file name
+#
+     for fileName in files:
+         match = re.search ('_hdf5_plt_cnt_[0-9]*\Z',fileName)
+         if match and os.path.isfile (fileName):
+            chkFile = string.replace (fileName,'_hdf5_plt_cnt_','PI_hdf5_chk_')
+            print "Extracting HDF5 info from plot file",fileName,"to PI checkpoint file",chkFile,"..."
+#
+#    ...Accumulate the overall h5command as a string and execute the command through the operating system.
+#
+            dataSet  = ['bdry',
+                        'bflags',
+                        'block size',
+                        'bounding box',
+                        'coordinates',
+                        'gid',
+                        'gsurr_blks',
+                        'integer runtime parameters',
+                        'integer scalars',
+                        'logical runtime parameters',
+                        'logical scalars',
+                        'magx',
+                        'magy',
+                        'magz',
+                        'node type',
+                        'processor number',
+                        'real runtime parameters',
+                        'real scalars',
+                        'refine level',
+                        'sim info',
+                        'string runtime parameters',
+                        'string scalars',
+                        'unknown names',
+                        'which child']
+
+            sizeDataSet = len (dataSet)
+
+            h5command = 'h5copy -i "'+fileName+'" -o "'+chkFile+'" -s "/'+dataSet[0]+'" -d "/'+dataSet[0]+'"'
+            for i in xrange (1,sizeDataSet):
+                h5command += ' && h5copy -i "'+fileName+'" -o "'+chkFile+'" -s "/'+dataSet[i]+'" -d "/'+dataSet[i]+'"'
+
+            os.system (h5command)

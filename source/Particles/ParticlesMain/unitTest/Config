@@ -1,0 +1,6 @@
+#Config file for particles unit test
+# [/source/Particles/unitTest]
+
+REQUIRES Particles
+
+

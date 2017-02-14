@@ -1,0 +1,203 @@
+Index: source/Simulation/SimulationMain/magnetoHD/OrszagTang/restart_pm_2d.par
+===================================================================
+--- source/Simulation/SimulationMain/magnetoHD/OrszagTang/restart_pm_2d.par	(revision 17993)
++++ source/Simulation/SimulationMain/magnetoHD/OrszagTang/restart_pm_2d.par	(working copy)
+@@ -28,10 +28,10 @@
+ log_file	= "orszag_mhd_2d.log"
+ basenm		= "orszag_mhd_2d_"
+ restart         = .true.
+-checkPointFileNumber = 0005
++checkPointFileNumber = 0001
+ #plotFileNumber  = 1
+ nend            = 10000000
+-tmax            = 0.6 
++tmax            = 0.00001
+ cfl             = 0.8
+ plot_var_1	= "dens"
+ 
+@@ -108,3 +108,6 @@
+ #	number of grid points in the physical domain without taking 
+ #	the guard cell into account. The local blocksize is calculated
+ #	as iGridSize/iprocs  etc.
++
++pt_maxPerProc = 200000
++useParticles = .true.
+Index: source/Simulation/SimulationMain/magnetoHD/OrszagTang/coldstart_pm_2d.par
+===================================================================
+--- source/Simulation/SimulationMain/magnetoHD/OrszagTang/coldstart_pm_2d.par	(revision 17993)
++++ source/Simulation/SimulationMain/magnetoHD/OrszagTang/coldstart_pm_2d.par	(working copy)
+@@ -31,7 +31,7 @@
+ #checkPointFileNumber=1
+ #plotFileNumber  = 1
+ nend            = 10000000
+-tmax            = 0.5 
++tmax            = 0.0000001
+ cfl             = 0.8
+ plot_var_1	= "dens"
+ 
+@@ -107,3 +107,15 @@
+ #	number of grid points in the physical domain without taking 
+ #	the guard cell into account. The local blocksize is calculated
+ #	as iGridSize/iprocs  etc.
++
++pt_numX = 100
++pt_numY = 100
++
++pt_initialXmin = 0.45
++pt_initialXmax = 0.55
++pt_initialYmin = 0.45
++pt_initialYmax = 0.55
++
++pt_maxPerProc = 200000
++
++useParticles = .true.
+Index: source/Simulation/SimulationMain/Sedov/coldstart_pm.par
+===================================================================
+--- source/Simulation/SimulationMain/Sedov/coldstart_pm.par	(revision 17993)
++++ source/Simulation/SimulationMain/Sedov/coldstart_pm.par	(working copy)
+@@ -45,9 +45,20 @@
+ zr_boundary_type = "outflow"
+ 
+ 
++pt_numX = 100
++pt_numY = 100
+ 
++pt_initialXmin = 0.45
++pt_initialXmax = 0.55
++pt_initialYmin = 0.45
++pt_initialYmax = 0.55
+ 
++pt_maxPerProc = 200000
+ 
++useParticles = .true.
++
++
++
+ #	Simulation time, I/O  parameters
+ 
+ cfl		= 0.8
+@@ -66,7 +77,7 @@
+ plotfileNumber = 0
+ 
+ nend            = 10000
+-tmax            = 0.03
++tmax            = 0.000001
+ 
+ run_comment     = "Sedov explosion"
+ log_file        = "sedov.log"
+Index: source/Simulation/SimulationMain/Sedov/restart_pm.par
+===================================================================
+--- source/Simulation/SimulationMain/Sedov/restart_pm.par	(revision 17993)
++++ source/Simulation/SimulationMain/Sedov/restart_pm.par	(working copy)
+@@ -45,9 +45,12 @@
+ zr_boundary_type = "outflow"
+ 
+ 
++pt_maxPerProc = 200000
+ 
++useParticles = .true.
+ 
+ 
++
+ #	Simulation time, I/O  parameters
+ 
+ cfl		= 0.8
+@@ -66,7 +69,7 @@
+ #plotfileNumber = 0
+ 
+ nend            = 10000
+-tmax            = 0.05
++tmax            = 0.0001
+ 
+ run_comment     = "Sedov explosion"
+ log_file        = "sedov.log"
+Index: source/Simulation/SimulationMain/Sedov/coldstart_ug.par
+===================================================================
+--- source/Simulation/SimulationMain/Sedov/coldstart_ug.par	(revision 17993)
++++ source/Simulation/SimulationMain/Sedov/coldstart_ug.par	(working copy)
+@@ -45,9 +45,20 @@
+ zr_boundary_type = "outflow"
+ 
+ 
++pt_numX = 100
++pt_numY = 100
+ 
++pt_initialXmin = 0.45
++pt_initialXmax = 0.55
++pt_initialYmin = 0.45
++pt_initialYmax = 0.55
+ 
++pt_maxPerProc = 200000
+ 
++useParticles = .true.
++
++
++
+ #	Simulation time, I/O  parameters
+ 
+ cfl		= 0.8
+@@ -66,7 +77,7 @@
+ plotfileNumber = 0
+ 
+ nend            = 10000
+-tmax            = 0.03
++tmax            = 0.000001
+ 
+ run_comment     = "Sedov explosion"
+ log_file        = "sedov.log"
+@@ -86,10 +97,10 @@
+ # Uniform Grid specific parameters 
+ # see note below for more explanation
+ 
+-#iGridSize = 8   #global number of gridpoints along x, excluding gcells
+-#jGridSize = 8   #global number of gridpoints along y, excluding gcells
+-#kGridSize = 1
+-iProcs = 2	#num procs in i direction
++iGridSize = 256   #global number of gridpoints along x, excluding gcells
++jGridSize = 256   #global number of gridpoints along y, excluding gcells
++kGridSize = 1
++iProcs = 4	#num procs in i direction
+ jProcs = 2	#num procs in j direction
+ kProcs = 1
+ 
+Index: source/Simulation/SimulationMain/Sedov/restart_ug.par
+===================================================================
+--- source/Simulation/SimulationMain/Sedov/restart_ug.par	(revision 17993)
++++ source/Simulation/SimulationMain/Sedov/restart_ug.par	(working copy)
+@@ -45,9 +45,12 @@
+ zr_boundary_type = "outflow"
+ 
+ 
++pt_maxPerProc = 200000
+ 
++useParticles = .true.
+ 
+ 
++
+ #	Simulation time, I/O  parameters
+ 
+ cfl		= 0.8
+@@ -66,7 +69,7 @@
+ #plotfileNumber = 0
+ 
+ nend            = 10000
+-tmax            = 0.05
++tmax            = 0.0001
+ 
+ run_comment     = "Sedov explosion"
+ log_file        = "sedov.log"
+@@ -86,10 +89,10 @@
+ # Uniform Grid specific parameters 
+ # see note below for more explanation
+ 
+-#iGridSize = 8   #global number of gridpoints along x, excluding gcells
+-#jGridSize = 8   #global number of gridpoints along y, excluding gcells
+-#kGridSize = 1
+-iProcs = 2	#num procs in i direction
++iGridSize = 256   #global number of gridpoints along x, excluding gcells
++jGridSize = 256   #global number of gridpoints along y, excluding gcells
++kGridSize = 1
++iProcs = 4	#num procs in i direction
+ jProcs = 2	#num procs in j direction
+ kProcs = 1
+ 

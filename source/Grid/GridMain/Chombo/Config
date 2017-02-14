@@ -1,0 +1,18 @@
+REQUESTS Grid/GridBoundaryConditions/Chombo
+REQUIRES Grid/GridMain/Chombo/wrapper
+REQUESTS IO/IOMain/chombo
+LIBRARY chombo
+
+# add pre-processor symbol FLASH_GRID_CHOMBO
+PPDEFINE FLASH_GRID_CHOMBO
+
+# We need to use the Fortran 2003 module named iso_c_binding in
+# the FLASH I/O unit.  This is not an extra dependency
+# because the interoperability of pointers already
+# depends on this module.  We do not define USE_IO_C_INTERFACE
+# in any other Config file because non-Chombo FLASH applications
+# with I/O only optionally depend on the iso_c_binding module.
+PPDEFINE USE_IO_C_INTERFACE
+
+D How much output is written out. Higher number is more verbose.
+PARAMETER verbosity INTEGER 0 [ 0 ... ]

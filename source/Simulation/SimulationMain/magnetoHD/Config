@@ -1,0 +1,7 @@
+# Config file for MHD simulations
+
+EXCLUSIVE *
+
+# The default solver is the 8Wave solver.
+ 
+REQUESTS physics/Hydro/HydroMain/split/MHD_8Wave

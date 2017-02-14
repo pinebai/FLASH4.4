@@ -1,0 +1,19 @@
+#!/bin/tcsh 
+
+echo "Running $1 on $2 nodes $3 procs"
+
+#Run this job for 60 minutes (1 hour)
+
+#Virtual Node mode.  32 Nodes, 64 processes
+#cqsub -t 60 -q appsws -n $2 -c $3 -m vn `pwd`/$1
+
+#Coprocessor mode. 32 nodes, 32 processes
+cqsub -t 60 -q appsws -n $2 `pwd`/$1
+
+#Coprocessor mode, pushing allreduce onto MPICH
+#cqsub -t 60 -q appsws -n $2 -e" BGLMPI_ALLREDUCE=MPICH" `pwd`/$1
+#cqsub -t 60 -q appsws -n $2 -e" BGLMPI_ALLREDUCE=TORUS" `pwd`/$1
+#cqsub -t 60 -q appsws -n $2 -e" BGLMPI_ALLREDUCE=TREE" `pwd`/$1
+
+#Run the loop test
+#cqsub -t 60 -q appsws -n $2 `pwd`/$1 $4

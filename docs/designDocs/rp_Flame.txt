@@ -1,0 +1,171 @@
+
+physics/sourceTerms/Flame
+    useFlame [BOOLEAN] CONSTANT [FALSE]
+        Whether the flame should be advanced.
+
+physics/sourceTerms/Flame/FlameEffects/BurnParametric
+    eos_tolerance [REAL] [1.e-8]
+        Valid Values: Unconstrained
+        tolerance for the Newton-Raphson iterations
+
+physics/sourceTerms/Flame/FlameEffects/EIP
+    flame_deltae [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    sumyi_burned [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    sumyi_unburned [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    ye_burned [REAL] [0.5]
+        Valid Values: Unconstrained
+
+    ye_unburned [REAL] [0.5]
+        Valid Values: Unconstrained
+
+
+physics/sourceTerms/Flame/FlameMain
+    fl_b [REAL] [3.2]
+        Valid Values: Unconstrained
+        flame width parameter in units of cells
+    fl_epsilon_0 [REAL] [1.0e-3]
+        Valid Values: Unconstrained
+        lower sharpening factor for sKPP, reaction \propto
+        (f-epsilon_0)*(1+epsilon_1-f)
+    fl_epsilon_1 [REAL] [1.0e-3]
+        Valid Values: Unconstrained
+        upper sharpening factor for sKPP, reaction \propto
+        (f-epsilon_0)*(1+epsilon_1-f)
+    fl_initProfileAdjustWidth [REAL] [1.0]
+        Valid Values: Unconstrained
+        multiplicative adjustment of width of initial profile.  0.8 was used for
+        some SNIa simulations, but should usually be default of 1.
+    fl_kpp_fact [REAL] [1.309]
+        Valid Values: Unconstrained
+        reaction prefactor adjustment factor for sKPP
+    useFlame [BOOLEAN] [TRUE]
+        Whether the flame should be advanced.
+
+physics/sourceTerms/Flame/FlameSpeed/BuoyancyCompensation
+    approx_atwood [BOOLEAN] [false]
+        only used for CO configuration, not for CONe
+    fl_fsBuoyCompSuppress [BOOLEAN] [false]
+        Suppress (turn off) Buoyancy Compensation flame speed enhancement per
+        selected time and region
+    fl_fsBuoyCompSuppressTheta [REAL] [135.0]
+        Valid Values: Unconstrained
+        Extent of suppression region in degrees from south pole (-z in cart.)
+    fl_fsBuoyCompSuppressTime [REAL] [1.5]
+        Valid Values: Unconstrained
+        Time after which to suppress in selected region
+    fl_fsConstFlameSpeed [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    fl_fsConstFlameWidth [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    fl_fsGcdFlameSuppress [BOOLEAN] [false]
+        Suppress (set flamespeed to zero) flame per selected time and region
+    fl_fsGcdFlameSuppressTheta [REAL] [135.0]
+        Valid Values: Unconstrained
+        Extent of suppression region in degrees from south pole (-z in cart.)
+    fl_fsGcdFlameSuppressTime [REAL] [1.5]
+        Valid Values: Unconstrained
+        Time after which to suppress in selected region
+    fl_fsM [REAL] [0.06]
+        Valid Values: Unconstrained
+        factor for buoyancy-compensating enhancement of flame speed, fs =
+        0.5*sqrt(Atwood*g*fl_fsM*Delta)
+    fl_fsQuench [BOOLEAN] [true]
+
+    fl_fsQuenchDens0 [REAL] [1.0e6]
+        Valid Values: Unconstrained
+
+    fl_fsQuenchDens1 [REAL] [1.0e7]
+        Valid Values: Unconstrained
+
+    fl_fsUseConstFlameSpeed [BOOLEAN] [false]
+
+    fl_fsUseTFI [BOOLEAN] [false]
+
+
+physics/sourceTerms/Flame/FlameSpeed/BuoyancyCompensation/CONe
+    max_c_frac [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    max_dens [REAL] [4.e9]
+        Valid Values: Unconstrained
+
+    min_c_frac [REAL] [0.3]
+        Valid Values: Unconstrained
+
+    num_c_frac [INTEGER] [9]
+        Valid Values: Unconstrained
+
+    num_ldens [INTEGER] [20]
+        Valid Values: Unconstrained
+
+    rep_ne_frac [REAL] [0.01]
+        Valid Values: Unconstrained
+
+
+physics/sourceTerms/Flame/FlameSpeed/Constant
+    fl_fsConstFlameSpeed [REAL] [1.e0]
+        Valid Values: Unconstrained
+
+    fl_fsConstFlameWidth [REAL] [1.e0]
+        Valid Values: Unconstrained
+
+
+physics/sourceTerms/Flame/FlameSpeed/Constant/TFI
+    fl_fsUseTFI [BOOLEAN] [false]
+
+
+physics/sourceTerms/Flame/FlameSpeed/LaminarOnly
+    fl_fsConstFlameSpeed [REAL] [1.e0]
+        Valid Values: Unconstrained
+
+    fl_fsConstFlameWidth [REAL] [1.e0]
+        Valid Values: Unconstrained
+
+    fl_fsUseConstFlameSpeed [BOOLEAN] [false]
+
+    fl_fsUseTFI [BOOLEAN] [false]
+
+
+physics/sourceTerms/Flame/FlameSpeed/laminar/CONe
+    fl_fsCONeTableName [STRING] ["CONeFlameTable.txt"]
+        Valid Values: Unconstrained
+        name of table containing nuclear flame speed table
+
+physics/sourceTerms/Flame/FlameSpeed/turbulent/tfi/charlette
+    fl_fsTFIBeta [REAL] [0.3333333]
+        Valid Values: Unconstrained
+
+    fl_fsTFIPrandtl [REAL] [1.e-5]
+        Valid Values: Unconstrained
+
+
+physics/sourceTerms/Flame/FlameSpeed/turbulent/tfi/charlette/gammaInt
+    fl_fsTFIetol [REAL] [1.e-3]
+        Valid Values: Unconstrained
+        controls the accuracy of the integrator
+
+physics/sourceTerms/Flame/FlameSpeed/turbulent/tfi/damkohler
+    fl_fsTFIBeta [REAL] [1.0]
+        Valid Values: Unconstrained
+
+
+physics/sourceTerms/Flame/FlameSpeed/turbulent/tfi/kolmogorov
+    fl_fsTFIBeta [REAL] [5.0]
+        Valid Values: Unconstrained
+
+    fl_fsTFIViscosity [REAL] [1.0e-2]
+        Valid Values: Unconstrained
+
+
+physics/sourceTerms/Flame/FlameSpeed/turbulent/tfi/pocheau
+    fl_fsTFICt [REAL] [1.333333333]
+        Valid Values: Unconstrained
+

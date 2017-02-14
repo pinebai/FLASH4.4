@@ -1,0 +1,56 @@
+#!/bin/sh
+
+DEFAULT_DIRS="/usr/local/lib /usr/lib /usr/lib64 /usr/local/"
+
+# Returns a list of directories where .a or .so files may be found
+function libDirs()
+{
+  if [ -f setup_flags ]; then
+      MORE_DIRS=`grep "Linker" setup_flags | cut -d':' -f2 | tr ' ' '\n' | grep '^-L' | cut -c3-`
+      for m in $MORE_DIRS; do
+          if [ -d $m ] ; then echo $m; fi;
+      done
+  fi
+  for m in $DEFAULT_DIRS; do 
+      if [ -d $m ] ; then echo $m; fi; 
+  done
+}
+
+# search directory $1 for symbol $2
+function searchDir()
+{
+  DIR=$1
+  SYMB=$2
+  pushd $DIR > /dev/null
+  echo "Searching $PWD (and subdirectories)..."
+  for m in `find -name '*.so' -or -name '*.a' -printf '%f\n' 2>/dev/null`; do
+      if nm -s $m 2>/dev/null | grep -i "T .*$SYMB" >/dev/null; then 
+         echo "    Found in $DIR/$m";
+      fi;
+  done
+  popd > /dev/null
+}
+
+function usage()
+{
+   echo "     USAGE: $0 SymbolName addldirs"
+   echo ""
+   echo "     Searches Directories specified in setup_flags and $DEFAULT_DIRS "
+   echo "     for library containing SymbolName"
+   echo 
+   echo "     e.g. \"$0 MPI_Init\" searches for the library containing MPI_Init"
+   exit 2
+}
+
+SYMB=$1
+shift 1
+if [ -z "$SYMB" ]; then 
+  usage;
+fi;
+for dirname in `libDirs`; do
+    searchDir $dirname $SYMB
+done
+for dirname; do
+    searchDir $dirname $SYMB
+done
+

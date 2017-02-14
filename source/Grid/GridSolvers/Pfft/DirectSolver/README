@@ -1,0 +1,14 @@
+All the solvers in this DirectSolver directory are specific to 2nd order 
+cartesian grid, central finite difference - finite volume schemes.
+Then the L2, Linf norms of absolute error in these tests will decrease
+by increasing the number of cells on the domain in a 2nd order fashion.
+Example : Solving the two periodic problem with a 64^3 grid we get:
+ 
+Linf error =   8.019137157966316E-004
+
+Solving the same problem with a 128^3 grid we get
+
+Linf error =   2.007564884912716E-004
+
+the cell size was decreased by a factor of 2 and the Linf error decreased
+by a factor of 3.9945.

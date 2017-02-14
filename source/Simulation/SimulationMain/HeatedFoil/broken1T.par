@@ -1,0 +1,230 @@
+run_comment = "HeatedFoil Simulations"
+log_file    = "heatedfoil.log"
+basenm      = "heatedfoil_"
+
+# This particular parfile is used as an example parfile that is
+# described in detail in the users guide.
+
+##########################
+#                        #
+#     I/O PARAMETERS     #
+#                        #
+##########################
+
+### Checkpoint Options  ###
+checkpointFileIntervalTime = 1.0
+checkpointFileIntervalStep = 10
+
+### Plot Options ###
+plotFileNumber       = 0
+plotFileIntervalStep = 0
+plot_var_1           = "dens"
+plot_var_2           = "tele"
+plot_var_3           = "tion"
+plot_var_4           = "trad"
+plot_var_5           = "ye  "
+plot_var_6           = "sumy"
+plot_var_7           = "foil"
+plot_var_8           = "vacu"
+
+### Restart Options ###
+restart              = .false.
+checkpointFileNumber = 0
+
+
+#################################
+#                               #
+#     CONDUCTION PARAMETERS     #
+#                               #
+#################################
+
+### Conduction parameters ###
+useDiffuse       = .false.
+useConductivity  = .false.
+diff_useEleCond  = .false.
+diff_eleFlMode   = "fl_larsen"
+diff_eleFlCoef   = 0.06
+diff_thetaimplct = 1.0
+
+### Diffusion boundary conditions for Split Diffusion Solver ###
+diff_eleXlBoundaryType = "outflow"
+diff_eleXrBoundaryType = "outflow"
+diff_eleYlBoundaryType = "outflow"
+diff_eleYrBoundaryType = "outflow"
+diff_eleZlBoundaryType = "outflow"
+diff_eleZrBoundaryType = "outflow"
+
+
+##########################
+#                        #
+#     MGD PARAMETERS     #
+#                        #
+##########################
+rt_useMGD       = .false.
+rt_mgdNumGroups = 6
+rt_mgdBounds_1  = 1.0e-01
+rt_mgdBounds_2  = 1.0e+00
+rt_mgdBounds_3  = 1.0e+01
+rt_mgdBounds_4  = 1.0e+02
+rt_mgdBounds_5  = 1.0e+03
+rt_mgdBounds_6  = 1.0e+04
+rt_mgdBounds_7  = 1.0e+05
+rt_mgdFlMode    = "fl_harmonic"
+rt_mgdFlCoef    = 1.0
+
+rt_mgdXlBoundaryType = "reflecting"
+rt_mgdXrBoundaryType = "vacuum"
+rt_mgdYlBoundaryType = "vacuum"
+rt_mgdYrBoundaryType = "reflecting"
+rt_mgdZlBoundaryType = "reflecting"
+rt_mgdZrBoundaryType = "reflecting"
+
+
+##############################
+#                            #
+#     OPACITY PARAMETERS     #
+#                            #
+##############################
+useOpacity     = .false.
+
+op_foilAbsorb   = "op_tabpa"
+op_foilEmiss    = "op_tabpe"
+op_foilTrans    = "op_tabro"
+op_foilFileType = "ionmix4"
+op_foilFileName = "al-imx-003.cn4"
+
+
+
+############################
+#                          #
+#     HYDRO PARAMETERS     #
+#                          #
+############################
+useHydro = .true.
+
+# Use second order hybrid solver with minmod slope limiter. This
+# essentially eliminates any Carbuncle instability.
+ 
+order            = 3        # Interpolation order (first/second/third/fifth order)
+slopeLimiter     = "mc"     # Slope limiters (minmod, mc, vanLeer, hybrid, limited)
+LimitedSlopeBeta = 1.       # Slope parameter for the "limited" slope by Toro
+charLimiting     = .true.   # Characteristic limiting vs. Primitive limiting
+use_avisc        = .true.   # use artificial viscosity (originally for PPM)
+cvisc            = 0.1      # coefficient for artificial viscosity
+use_flattening   = .true.   # use flattening (dissipative) (originally for PPM)
+use_steepening   = .false.  # use contact steepening (originally for PPM)
+use_upwindTVD    = .false.  # use upwind biased TVD slope for PPM (need nguard=6)
+RiemannSolver    = "hybrid" # Roe, HLL, HLLC, LLF, Marquina, hybrid
+entropy          = .false.  # Entropy fix for the Roe solver
+shockDetect      = .false.  # Shock Detect for numerical stability
+
+# Hydro boundary conditions:
+xl_boundary_type = "reflect"
+xr_boundary_type = "reflect"
+yl_boundary_type = "reflect"
+yr_boundary_type = "reflect"
+zl_boundary_type = "reflect"
+zr_boundary_type = "reflect"
+
+
+###################################
+#                                 #
+#     MATERIAL/EOS PARAMETERS     #
+#                                 #
+###################################
+eosModeInit = "dens_temp"
+eosMode     = "dens_ie"
+smallt      = 0.1
+smallx      = 1e-99
+
+eos_singleSpeciesA = 1.92725275714
+
+### SET MATERIAL PROPERTIES ###
+ms_foilA          = 26.9815386
+ms_foilZ          = 13.0
+eos_foilEosType   = "eos_gam"
+eos_foilSubType   = "ionmix4"
+eos_foilTableFile = "al-imx-004.cn4"
+
+ms_vacuA          = 26.9815386
+ms_vacuZ          = 13.0
+eos_vacuEosType   = "eos_gam"
+eos_vacuSubType   = "ionmix4"
+eos_vacuTableFile = "al-imx-004.cn4"
+
+
+##############################
+#                            #
+#     INITIAL CONDITIONS     #
+#                            #
+##############################
+sim_foilRadius     = 96.0e-04
+sim_foilZPosition  = 0.0e-04
+sim_foilThickness  = 8.0e-04
+sim_thotFoil = 0.0
+sim_teleRDecayFoil = 16.0e-04
+sim_teleZDecayFoil = 2.0e-04
+
+# Foil material defaults set for Aluminum at room temperature:
+sim_rhoFoil  = 2.7
+sim_teleFoil = 11604550.0
+sim_tionFoil = 11604.55
+sim_tradFoil = 1.0
+
+# Vacuum material defaults set for very low density Aluminum
+sim_rhoVacu  = 1.0e-08
+sim_teleVacu = 11604.55
+sim_tionVacu = 11604.55
+sim_tradVacu = 1.0
+
+
+############################
+#                          #
+#     TIME PARAMETERS      #
+#                          #
+############################
+tstep_change_factor = 1.1
+cfl            	    = 0.5
+dt_diff_factor 	    = 1.0e+100 # Disable diffusion dt
+rt_dtFactor    	    = 0.02
+hx_dtFactor    	    = 1.0e+100
+tmax           	    = 3.0e-09
+dtmin          	    = 1.0e-16
+dtinit         	    = 1.0e-15
+dtmax          	    = 3.0e-09
+nend           	    = 10000
+
+
+###########################
+#                         #
+#     MESH PARAMETERS     #
+#                         #
+###########################
+geometry = "cartesian"
+enableMaskedGcFill = .false.
+
+# Domain size:
+xmin = 0.0
+xmax = 32.0e-04
+ymin = -32.0e-04
+ymax = 32.0e-04
+
+# Total number of blocks:
+nblockx = 1
+nblocky = 2
+
+lrefine_max      = 4
+lrefine_min      = 1
+lrefine_min_init = 3
+refine_var_1 = "dens"
+refine_var_2 = "tele"
+
+
+############################
+#                          #
+#     OTHER PARAMETERS     #
+#                          #
+############################
+
+# Activate ion/electron equilibration:
+useHeatexchange = .false.

@@ -1,0 +1,20 @@
+Installation:
+-------------
+
+Place the contents of the oscripts subdirectory in your object directory in order to run them.
+The contents of the dscripts subdirectory must be placed in the dumps subdirectory of your
+object directory. Both of these procedures is required in order to run the scripts properly.
+
+Contents:
+---------
+
+arun.pl       - Perl script to examine source energy and source density parameter space (1D)
+crun.pl       - Perl script to do convergence runs (1D)
+idlrun        - IDL routine to dump density, pressure, and velocity data (1D)
+idlrunlast    - IDL routine to dump the last specified density, pressure, and velocity data (1D)
+p1dlast.pro   - IDL routine to dump the last specified pressure data (1D) 
+p1d.pro       - IDL routine to dump pressure data (1D)
+rho1dlast.pro - IDL routine to dump the last specified density data (1D)
+rho1d.pro     - IDL routine to dump density data (1D)
+u1dlast.pro   - IDL routine to dump the last specified velocity data (1D)
+u1d.pro       - IDL routine to dump velocity data (1D)

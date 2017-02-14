@@ -1,0 +1,127 @@
+# Runtime parameters for the proton imaging validation 1 test.
+
+basenm           = "PIval1_"
+useProtonImaging = .true.
+
+##########################
+#  PARTICLES PARAMETERS  #
+##########################
+
+keepLostParticles  = .false.
+
+###############################
+#  PROTON IMAGING PARAMETERS  #
+###############################
+
+pi_maxProtonCount            = 10000
+pi_printBeams                = .true.
+pi_printMain                 = .true.
+pi_printDetectors            = .true.
+pi_printProtons              = .false.
+pi_cellStepTolerance         = 1.0e-12
+pi_cellWallThicknessFactor   = 1.0e-12
+pi_ignoreElectricalField     = .true.        # default true
+pi_recordOffscreenProtons    = .true.        # default false
+pi_screenProtonBucketSize    = 10000
+pi_detectorFileNameTimeStamp = .false.       # do not add time stamp to detector file name
+pi_useParabolicApproximation = .true.
+pi_RungeKuttaMethod          = "CashKarp45"  # is default, others -> BogShamp23,Fehlberg34
+pi_recalculateCellData       = .false.
+pi_opaqueBoundaries          = .false.
+pi_screenProtonDiagnostics   = .false.
+
+pi_numberOfDetectors = 1
+
+pi_detectorCenterX_1           = 0.5               # irrelevant (detector aligned wrt beam)
+pi_detectorCenterY_1           = 1.000000000001    # irrelevant (detector aligned wrt beam)
+pi_detectorCenterZ_1           = 0.5               # irrelevant (detector aligned wrt beam)
+pi_detectorNormalX_1           = 0.0               # irrelevant (detector aligned wrt beam)
+pi_detectorNormalY_1           = 1.0               # irrelevant (detector aligned wrt beam)
+pi_detectorNormalZ_1           = 0.0               # irrelevant (detector aligned wrt beam)
+pi_detectorSideLength_1        = 3.0               # covers all domain
+pi_detectorSideTiltingAngle_1  = 0.0
+pi_detectorSideTiltingAxis_1   = "z"
+pi_detectorAlignWRTbeamNr_1    = 1                 # place detector along beam 1 path
+pi_detectorDist2BeamCapsule_1  = 2.000000000001    # place detector very close behind domain in XZ plane
+
+pi_numberOfBeams = 1
+
+pi_beamCapsuleX_1              = 1.5               # lens X coordinate
+pi_beamCapsuleY_1              = -1.0              # lens Y coordinate
+pi_beamCapsuleZ_1              = 1.5               # lens Z coordinate
+pi_beamCapsuleRadius_1         = 0.5               # radius of beam capsule sphere
+pi_beamCapsuleGrainLevel_1     = 0                 # enforce statistical capsule
+pi_beamTargetX_1               = 1.5               # target X coordinate (only directional info)
+pi_beamTargetY_1               = 2.0               # target Y coordinate (only directional info)
+pi_beamTargetZ_1               = 1.5               # target Z coordinate (only directional info)
+pi_beamTargetRadius_1          = 0.5               # radius of target area (enforce cylindrical beam)
+pi_beamApertureAngle_1         = 0.0               # conical aperture angle (irrelevant here)
+pi_beamProtonEnergy_1          = 30.0              # proton energy (in MeV)
+pi_beamTime2Launch_1           = 0.0               # for the test, do it immediately
+pi_beamDetector_1              = 1                 # target detector screen number
+pi_beamNumberOfProtons_1       = 10000             # number of protons to be fired from beam (circle)
+pi_beamNoBoundaryCondition_1   = .true.            # ignore domain boundary condition ?
+
+##########################
+# SIMMULATION PARAMETERS #
+##########################
+
+sim_xCenter                = 1.5
+sim_zCenter                = 1.5
+sim_clockwiseB             = .false.     # i.e. a radially outward force
+sim_magneticFluxDensity    = 0           # zero Gauss, proton beam is not deflected
+sim_printBlockVariables    = .false.
+
+#######################
+#  HYDRO PARAMETERS   #
+#######################
+#
+# No HYDRO parameters needed! HYDRO not included in setup!
+#
+#######################
+#    EOS PARAMETERS   #
+#######################
+#
+# No EOS parameters needed! EOS not included in setup!
+#
+#########################
+#   OUTPUT PARAMETERS   #
+#########################
+#
+# No IO parameters needed! IO is included in setup, but no IO is performed!
+#
+#######################
+#   TIME PARAMETERS   #
+#######################
+tmax           = 1.0e-08
+dtmin          = 1.0e-15  # irrelevant -> no Hydro
+dtinit         = 1.0e-14  # irrelevant -> no Hydro
+dtmax          = 1.0e-11  # irrelevant -> no Hydro
+nend           = 1        # irrelevant -> no Hydro
+
+#######################
+#   MESH PARAMETERS   #
+#######################
+
+geometry = cartesian
+
+xmin = 0.0
+xmax = 3.0
+ymin = 0.0
+ymax = 1.0
+zmin = 0.0
+zmax = 3.0
+
+xl_boundary_type  = "outflow"
+xr_boundary_type  = "outflow"
+yl_boundary_type  = "outflow"
+yr_boundary_type  = "outflow"
+zl_boundary_type  = "outflow"
+zr_boundary_type  = "outflow"
+
+lrefine_min = 3
+lrefine_max = 3
+
+Nblockx = 3         # Number of top-level blocks for x direction
+Nblocky = 1         # Number of top-level blocks for y direction
+Nblockz = 3         # Number of top-level blocks for y direction

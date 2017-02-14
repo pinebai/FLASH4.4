@@ -1,0 +1,418 @@
+Below are the translations between FLASH2 and FLASH3 routines and
+constant names. The routines and parameters listed here are not a complete list of
+the a unit's API, just a reference for some of the more name changes. 
+The names are also not one for one substitutes! 
+For example a function in FLASH2 like dbaseBlockCoord has become a
+subroutine Grid_getBlkCenterCoords in FLASH3.  The arguments are also
+often slightly different so one should check the FLASH3 documentation
+to verify all the correct arguments are passed.  Finally, some of the
+implementation may not be exactly the same in the two corresponding
+functions.  The list below gives a good starting point for comparison.
+
+
+FLASH 2					FLASH 3
+
+******************************************************************************
+***DRIVER
+Routine Name Changes
+evolve					Driver_evolveFlash
+abort_flash				Driver_abortFlash, Driver_abortFlashC
+end_flash				Driver_finalizeFlash
+init_flash				Driver_initFlash
+					Driver_verifyInitDt
+
+					Driver_computeDt
+
+convert_var_prim_to_cons                (gr_primitiveToConserve or flash_convert_cc_hook)
+convert_var_cons_to_prim                (gr_conserveToPrimitive or flash_unconvert_cc_hook)
+                                        -- There should be no need to call these directly.
+                                           Conversion for AMR interpolation is handled
+                                           transparently within the Grid unit, in particular
+                                           inside Grid_fillGuardCells, based on runtime
+                                           parameters convertToConsvdForMeshCalls and
+                                           convertToConsvdInMeshInterp (see under Grid unit)
+
+
+In F3 Driver stores some values that were stored in the dbase in F2
+					Driver_getSimTime
+					Driver_getDt
+					Driver_getNStep
+					Driver_getElapsedWCTime
+
+					
+Config Parameter Name Changes
+=============================
+dtini, dt_init                          dtinit
+reason: consistency, now all dt parameters are dtmax, dtmin, dtinit
+
+
+
+******************************************************************************
+***DBASE - MESH - GRID unit
+dBaseLocalBlockCount			Grid_getLocalNumBlocks
+dBaseNodeType				Grid_getListOfBlocks !pass arg to find nodetype
+                                            FLASH2 type    |  FLASH3 argument
+					    ---------------------------------
+                                             1                LEAF
+					     2                PARENT 
+dBaseRefinementLevel
+dBaseKeyNumber				No longer needed - get index directly from Flash.h
+dBaseVarName				get directly from Flash.h
+dBaseFluxName				get directly from Flash.h
+dBaseGetCellVolume			Grid_getCellVolume
+dBaseGetDataPtrSingleBlock		Grid_getBlkPtr
+dBaseReleaseDataPtrSingleBlock		Grid_releaseBlkPtr
+dBasePutData				Grid_putPointData/_putRowData/_putPlaneData/_putBlockData
+
+In F3 there are accessor functions for values that were stored in the dbase
+Others are #defined constants in Flash.h
+dBasePropertyInteger('MyPE')		Driver_getMyPE(MyPE)
+dBasePropertyInteger('MasterProcessor')	in constants.h as MASTER_PE
+dBasePropertyInteger			not needed: in Flash.h
+dBasePropertyReal			not needed: in Flash.h
+					Grid_getMyPE
+					Grid_getNumProcs
+					Grid_getLocalNumProcs
+					Grid_getBlkIndexLimits
+
+
+In F3 we can use non-fixed-blocksizes, so you need to be careful about assuming
+NXB being constant across blocks.  Within each block, you can calculate as such:
+    call Grid_getBlkIndexLimits(blockId,blkLimits,blkLimitsGC)
+    NXB = blkLimits(HIGH,IAXIS) - blkLimits(LOW,IAXIS) + 1
+    NYB = blkLimits(HIGH,JAXIS) - blkLimits(LOW,JAXIS) + 1
+But note that you probably want to call these N?B something like sizeX to avoid confusion
+with anything that might still exist in Flash.h
+
+For Guardcells, ideally you should calculate a different value for each direction,
+which is constant by block
+    IGUARD = blkLimitsGC(LOW,IAXIS) - blkLimits(LOW,IAXIS)
+    JGUARD = blkLimitsGC(LOW,JAXIS) - blkLimits(LOW,JAXIS)
+
+Similarly, the maximum length of a vector in each coordinate direction used to be determined
+like this, where k2d =0 if it is a one-dimensional problem:
+    jHi_gc = NYB + 2*NGUARD * k2d
+Now, calculate it simply as shown below, since blockExtent is zero if the dimension is not 
+relevant
+    jHi_gc = blkLimitsGC(HIGH,JAXIS)
+
+
+dBaseBlockSize				Grid_getBlkPhysicalSize
+dBaseBlockCoord				Grid_getBlkCenterCoords
+dBaseNeighborBlocklist	                Grid_getBlkBC
+dBaseNeighborType			Grid_getBlkBC (see constants.h to see definitions of boundaries)
+					  Flash2 values  | FLASH3  
+					  --------------------------
+					  <= -20         | .NOT. NOT_BOUNDARY
+	                                  nbrs(1)        | nbrs(LOW,IAXIS)
+	                                  nbrs(2)        | nbrs(HIGH,IAXIS)
+	                                  nbrs(3)        | nbrs(LOW,JAXIS)
+	                                  nbrs(4)        | nbrs(HIGH,JAXIS)
+	                                  nbrs(5)        | nbrs(LOW,KAXIS)
+	                                  nbrs(6)        | nbrs(HIGH,KAXIS)
+dbaseNeighborBlockProcList		Grid_getBlkNeighbors  (only paramesh
+dBaseGetCoords				Grid_getCellCoords  OR (if variable=znl,zn,znr)
+					Grid_getDeltas      (if variable=dz)
+dBaseRefinementLevel			Grid_getListOfBlocks (with optional argument and REFINEMENT)
+
+NOTE:  Previous arguments to dBaseGetCoords are translated thus:
+    xCoord,yCoord,zCoord        	IAXIS,JAXIS,KAXIS 
+    zn (zone center)			CENTER
+    znl					LEFT_EDGE
+    znr                                 RIGHT_EDGE
+
+
+!these routines were very specific to paramesh's interaction with hydro so we have made
+!them internal to the Hydro unit					
+dBaseGetBoundaryFluxes			hy_getTemporaryData 
+dBasePutBoundaryFluxes			hy_putTemporaryData
+
+
+!refinement done a little differently, look at Grid_markRefineDerefine, 
+					Grid_markBlkRefine and Grid_markBlkDerefine
+
+mesh_mark_grid_refinement		Grid_markRefineDerefine Grid_markBlkRefine
+mesh_refine_derefine			Grid_markRefineDerefine Grid_markBlkDerefine
+mark_grid_refinement			Grid_markRefineDerefine
+ref_marking,amr_test_refinement		gr_markRefineDerefine
+mesh_guardcell				Grid_fillGuardcells				
+
+NOTE: 
+
+init_mesh				Grid_init and Grid_initMesh
+update_grid_refinement			Grid_updateRefinement
+mesh_flux_conserve			Grid_conserveFluxes
+
+					Internal Subroutines - user shouldn't touch
+divide_domain				gr_createDomain !plus more
+create_block				gr_createBlock
+find_neighbors				gr_searchNeighbors
+
+
+Config Parameter Name Changes    
+=============================
+refine_cutoff                           refine_cutoff_1, refine_cutoff_2, ..., refine_cutoff_4
+derefine_cutoff                         derefine_cutoff_1, derefine_cutoff_2, ..., derefine_cutoff_4
+refine_filter                           refine_filter_1, refine_filter_2, ..., refine_filter_4
+msgbuffer [TRUE]			msgbuf [INTEGER] [1]
+        Buffer small messages		        Valid Values: Unconstrained
+						triggers consolication of MPI messages. 1 indicates to "consolidate"
+						Paramesh2 specific, should always stay at 1
+ 
+conserved_var                           convertToConsvdForMeshCalls    (old logic, like conserved_var), or
+                                        convertToConsvdInMeshInterp
+
+
+******************************************************************************
+***EOS
+init_eos				Eos_init
+eos_types				look in Eos.h for definitions
+eos, eos1d				Eos
+eos3d					Eos_wrapped
+
+
+NOTE:  in FLASH2, the default mode for Eos was EOS_REMODE -- this is replaced
+   in FLASH3 by mode MODE_DENS_EI.  See description in routine Eos_wrapped
+   The eos mode is now a runtime parameter which is defined in the Grid unit,
+   however, all units are free to use different modes if they need to.					
+
+Config Parameter Name Changes    
+=============================
+eos_mode [INTEGER]			eosMode [STRING],
+                 			eosModeInit [STRING]   (during Grid initialization only)
+                                        (These are meant to let the *Grid* unit know how to call
+                                         Eos[_wrapped]; other code units, esp. physics units, are
+                                         not required to use them.)
+******************************************************************************
+***HYDRO
+tstep_hydro				Hydro_computeDt
+init_hydro				Hydro_init
+hydro					Hydro
+shock_detect				Hydro_detectShock
+
+					Internal Functions - user shouldn't touch
+hydro_sweep				hy_sweep
+hydro_sweep				hy_block - additional function in F3
+hydro_1d				hydro_1d
+update_soln				hy_updateSoln
+					
+
+
+******************************************************************************
+***IO Unit
+
+Routine Name Changes
+wr_integrals				IO_writeIntegralQuantities
+checkpoint_wr				IO_writeCheckpoint
+checkpoint_re				IO_readCheckpoint
+plotfile				IO_writePlotfile
+output_initial				IO_outputInitial
+output					IO_output
+particleplot				IO_writeParticles
+
+user_var				!Will be implemented in next release, use
+					Grid_computeUserVars
+
+Config Parameter Name Changes	 
+trstrt		 			checkpointFileIntervalTime
+nrstrt					checkpointFileIntervalStep
+cpNumber				checkpointFileNumber
+		 
+tplot					plotFileIntervalTime
+nplot					plotFileIntervalStep
+ptNumber				plotFileNumber
+
+
+******************************************************************************
+***PHYSICAL CONSTANTS
+use physical_constants			#include "PhysicalConstants.h"
+init_constants_db			PhysicalConstants_init
+get_constant_from_db			PhysicalConstants_get
+list_measurement_units_db		PhysicalConstants_listUnits
+list_constants_db			PhysicalConstants_list
+destroy_constants_db			not used 
+					Internal subroutines.  User should not call
+add_constant_to_db			pc_addConstant			
+add_unit_to_db				pc_addUnit
+
+
+
+
+******************************************************************************
+***LOGFILE
+stamp_logfile				Logfile_stamp, Logfile_stampMessage
+break_logfile				Logfile_break
+create_logfile				Logfile_create
+write_perfmon_summary			Logfile_writeSummary, Timers_getSummary
+
+
+
+
+******************************************************************************
+***MULTI FLUIDS/SPECIES
+init_mfluid_db				Multispecies_init
+add_fluid_to_db				not used.  Use Multispecies_setProperty
+get_fluid_property			Multispecies_getProperty
+set_fluid_property			Multispecies_setProperty
+get_mfluid_property			Multispecies_getProperty
+n_fluids				not used - NSPECIES is #defined in Flash.h
+find_fluid_index (f, i)			not used - get index directly from Flash.h
+					(example #define AIR_SPEC 12)   
+
+query_mfluid_sum			Multispecies_getSum
+query_mfluid_suminv			Multispecies_getSumInv
+query_mfluid_sumsqr			Multispecies_getSumSqr
+query_mfluid_sumfrc			Multispecies_getSumFrac
+					Multispecies_getAvg !new in F3
+NOTE that the order of arguments has changed -- the weights are now
+  optional and at the end in F3
+list_mfluid_db				Multispecies_list
+init_mat				Simulation_initSpecies
+
+In F2, 
+!     Name                    F2              type           F3 Multispecies_setProperty integer
+!     ----                    ------          ----           -------------------------
+!     "name"                  name            string        Name is given by index in Flash.h
+!     "short name"            chem. symbol    string        no equivalent
+!     "num total"             A               real          A
+!     "num positive"          Z               real          Z
+!     "num neutral"           N               real          N
+!     "num negative"          E               real          E
+!     "binding energy"        Eb              real          EB
+!     "adiabatic index"       gamma           real          GAMMA
+
+
+
+
+
+******************************************************************************
+***RUNTIME PARAMETERS
+get_parm_from_context			RuntimeParameters_get
+use runtime_parameters			#include "RuntimeParameters.h"
+global_parm_context			not used (only one context now)
+add_parm_to_context			RuntimeParameters_add
+create_parm_context			RuntimeParameters_init !plus more in F3
+set_parm_in_context			RuntimeParameters_set
+get_parm_type_from_context		no equiv.  use RuntimeParameters_get
+get_n_*_parms_in_context		RuntimeParameters_getNum
+get_num_parms_in_context		RuntimeParameters_getNum
+
+					!internal function user shouldn't touch
+bcast_parm_context			rp_bcastParameters
+
+
+
+******************************************************************************
+***SETUPS/SIMULATIONS
+init_block				Simulation_initBlock and Simulation_init
+init_mat				Simulation_initSpecies
+
+
+
+
+******************************************************************************
+***TIMERS/PROFILER
+timer_start				Timers_start
+timer_stop				Timers_stop
+
+					
+
+
+
+******************************************************************************
+***Dbase defined quantities/Flash.h defined quantities
+The Flash.h header file is a key file in FLASH3 which 
+replaces much of the functionality of the dBase in FLASH2.
+The Flash.h header file is well commented, please see it for more
+details.
+
+INUCBEGIN				SPECIES_BEGIN
+INUCFLX_BEGIN				FLUX_SPECIES_BEGIN
+ionmax					NSPECIES
+
+
+
+******************************************************************************
+***MISC
+paramFile.txt				setup_params
+
+
+
+
+
+
+
+
+					
+
+
+
+
+
+
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!! NOT IN PREALPHA RELEASE !!!!!!!!!!!!!!!!!!!!!!!!!!
+					
+******************************************************************************
+***DIFFUSE
+					Diffuse_init !initialized Diffuse module in F3
+tstep_diffuse				Diffuse_timestep
+diffuse					no equiv				
+species_explicit			Diffuse_species			
+therm_explicit				Diffuse_therm
+visc_explict				Diffuse_visc
+					
+
+Diffuse Config	 diffuse_therm		useDiffuseTherm   	   
+		 diffuse_species	useDiffuseSpecies
+		 diffuse_visc		useDiffuseVisc
+
+
+******************************************************************************
+***PARTICLES
+
+ParticleData                            Particles_data
+InitParticles                           Particles_init
+InitParticlePositions                   Particles_initPositions
+ParticleFilter                          -- not yet implemented in FLASH3 --
+ParticleTimestep                        Particles_computeDt
+ParticleUpdateGravity                   -- not used in Flash3, only for FLY --
+UpdateParticleAttributes	        Particles_updateAttributes
+MapMeshToParticles			pt_mapMeshToParticles
+
+
+
+
+IO/IOParticles Config
+ptplot					particleFileIntervalTime
+nppart					particleFileIntervalStep
+pptNumber				particleFileNumber
+
+
+removed ppstruct - particle attributes are now all real values
+
+
+*************************************************************************************
+***Gravity
+F2					F3
+
+GravAccelAllBlocks			Gravity_accelListOfBlocks
+GravAccelOneBlock			Gravity_accelListOfBlocks
+
+GravPotentialAllBlocks			Gravity_potentialListOfBlocks
+GravPotentialOneBlock			Gravity_potentialListOfBlocks
+
+GravAccelOneRow				Gravity_accelOneRow
+
+InitGravity				Gravity_init
+
+GravityTimestep				Gravity_computeDt	
+
+				
+
+Help me with these please!????
+	
+GravAccelOneLevel
+GravAccelOneZone
+GravPotentialOneLevel

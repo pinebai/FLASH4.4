@@ -1,0 +1,3 @@
+This test setup tests periodic boundaries in all directions by
+the Jeans test similar to the one used for other Poisson
+solvers (harmonic wave in a density field).

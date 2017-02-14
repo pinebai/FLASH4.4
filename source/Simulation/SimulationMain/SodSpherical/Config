@@ -1,0 +1,46 @@
+# Configuration file for a sod-like problem in spherical coordinates.  The idea
+# is that we want to propagate a planar shock in spherical coordinates and see
+# if it stays planar.  This is effectively a test of the fictitous forces.
+
+
+REQUIRES Driver
+REQUIRES physics/Hydro
+REQUIRES physics/Eos/EosMain/Gamma
+REQUIRES PhysicalConstants
+
+## If we were specifying additional source directories for curvilinear support
+## directly, rather than relying on setup and various Config files to do the right thing,
+## We would use the following:
+
+##REQUIRES Grid/GridMain/paramesh/Paramesh2
+##REQUIRES Grid/GridMain/paramesh/Paramesh2/monotonic
+
+###REQUIRES Grid/GridMain/paramesh/Paramesh3
+###REQUIRES Grid/GridMain/paramesh/interpolation/Paramesh3/prolong
+###REQUIRES Grid/GridMain/paramesh/interpolation/prolong
+
+# The following isn't really a data file, but this will get it copied.
+# setup should then use it to generate amr_runtime_parameters.
+# This will be used in case we set up Paramesh 4.0 in LIBRARY mode or use Paramesh4dev.
+DATAFILES amr_runtime_parameters.tpl
+
+D               sim_rhoLeft    initial density left of the interface
+D               sim_rhoRight   initial density right of interface
+D               sim_pLeft      initial pressure on the left side of the interface
+D               sim_pRight     initial pressure on the right side of the interface
+D		sim_shockpos      distance of the shock plane from y-axis (for sim_idir=1) or x-axis (for sim_idir=2)
+
+D sim_idir   the direction along which to propagate the shock.  sim_idir = 1 is 
+D &      horizontal.  sim_idir = 2 is vertical. 
+PARAMETER sim_idir      INTEGER 1 [1, 2]
+ 
+PARAMETER sim_rhoLeft	REAL    1.
+PARAMETER sim_rhoRight	REAL    0.125
+
+PARAMETER sim_pLeft	REAL    1.
+PARAMETER sim_pRight	REAL    0.1
+
+PARAMETER sim_shockpos	REAL	0.4
+
+D cfl_variable Local CFL factor
+VARIABLE cfl

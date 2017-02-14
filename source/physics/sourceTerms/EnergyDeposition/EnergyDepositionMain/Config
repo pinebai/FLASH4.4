@@ -1,0 +1,18 @@
+#
+D useEnergyDeposition	 Use Energy deposition module
+#
+####################################################################
+
+
+
+DEFAULT Laser
+
+REQUIRES physics/sourceTerms/EnergyDeposition/localAPI
+
+PARAMETER useEnergyDeposition    BOOLEAN  TRUE
+
+
+
+
+
+

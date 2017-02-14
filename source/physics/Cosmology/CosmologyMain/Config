@@ -1,0 +1,38 @@
+#  Configuration file for the Cosmology unit.
+
+#  Available sub-modules:
+
+#    matter+lambda         FLRW cosmology containing matter and cosmological
+#                            constant
+
+KERNEL MatterLambdaKernel
+
+REQUIRES flashUtilities/interpolation/oneDim
+
+PPDEFINE COSMOLOGY
+
+#  Parameters:
+
+D  useCosmology		Are we using cosmological expansion?
+D  OmegaMatter          Ratio of total mass density to closure density at the
+D  &                    present epoch
+D  OmegaBaryon          Ratio of baryonic mass density to closure density at the
+D  &                    present epoch (must be <= OmegaMatter!)
+D  CosmologicalConstant Ratio of the mass density equivalent in the
+D  &                    cosmological constant (or dark energy) to the closure
+D  &                    density at the present epoch
+D  OmegaRadiation       Ratio of total radiation density to closure density at
+D  &                    the present epoch
+D  HubbleConstant       Value of the Hubble constant (\dot{a}/a) in sec^-1 at
+D  &                    the present epoch
+D  MaxScaleChange       Maximum permitted fractional change in the scale
+D  &                    factor during each timestep
+
+PARAMETER useCosmology	       BOOLEAN TRUE
+PARAMETER OmegaMatter          REAL 0.3
+PARAMETER OmegaBaryon          REAL 0.05
+PARAMETER CosmologicalConstant REAL 0.7
+PARAMETER OmegaRadiation       REAL 5.E-5
+PARAMETER HubbleConstant       REAL 2.1065E-18
+PARAMETER MaxScaleChange       REAL HUGE
+PARAMETER computeRedshiftOnly  BOOLEAN FALSE

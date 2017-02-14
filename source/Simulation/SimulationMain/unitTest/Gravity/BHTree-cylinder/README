@@ -1,0 +1,17 @@
+This is how to setup a basic unit test (Selfgravitating isothermal 
+cylinder in hydrostatic equilibrium (Ostriker, J.1964,  ApJ. 140, 1056))
+
+1. Compile flash, e.g.:
+
+cd <FLASH_DIRECTORY>
+./setup unitTest/BHTree-cylinder -auto -3d -maxblocks=1000 -nxb=8 -nyb=8 -nzb=8
+cd object
+make
+
+2. Copy the executable (flash4), and the parameter file (flash.par)
+into a model directory and run the simulation, e.g.:
+
+mpiexec -n 8 ./flash4
+
+3. Inspect the field array perr in the created hdf file for the tree gravity
+solver error.

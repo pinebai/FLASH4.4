@@ -1,0 +1,11 @@
+# Configuration for midpoint integration of passive particles
+# [source/Particles/timeIntegration/Midpoint]
+
+D pos2PrevX  x-position at the previous time minus 1; an intermediate result and should not be used
+D pos2PrevY  y-position at the previous time minus 1; an intermediate result and should not be used
+D pos2PrevZ  z-position at the previous time minus 1; an intermediate result and should not be used
+
+PARTICLEPROP pos2PrevX REAL           # two previous x-coordinate
+PARTICLEPROP pos2PrevY REAL           # two previous y-coordinate
+PARTICLEPROP pos2PrevZ REAL           # two previous z-coordinate
+

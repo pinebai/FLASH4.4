@@ -1,0 +1,60 @@
+Solving for analytical solution for wave number = 2 in x, 
+wave number = 1 in y and wave number = 0 in z.
+All cosines functions.
+
+Notes:
+Work using either of these options in unitTest/PFFT_PoissonFD/Config 
+REQUIRES Grid/GridSolvers/Pfft/SecondOrder_FD3p
+REQUIRES Grid/GridSolvers/Pfft/DirectSolver
+
+
+example setup:
+./setup unitTest/PFFT_PoissonFD -auto -3d +nofbs -debug -objdir=pfft3d
+
+
+example flash.par:
+iProcs = 1
+jProcs = 2
+kProcs = 2
+
+iGridSize=64
+jGridSize=64
+kGridSize=64
+
+xl_boundary_type = "periodic"
+xr_boundary_type = "periodic"
+yl_boundary_type = "periodic"
+yr_boundary_type = "periodic"
+zl_boundary_type = "periodic"
+zr_boundary_type = "periodic"
+
+results:
+Mean Analytical, Numerical Sol=  0.11180835E-15  0.56317527E-16
+ Result with Linf error higher than 1e-4
+ ||Phi - PhiAnalytical||inf =  0.27185068E-02
+ ||Phi - PhiAnalytical||2   =  0.26708543E-05
+
+
+
+
+TESTS RUN
+---------
+
+PARAMESH:
+    setupName: unitTest/PFFT_PoissonFD
+    setupOptions: -auto +serialIO +pm3 +hdf5 -3d -nxb=8 -nyb=8 -nzb=8 -maxblocks=2500 -gridinterpolation=native -debug
+    numProcs: 2
+    parfiles: <pathToSimulations>/unitTest/PFFT_PoissonFD/flash_pm_3d.par
+
+UG:
+    setupName: unitTest/PFFT_PoissonFD
+    setupOptions: -auto -3d +nofbs -debug
+    numProcs: 4
+    parfiles: <pathToSimulations>/unitTest/PFFT_PoissonFD/flash_ug_3d_4P.par
+
+
+    setupName: unitTest/PFFT_PoissonFD
+    setupOptions: -auto -3d +nofbs -debug --without-unit=Grid/GridSolvers/Pfft/DirectSolver 
+                  --with-unit=Grid/GridSolvers/Pfft/SecondOrder_FD3p
+    numProcs: 4
+    parfiles: <pathToSimulations>/unitTest/PFFT_PoissonFD/flash_ug_3d_4P.par

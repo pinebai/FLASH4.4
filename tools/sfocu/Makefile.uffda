@@ -1,0 +1,30 @@
+CCOMP = icc
+CFLAGS = -c -O2 -Wall -g
+LFLAGS = -o
+
+#Available defines: NO_HDF4, NO_HDF5, NEED_MPI
+
+CDEFINES = -DNO_HDF4 -DNEED_MPI
+CFLAGS += -I/usr/local/hdf5-1.6.2-icc/include -I/usr/local/mpich-ifc/include \
+	-I /home/sheeler/src/parallel-netcdf-0.9.4/src/lib
+
+#-I/home/sheeler/include
+
+LIBS = -Bstatic -lhdf5 -lpnetcdf -Bdynamic \
+	-L/home/sheeler/src/parallel-netcdf-0.9.4/src/lib \
+	-lz -ljpeg -lm -L/usr/local/hdf5-1.6.2-icc/lib -L/usr/local/mpich-ifc/lib -lmpich
+        
+#-L/home/sheeler/lib -lpnetcdf 
+
+EXENAME = sfocu
+OBJS = main.o sfocu.o test_reader.o flash_reader.o namecmp.o flash_reader_hdf5.o flash_reader_ncdf.o flash_reader_chombo.o sameblock.o options.o
+
+.SUFFIXES: .c .o
+.c.o :
+	$(CCOMP) $(CFLAGS) $(CDEFINES) $*.c
+
+default: $(OBJS)
+	$(CCOMP) $(OBJS) $(LIBS) $(LFLAGS) $(EXENAME)
+
+clean:
+	rm $(OBJS) $(EXENAME)

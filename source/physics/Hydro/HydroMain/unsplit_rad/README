@@ -1,0 +1,24 @@
+This directory contains a variant of the "unsplit" Hydro solver.
+
+This variant implements additional terms in the FLD Rad-Hydro equations to
+handle streaming and transition-to-streaming regimes better (including
+in particular effects of radiation pressure) than the regular version
+of unsplit Hydro used for HEDP simulations and similar applications.
+
+We call this RADFLAH - Radiation Flux-Limiter Aware Hydro.
+Setup with shortcut +uhd3tR instead of +uhd3t .
+This has had limited testing, mostly in 1D spherical geometry.
+
+The current implementation assumes that the fluid is described by two
+temperatures (matter+radiation), and thus the "electron" componenent
+really represents "matter"; we hope to remove reliance on this
+assumption in the future. With this assumption in place, this code has
+to be used together with a "MatRad3" implementation of multiTemp Eos -
+see also physics/Eos/Eos/EosMain/multiTemp/MatRad3/README.
+
+The current implementation assumes there is only one radiation group
+(grey opacities). Again, we hope to remedy this in the future.
+
+Currently there is no equivalent variant for MHD - this should be
+straightforward to implement, and we plan to provide this in the
+future (probably under MHD_StaggeredMesh in this directory).

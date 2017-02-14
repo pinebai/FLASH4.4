@@ -1,0 +1,110 @@
+!!****if* source/Particles/ParticlesMain/EulerPassive/Particles_advance
+!!
+!! NAME
+!!
+!!  Particles_advance
+!!
+!! SYNOPSIS
+!!
+!!  Particles_advance(real(in) :: dtOld,
+!!                    real(in) :: dtNew)
+!!
+!! DESCRIPTION
+!!
+!!  Time advancement routine for the particle module.
+!!  
+!!  This version implements 1st order Euler integration in time.
+!!  SCHEMATICALLY:
+!!      x(t+1) = x(t) + dtNew * v(t)
+!!
+!! In more detail:
+!!      x(t+dtNew)  = x(t)      + dtNew * v(x(t),      t+dtNew)
+!!      v(t+dtNew)  =                     v(x(t),      t+dtNew)
+!! Note that this is different from the usual Euler forward method, which would have
+!!      x(t+dtNew)  = x(t)      + dtNew * v(x(t),      t)
+!! Also, this routine SHOULD update the velocity components updated to the most
+!! recent information for the updated location:
+!!      v(t+dtNew)  =                     v(x(t+dtNew),t+dtNew)
+!!
+!! ARGUMENTS
+!!
+!!   dtOld -- not used in this first-order scheme
+!!   dtNew -- current time increment
+!!  
+!! PARAMETERS
+!!
+!!
+!!***
+
+!===============================================================================
+
+subroutine Particles_advance (dtOld,dtNew)
+    
+  use Particles_data, ONLY: particles, pt_numLocal, pt_maxPerProc, useParticles, &
+       pt_gcMaskForAdvance, pt_gcMaskSize, pt_myPe
+  use Grid_interface, ONLY : Grid_moveParticles, Grid_fillGuardCells, &
+                             Grid_mapMeshToParticles
+  
+  implicit none
+
+#include "constants.h"  
+#include "Flash.h"
+  
+  real, INTENT(in)  :: dtOld, dtNew
+  integer       :: i,nstep, myPE
+  real          :: jumpx,jumpy,jumpz
+
+!!------------------------------------------------------------------------------
+  
+  ! Don't do anything if runtime parameter isn't set
+      if (.not.useParticles ) return
+
+
+  ! Prepare guardcell data needed for particle interpolation.
+  !
+  ! Experimentation (with the old way of advancing Grid particles)
+  ! has shown that at least 2 layers of guardcells need to be filled
+  ! with updated data for vel[xyz] and density, in order to get the
+  ! same results as for a full guardcell fill, when using native grid interpolation. - KW
+
+  call Grid_fillGuardCells(pt_myPe, CENTER, ALLDIR,&
+       maskSize=pt_gcMaskSize,mask=pt_gcMaskForAdvance)
+
+     
+  ! Map the updated gas velocity field onto the current particle positions to
+  ! obtain the updated particle velocities.
+
+  call Grid_mapMeshToParticles (particles,pt_numLocal,pt_maxPerProc,&
+                                VELX_VAR, VELX_PART_PROP, &
+                                POSX_PART_PROP, POSY_PART_PROP, POSZ_PART_PROP)
+  call Grid_mapMeshToParticles (particles,pt_numLocal,pt_maxPerProc,&
+                                VELY_VAR, VELY_PART_PROP, &
+                                POSX_PART_PROP, POSY_PART_PROP, POSZ_PART_PROP)
+  call Grid_mapMeshToParticles (particles,pt_numLocal,pt_maxPerProc,&
+                                VELZ_VAR, VELZ_PART_PROP, &
+                                POSX_PART_PROP, POSY_PART_PROP, POSZ_PART_PROP)
+
+  ! Update the particle positions.
+  do i = 1, pt_numLocal
+ 
+     jumpx = dtNew * particles(VELX_PART_PROP,i)
+     particles(POSX_PART_PROP,i) = particles(POSX_PART_PROP,i) + jumpx
+
+     jumpy = dtNew * particles(VELY_PART_PROP,i)
+     particles(POSY_PART_PROP,i) = particles(POSY_PART_PROP,i) + jumpy
+
+     jumpz = dtNew * particles(VELZ_PART_PROP,i)
+     particles(POSZ_PART_PROP,i) = particles(POSZ_PART_PROP,i) + jumpz
+
+  enddo
+     
+  
+  ! Put the particles in the appropriate blocks if they've moved off
+  call Grid_moveParticles(particles,pt_numLocal,pt_maxPerProc) 
+  
+  return
+!!------------------------------------------------------------------------------
+  
+end subroutine Particles_advance
+
+

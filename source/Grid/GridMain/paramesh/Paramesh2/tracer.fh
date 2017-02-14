@@ -1,0 +1,2 @@
+      common/tracing/pesource(2,maxblocks_tr),blkcheck(maxblocks)
+      integer pesource,blkcheck

@@ -1,0 +1,15 @@
+#	Config file for the PARAMESH v. 2 adaptive mesh-refinement library.
+
+USESETUPVARS Grid
+
+IF Grid not in ["","PM2"]
+   SETUPERROR Setup Variable 'Grid' is set to something other than 'PM2'
+ENDIF
+
+# define preprocessor variable FLASH_GRID_PARAMESH2
+PPDEFINE FLASH_GRID_PARAMESH2
+
+
+D msgbuf triggers consolication of MPI messages in PM2. 1 indicates to "consolidate".
+D & PM2 specific, should always stay at 1
+PARAMETER msgbuf INTEGER 1

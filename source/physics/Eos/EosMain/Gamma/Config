@@ -1,0 +1,10 @@
+#	Config file for the perfect-gas equation of state
+# [physics/Eos/EosMain/Gamma]
+
+# it is possible to use a variation RHD which treats internal energy differently.
+# But only the Eos_wrapped varies for the two cases.
+
+VARIABLE gamc  EOSMAP:   GAMC  # sound-speed gamma
+VARIABLE game  EOSMAPOUT:GAME  # energy gamma
+
+PPDEFINE FLASH_EOS_GAMMA

@@ -1,0 +1,8 @@
+Setup syntax for 1D:
+./setup CCSN -auto -1d +spherical -objdir ccsn1d -nxb=16 threadBlockList=False +pm4dev threadWithinBlock=False +newMpole +uhd 
+
+Setup syntax for 2D:
+./setup CCSN -auto -2d +cylindrical -nxb=16 -nyb=16 -objdir ccsn2d threadBlockList=False +pm4dev threadWithinBlock=False +newMpole +uhd 
+
+Setup syntax for 3D:
+./setup CCSN -auto -3d +cube16 -objdir ccsn3d threadBlockList=False +pm4dev threadWithinBlock=False +newMpole +uhd 

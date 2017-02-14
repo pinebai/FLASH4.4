@@ -1,0 +1,63 @@
+#	Config file for Neutrino Leakage RadTrans
+# 	This unit implements the ray-by-ray multispecies neutrino leakage
+#	scheme of O'Connor & Ott (2010, CQGra, 27, 114103).  The FLASH-specific
+#	implementation details are described in Couch & O'Connor (2013, arXiv:1310.5728).
+#	Parts of this unit are released under a different license than the
+#	usual FLASH license.  Specifically, the subroutines in rt_calcLeak.F90 and 
+#	rt_calcTau.F90 are released under the Creative Commons 
+#	attribution-noncommercial-share alike license.  Basically, if you use this
+#	unit in your work, the license requires that you cite the two articles 
+#	mentioned above.  More details may be found here:  stellarcollapse.org/codes.html.
+
+# Leakage depends on pre-bounce parametric deleptonization (Liebendorfer 2005)
+REQUIRES physics/Eos/EosNuclear
+
+# This unit supersedes the local heating/cooling
+CONFLICTS physics/sourceTerms/Heat/HeatMain/Neutrino
+
+D 	  leak_radMax	Maximum radius of the leakage rays
+PARAMETER leak_radMax	REAL 0.0
+D	  leak_thtMax	Maximum latitudinal angle of the leakage rays, measured from the +y axis, in radians/pi
+PARAMETER leak_thtMax	REAL 0.0
+D	  leak_phiMax	Maximum longitudinal angle of the leakage rays, measured from the +x axis (only 3D), in radians/pi
+PARAMETER leak_phiMax	REAL 0.0
+D	  leak_numRad	Number of radial points in the leakage rays
+PARAMETER leak_numRad	INTEGER 0
+D	  leak_numTht	Number of latitudinal points in the leakage rays
+PARAMETER leak_numTht 	INTEGER 1
+D	  leak_numPhi	Number of longitudinal points in the leakage rays
+PARAMETER leak_numPhi 	INTEGER 1
+D	  leak_radLog	Radius at which the radial spacing of the rays begins to increase logarithmically
+PARAMETER leak_radLog	REAL 0.
+D	  leak_dx	Minimum radial spacing of the rays, used up to leak_radLog
+PARAMETER leak_dx	REAL 1.
+D	  leak_doHeat	Switch whether or not to include neutrino heating in calculation
+PARAMETER leak_doHeat	BOOLEAN TRUE
+D	  leak_heatFac	Multiplicative factor in heating equation, f_heat.
+PARAMETER leak_heatFac	REAL 1.
+D	  leak_subCommSize   Size of the MPI subcommunicator for leakage communication (-1 uses meshNumProcs)
+PARAMETER leak_subCommSize   INTEGER -1
+D	  leak_reducedTime   Time, in seconds, at which the frequency of leakage computation is reduced
+PARAMETER leak_reducedTime   REAL 1.e20
+D	  leak_reducedSteps  Number of minimum time steps in between leakage calculation after leak_reducedTime
+PARAMETER leak_reducedSteps  INTEGER 1
+
+PPDEFINE FLASH_LEAKAGE
+
+USESETUPVARS threadBlockList, threadWithinBlock
+IF threadBlockList
+   PARAMETER threadLeakBlockList BOOLEAN TRUE
+ELSE
+   PARAMETER threadLeakBlockList BOOLEAN FALSE
+ENDIF
+
+IF threadWithinBlock
+   PARAMETER threadLeakWithinBlock BOOLEAN TRUE
+ELSE
+   PARAMETER threadLeakWithinBlock BOOLEAN FALSE
+ENDIF
+
+USESETUPVARS staticLeakArray
+IF staticLeakArray
+   PPDEFINE LEAK_STATIC
+ENDIF

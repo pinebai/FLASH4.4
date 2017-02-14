@@ -1,0 +1,113 @@
+  
+  Sfocu (serial flash output comparison utility)
+
+Sfocu is a serial utility which examines two FLASH checkpoint files and decides
+whether or not they are equal. The definition of equal here is that:
+
+ * The leaf-block structure matches: each leaf block must have the same
+   position and size in both datasets.
+
+ * The data arrays in the leaf blocks ('dens', 'pres'...) are identical.
+
+Thus, sfocu ignores information such as the particular numbering of the blocks,
+the timestamp, the build information an so on.
+
+Sfocu can read both HDF4 and HDF5 FLASH checkpoint files. It does not support
+f77 checkpoint files, and has not been tested with FLASH checkpoints that span
+multiple files. Although sfocu is a serial program it's able to do comparisons
+on the output of large parallel simulations.
+ 
+1. Building sfocu
+=================
+
+The process is entirely manual, although Makefiles for certain machines have
+been provided. There are a few compile-time options which you set via the
+following preprocessor definitions in the Makefile (in the CDEFINES macro):
+
+ * NO_HDF4 build without HDF4 support
+ * NO_HDF5 build without HDF5 support
+ * NEED_MPI certain parallel versions of HDF5 need to be linked with the MPI
+            library. This adds the necessary MPI_Init, MPI_Finalize calls to
+            sfocu. There is no advantage to running sfocu on more than one 
+            processor, it will only give you multiple copies of the same 
+            report.
+
+$ make -f Makefile.zingiber
+
+Sfocu has been used on irix, linux, AIX and OSF1.
+
+2. Using sfocu
+==============
+
+For a list of options available on the sfocu command line, type:
+$ ./sfocu -h
+
+However, sfocu can be invoked with no command line options but simply running
+$ ./sfocu <file1> <file2>. Sample output follows:
+
+<-- snip -->
+sfocu: comparing advect_2d_45deg_sqr_4lev_hdf_chk_0002 and advect_2d_45deg_gau_4lev_hdf_chk_0002
+
+Min Error: inf(2|a-b| / max(|a+b|, 1e-99) )
+Max Error: sup(2|a-b| / max(|a+b|, 1e-99) )
+Abs Error: sup|a-b|
+Mag Error: sup|a-b| / max(sup|a|, sup|b|, 1e-99)
+
+ 1   present in /home/nttaylor/sedov_hdf5_chk_0000-f2 but not in /home/nttaylor/sedov_hdf5_chk_0000-f3
+
+Total leaf blocks compared: 4 (all other blocks are ignored)
+-----+------------+-----------++-----------+-----------+-----------++-----------+-----------+-----------+
+Var  | Bad Blocks | Min Error ||             Max Error             ||             Abs Error             |
+-----+------------+-----------++-----------+-----------+-----------++-----------+-----------+-----------+
+     |            |           ||   Error   |     A     |     B     ||   Error   |     A     |     B     |
+-----+------------+-----------++-----------+-----------+-----------++-----------+-----------+-----------+
+temp | 4          | 0         || 1.143e-09 |  4.45e-06 |  4.45e-06 || 5.089e-15 |  4.45e-06 |  4.45e-06 |
+game | 0          | 0         || 0         |  0        |  0        || 0         |  0        |  0        |
+pres | 4          | 0         || 1.143e-09 |  370      |  370      || 4.231e-07 |  370      |  370      |
+eint | 4          | 0         || 1.143e-09 |  926      |  926      || 1.058e-06 |  926      |  926      |
+velz | 0          | 0         || 0         |  0        |  0        || 0         |  0        |  0        |
+vely | 0          | 0         || 0         |  0        |  0        || 0         |  0        |  0        |
+velx | 0          | 0         || 0         |  0        |  0        || 0         |  0        |  0        |
+dens | 0          | 0         || 0         |  0        |  0        || 0         |  0        |  0        |
+gamc | 0          | 0         || 0         |  0        |  0        || 0         |  0        |  0        |
+ener | 4          | 0         || 1.143e-09 |  926      |  926      || 1.058e-06 |  926      |  926      |
+-----+------------+-----------++-----------+-----------+-----------++-----------+-----------+-----------+
+
+-----+------------+-----------++-----------+-----------+-----------++-----------+-----------+-----------+
+Var  | Bad Blocks | Mag Error ||                  A                ||                  B                |
+-----+------------+-----------++-----------+-----------+-----------++-----------+-----------+-----------+
+     |            |           ||    Sum    |    Max    |    Min    ||    Sum    |    Max    |    Min    |
+-----+------------+-----------++-----------+-----------+-----------++-----------+-----------+-----------+
+temp | 4          | 1.143e-09 ||  1.78e-05 |  4.45e-06 |  1.2e-13  ||  1.78e-05 |  4.45e-06 |  1.2e-13  |
+game | 0          | 0         ||  5.73e+03 |  1.4      |  1.4      ||  5.73e+03 |  1.4      |  1.4      |
+pres | 4          | 1.143e-09 ||  1.48e+03 |  370      |  1e-05    ||  1.48e+03 |  370      |  1e-05    |
+eint | 4          | 1.143e-09 ||  3.7e+03  |  926      |  2.5e-05  ||  3.7e+03  |  926      |  2.5e-05  |
+velz | 0          | 0         ||  0        |  0        |  0        ||  0        |  0        |  0        |
+vely | 0          | 0         ||  0        |  0        |  0        ||  0        |  0        |  0        |
+velx | 0          | 0         ||  0        |  0        |  0        ||  0        |  0        |  0        |
+dens | 0          | 0         ||  4.1e+03  |  1        |  1        ||  4.1e+03  |  1        |  1        |
+gamc | 0          | 0         ||  5.73e+03 |  1.4      |  1.4      ||  5.73e+03 |  1.4      |  1.4      |
+ener | 4          | 1.143e-09 ||  3.7e+03  |  926      |  2.5e-05  ||  3.7e+03  |  926      |  2.5e-05  |
+-----+------------+-----------++-----------+-----------+-----------++-----------+-----------+-----------+
+FAILURE
+<-- snip -->
+
+"Bad Blocks" is the number of leaf blocks where the data was found to differ
+between datasets; four different error measures (min/max/abs/mag) are defined
+in the output above. In addition, the last six columns report the sum, maximum
+and minimum of the variables in the two files. Note that the sum is physically
+meaningless as it's not volume-weighted. Finally, the last line is so other 
+programs can parse the sfocu output easily: when the files are identical, sfocu
+prints out 'SUCCESS'.
+
+3. Remarks
+==========
+
+It's possible for sfocu to miss machine-precision variations in the data on
+certain machines because of compiler or library issues. Or possibly even 
+bugs (!). This has only been observed on one platform, where the compiler 
+produced code that ignored IEEE rules until the right flag was found. 
+
+Sfocu is intended as a replacement for focu (available in previous versions of
+FLASH) and is mainly used as part of an automated testing suite called 
+flash_test.

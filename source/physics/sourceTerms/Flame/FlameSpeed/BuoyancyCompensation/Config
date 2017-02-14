@@ -1,0 +1,33 @@
+DEFAULT CONe
+REQUIRES ../laminar
+REQUIRES ../turbulent
+
+PARAMETER fl_fsUseConstFlameSpeed    BOOLEAN  false
+PARAMETER fl_fsConstFlameSpeed       REAL     1.0
+PARAMETER fl_fsConstFlameWidth       REAL     1.0
+PARAMETER fl_fsUseTFI                BOOLEAN  false
+
+D fl_fsM   factor for buoyancy-compensating enhancement of flame speed, fs = 0.5*sqrt(Atwood*g*fl_fsM*Delta)
+PARAMETER fl_fsM                     REAL     0.06
+
+PARAMETER fl_fsQuench                BOOLEAN  true
+PARAMETER fl_fsQuenchDens0            REAL     1.0e6
+PARAMETER fl_fsQuenchDens1            REAL     1.0e7
+
+D  fl_fsGcdFlameSuppress        Suppress (set flamespeed to zero) flame per selected time and region
+D  fl_fsGcdFlameSuppressTime    Time after which to suppress in selected region
+D  fl_fsGcdFlameSuppressTheta   Extent of suppression region in degrees from south pole (-z in cart.)
+
+PARAMETER fl_fsGcdFlameSuppress        BOOLEAN  false
+PARAMETER fl_fsGcdFlameSuppressTime    REAL     1.5
+PARAMETER fl_fsGcdFlameSuppressTheta   REAL     135.0
+
+D  fl_fsBuoyCompSuppress        Suppress (turn off) Buoyancy Compensation flame speed enhancement per selected time and region
+D  fl_fsBuoyCompSuppressTime    Time after which to suppress in selected region
+D  fl_fsBuoyCompSuppressTheta   Extent of suppression region in degrees from south pole (-z in cart.)
+PARAMETER fl_fsBuoyCompSuppress        BOOLEAN  false
+PARAMETER fl_fsBuoyCompSuppressTime    REAL     1.5
+PARAMETER fl_fsBuoyCompSuppressTheta   REAL     135.0
+
+D approx_atwood only used for CO configuration, not for CONe
+PARAMETER approx_atwood     BOOLEAN      false

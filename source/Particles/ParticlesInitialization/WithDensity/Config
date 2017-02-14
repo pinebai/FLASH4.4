@@ -1,0 +1,22 @@
+# Submodule for passive tracer particles to distribute the particles initially at
+# random positions using the gas density as the distribution function.
+# Now has two alternate implementations
+
+DEFAULT RejectionMethod   # What existed in Flash2
+EXCLUSIVE CellMassBins RejectionMethod
+
+# Define a preprocessor symbol so code can check whether one of these implementations is compiled in.
+PPDEFINE PART_INITMETHOD_WITHDENSITY
+
+# Runtime Parameters common to the implementations:
+
+D pt_numParticlesWanted     Number of tracer particles to use (not guaranteed to get exactly this many)
+D pt_pRand                  A number which affects the initial seed for the random number generator.
+D &                         We set the default value to 1 to make it more likely that the initial
+D &                         seed is within the integer range given by the IBM XL documentation which
+D &                         is "A valid seed must be a whole number between 1.0 and 2147483647.0
+D &                         (2.0**31-1)", as long as the number of MPI tasks is less than that value.
+ 
+PARAMETER pt_numParticlesWanted INTEGER  100
+PARAMETER pt_pRand            INTEGER  1
+

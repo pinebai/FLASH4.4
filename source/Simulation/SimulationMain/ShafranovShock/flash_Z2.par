@@ -1,0 +1,166 @@
+#	Runtime parameters for the Shafranov Shock problem.
+#
+#       Reference: V. Shafranov. The structure of shock waves in a plasma. 
+#                                Soviet Phys. JETP, 1957.
+#       setup: -1d -auto ShafranovShock -objdir=shafranov +nofbs
+
+hx_relTol = 1.e-12
+
+#               Artificial viscosity
+
+cvisc           = 0.
+
+#	Computational volume parameters
+
+#		Grid dimensionality and geometry
+
+geometry = cartesian
+
+#	Simulation (grid, time, I/O) parameters
+cfl		= 0.8
+hx_dtFactor = 0.05 # 0.01
+
+basenm          = "shafranov_"
+restart         = .false.
+
+#	checkpoint file output parameters
+checkpointFileIntervalTime = 0.2E-7
+checkpointFileIntervalStep = 50
+checkpointFileNumber = 0
+
+#	plotfile output parameters
+plotfileIntervalTime = 0.
+plotfileIntervalStep = 0
+plotfileNumber = 0
+
+dr_shortenLastStepBeforeTMax = .TRUE.
+
+run_comment     = "shafranov problem, X direction"
+log_file        = "shafranov.log"
+
+ppmEintFluxConstructionMeth = 0
+ppmEintCompFluxConstructionMeth = 5
+ppmEnerFluxConstructionMeth = 0
+#ppmEnerCompFluxConstructionMeth = 22
+use_steepening = .FALSE.
+
+eintSwitch     = 1.e-4
+
+
+plot_var_1 = "dens"
+plot_var_2 = "pres"
+plot_var_3 = "temp"
+
+#    AMR refinement parameters  
+refine_var_1    = "dens"
+
+# When using UG, iProcs, jProcs and kProcs must be specified.
+# These are the processors along each of the dimensions
+#FIXEDBLOCKSIZE mode ::
+# When using fixed blocksize, iGridSize etc are redundant in
+# runtime parameters. These quantities are calculated as 
+# iGridSize = NXB*iprocs
+# jGridSize = NYB*jprocs
+# kGridSize = NZB*kprocs
+#NONFIXEDBLOCKSIZE mode ::
+# iGridSize etc must be specified. They constitute the global
+# number of grid points in the physical domain without taking 
+# the guard cell into account. The local blocksize is calculated
+# as iGridSize/iprocs  etc.
+ 
+ 
+## -------------------------------------------------------------##
+##  SWITCHES SPECIFIC TO THE UNSPLIT HYDRO SOLVER               ##
+#	I. INTERPOLATION SCHEME:
+order		= 2      # Interpolation order (First/Second order)
+slopeLimiter    = "mc"   # Slope limiters (minmod, mc, vanLeer, hybrid, limited)
+LimitedSlopeBeta= 1.     # Slope parameter for the "limited" slope by Toro
+charLimiting	= .true. # Characteristic limiting vs. Primitive limiting
+
+
+#	II. RIEMANN SOLVERS:
+RiemannSolver	= "Roe"       # Roe, HLL, HLLC, LF
+shockInstabilityFix = .false. # Carbuncle instability fix for the Roe solver
+
+
+#	III. STRONG SHOCK HANDELING SCHEME:
+shockDetect	= .false.     # Shock Detect for numerical stability
+## -------------------------------------------------------------##
+
+eosModeInit            = "dens_ie_gather"
+eosMode                = "dens_ie_gather"
+
+useDiffuse             = .TRUE.
+
+diff_useRadDiffusion   = .FALSE.
+
+xmin                   = -2.0e-03
+xmax                   =  5.0e-03
+iGridSize              = 2000
+
+eos_singleSpeciesA     = 4.0
+eos_singleSpeciesZ     = 2.0
+
+gamma                  = 1.66666667
+gammaEle               = 1.66666667
+gammaIon               = 1.66666667
+
+xl_boundary_type       = "outflow"
+xr_boundary_type       = "outflow"
+diff_eleXlBoundaryType = "outflow"
+diff_eleXrBoundaryType = "outflow"
+
+
+hx_coulombLog          = 1.000000000E+01
+hx_couplingConst13     = 0.
+hx_couplingConst23     = 0.
+
+cond_temperatureExponent = 2.5
+cond_K0 = 9.6499999967279358e-07
+
+diff_useRadDiffusion   = .FALSE.
+diff_useEleCond        = .TRUE.
+useHeatexchange        = .TRUE.
+useHydro               = .TRUE.
+
+hy_eosModeAfter        = "dens_ie_sele_gather"
+
+dtinit                 = 1.0E-20
+dtmin                  = 1.0E-20
+nend                   = 9999999
+tmax                   = 1.5E-10 # 1000 Femto Seconds.
+
+dt_diff_factor         = 1.0e+10
+cfl                    = 0.4
+
+sim_ShockSpeed         = 1.623415272E+07
+
+sim_DataPoints         = 999
+sim_InitData           = "plasma_shock_Z2.out"
+
+nblockx                = 2
+lrefine_min            = 4
+lrefine_max            = 10
+
+gr_hypreMaxIter    = 10000
+gr_hypreRelTol     = 1.0e-12
+gr_hyprePCType     = "HYPRE_AMG"
+gr_hypreSolverType = "HYPRE_PCG"
+diff_thetaimplct   = 1.0
+
+# Format of input data file
+# Column  variable 
+#  1    = X (cm)
+#  2    = U (cm s^-1) 
+#  3    = T_e (K)
+#  4    = rho (g cm^-3)
+#  5    = T_i (K)
+#  6    = P_e (erg cm^-3)
+#  7    = P_i (erg cm^-3)
+#  8    = S_e
+#  9    = tau
+# 10    = r
+# 11    = dtau/d(x/x_range)
+# 12    = dr/d(x/x_range)
+#
+

@@ -1,0 +1,16 @@
+diff -ru libNBC-1.1.1-orig/nbc_ineighbor_xchg.c libNBC-1.1.1/nbc_ineighbor_xchg.c
+--- libNBC-1.1.1-orig/nbc_ineighbor_xchg.c	2012-04-29 20:05:48.000000000 +0000
++++ libNBC-1.1.1/nbc_ineighbor_xchg.c	2013-05-23 18:58:04.859092308 +0000
+@@ -68,12 +68,6 @@
+ 	}
+ 	return +1;
+ }
+-#else
+-#ifdef HAVE_DCMF
+-int NBC_Ineighbor_xchg_args_compare(NBC_Ineighbor_xchg_args *a, NBC_Ineighbor_xchg_args *b, void *param) {
+-  printf("this is a stub for NBC_Ineighbor_xchg_args_compare to compile with DCMF\n");
+-}
+-#endif
+ #endif
+ 
+ /* this is a new collective operation defined on a topo communicator.

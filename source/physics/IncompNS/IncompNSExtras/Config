@@ -1,0 +1,9 @@
+
+# Runtime parameters
+
+VARIABLE velx                   # velocity in x direction
+VARIABLE vely            	# velocity in y direction
+VARIABLE velz                   # velocity in z direction
+VARIABLE omgz                 	# vorticity-z scalar in 2D
+VARIABLE omgx                   # vorticity-x scalar 
+VARIABLE omgy                   # vorticity-y scalar

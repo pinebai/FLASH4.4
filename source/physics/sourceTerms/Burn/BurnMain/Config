@@ -1,0 +1,24 @@
+# Config file for the burn module
+# [source/physics/sourceTerms/Burn/BurnMain]
+
+# available submodules are
+# nuclearBurn           -- performs nuclear burning
+# parametricBurn        -- 3-stage parametric burn
+
+# Set up a name to use in ifdef/ifndef lines
+PPDEFINE FLASH_SOURCEBURN
+
+DEFAULT nuclearBurn
+
+EXCLUSIVE nuclearBurn parametricBurn
+
+PARAMETER	enucDtFactor	REAL	1.e30
+D enucDtFactor	Limit timestep to limit total energy deposited by burning
+D &             is kept artificially high to effectively turn off limiting
+D &             by default
+
+PARAMETER	useShockBurn	BOOLEAN	FALSE  
+# The original name of parameter useShockBurn was ishkbn.
+D useShockBurn   Is burning allowed within shocks?
+
+

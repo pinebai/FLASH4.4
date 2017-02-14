@@ -1,0 +1,34 @@
+
+
+REQUIRES Particles
+REQUIRES IO
+DEFAULT hdf5
+
+USESETUPVARS IO
+
+IF IO=="pnetcdf"
+  DEFAULT pnetcdf
+ELSEIF IO=="direct"
+  DEFAULT direct/UG
+ELIF IO in ["MPIDump","MPIHybrid"]
+   SETUPERROR MPIDump and MPIHybrid not available with Particles
+ENDIF
+
+D particleFileIntervalTime       Write a particle plot after this much time
+PARAMETER particleFileIntervalTime	REAL    1.
+
+D particleFileNumber	Initial particle plot file number
+PARAMETER particleFileNumber      INTEGER 0       
+
+D particleFileIntervalStep	write a particle file after this many steps
+PARAMETER particleFileIntervalStep	INTEGER 0	
+
+D particleFileIntervalZ         write a particle file after this change in redshift
+PARAMETER particleFileIntervalZ         REAL HUGE(1.)
+
+D writeParticleSubset  Write user-defined subset(s) of the particles array to
+D a particle file.  Subsets are specified in io_ptCreateSubset.
+PARAMETER writeParticleSubset    BOOLEAN    false
+
+D writeParticleAll  Write the complete particles array to a particle file.
+PARAMETER writeParticleAll       BOOLEAN    true

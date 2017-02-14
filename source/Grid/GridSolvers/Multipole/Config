@@ -1,0 +1,53 @@
+# Configuration file for the multipole Poisson solver
+
+# Set up a name to use if ifdef/ifndef within the fortran code
+#  Note this name cannot be used in Config files, only .F90
+PPDEFINE FLASH_MPOLE
+
+
+# Parameters:
+
+
+PARAMETER mpole_lmax         INTEGER	0
+
+D mpole_lmax    Maximum multipole moment to use  
+D         quadrant                In 2d cylindrical coords, assume symmetry
+D          &                        about grid bottom to evolve a quadrant
+D         octant                  In 3d cartesian geometry, assume symmetry
+D          &                        about left-facing volume faces
+D         mpole_3daxisymmetric     In 3d cartesian geometry, use only m=0
+D          &                        multipole moments
+D         mpole_dumpMoments       Should the Moment array be dumped at each timestep?
+
+PARAMETER quadrant              BOOLEAN false
+PARAMETER octant                BOOLEAN false
+PARAMETER mpole_3daxisymmetric   BOOLEAN false
+PARAMETER mpole_dumpMoments      BOOLEAN false
+
+
+D mpole_useMatrixMPI  Switch added during the DAT to calculate MPI_allreduce in a matrix fashion &
+D   &                Set to .false. to retain the previous behaviour
+PARAMETER mpole_useMatrixMPI     BOOLEAN false
+
+D mpole_subSample            Integer which controls the sub-sampling in the mpole_potential routine and  
+D &                          mpole_moments routine.  Set to smaller numbers to make potential calculations 
+D &                          (slightly) less smooth and faster. 
+D &                          Was hardcoded in Flash2 as Nint6 = 6 in mpole_potential and Nint=2 in mpole_moments
+PARAMETER mpole_subSample      INTEGER 1 [1 to 12]
+
+
+D & Defines the 3 zones (r12,r23 are fractions of rMax)
+PARAMETER mpole_r12     REAL 0.0
+PARAMETER mpole_r23     REAL 1.0
+
+D & Scaling factor for each zones.
+PARAMETER mpole_rscale1 REAL 1.0
+PARAMETER mpole_rscale2 REAL 1.0
+PARAMETER mpole_rscale3 REAL 1.0
+
+D & Scaling Type for each of the regions, can be Constant,  Logarthmic
+PARAMETER mpole_scaleType1 INTEGER 1
+PARAMETER mpole_scaleType2 INTEGER 1
+PARAMETER mpole_scaleType3 INTEGER 1
+
+

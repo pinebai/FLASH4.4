@@ -1,0 +1,103 @@
+This document is a summary of the rules governing the dissemination of
+the "FLASH Code" by the Flash Center for Computational Science
+(hereafter, "we", "us" or the "Center") to users outside the Center, and
+constitutes the License Agreement for users of the FLASH Code. Users
+are responsible for following all of the applicable rules described
+below. 
+
+1.  Public Release. Publicly released versions of the FLASH Code
+are available via the Center's website. We expect to include any
+external contributions to the Code in public releases that occur after
+the end of a negotiated time. 
+
+2. Decision Process. At present, release of the FLASH Code to users
+not located at the University of Chicago or at Argonne National
+Laboratory is governed solely by the Center's Director and
+Management Committee; decisions related to public release of the FLASH
+Code will be made in the same manner. 
+
+3. License and Distribution Rights. The University of Chicago owns the
+copyright to all Code developed by the members of the Flash Center at
+the University of Chicago.  External contributors may choose to be
+included in the Copyright Assertion. The FLASH Code, or any part of
+the code, can only be released and distributed by the Flash Center;
+individual users of the FLASH Code are not free to re-distribute the
+FLASH Code, or any of its components, outside the Center.  All users
+of the FLASH Code must sign a hardcopy version of this License
+Agreement and send it to the Center.  Distribution of the FLASH Code
+can only occur once we receive a signed License Agreement. 
+
+4. Modifications and Acknowledgments.  Users may make modifications to
+the FLASH Code, and they are encouraged to send such modifications to
+the Center. Users are not free to distribute the FLASH Code to others,
+as noted in Section 3 above. As resources permit, we will incorporate
+such modifications in subsequent releases of the FLASH Code, and we
+will acknowledge these external contributions. Note that modifications
+that do not make it into an officially-released version of the FLASH
+Code will not be supported by us.  
+
+If a user modifies a copy or copies of the FLASH Code or any portion
+of it, thus forming a work based on the FLASH Code, to be included in
+a FLASH release it must meet the following conditions: 
+
+a)The software must carry prominent notices stating that the user
+changed specified portions of the FLASH Code. This will also assist us
+in clearly identifying the portions of the FLASH Code that the user
+has contributed. 
+
+b)The software must display the following acknowledgement: "This
+product includes software developed by and/or derived from the Flash
+Center for Computational Science (http://flash.uchicago.edu) to which
+the U.S. Government retains certain rights."   
+
+c)The FLASH Code header section, which describes the origins of the
+FLASH Code and of its components, must remain intact, and should be
+included in all modified versions of the code. Furthermore, all
+publications resulting from the use of the FLASH Code, or any modified
+version or portion of the FLASH Code, must acknowledge the Flash
+Center for Computational Science; addition of the following text to
+the paper acknowledgments will be sufficient:  
+
+"The software used in this work was developed in part by the DOE NNSA ASC- and DOE Office of Science ASCR-supported Flash Center for Computational Science at the University of Chicago."
+
+The Code header provides information on software that has been
+utilized as part of the FLASH development effort (such as the
+AMR). The Center website includes a list of key scientific journal
+references for the FLASH Code.  We request that such references be
+included in the reference section of any papers based on the FLASH
+Code. 
+
+5. Commercial Use. All users interested in commercial use of the FLASH
+Code must obtain prior written approval from the Director of the
+Center.   Use of the FLASH Code, or any modification thereof, for
+commercial purposes is not permitted otherwise. 
+
+6. Bug Fixes and New Releases. As part of the FLASH Code dissemination
+process, the Center has set up and will maintain as part of its
+website mechanisms for announcing new FLASH Code releases, collecting
+requests for FLASH Code use, and collecting and disseminating relevant
+documentation. We support the user community through mailing lists and
+by providing a bug report facility. 
+
+7. User Feedback. The Center requests that all users of the FLASH Code
+notify the Center about all publications that incorporate results
+based on the use of the code, or modified versions of the code or its
+components.  All such information can be sent to
+info@flash.uchicago.edu. 
+
+8. Disclaimer. The FLASH Code was prepared, in part, as an account of
+work sponsored by an agency of the United States Government.  
+THE FLASH CODE IS PROVIDED "AS IS" AND NEITHER THE UNITED STATES, NOR
+THE UNIVERSITY OF CHICAGO, NOR ANY CONTRIBUTORS TO THE FLASH CODE, NOR
+ANY OF THEIR EMPLOYEES OR CONTRACTORS, MAKES ANY WARRANTY, EXPRESS OR
+IMPLIED (INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE), OR ASSUMES ANY
+LEGAL LIABILITY OR RESPONSIBILITY FOR THE ACCURACY, COMPLETENESS, OR
+USEFULNESS OF ANY INFORMATION, APPARATUS, PRODUCT, OR PROCESS
+DISCLOSED, OR REPRESENTS THAT ITS USE WOULD NOT INFRINGE PRIVATELY
+OWNED RIGHTS. 
+
+In NO EVENT WILL THE UNITED STATES, THE UNIVERSITY OF CHICAGO OR ANY
+CONTRIBUTORS TO THE FLASH CODE BE LIABLE FOR ANY DAMAGES, INCLUDING
+DIRECT, INCIDENTAL, SPECIAL, OR CONSEQUENTIAL DAMAGES RESULTING FROM
+EXERCISE OF THIS LICENSE AGREEMENT OR THE USE OF THE SOFTWARE. 

@@ -1,0 +1,95 @@
+# Config file for physics/Hydro/HydroMain/split/PPM/multiTemp
+#
+REQUIRES physics/Hydro/HydroMain/split/PPM/PPMKernel/multiTemp
+
+USESETUPVARS ThreeT
+IF not ThreeT
+  PPDEFINE FLASH_3T
+ENDIF
+
+VARIABLE pion                   EOSMAP:  PRES1  # ion pressure
+VARIABLE pele                   EOSMAP:  PRES2  # electron pressure
+VARIABLE prad                   EOSMAP:  PRES3  # radiation pressure
+
+VARIABLE tion                   EOSMAP:  TEMP1  # ion "temperature"
+VARIABLE tele                   EOSMAP:  TEMP2  # electron "temperature"
+VARIABLE trad                   EOSMAP:  TEMP3  # radiation "temperature"
+
+
+USESETUPVARS SuppressEintVariable
+IF not SuppressEintVariable
+	VARIABLE eion TYPE: PER_MASS  EOSMAP: EINT1  # specific internal energy of ions (and neutrals?)
+	VARIABLE eele TYPE: PER_MASS  EOSMAP: EINT2  # specific internal energy of electrons
+	VARIABLE erad TYPE: PER_MASS  EOSMAP: EINT3  # specific internal energy of radiation
+ENDIF
+
+VARIABLE dbgs					# debug for shocks
+
+FLUX pion
+FLUX pele
+FLUX prad
+FLUX e1
+FLUX e2
+FLUX e3
+FLUX eion
+FLUX eele
+FLUX erad
+
+FLUX eia
+FLUX ei1a
+FLUX ei2a
+FLUX ei3a
+
+FLUX shok
+
+FLUX one
+FLUX vold
+
+REQUESTS physics/Diffuse
+REQUESTS physics/materialProperties/Conductivity
+
+# For testing ways to advect components and handle shock heating
+ 
+D hy_eosModeAfter Eos mode to apply at the end of a hydro sweep, after
+D & hy_ppm_updateSoln is done.
+D & Some meaningful choices are (1): == eosMode (traditional),
+D & (2): "dens_ie_sele_gather" for MODE_DENS_EI_SELE_GATHER.
+PARAMETER hy_eosModeAfter STRING "dens_ie_gather"["dens_ie","dens_pres","dens_temp","dens_ie_all","dens_ie_scatter","dens_ie_gather","dens_ie_sele_gather","dens_ie_shocksele_gather","dens_temp_equi","dens_temp_all","dens_temp_gather","dens_ie_recal_gather"]
+
+D hy_3Ttry_Arelated a code switch for hydro_1d, determines how fluxes for eint-without-PdV
+D & are computed. TRUE: eia (Energy Internal Advected) fluxes always based on eint fluxes calculation.
+D & FALSE: eia fluxes always calculated based on advecting eint like any old mass scalar.
+D & Difference should matter only for ppmEintCompFluxConstructionMeth=0,4.
+D & Eia fluxes themselves only matter for cases B0,B1, or for E1 (with D2 or D3). 
+PARAMETER hy_3Ttry_Arelated BOOLEAN FALSE
+
+D hy_3Ttry_useShockDetect a code switch for multiTemp hy_ppm_updateSoln, determines whether
+D & some special handling (currently, code to implement correct preferention shock heating
+D & of ions, as for hy_3Ttry_B3) is done only in cells where a "shock has been detected".
+D & Shock detection depends on runtime parameter dp_sh_md, see the Hydro_detectShock routine.
+PARAMETER hy_3Ttry_useShockDetect BOOLEAN FALSE
+
+D hy_3Ttry_D How to consolidate energies. Values: 0. Do not, 1. Trust Eele, discard Eion,
+D & 1.5 Trust Eele, discard Eion, 2. Trust combined Eint, recalibrate both components, etc.
+PARAMETER hy_3Ttry_D REAL 2.0 [0.0,1.0,1.25,1.5,1.75,1.875,2.0,3.0]
+
+D hy_3Ttry_B  How to deal with "work" term
+D hy_3Ttry_B_rad  How to deal with "work" term for radiation, i.e. for Erad,
+D & -1 means same as hy_3Ttry_B
+D hy_3Ttry_E  How to recalibrate (if D2 or D3)
+D hy_3Ttry_F  What to consolidate/recalibrate (if E2)
+D hy_3Ttry_G What to use for component P (if B1)
+
+PARAMETER hy_3Ttry_B INTEGER 2 [0,1,2,3]
+PARAMETER hy_3Ttry_B_rad INTEGER -1 [-1,0,1,2,3]
+PARAMETER hy_3Ttry_E INTEGER 1 [1,2]
+PARAMETER hy_3Ttry_F INTEGER 2 [2,3]
+PARAMETER hy_3Ttry_G INTEGER 1 [0,1]
+
+D hy_3Ttry_Q Whether to implement preferential allocation of shock heating (over and above
+D & heating through adiabatic compression) to ions; 2 for additional debug info from rieman.
+PARAMETER hy_3Ttry_Q INTEGER 0 [0 ... 2]
+
+D hy_dbgReconstConsvSele whether to reconstruct electron entropy ("Sele")
+D & in conservative form.
+PARAMETER hy_dbgReconstConsvSele BOOLEAN FALSE

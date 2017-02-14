@@ -1,0 +1,21 @@
+#	Config file for the nuclear equation of state
+# [physics/Eos/EosNuclear]
+
+REQUIRES physics/Eos/EosMain
+
+DEFAULT kernel
+
+D gamc_variable	 Ratio of specific heats.  Used to compute sound speed.
+VARIABLE gamc  EOSMAP:   GAMC  # sound-speed gamma
+D game_variable	 Energy gamma.  Used to convert between pressure and energy.
+VARIABLE game  EOSMAP:   GAME  # energy gamma
+D entr_variable	 Specific entropy in kB per baryon.
+VARIABLE entr  EOSMAP:  ENTR  # specific entropy in kB per baryon
+
+D eos_file  Filename of the table.  Data may be found at stellarcollapse.org/equationofstate.
+PARAMETER eos_file  STRING "myshen_test_220r_180t_50y_extT_analmu_20100322_SVNr28.h5"
+
+D postBounce  Flag to specify that simulation is post-bounce
+PARAMETER postBounce	   BOOLEAN	FALSE
+D bounceTime  Time of bounce in seconds
+PARAMETER bounceTime	   REAL		0.0

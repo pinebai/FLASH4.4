@@ -1,0 +1,18 @@
+#  Configuration file for the particle module
+#  [source/Particles]
+
+DEFAULT ParticlesMain
+
+#  Subunits:
+
+#    ParticlesMain               Various routines, time stepping
+#    ParticlesMapping            Mesh <--> particle mapping subunit.
+#    ParticlesInitialization	 Initial particle locations
+#
+#    You might want to include with-unit=IO/IOParticles, as well
+
+CHILDORDER localAPI
+
+D   useParticles       Whether to advance particles [TRUE] or not [FALSE]
+# Value is meant to be overridden if ParticlesMain implementation gets included
+PARAMETER useParticles    BOOLEAN FALSE 

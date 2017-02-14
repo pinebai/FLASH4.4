@@ -1,0 +1,62 @@
+# file for a spherical detonation, 
+#    setup Cellular [source/Simulation/SimulationMain/Cellular]
+#
+# See paper: Timmes, FX; Zingale, M; Olson, K; Fryxell, B; The Astrophysical
+#               Journal, Nov. 10, 2000 : 543: 938-954
+
+
+REQUIRES Driver
+REQUIRES physics/Hydro
+REQUIRES physics/Eos/EosMain/Helmholtz
+# Multigamma for testing
+#REQUIRES physics/Eos/EosMain/Multigamma
+REQUIRES physics/sourceTerms/Burn/BurnMain/nuclearBurn 
+REQUIRES Simulation/SimulationComposition
+REQUIRES Multispecies
+REQUESTS IO   # because Lynn is tired of setting up simulations that don't do anything
+
+# Three gases needed in simulation, but these are defined in Burn module
+#SPECIES HE4
+#SPECIES C12
+#SPECIES O16
+
+
+D    xhe4          	mass fraction of he4
+D    xc12          	mass fraction of c12
+D    xo16          	mass fraction of o16
+D    rhoAmbient   	density of the cold upstream material 
+D    tempAmbient     	temperature of the cold upstream material
+D    velxAmbient     	x-velocity of the cold upstream material
+D    rhoPerturb   	density of the post shock material
+D    tempPerturb     	temperature of the post shock material
+D    velxPerturb     	x-velocity of the post shock material
+D    radiusPerturb     	distance below which the perturbation is applied
+D    x/y/zCenterPerturb origin of the of the perturbation
+D    usePseudo1d     	.true. for a 1d initial configuration, with the 
+D &                        copied along the y and z directions
+D &                	.false. for a spherical configuration
+D    noiseAmplitude    	amplitude of the white noise added to the perturbation
+D    noiseDistance    	distances above and below r_init get noise added
+
+
+PARAMETER xhe4            REAL    0.0 [0.0 to 1.0]
+PARAMETER xc12            REAL    1.0 [0.0 to 1.0]
+PARAMETER xo16            REAL    0.0 [0.0 to 1.0]
+
+PARAMETER rhoAmbient      REAL    1.0e7 [0 to ]
+PARAMETER tempAmbient     REAL    2.0e8 [0 to ]
+PARAMETER velxAmbient     REAL    0.0
+
+PARAMETER rhoPerturb      REAL    4.236e7
+PARAMETER tempPerturb     REAL    4.423e9
+PARAMETER velxPerturb     REAL    2.876E+08
+
+PARAMETER radiusPerturb    REAL    25.6
+PARAMETER xCenterPerturb  REAL	0.0
+PARAMETER yCenterPerturb  REAL	0.0
+PARAMETER zCenterPerturb  REAL	0.0
+
+PARAMETER usePseudo1d     BOOLEAN FALSE
+
+PARAMETER noiseAmplitude  REAL    1.0e-2
+PARAMETER noiseDistance   REAL    5.0

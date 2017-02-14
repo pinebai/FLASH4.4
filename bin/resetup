@@ -1,0 +1,4 @@
+#!/bin/bash
+cmd=`head -1 setup_call`
+cd ../bin
+exec $cmd "$@"

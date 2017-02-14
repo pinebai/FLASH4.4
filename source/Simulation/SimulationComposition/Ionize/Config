@@ -1,0 +1,14 @@
+# Config file for all network species composition
+# [Simulation/SimulationComposition/Ionize]
+# Here to provide a default initialization for Ionize's species
+
+DATAFILES SpeciesList.txt
+
+REQUESTS Multispecies
+
+#elec and h species are in all simulations, but we have flexibility with
+#the other elements which will be defined in simulation specific 
+#Config files.  
+
+SPECIES elec
+SPECIES h

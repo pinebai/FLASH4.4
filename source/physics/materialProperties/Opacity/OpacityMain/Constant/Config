@@ -1,0 +1,12 @@
+# Config file for the Opacity/OpacityMain/Constant implementation
+
+D opac_emit_constval Constant value for emission opacity [1/cm]
+PARAMETER op_emitConst REAL 1.0
+
+D opac_trans_constval Constant value for transport opacity [1/cm]
+PARAMETER op_transConst REAL 1.0
+
+D opac_absorb_constval Constant value for absorption opacity [1/cm]
+PARAMETER op_absorbConst REAL 1.0
+
+CONFLICTS physics/materialProperties/Opacity/OpacityMain/Multispecies

@@ -1,0 +1,355 @@
+#####################################################################
+#
+# FLASH file for a Type Ia supernova in 3-d cartesian geometry
+#
+# off-set ignition whole-star model with tracer particles distributed
+# by mass.
+#
+# This file is for the convergence evaluation of August 2006
+#
+#   study evaluates convergence with the sharpened KPP ADR flame model,
+#   also first large set of runs with quiet, realistic energy release
+#   and neutronization
+#
+# configuration:
+#       block of 16
+#       "size 16" model
+#       domain [-24576,24576]^3 km
+#       refine_min=1
+#       at min refinement, base of 3 blocks in each dimension (28 total)
+#
+#
+#  On uP, setup with
+#  for non-permanent guard cells:
+#  ./setup WD_def -3d +cube16 -maxblocks=600 +curvilinear +parallelIO -npg=True +ptdens -auto
+#
+#  for permanent guard cells:
+#  ./setup WD_def -3d +cube16 -maxblocks=600 +curvilinear +parallelIO +ptdens -auto
+#
+#-----------------------------
+# refine_max resolution  km
+#-----------------------------
+#       1        48   1024
+#       2        96    512
+#       3       192    256
+#       4       384    128
+#       5       768     64
+#       6      1536     32
+#       7      3072     16
+#       8      6144      8
+#       9     12288      4
+#       10    24576      2
+#       11    49152      1
+#       12    98304     0.5
+#-----------------------------
+#
+#####################################################################
+
+##################
+# model parameters
+##################
+
+# amplitude of random velocity perturbations
+# not used
+v_pert                  = 0.e5
+n_pert                  = 0
+
+# central velocity dipole size and speed
+# not used
+r_conv                  = 0.e5
+v_conv                  = 0.e5
+
+# Euler angles of the dipole in degrees
+# not used
+phi_conv                = 0.e0
+theta_conv              = 0.e0
+
+# flame capturing and nuclear network
+useFlame                = .true.
+useBurn                 = .false.
+
+# ignition specific
+# position and size of spherical region set as burned material
+# at time zero
+ignite                  = .true.
+x_match                 =  0.e5
+y_match                 =  0.e5
+z_match                 = 40.e5
+r_match                 = 16.e5
+##z_match                       = 30.e5
+##r_match                       = 24.e5
+
+# damping
+# not used
+damp_method             = 4
+damp_const1             = 1.e-3
+damp_const2             = 1.e-3
+damp_const3             = 1.8e8
+damp_time               = 0.5e0
+
+#################
+# flame capturing
+#################
+
+# table of NSE state and neutronization rates
+ii_bnTablename  = "table_66_40_60.txt"
+
+# negative epsilons means no transition to nsqe/nse
+# these are largely ignored, but should be positive to not
+# trip some outdated checks
+ii_bnNsqeEpsilon        = 1.e-6
+ii_bnNseEpsilon         = 1.e-6
+
+# maximum energy release (delta phi1) per time step
+ii_bnNseMaxDphi         =  1.e-2
+
+
+# front tracking stuff
+# saves flame speed
+ft_debug                = .true.
+# true for sharpened KPP as well
+ft_kpp                  = .true.
+ft_epsilon              = 1.e-12
+ft_epsilon_0            = 1.e-3
+ft_epsilon_1            = 1.e-3
+ft_kpp_fact             = 1.309e0
+ft_b                    = 3.2e0
+
+
+# use an approximate atwood number for calculating
+# turbulent flame speed
+approx_atwood           = .true.
+
+# turbulent flame speed parameters
+# turbulent flame speed is
+# 0.5*sqrt(A g dx* ft_subgrid_s1)
+ft_subgrid_s1           = 0.06e0
+ft_subgrid_s2           = 0.e0
+flame_speed_mult        = 1.e0
+ii_bnFqdotMult          = 1.e0
+
+# flame quenching at low densities
+# TODO do we want to change this to 1e6-1e5?
+use_quenching           = .true.
+quenching_dens0         = 5.e6
+quenching_dens1         = 1.e7
+
+#################
+# nuclear network
+#################
+
+# not used (iburn=0)
+# except xrenorm_burning is checked
+
+dnucmin                 = 1.e6
+dnucmax                 = 1.e14
+tnucmin                 = 1.e8
+tnucmax                 = 1.e12
+#shock_burning          = .false.
+#xrenorm_burning                = .true.
+#ode_steper             = 1
+
+#################
+# mesh definition
+#################
+
+# max and min levels of refinement
+lrefine_min             = 1
+lrefine_max             = 3
+lrefine_del             = 0
+
+# use custom refinement criteria
+refine_var_1            = "none"
+refine_var_2            = "none"
+refine_var_3            = "none"
+refine_var_4            = "none"
+
+refine_ddens            = 0.5e0
+refine_dtvel            = 0.2e0
+refine_xtvel            = 100.e5
+refine_dphi1            = 0.1e0
+refine_xphi1            = 1.e-15
+refine_sphi1            = 1.e-20
+refine_xenuc            = 1.e18
+
+# minimum density at which refinement criteria other than
+# flame front are checked
+refine_dens_min         = 5.e5
+# max density for weighting refinement
+# weighted by log(dens/mindens)/log(maxdens/mindens)
+refine_dens_max         = 1.e10
+# above uni dens, don't let resolution go coarser than uni_dx
+refine_uni_dens         = 3.e6
+refine_uni_dx           = 20.e5
+# within uni_radius, don't let resolution go coarser than uni_dx
+refine_uni_radius       = 2500.e5
+# outside max_radius force resolution to be coarser than 2*uni_dx
+refine_max_radius       = 2500.e5
+
+# enhancement of refinement in inner region
+# ( help decrease number of particles per processor)
+refine_inner_dens_min   = 2.5e8
+refine_inner_dens_dx    = 5.e5
+
+refine_ignition_time    = 10.e0
+refine_ignition_radius  = 300.e5
+lrefine_ignition_del    = 0
+
+# physical domain
+geometry                = "cartesian"
+
+xmin                    =  -24576.e5
+xmax                    =  24576.e5
+ymin                    =  -24576.e5
+ymax                    =  24576.e5
+zmin                    =  -24576.e5
+zmax                    =  24576.e5
+
+quadrant                = .false.
+octant                  = .false.
+
+nblockx                 = 3
+nblocky                 = 3
+nblockz                 = 3
+
+# boundary conditions for the whole star
+xl_boundary_type        = "user"
+xr_boundary_type        = "user"
+
+yl_boundary_type        = "user"
+yr_boundary_type        = "user"
+
+zl_boundary_type        = "user"
+zr_boundary_type        = "user"
+
+#bc_velocity_type       = "diode"
+
+grav_boundary_type      = "isolated"
+
+#########
+# physics
+#########
+
+# self-gravity
+igrav                   = 1
+mpole_lmax              = 6
+grav_3daxisymmetric     = .true.
+mpole_dumpMoments        = .true.
+mpole_useMatrixMPI       = .false.
+
+# eos
+eos_coulombMult         = 1.e0
+
+#####
+# I/O
+#####
+
+# names of files
+basenm                  = "momentsRegular_"
+
+# for starting a new run
+# remember to set enuc_tint below!!!
+restart                 = .false.
+
+checkpointFileNumber    = 0
+plotFileNumber          = 0
+ParticleFileNumber       = 0
+
+# dump checkpoint files every trstrt seconds
+checkpointFileIntervalTime                      = 2.e-2
+
+# dump plot files every tplot seconds
+plotFileIntervalTime                    = 2.5e-3
+
+ParticleFileIntervalTime = 2.5e-3
+ParticleFileIntervalStep = 0
+
+memory_stat_freq = 1
+# go for nend steps or tmax seconds, whichever comes first
+nend                    = 2
+tmax                    = 4.e0
+wall_clock_checkpoint   = 21600.e0 # 6 hrs
+#wall_clock_checkpoint   = 85700.e0 # 23.81 hrs
+
+
+# variables for plotting
+# TODO do these work without the spaces in them?
+plot_var_1              = "dens"
+plot_var_2              = "temp"
+plot_var_3              = "pres"
+plot_var_4              = "velx"
+plot_var_5              = "vely"
+plot_var_6              = "velz"
+plot_var_7              = "gpot"
+plot_var_8              = "qbar"
+plot_var_9              = "ye"
+plot_var_10             = "rpv1"
+plot_var_11             = "rpv2"
+plot_var_12             = "rpv3"
+
+
+##########
+# timestep
+##########
+
+# CFL limit
+cfl                     = 0.80e0
+cfl_ini                 = 0.1e0
+
+# initial and minimum
+dtinit                  = 1.
+dtmin                   = 1.e-20
+dtmax                   = 8.e-4
+tstep_change_factor     = 1.2e0
+#enuc_factor            = 1.e0
+
+# density, temperature and composition of the fluff
+dens_fluff              = 1.e-3
+temp_fluff              = 3.e7
+xc12_fluff              = 0.5e0
+xo16_fluff              = 0.5e0
+
+##################
+# tracer particles
+##################
+
+
+useParticles = .false.
+pt_numParticlesWanted = 5000000
+pt_maxPerProc = 300000
+
+#############
+# miscellaneous
+#############
+
+# floor values
+
+small                   = 1.e-100
+smalle                  = 1.e-100
+smallt                  = 1.e7
+smallu                  = 1.e-10
+# set to 1/5 of dens_fluff
+smlrho                  = 2.e-4
+smallp                  = 1.e15
+smallx                  = 1.e-100
+
+# misc (many are same as defaults)
+
+eintSwitch              = 0.e0
+cvisc                   = 0.1e0
+iplm                    = 0
+use_steepening          = .false.
+ppm_modifystates        = .false.
+leveque                 = .false.
+hybrid_riemann          = .true.
+convertToConsvdForMeshCalls     = .false.
+converttoconsvdinmeshinterp     = .true.
+use_cma_advection       = .false.
+dp_sh_md                = 1.e0
+dp_sh                   = 1.e0
+
+enuc_tint               = 0.e48  # this is a integral quantities thing.
+
+#checkpoint_timers       = .false.
+
+#memory_stat_freq         = 1

@@ -1,0 +1,128 @@
+# Coniguration file for LaserSlab simulation
+REQUIRES Driver
+REQUIRES physics/Hydro
+
+USESETUPVARS ThreeT
+
+IF ThreeT
+   REQUESTS physics/Diffuse/DiffuseMain/Unsplit
+
+   REQUESTS physics/sourceTerms/Heatexchange/HeatexchangeMain/Spitzer
+   REQUESTS physics/materialProperties/Conductivity/ConductivityMain/SpitzerHighZ
+ENDIF
+
+#REQUESTS physics/Eos/EosMain/multiTemp/ThomasFermi
+
+# This simulation requires specifying the species via the setup
+# line. You must include the species setup variable:
+#
+# species=cham,targ
+#
+# An example of a setup line for this simulation is:
+#
+# ./setup -auto LaserSlab -2d +hdf5typeio \
+#         -nxb=16 -nyb=16 +mtmmmt +laser species=cham,targ
+# 
+
+DATAFILES al-imx-002.cn4
+DATAFILES al-imx-003.cn4
+DATAFILES he-imx-005.cn4
+DATAFILES polystyrene-imx-001.cn4
+
+##########################
+#                        #
+#   RUNTIME PARAMETERS   #
+#                        #
+##########################
+
+
+D sim_initGeom Use a spherical target if sphere, default to slab
+PARAMETER sim_initGeom STRING "slab" ["slab","sphere"]
+                              
+D sim_targetRadius The radius to use for the target
+PARAMETER sim_targetRadius REAL 0.0050
+
+D sim_targetHeight The height of the target off y-axis
+PARAMETER sim_targetHeight REAL 0.0250
+
+PARAMETER sim_targetThickness REAL 0.003
+PARAMETER sim_gasRadius REAL 0.0270
+PARAMETER sim_windowsThickness REAL 0.0003
+PARAMETER sim_windowsRadius REAL 0.01
+PARAMETER sim_plugThickness REAL 0.01
+
+PARAMETER sim_washThickness REAL 0.05
+PARAMETER sim_washRadius REAL 0.15
+
+D sim_vacuumHeight The thickness of the vacuum region in front of the target
+PARAMETER sim_vacuumHeight REAL 0.0200
+
+# Target material defaults set for aluminum at room temperature:
+D sim_rhoTarg Initial target density
+PARAMETER sim_rhoTarg   REAL 2.7
+
+D sim_teleTarg Initial target electron temperature
+PARAMETER sim_teleTarg  REAL 290.11375
+
+D sim_tionTarg Initial target ion temperature
+PARAMETER sim_tionTarg  REAL 290.11375
+
+D sim_tradTarg Initial target radiation temperature
+PARAMETER sim_tradTarg  REAL 290.11375
+
+D sim_zminTarg target minimum zbar allowed
+PARAMETER sim_zminTarg  REAL 0.0
+
+D sim_eosTarg chamber EOS type
+D PARAMETER sim_eosTarg   STRING "eos_tab" ["eos_tab","eos_gam","EOS_USERTYPE1"]
+PARAMETER sim_eosTarg   STRING "eos_tab" ["eos_tab","eos_gam"]
+
+# Chamber material defaults set for Helium at pressure 1.6 mbar:
+D sim_rhoCham Initial chamber density
+PARAMETER sim_rhoCham   REAL 2.655e-07
+
+D sim_teleCham Initial chamber electron temperature
+PARAMETER sim_teleCham  REAL 290.11375
+
+D sim_tionCham Initial chamber ion temperature
+PARAMETER sim_tionCham  REAL 290.11375
+
+D sim_tradCham Initial chamber radiation temperature
+PARAMETER sim_tradCham  REAL 290.11375
+
+D sim_eosCham chamber EOS type
+D PARAMETER sim_eosCham   STRING "eos_gam" ["eos_tab","eos_gam","EOS_USERTYPE1"]
+PARAMETER sim_eosCham   STRING "eos_gam" ["eos_tab","eos_gam"]
+
+
+PARAMETER sim_rhoGas    REAL 2.655e-07
+PARAMETER sim_teleGas   REAL 290.11375
+PARAMETER sim_tionGas   REAL 290.11375
+PARAMETER sim_tradGas   REAL 290.11375
+PARAMETER sim_eosGas    STRING "eos_gam" ["eos_tab","eos_gam"]
+D PARAMETER sim_eosGas    STRING "eos_gam" ["eos_tab","eos_gam","EOS_USERTYPE1"]
+
+PARAMETER sim_rhoLEH    REAL 1.03
+PARAMETER sim_teleLEH   REAL 290.11375
+PARAMETER sim_tionLEH   REAL 290.11375
+PARAMETER sim_tradLEH   REAL 290.11375
+PARAMETER sim_eosLEH    STRING "eos_gam" ["eos_tab","eos_gam"]
+
+PARAMETER sim_rhoWash    REAL 1.03
+PARAMETER sim_teleWash   REAL 290.11375
+PARAMETER sim_tionWash   REAL 290.11375
+PARAMETER sim_tradWash   REAL 290.11375
+PARAMETER sim_eosWash    STRING "eos_gam" ["eos_tab","eos_gam"]
+
+D PARAMETER eos_chamEosType STRING "eos_gam" ["eos_tab","eos_gam","EOS_USERTYPE1"]
+D PARAMETER eos_gasEosType  STRING "eos_gam" ["eos_tab","eos_gam","EOS_USERTYPE1"]
+D PARAMETER eos_targEosType STRING "eos_gam" ["eos_tab","eos_gam","EOS_USERTYPE1"]
+
+PARAMETER eos_chamEosType STRING "eos_gam" ["eos_tab","eos_gam"]
+PARAMETER eos_gasEosType  STRING "eos_gam" ["eos_tab","eos_gam"]
+PARAMETER eos_targEosType STRING "eos_gam" ["eos_tab","eos_gam"]
+
+PARAMETER eos_LEHEosType STRING "eos_gam" ["eos_tab","eos_gam"]
+PARAMETER eos_WashEosType STRING "eos_gam" ["eos_tab","eos_gam"]
+
+

@@ -1,0 +1,7 @@
+# Config file for the Opacity/OpacityMain/Multispecies/method/Tabulated method implementation
+
+D opacity_useLogTables control parameter indicating use of logarithmic opacities
+PARAMETER opacity_useLogTables BOOLEAN TRUE
+
+D op_tableEnergyTolerance allowed difference between table/FLASH group structure
+PARAMETER op_tableEnergyTolerance REAL 1.0e-04

@@ -1,0 +1,21 @@
+#		Configuration file for the Mach 3 wind tunnel with step
+#		problem (Emery, A. E., 1968, JCP, 2, 306; Woodward, P. and
+#		Colella, P., 1984, JCP, 54, 115)
+
+REQUIRES Grid/GridBoundaryConditions/OneRow
+REQUIRES physics/Hydro
+REQUIRES physics/Eos/EosMain/Gamma
+
+
+D               pAmbient        Initial ambient pressure
+D               rhoAmbient      Initial ambient density
+D		windVel 	Inflow velocity (parallel to x-axis)
+
+PARAMETER sim_pAmbient     REAL    1.0
+PARAMETER sim_rhoAmbient   REAL    1.4
+PARAMETER sim_windVel	   REAL	   3.0
+
+# Enough NBOUNDARIES space for taking 12 blocks out of a 2d problem:
+PPDEFINE NBOUNDARIES 16
+D gr_pmrpNboundaries sets value for PARAMESH runtime parameter nboundaries
+PARAMETER gr_pmrpNboundaries INTEGER 16 [16 ... ]

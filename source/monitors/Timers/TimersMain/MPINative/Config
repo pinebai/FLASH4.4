@@ -1,0 +1,7 @@
+D writeStatSummary         Should timers write the max/min/avg values for timers? 
+PARAMETER writeStatSummary       BOOLEAN TRUE
+
+
+D eachProcWritesSummary    Should each process write its summary to its own file?  If true, each process will 
+D                        & write its summary to a file named timer_summary_<processor id>
+PARAMETER eachProcWritesSummary       BOOLEAN FALSE

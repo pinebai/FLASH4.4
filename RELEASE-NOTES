@@ -1,0 +1,781 @@
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!  New in FLASH 4.4 (since FLASH 4.3) - October 2016  !!!!! 
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+* The default Hydro implementation has changed from split PPM to
+  unsplit Hydro. The setup shortcuts +uhd, +unsplitHydro, +usm,
+  +uhd3t, etc. should all work as before (although +uhd or
+  +unsplitHydro can now be omitted). A new shortcut +splitHydro
+  can be used to request a split Hydro implementation.
+  Simulations that previously did not specify a Hydro implementation
+  will now need to use the new shortcut +splitHydro to reproduce
+  previous behavior.
+
+* The default Riemann solver of unsplit Hydro implementations was
+  changed from "Roe" to "HLLC".
+
+* Updated values of many physical constants to 2014 CODATA values.
+  This may cause differences from previously obtained results. The
+  previous values of constants provided by the PhysicalConstants unit
+  can be restored by replacing the file PhysicalCosntants_init.F90
+  with an older version; the version from FLASH4.3 is included as
+  PhysicalConstants_init.F90.flash43. This should only be done to
+  reproduce previous simulation results to bit accuracy.
+
+* An improved Newton-Raphson search in the 3T Multi-type Eos
+  implemention (MTMMMT, including Eos based on IONMIX tables) can
+  prevent some cases of convergence failure by bounding the search.
+  This implementation follows original improvements made to the
+  Helmholtz Eos implementation by Dean Townsley.
+
+* The optimized code variant ("orrery avoidance") implemented in our
+  adapted Paramesh4dev code is now always enabled by default when
+  Paramesh4dev is used, not just when +pm4dev is explicitly specified
+  in setup.
+
+* Added new Poisson solvers (Martin-Cartwright Geometric Multigrid [1]
+  and BiPCGStab [2], which uses multigrid aspreconditioner).
+  Combinations of homogeneous Dirichlet, Neumann, and periodic boundary
+  conditions are supported (although not yet "isolated" boundaries for
+  self-gravity).
+  [1] D. Martin, K. Cartwright. Technical Report No. UCB/ERL M96/66 1996.
+  [2] H. Van Der Vorst. SIAM J. Sci. and Stat. Comput. 1992; 13:2, pp631–644. 
+
+* Added the IncompNS physics unit, which provides a solver for
+  incompressible flow problems on rectangular domains. Multistep and
+  Runge-Kutta explicit projection schemes are used for time integration.
+  These methods are described in [3]-[5]. Implementations on staggered
+  grid arrangement for both uniform grid (UG) and adaptive mesh
+  refinement (AMR) are provided. The new Poisson solvers are employed
+  for AMR cases, whereas the homogeneous trigonometric solver + PFFT can
+  be used in UG. Typical velocity boundary conditions for this problem
+  are implemented.
+  [3] S. Armfield, R. Street. Int. J. Numer. Meth. Fluids 2002; 38, pp255-282.
+  [4] J. Yang, E. Balaras. J. Comput. Phys. 2006; 215:1, pp12-40.
+  [5] M. Vanella, P. Rabenold, E. Balaras. J. Comput. Phys. 2010; 229:18, pp6427-6449.
+
+* The ProtonImaging diagnostics code has been improved. Time resolved
+  proton imaging is now possible, where protons are traced through
+  the domain during several time steps. The original version (tracing
+  of protons during one time step with fixed domain) is still available.
+
+* The code for Radiation-Fluxlimiter-Aware Hydro has been updated.
+  Smoothing of the flux-limiter function within the enhanced Hydro
+  implementation has been implemented and  has been shown effective
+  in increasing stability in 1D simulations.
+
+* Tweaks in handling some of the geometric terms in curvilinear
+  coordinates in unsplit Hydro and MHD.
+
+* New Opacity implementations: BremsstrahlungAndThomson and OPAL.
+  These are for gray opacities.
+
+* In addition to the new FLASH release, the publicly available Python
+  module opacplot2 has received significant development (credit to
+  JT Laune). It can assist in handling EoS/opacity tables, and
+  includes command line tools to convert various table formats to
+  IONMIX and to compare between different tables. More information
+  can be found in the Flash Center's GitHub repository at <URL:
+  https://github.com/flash-center/opacplot2>.
+
+* Some auxiliary units: PlasmaState. See online documentation.
+
+* Some new (or changed) API routines (see online API documentation):
+  Grid_smoothVar, Grid_subcellGeometry
+
+* The code includes stubs for several new code units for which
+  implementations may be added in future releases
+  (diagnostics/ProtonEmission, diagnostics/ThomsonScattering)
+
+* Fixes for various errors, reported and unreported
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!  New in FLASH 4.3 (since FLASH 4.2.2) - July 2015  !!!!! 
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+* Flux-limited-diffusion for radiation (implemented in
+  RadTransMain/MGD) is now available for astrophysical
+  problem setups:
+
+  + MatRad3 (matter+rad [2T] stored in three components)
+    implementations for several Eos types: Gamma, Multigamma,
+    and (experimentally) Helmholtz/SpeciesBased.
+  + Implemented additional terms in FLD Rad-Hydro equations
+    to handle streaming and transition-to-streaming regimes
+    better - including radiation pressure.
+    This is currently available as a variant of the unsplit Hydro
+    solver code, under HydroMain/unsplit_rad .
+    We call this RADFLAH - Radiation Flux-Limiter Aware Hydro.
+    Setup with shortcut +uhd3tR instead of +uhd3t .
+    This has had limited testing, mostly in 1D spherical geometry.
+  + New test setups under Simulation/SimulationMain/radflaHD:
+    BondiAccretion, RadBlastWave
+  + Various fixes in Eos implementations.
+  + New "outstream" diffusion solver boundary condition for
+    streaming limit. (currently 1D spherical only)
+  + Added Levermore-Pomraning flux limiter.
+  + More flexible setup combinations are now easily possible -
+    can combine, e.g., species declared on setup command line
+    with SPECIES in Config files and initialized with
+    Simulation_initSpecies, by setup with ManualSpeciesDirectives=True .
+  + Created an "Immediate" HeatExchange implementation.
+  + EXPERIMENTAL: More accurate implementation of flux limiting
+    (and evaluation of diffusion coeffs): apply limiter to
+    face values, not cell centered values.
+  + EXPERIMENTAL: ExpRelax variant of RadTrans diffusion solver,
+    implements the algorithm described in Gittings et al (2008)
+    for the RAGE code, good for handling strong matter-radiation
+    coupling; for one group (grey) only.
+  + EXPERIMENTAL: Unified variant of RadTrans diffusion solver,
+    for handling several coupled scalar equations with HYPRE.
+  + EXPERIMENTAL: More accurate implementation of flux limiting
+    (and evaluation of diffusion coeffs): apply limiter to
+    face values, not cell centered values.
+
+* New unit ProtonImaging: The new unit is a simulated 
+  diagnostic of the Proton Radiography used in HEDP experiments.
+
+* Gravity can now be used in 3T simulations.
+
+* Laser Energy Deposition:
+  New ray tracing options added based on cubic interpolation techniques.
+  Two variants: 1) Piecewise Parabolic Ray Tracing (PPRT) and 2) Runge
+  Kutta (RK) ray tracing.
+
+* Introduction of new numerical tool units: 1) Interpolate: currently
+  contains the routines to set up and perform cubic interpolations
+  on rectangular 1D,2D,3D grids, 2) Roots: (will) contain all routines
+  that solve f(x)=0 (currently contains quadratic, cubic and quartic
+  polynomial root solvers, 3) Runge Kutta: sets up and performs Runge
+  Kutta integration of arbitrary functions (passed as arguments).
+
+* Unsplit Hydro/MHD: Local CFL factor using CFL_VAR.
+  (Declare a "VARIABLE cfl" and initialize it appropriately.)
+
+* Unsplit Hydro/MHD: Significant reorganization.
+  + reorganized definition and use of scratch data. Memory savings.
+  + use hy_memAllocScratch and friends.
+  + hy_fullRiemannStateArrays (~ instead of FLASH_UHD_NEED_SCRATCHVARS)
+  + New runtime parameter hy_fullSpecMsFluxHandling, default TRUE.
+    resulting in flux-corrected handling for species and
+    mass scalars, including USM.
+  + Use shockLowerCFL instead of shockDetect runtime parameter.
+  + Revived EOSforRiemann option.
+  + More accurate handling of geometric effects close to the origin
+    in 1D spherical geometry.
+
+From External Contributors:
+
+* Sink particle update by Christoph Federrath.
+  Major changes: removed call to fill guardcell
+  in Particles_sinkCreateAccrete.F90. Merged
+  Particles_sinkAccelGasOnSinks.F90 and
+  Particles_sinkAccelSinksOnGas.F90 into a new routine called
+  Particles_sinkAccelGasOnSinksAndSinksOnGas.F90, which computes sinks
+  -> gas and gas -> sinks gravitational interactions in one go/loop
+  for performance enhancement. Added support for off-domain sink
+  particles, i.e., if the user switches on the runtime parameter
+  sink_offDomainSupport, then sink particles remain active when they
+  cross a domain boundary in case of outflow boundary conditions,
+  i.e., they are not deleted. This can be useful for some special
+  applications. The gravity between sinks and between gas and sinks
+  remains active and I/O of sink particles outside the domain also
+  remains active.
+
+* Updates to Barnes-Hut-Tree and related code from Richard Wunsch.
+  TreeCol dummy unit has been replace by TreeRay, which includes
+  an implementation.
+
+* Placeholders fo UserDefined Gravity and Simulation_freeUserArrays stub
+  (John ZuHone)
+
+* Updates for using spherical with split (PPM) hydro solver.
+  (Rodrigo Fernandez - not tested by us)
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!  New in FLASH 4.2.2 (since the FLASH 4.2.1 patch)  !!!!! 
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+* Eliminated unnecessary reconstruction calls for some guard cells
+  in unsplit Hydro and staggered mesh MHD. This affects all unsplit
+  Hydro and MHD calls and can result in a significant speedup,
+  most noticeable for 3D PPM Hydro with small block sizes.
+
+* New implementations for Lee & More (Phys. Fluids 1984, 27, 1273)
+  electron conductivity and heat exchange, contributed by Chris Orban.
+  These implementations can be used instead of their equivalent
+  SpitzerHighZ and Spitzer options and should return more accurate
+  results at low temperatures in 3T simulations.
+  
+* Changes in MagneticResistivity unit: uses calls that pass the
+  full state. Resistive fluxes are now calculated by central
+  differencing. The resistive coefficient is no longer upwinded.
+  Support for cylindrical geometry added to unsplit Hydro
+  implementation.
+
+* Fixed bug where abundances could become negative for 3T setups.
+
+* Updates to sink particle code contributed by C. Federrath.
+
+* Improved time stepping for unsplit Hydro (or MHD) in connection
+  with self-gravity and massive (including sink) particles.
+  In this as in previous releases, the unsplit Hydro invocation
+  calls the gravity solver at the end to apply gravitational
+  accelerations in a time-centered manner; now, the code
+  avoids updating the state of the global "gpot" variable
+  in the course of this gravity solve, if such updating
+  might interfere with the assumptions of Particles_advance.
+  Also, the unsplit Driver_evolveFlash routine now avoids
+  calling the gravity solver again at the end of each time
+  step if the global "gpot" has already been updated earlier
+  in the time step.
+  New optional arguments have been added to the
+  Gravity_potentialListOfBlocks and Gravity_accelOneRow
+  API to support the improved behavior.
+
+* Fixed allocated size of yCenter(:) in unsplit Hydro code for
+  non-Cartesian coordinates.
+  Fixed allocated size of xcent(:) in Noh_unitTest.
+
+* Avoid access to invalid cells when BDRY_VAR is defined.
+  Use stencil large enough for computing velocity divergence
+  if use_hybridOrder is set and for computing flattening
+  coefficients is use_flattening is set. All these changes
+  can affect unsplit Hydro and staggered mesh MHD.
+
+* Improvements to WENO reconstruction in unsplit Hydro and staggered
+  mesh MHD. Introduced new runtime parameter, wenoMethod, that takes
+  wenoMethod = "weno5" (default) or "wenoz".  The WENOZ method is a new
+  reconstruction algorithm based on R. Borges et al., JCP, 227 (2008)
+  3101-3211 and Don & Borges, JCP, 250 (2013) 347-372. Moreover, WENO
+  now works with the usual 4 layers of guard cells and does not require
+  increasing NGUARD to 6.
+
+* Fixed beavior of staggered mesh MHD with the E_upwind flag enabled.
+  Upwinding for the electric field is now always based on the previous
+  time cell-centered state and simulation restarts work
+  transparently.
+
+* Globally reduce CFL factors from different MPI tasks before
+  computing the time step for unsplit Hydro and staggered mesh MHD.
+  This may affect simulations where one of the following applies:
+  (a) RiemannSolver = "HYBRID", (b) use_hybridOrder = .TRUE.;
+  time steps will now be independent of the number of tasks.
+
+* Some array size optimizations for saved fluxes in unsplit Hydro
+  (reduced memory footprint).
+
+* Avoid problems with large (double precision) constants in
+  Config files. Now the forms 1.d99 and 1.e99 can both be used
+  for runtime parameter default values with large exponents.
+
+* Eliminated some unnecessary "include" calls to speed up recompilations.
+  Tweaks to speed up recompilation on MacOS-like file systems.
+
+* Documentation fixes and updates in various source files.
+  Eliminated unused variables in some files and similar cleanup.
+
+* Protect against obscure failure when zmin = zmax in 2.5D simulations.
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!  New in FLASH 4.2.1 (since the FLASH 4.2 release)  !!!!! 
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+* Fix of Gravity problem in unsplit Hydro / MHD:
+  Do not call Eos in auxiliary invocation of guard cell filling.
+
+* Fix of problems in WENO reconstruction in unsplit Hydro / MHD.
+
+* Minor changes to prevent compilation failures in some
+  environments.
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!  New in FLASH 4.2  (since the FLASH 4.0.1 patch)   !!!!! 
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+Added CCSN physics from Sean Couch:
+* Complete nuclear EOS routines (physics/Eos/EosMain/Nuclear)
+* Local neutrino heating/cooling (physics/sourceTerms/Heat/HeatMain/Neutrino)
+* Multispecies neutrino leakage (physics/RadTrans/RadTransMain/NeutrinoLeakage)
+* Multidimensional Core-Collapse supernova test problem
+  (Simulation/SimulationMain/CCSN)
+
+Contributed by Dean Townsley, with code developed by Aaron Jackson and 
+Alan Calder:
+* physics/sourceTerms/Flame unit
+* physics/sourceTerms/Turb unit
+
+* Updates to Barnes Hut tree gravity solver contributed by Richard Wunsch,
+  developed in collaboration with Frantisek Dinnbier (responsible for periodic
+  and mixed boundary conditions) and Stefanie Walch.
+
+Contributed by Christoph Federrath:
+* Significant updates for Sink Particles
+* New 'FromFile' implementation of Stir unit, now sitting beside the older
+  'Generate' implementation
+
+Two new optimizations of the unsplit solvers, Hydro_Unsplit and MHD_StaggeredMesh,
+in source/physics/Hydro/HydroMain/unsplit. These new optimized unsplit solvers
+are the default implementations of the unsplit hydrodynamics and MHD solvers
+in FLASH 4.2. The old version of the unsplit solvers are now found in 
+source/phycis/Hydro/HydroMain/unsplit_old.
+
+Capabilities for 3T magnetohydrodynamics, for the first time.
+
+New magnetic resistivity implementation, Spitzer HighZ, for HEDP problems.
+Extended support for resistivity in cylindrical geometry in the unsplit solver.  
+
+Laser - Async communication (experimental), some reorganization.
+New feature - can run EnergyDeposition once every n time steps.
+
+Updates to HYPRE solver coupling - avoid communicator leak with 2.0.9b.
+Some changes in MGD code for increased correctness.
+
+Threading for unsplit MHD is now available. Both strategies are supported by the new code. 
+
+New, improved multipole Poisson solver, implementing the algorithmic 
+refinements described in Couch, S.M., Graziani, C., and Flocke, N., ApJ 778, 
+181 (2013), http://dx.doi.org/10.1088/0004-637X/778/2/181, 
+http://arxiv.org/abs/1307.3135.  Specifically:
+* Potential calculated at cell faces and averaged to produce cell-centered
+  values, rather than directly at cell centers, so as to eliminate a convergence
+  failure due to cell self-gravity
+* Expansion center located at "square-density-weighted center-of-mass", to 
+  minimize angular power at high multipoles
+
+
+(smaller changes:)
+* The code includes stubs for several additional code units for which
+  we do not include implementations in this release (TreeCol, NSE,
+  SolidMechanics, IncompNS, ImBound). Implementations may be available
+  separately from their authors, and / or may be included in a future
+  FLASH release.
+* Hydro codes avoid unnecessary Eos calls on guard cells, this uses skipSrl
+  flag to Eos_guardCells routine.
+* Improved HLLD solver on MHD degeneracy.
+* PARAMESH's facevariable handling for divergence-free magnetic field
+  enforcement now uses gr_pmrpForceConsistency=.true. and
+  gr_pmrpDivergenceFree=.true. by default.
+* New Grid_bcApplyToRegionMixedGds API allows users to implement boundary
+  conditions that take several types of solution variables (CENTER, FACE)
+  into account.
+
+
+
+Caveats, Limitations
+--------------------
+
+Simulations results obtained with this version of FLASH should not be
+expected to match exactly with results from previous versions.
+Differences can be due to algorithmic changes in solvers, in particular
+the unsplit Hydro and MHD implementations. Results from simulations that
+use the HYPRE library for Diffusion and/or RadTrans operators may be
+slightly different because we invoke HYPRE with slightly different
+parameters (based on suggestions from HYPRE authors).
+Another source of unexpected differences is a change in how we compute
+block boundary coordinates when an AMR Grid starts with more than one
+root block (i.e. any of NBlockX,NBlockY,NBlockZ > 1), leading to
+a difference in rounding errors under some scenarios.
+
+Several code units have provisions for being threaded (OpenMP directives),
+but these have not been recently tested and may require some adaptation.
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!  Fixes to FLASH 4.0 included in FLASH 4.0.1 patch  !!!!! 
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+*** HYPRE Fix ***
+
+* A non-symmetric matrix could be generated by our AMR HYPRE adapter
+  in certain situations, leading to failure to converge in PCG solver.
+  The constructed matrix was not symmetric, because there was a
+  mismatch between the order in which graph edges where created and
+  given values for some cells.  This only affected coarse cells that
+  have finer neighboring cells across more than one cell face.
+
+  Only changed file: source/Grid/GridSolvers/HYPRE/paramesh/gr_hypreSetupGrid.F90
+  r18739
+
+
+*** PFFT Fixes ***
+
+* PFFT fixes for unusual pencil grid configurations.
+  We have found errors when the global number of grid points along a
+  particular dimension is not a multiple of the number of MPI ranks in
+  the PFFT MPI cartesian communicator in the same dimension.  This
+  situation did not always cause problems, but errors could be
+  introduced in particular when using PFFT in combination with
+  Multigrid ("Hybrid Multigrid") as a Poisson solver and when
+  there was
+* a small number of Paramesh blocks per pencil process, and/or
+* a prime number of pencil processes which own Paramesh blocks at
+  the refinement level of the PFFT grid.
+  Fixes apply to DirectSolver and HomBcTrigSolver.
+  Bug reported by: Mateusz Ruszkowski 2013-01-21
+
+* Only MPI ranks which are part of the pencil process grid should
+  access certain arrays.  In the previous implementation there are
+  accesses to unallocated arrays by the MPI ranks which are not part
+  of the PFFT process grid.  The patch avoids undefined behavior.
+
+* Use the correct communicator, pfft_comm(IAXIS) instead of gr_meshComm.
+  Avoids possible hang with DirectSolver.
+
+* Change in gr_pfftInitMetaData.F90 addresses a problem with
+  DirectSolver/SecondOrder_FD3p (not normally used). Added some lines
+  of diagnostic output.
+
+  r18725,r18735,r18736,r18949,r18970,r18972
+  
+  NOTE: For Hybrid Multigrid configurations, we now recommend using
+  the HomBcTrigSolver variant of PFFT. To do this, eliminate explict
+  references to "DirectSolver" and use "PfftSolver=HomBcTrigSolver"
+  on the setup command line.
+
+
+
+*** Barnes-Hut Tree Solver Fixes ***
+* Several bug fixes of the BHTree solver. The bugs could lead to
+  code crashes in case of non-cubic computational domains.
+  Corrected some size calculations.
+  Grid_solvePoisson now uses the poisfact argument.
+  Generalized BHTree code to not assume in some places that the
+  source variable is DENS_VAR.
+  Contributed by: Richard Wunsch, John ZuHone
+  r17970,r18021,r18825,r19041,r19097
+
+
+*** Active Particles Time Advancement Fix ***
+* Fixed a long-standing bug in active particle time advancement, where
+  the old timestep was being used to advance the particle positions
+  instead of the current one. This only affects active particles with
+  mass that are being advanced using the leapfrog time advancement
+  routine (without cosmology).
+  Contributed by: John ZuHone
+  Only changed file: ../ParticlesMain/active/massive/Leapfrog/pt_advanceLeapfrog.F90
+  r18678
+
+
+*** Misc Fixes related to Hydro / MHD ***
+
+* Fixes in explicit viscosity for split (PPM) Hydro.
+  Bug reported by: Elke Roediger 2012-11-07
+  Only changed file: source/physics/Diffuse/DiffuseFluxBased/Diffuse_visc.F90
+  r18212
+
+* Indexing error in guard cell filling for face variables (3D Staggered Mesh MHD).
+  Bug reported by: Mateusz Ruszkowski 2012-11-07
+  Only changed file: .../Paramesh4dev/PM4_package/source/amr_1blk_guardcell_srl.F90
+  r18220
+
+* Modified current calculation when adding resistive fluxes for Staggered Mesh MHD.
+  Only changed file: .../unsplit/MHD_StaggeredMesh/hy_uhd_addResistiveFluxes.F90
+  r18170
+
+
+*** Misc Infrastructure Fixes ***
+
+* Fix for inexact block boundaries.
+  When runtime parameters nBlockX, nBlockY, or nBlockZ are different
+  from 1, rightmost block boundaries are computed in a way that may
+  make their values differ slightly from rightmost domain
+  boundaries. The preferred change (to be included in a future FLASH
+  release) is to change the way block boundaries are computed, but
+  that can introduce unexpected differences in checkpoint files; here
+  we just modify some code to use comparison with a tolerance, instead
+  of testing for exact equality, when detecting boundaries.
+  r18053
+
+* Avoid accessing optional logical dummy arguments when they are not
+  present.  One must not assume short-circuit evaluation of logical
+  expressions in Fortran.
+  Only changed file: source/Grid/GridMain/paramesh/Grid_getListOfBlocks.F90
+  r18896
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!  Original RELEASE-NOTES file for FLASH 4.0 follows  !!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+The Flash Center is pleased to announce the release of the next
+version of the FLASH code, version 4.0. FLASH 4.0 closely follows 
+the architecture of FLASH3. The major changes from FLASH3 are
+several new capabilities in both physics solvers and infrastructure.
+A major part of the new physics capabilities were introduced to
+support simulations of high-energy-Density physics (HEDP).
+FLASH4 also includes four major capabilities contributed by our
+external users. 
+
+The major new capabalities in FLASH4 that were not included in FLASH 3
+are (the ones marked with **  are external contributions, please see the
+User's Guide for references and appropriate credit for these capabilities): 
+
+* 3T capabilities in the split and unsplit Hydro
+  solvers. There is support for non-cartesian geometry, and
+  the unsplit solver also supports stationary rigid bodies.
+
+* Upwind biased constrained transport (CT) scheme in the unsplit
+  staggered mesh MHD solver.
+
+* Full corner transport upwind (CTU) algorithm in the unsplit
+  hydro/MHD solver \item Cylindrical geometry support in the unsplit
+  staggered mesh MHD solver on UG and AMR. A couple of MHD
+  simulation setups using cylindrical geometry. 
+
+* Radiation diffusion
+ 
+* Conduction 
+
+* Heat exchange.
+
+* Multi-Temperature Multi-Material Multi-Table Eos
+
+* Opacities, ability to use hot and cold opacities.
+
+* The laser drive with threading for performance
+
+* A new multipole solver
+
+* Ability to replicate mesh for multigroup diffusion or other
+  similar applications.
+
+* OpenMP threading of several important solvers at both
+  coarse-grain (one block per thread) and fine-grain (threads within a
+  block) levels.
+
+* Ability to add particles during evolution
+
+* Limited support for Chombo as an alternative AMR mesh package
+
+* Several new HEDP simulation setups.
+
+* Hybrid-PIC    **
+
+* Barnes-Hut tree based gravity solver  **
+
+* Primordial chemistry  **
+ 
+* Sink Particles  **
+
+
+The release also includes several new features and resolves many bugs
+found in previous releases up to 4-beta. The modifications since the
+4-beta release include 
+
+* The HEDP capabilities of the code have been exercised more and are
+  therefore more robust.
+
+* Laser 3D in 2D ray tracing has been added. The code traces rays in a real 3D
+  cylindrical domain using a computational 2D cylindrical domain and is based
+  on a polygon approximation to the angular part. 
+
+* New public interface Particles_addNew, which makes it possible to
+  add particles to a simulation during evolution. (It has been
+  possible to include multiple different types of particles in the
+  same simulation since release FLASH 3.1.)
+
+* Fixed reading of particles from checkpoint in -nofbs uniform grid. 
+
+* All I/O implementations now support writing/reading 0
+  particles and/or 0 blocks. 
+
+* Support for particles and face variables in the same PnetCDF simulation.
+
+* Optimization of Initialization.
+  Eliminated redundant calls to orrery at simulation startup.
+  Ability to run the orrery in a reduced communicator in order to
+  speed up FLASH initialization.  The original orrery can be restored
+  by setting the parameter use_reduced_orrery to .false..  
+
+* Ability to avoid unnecessary calls of guard cell filling.
+  Ability to avoid a subsequent guard cell fill when a unit declares
+  that it only reads mesh data.  It is off by default, but can be
+  turned on by setting the parameter reduceGcellFills to .true..  
+
+There are a few other changes from the beta release :
+
+* Removed custom region code and Grid API routines. 
+
+* PARAMESH4DEV has become the default Grid implementation.  
+
+* PARAMESH4DEV does not need an amr_runtime_parameters file
+  any more.  The corresponding parameters are now set in
+  a parameter file, like other FLASH runtime parameters. 
+
+The following features are provided on an EXPERIMENTAL basis.
+They may only work in limited circumstances and/or have not
+yet been tested to our satisfaction.
+
+* New EXPERIMENTAL configuration tool, "setup_alt".  
+  Intended to be a compatible replacement for "setup" with
+  a cleaner structure.
+
+* Electron-Entropy Advection in Hydro for non-ideal Eos.  
+
+* New cubic and quartic equation solvers have been added and
+  are ready to be used. They return only real cubic and quartic roots.
+  The routines are in the flashUtilites/general section and their
+  names are: 'ut_cubicRealRoots' and 'ut_quarticRealRoots'. 
+
+
+Known Limitations in FLASH 4.0:
+
+* The new multipole solver is missing the ability to treat
+  a non-zero minimal radius for spherical geometries, and the
+  ability to specify a point mass contribution to the potential.
+
+* Usage of the Split diffusion solver in FLASH4 is only for debugging
+  purposes and not generally recommended for usage.
+  Split diffusion has not been tested with PARAMESH.
+
+* Some configurations of hydrodynamic test problems with Chombo grid
+  show worse than expected mass and total energy conservation.  Please
+  see the Chombo section in Hydro chapter of the FLASH user guide for
+  details.
+
+* We have experienced the following abort when running
+  IsentropicVortex problem with Chombo Grid:
+  "MayDay: TreeIntVectSet.cpp:1995: Assertion `bxNumPts != 0' failed. !!!"
+  We have been in contact with the Chombo team to resolve this
+  issue.
+
+* The Absoft compiler produces erroneous results with optimization in
+  gr_markRefineDerefine routine. The results are fine without
+  optimization. There may be other files with similar behavior, but
+  this is the only one we are aware of.
+
+* The PG compiler fails to compile source files which contain OpenMP
+  parallel regions that reference threadprivate data.  This happens in
+  the threaded versions of the Multipole solver and the within block
+  threaded version of split hydro.  A workaround is to remove
+  "default(none)" from the OpenMP parallel region.
+
+* The unsplit MHD solver doesn't support the mode "use_GravPotUpdate=.true."
+  for 1D when self-gravity is utilized. The solver will still work if it
+  is set to be .false. In this case the usual reconstruction schemes 
+  will be used in computing the gravitational accelerations at the 
+  predictor step (i.e., at the n+1/2 step) rather than calling the
+  Poisson solver to compute them.
+
+* The -index-reorder setup flag does not work in all the configurations.
+  If you wish to use it please contact the FLASH team. 
+
+
+The release is available at:
+
+http://flash.uchicago.edu/site/flashcode/
+
+A stripped-down version of FLASH3 that may be downloaded without a
+license is also available at the same site. 
+This version is essentially the FLASH framework without any
+implementations.  The Flash Center is also providing support for
+"add-ons" to the code. Please see the section on "What's new in this
+release" in the first chapter of the User's Guide for details.
+Also, a collection of stand-alone mini-apps are available for download
+under the general FLASH license from the same site. 
+
+Additionally, the FLASH testing software FlashTest, which became
+available with the FLASH3 beta release, continues to be available for
+download at:
+
+http://flash.uchicago.edu/site/flashcode/
+
+Many, but not all parts of FLASH4 are backwards-compatible with
+FLASH2. There are no architectural changes from FLASH3 to FLASH4. The
+Flash code group has written extensive documentation 
+detailing how to make the transition from FLASH2 to FLASH3 as smooth
+as possible.  The user should look to:
+
+http://flash.uchicago.edu/site/flashcode/user_support/
+
+The website also contains other documentation including
+a User's Guide and a developer's section.  A new feature in FLASH3
+documentation is the online description of the public interface
+routines to various code units.
+
+
+FLASH should be portable to most UNIX-like operating systems with a 
+python interpreter, Fortran 90 compiler,  C compiler, and MPI library. 
+It has been used in production mode, or undergone regular testing on            
+the following platforms. 
+
+ 
+-- IBM BlueGene/P and Power5
+
+   compilers : FORTRAN90 : xlf90
+
+               C         : xlc
+
+-- CRAY-XT4 system
+
+   compilers : FORTRAN90 : Portland Group Fortran 90
+
+               C         : gcc
+
+-- Linux
+
+   compilers: FORTRAN90 : Portland Group Fortran 90
+                     
+                          Lahey/Fujitsu Fortran 95 
+
+                          Intel Fortran Compiler
+    
+                          gFortran (known to have trouble with versions
+                              before 4.1.0)
+
+                          NAGWare Fortran 95
+
+                          Absoft 
+   
+              C         : gcc
+
+                          Portland Group C Compiler
+ 
+                          Intel C++ Compiler       
+ 
+-- MAC-OSX
+
+   compilers : FORTRAN90 : gFortran
+
+               C         : gcc
+
+
+
+FLASH uses libraries such as MPI for communication, Paramesh
+and Chombo for AMR, HDF5 or PnetCDF for IO, and Hypre for linear
+solvers. The source for Paramesh 4 is included in two variants in the 
+distribution; the versions included in this release are
+equivalent to Paramesh 4.0 and Paramesh 4.1, respectively.
+Some earlier versions of HDF5, for example 1.6.1, have been known to
+have issues with FLASH. We recommend using version 1.6.2 or higher of
+the HDF5 library.
+
+Two options are available to visualize FLASH output data. One is 
+Fidlr, the IDL based visualization tool included in the
+distribution. Fidlr requires IDL version 6.1 or higher to work correctly.
+A more extensive option is VisIt, a visualization tool from LLNL,
+available from
+
+http://flash.uchicago.edu/site/flashcode/visit and
+https://wci.llnl.gov/codes/visit
+
+Visit supports FLASH data output Format.Information on using
+Visit with FLASH is contained on the website above.
+
+Development of the FLASH Code was funded by the DOE-supported
+ASC/Alliance Center for Astrophysical Thermonuclear Flashes,
+and continues to be funded by DOE NNSA and NSF.  We
+acknowledge support received from Lawrence Livermore National
+Laboratory and the University of Chicago.
+
+All publications resulting from the use of the FLASH Code must
+acknowledge the Flash Center for Computational Science.
+  Addition of the following text to the paper acknowledgments
+will be sufficient.
+
+         "The software used in this work was in part developed by the
+         DOE-supported Flash Center for Computational Science
+         at the University of Chicago."
+

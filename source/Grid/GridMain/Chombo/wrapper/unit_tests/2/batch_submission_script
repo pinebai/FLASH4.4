@@ -1,0 +1,2 @@
+#!/bin/bash
+qsub -A SupernovaModels -q prod-devel --env BG_MAPPING=TXYZ:BG_COREDUMPONERROR=1:MPIRUN_LABEL=1 -t 0:05:00 -n 1 --proccount 4 --mode vn `pwd`/unit_test_2

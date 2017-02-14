@@ -1,0 +1,41 @@
+
+physics/sourceTerms/Stir
+    useStir [BOOLEAN] CONSTANT [FALSE]
+        Runtime switch for turning stirring on/off
+
+physics/sourceTerms/Stir/StirMain
+    st_computeDt [BOOLEAN] [FALSE]
+        whether to restrict time step based on stirring
+    useStir [BOOLEAN] [TRUE]
+        Runtime switch for turning stirring on/off
+
+physics/sourceTerms/Stir/StirMain/FromFile
+    st_computeDt [BOOLEAN] [FALSE]
+        whether to restrict time step based on stirring
+    st_infilename [STRING] ["forcingfile.dat"]
+        Valid Values: Unconstrained
+        file containing the stirring time sequence
+
+physics/sourceTerms/Stir/StirMain/Generate
+    st_decay [REAL] [.1]
+        Valid Values: Unconstrained
+        correlation time for driving
+    st_energy [REAL] [.01]
+        Valid Values: Unconstrained
+        energy input/mode
+    st_freq [INTEGER] [1]
+        Valid Values: Unconstrained
+        the frequency of stirring
+    st_reproducible [BOOLEAN] [FALSE]
+
+    st_saveReproducible [BOOLEAN] [FALSE]
+
+    st_seed [INTEGER] [2]
+        Valid Values: Unconstrained
+        random number generator seed
+    st_stirmax [REAL] [62.8]
+        Valid Values: Unconstrained
+        maximum stirring *wavenumber*
+    st_stirmin [REAL] [31.4]
+        Valid Values: Unconstrained
+        minimum stirring *wavenumber*

@@ -1,0 +1,258 @@
+!!****ih* source/Grid/GridMain/paramesh/Paramesh2/physicaldata_dynamic
+!!
+!! NAME
+!!
+!!    physicaldata (dynamic)
+!!
+!!
+!! SYNOPSIS
+!!
+!!   physicaldata_init(maxblocks_l, nxb_l, nyb_l, nzb_l, ndim_l)
+!!   physicaldata_init(integer,integer,integer,integer,integer)
+!!   
+!!
+!! DESCRIPTION
+!!
+!!   Initialize physical data and allocate memory where appropriate
+!!
+!! ARGUMENTS
+!!   maxblocks_l   maximum number of blocks
+!!   nxb_l         blocksize along x
+!!   nyb_l         blocksize along y
+!!   nzb_l         blocksize along z
+!!   ndim_l        number of dimensions
+!!***
+
+module physicaldata
+  implicit none
+#include "flash_defines.fh"
+
+  integer, save      :: nxb, nyb, nzb, maxblocks
+  integer, save      :: ndim
+
+  integer, parameter :: nvar       = FLASH_NUMBER_OF_VARIABLES
+  integer, parameter :: nvar2      = 4
+  integer, parameter :: nvarsm     = 2
+  integer, parameter :: nguard     = FLASH_NUMBER_OF_GUARD_CELLS
+  integer, parameter :: nfluxvar   = FLASH_NUMBER_OF_FLUXES
+  integer, parameter :: nfluxes    = max(1,nfluxvar)
+  integer, parameter :: nedgevar   = 1
+  integer, parameter :: nedges     = max(1,nedgevar)
+
+  integer, parameter :: l2p5d      = 0
+  integer, parameter :: iface_off  = 0
+  integer, parameter :: nfacevar   = 0
+  integer, parameter :: nbndvar    = max(1,nfacevar)
+  integer, parameter :: nbndmax    = max(nbndvar,nfluxes)
+  integer, parameter :: maxlevels  = 20
+
+  integer, save      :: il_bnd,iu_bnd
+  integer, save      :: jl_bnd,ju_bnd
+  integer, save      :: kl_bnd,ku_bnd
+  integer, save      :: nxlo, nylo, nzlo, nxhi, nyhi, nzhi
+
+  integer, save      :: k1d, k2d, k3d
+  integer, save      :: maxblocksf
+  integer, save      :: nbedges
+  logical, save      :: NPGFlag = .false.  
+  integer, save      :: maxdim
+  integer, save      :: gc_off_x,gc_off_y,gc_off_z
+  integer, save      :: len_block
+  integer, save      :: len_blockfx,len_blockfy,len_blockfz
+  integer, save      :: maxblocksfl
+  real,    save      :: red_f 
+  integer, save      :: maxblockse
+  integer, save      :: len_block_bndx,len_block_bndy,len_block_bndz
+  integer, save      :: len_block_ex,  len_block_ey,  len_block_ez
+
+
+  real, save, allocatable, target, DIMENSION(:,:,:,:,:)  :: unk
+  real, save, allocatable, target, DIMENSION(:,:,:)      :: unk2
+  real, save, allocatable, target, DIMENSION(:,:,:)      :: unk3
+  real, save, allocatable, target, DIMENSION(:,:,:)      :: unk4
+  real, save, allocatable, target, DIMENSION(:,:,:,:,:)  :: unksm
+
+  real, save, allocatable, target, DIMENSION(:,:,:,:,:)  :: facevarx
+  real, save, allocatable, target, DIMENSION(:,:,:,:,:)  :: facevary
+  real, save, allocatable, target, DIMENSION(:,:,:,:,:)  :: facevarz
+
+  real, save, allocatable, target, DIMENSION(:,:,:,:,:)   :: flux_x
+  real, save, allocatable, target, DIMENSION(:,:,:,:,:)   :: flux_y
+  real, save, allocatable, target, DIMENSION(:,:,:,:,:)   :: flux_z
+
+  real, save, allocatable, target, DIMENSION(:,:,:,:,:)   :: tflux_x
+  real, save, allocatable, target, DIMENSION(:,:,:,:,:)   :: tflux_y
+  real, save, allocatable, target, DIMENSION(:,:,:,:,:)   :: tflux_z
+
+  real, save, allocatable, target, DIMENSION(:,:,:,:,:)   :: bedge_facex_y
+  real, save, allocatable, target, DIMENSION(:,:,:,:,:)   :: bedge_facex_z
+  real, save, allocatable, target, DIMENSION(:,:,:,:,:)   :: bedge_facey_x
+  real, save, allocatable, target, DIMENSION(:,:,:,:,:)   :: bedge_facey_z
+  real, save, allocatable, target, DIMENSION(:,:,:,:,:)   :: bedge_facez_x
+  real, save, allocatable, target, DIMENSION(:,:,:,:,:)   :: bedge_facez_y
+
+  real, save, allocatable, target, DIMENSION(:,:,:,:)     :: recvarx1e
+  real, save, allocatable, target, DIMENSION(:,:,:,:)     :: recvary1e
+  real, save, allocatable, target, DIMENSION(:,:,:,:)     :: recvarz1e
+  real, save, allocatable, target, DIMENSION(:,:,:,:)     :: recvarx2e
+  real, save, allocatable, target, DIMENSION(:,:,:,:)     :: recvary2e
+  real, save, allocatable, target, DIMENSION(:,:,:,:)     :: recvarz2e
+
+
+  real, save, allocatable, target, DIMENSION(:,:,:,:,:)   :: tbedge_facex_y
+  real, save, allocatable, target, DIMENSION(:,:,:,:,:)   :: tbedge_facex_z
+  real, save, allocatable, target, DIMENSION(:,:,:,:,:)   :: tbedge_facey_x
+  real, save, allocatable, target, DIMENSION(:,:,:,:,:)   :: tbedge_facey_z
+  real, save, allocatable, target, DIMENSION(:,:,:,:,:)   :: tbedge_facez_x
+  real, save, allocatable, target, DIMENSION(:,:,:,:,:)   :: tbedge_facez_y
+
+  real, save, allocatable, target, DIMENSION(:,:,:,:)     :: recvarx1
+  real, save, allocatable, target, DIMENSION(:,:,:,:)     :: recvary1
+  real, save, allocatable, target, DIMENSION(:,:,:,:)     :: recvarz1
+  real, save, allocatable, target, DIMENSION(:,:,:,:)     :: bndtempx1
+  real, save, allocatable, target, DIMENSION(:,:,:,:)     :: bndtempy1
+  real, save, allocatable, target, DIMENSION(:,:,:,:)     :: bndtempz1
+
+  real,    save, allocatable, dimension(:)                  :: time_loc
+  logical, save, allocatable, dimension(:)                  :: ldtcomplete
+  real,    save,              dimension(maxlevels)          :: dtlevel
+
+
+contains
+  subroutine physicaldata_init(maxblocks_l, nxb_l, nyb_l, nzb_l, ndim_l)
+    integer :: maxblocks_l, nxb_l, nyb_l, nzb_l, ndim_l
+
+    maxblocks   = maxblocks_l
+    nxb         = nxb_l
+    nyb         = nyb_l
+    nzb         = nzb_l
+    ndim        = ndim_l
+
+    nbedges     = ndim*2**(ndim-1)
+    
+    k1d         = 1
+    k3d         = (ndim-1)/2
+    k2d         = ndim/2
+
+    maxdim      = max(nxb,nyb,nzb)
+
+    gc_off_x = mod(nxb,2)
+    gc_off_y = mod(nyb,2)
+    gc_off_z = mod(nzb,2)
+
+    il_bnd   = 1
+    iu_bnd   = nxb+2*nguard
+    jl_bnd   = 1
+    ju_bnd   = nyb+2*nguard*k2d
+    kl_bnd   = 1
+    ku_bnd   = nzb+2*nguard*k3d
+
+    nxlo     = nguard+1
+    nylo     = nguard*k2d+1
+    nzlo     = nguard*k3d+1
+    nxhi     = nguard+nxb
+    nyhi     = nguard*k2d+nyb
+    nzhi     = nguard*k3d+nzb
+
+    maxblocksf = 1+(maxblocks-1)*min(1,nfacevar) 
+    len_block  = iu_bnd*ju_bnd*ku_bnd*nvar
+
+    len_blockfx=(nxb+2*nguard+1)*(nyb+2*nguard*k2d)*(nzb+2*nguard*k3d)
+    len_blockfy=(nxb+2*nguard)*(nyb+2*nguard+1)*(nzb+2*nguard*k3d)
+    len_blockfz=(nxb+2*nguard)*(nyb+2*nguard)*((nzb+2*nguard)*k3d+1)
+
+
+    if (ndim == 1) then
+       red_f = 0.25
+    else if (ndim == 2) then
+       red_f = 0.5
+    else if (ndim == 3) then
+       red_f = 1.0
+    end if
+
+    maxblocksfl = 1+(maxblocks-1)*min(1,nfluxvar)
+    maxblockse  = 1+(maxblocks-1)*min(1,nedgevar) 
+
+
+    len_block_bndx = 2*(nyb+2*nguard*k2d)* (nzb+2*nguard*k3d)
+    len_block_bndy = 2*(nxb+2*nguard*k2d)* (nzb+2*nguard*k3d)
+    len_block_bndz = 2*(nxb+2*nguard)*(nyb+2*nguard)
+    len_block_ex   = 2*(nyb+k2d+2*nguard*k2d)*(nzb+k3d+2*nguard*k3d)
+    len_block_ey   = 2*(nxb+1+2*nguard)*(nzb+k3d+2*nguard*k3d)
+    len_block_ez   = 2*(nxb+1+2*nguard)*(nyb+k2d+2*nguard)
+  
+    allocate(unk(nvar,il_bnd:iu_bnd,jl_bnd:ju_bnd,kl_bnd:ku_bnd,maxblocks))
+    allocate(unk2(nvar2,il_bnd:iu_bnd,maxblocks))
+    allocate(unk3(nvar2,jl_bnd:ju_bnd,maxblocks))
+    allocate(unk4(nvar2,kl_bnd:ku_bnd,maxblocks))
+    allocate(unksm(nvarsm,nxlo:nxhi,nylo:nyhi,nzlo:nzhi,maxblocks))
+    
+    
+    if (ndim == 1) then
+       allocate(flux_x(nfluxes,1:2,jl_bnd:ju_bnd,kl_bnd:ku_bnd,maxblocksfl))
+       allocate(flux_y(nfluxes,il_bnd:iu_bnd,1:2,kl_bnd:ku_bnd,1))
+       allocate(flux_z(nfluxes,il_bnd:iu_bnd,jl_bnd:ju_bnd,1:2,1))
+       allocate(tflux_x(nfluxes,1:2,jl_bnd:ju_bnd,kl_bnd:ku_bnd,maxblocksfl))
+       allocate(tflux_y(nfluxes,il_bnd:iu_bnd,1:2,kl_bnd:ku_bnd,1))
+       allocate(tflux_z(nfluxes,il_bnd:iu_bnd,jl_bnd:ju_bnd,1:2,1))
+    else if (ndim == 2) then
+       allocate(flux_x(nfluxes,1:2,jl_bnd:ju_bnd,kl_bnd:ku_bnd,maxblocksfl))
+       allocate(flux_y(nfluxes,il_bnd:iu_bnd,1:2,kl_bnd:ku_bnd,maxblocksfl))
+       allocate(flux_z(nfluxes,il_bnd:iu_bnd,jl_bnd:ju_bnd,1:2,1))
+       allocate(tflux_x(nfluxes,1:2,jl_bnd:ju_bnd,kl_bnd:ku_bnd,maxblocksfl))
+       allocate(tflux_y(nfluxes,il_bnd:iu_bnd,1:2,kl_bnd:ku_bnd,maxblocksfl))
+       allocate(tflux_z(nfluxes,il_bnd:iu_bnd,jl_bnd:ju_bnd,1:2,1))
+    else if (ndim == 3) then
+       allocate(flux_x(nfluxes,1:2,jl_bnd:ju_bnd,kl_bnd:ku_bnd,maxblocksfl))
+       allocate(flux_y(nfluxes,il_bnd:iu_bnd,1:2,kl_bnd:ku_bnd,maxblocksfl))
+       allocate(flux_z(nfluxes,il_bnd:iu_bnd,jl_bnd:ju_bnd,1:2,maxblocksfl))
+       allocate(tflux_x(nfluxes,1:2,jl_bnd:ju_bnd,kl_bnd:ku_bnd,maxblocksfl))
+       allocate(tflux_y(nfluxes,il_bnd:iu_bnd,1:2,kl_bnd:ku_bnd,maxblocksfl))
+       allocate(tflux_z(nfluxes,il_bnd:iu_bnd,jl_bnd:ju_bnd,1:2,maxblocksfl))
+    end if
+    
+    
+    allocate(bedge_facex_y(nedges,1:2,jl_bnd:ju_bnd+1,kl_bnd:ku_bnd+1,1))
+    allocate(bedge_facex_z(nedges,1:2,jl_bnd:ju_bnd+1,kl_bnd:ku_bnd+1,1))
+    allocate(bedge_facey_x(nedges,il_bnd:iu_bnd+1,1:2,kl_bnd:ku_bnd+1,1))
+    allocate(bedge_facey_z(nedges,il_bnd:iu_bnd+1,1:2,kl_bnd:ku_bnd+1,1))
+    allocate(bedge_facez_x(nedges,il_bnd:iu_bnd+1,jl_bnd:ju_bnd+1,1:2,1))
+    allocate(bedge_facez_y(nedges,il_bnd:iu_bnd+1,jl_bnd:ju_bnd+1,1:2,1))
+    allocate(recvarx1e(nedges,1:2,jl_bnd:ju_bnd+1,kl_bnd:ku_bnd+1))
+    allocate(recvary1e(nedges,il_bnd:iu_bnd+1,1:2,kl_bnd:ku_bnd+1))
+    allocate(recvarz1e(nedges,il_bnd:iu_bnd+1,jl_bnd:ju_bnd+1,1:2))
+    allocate(recvarx2e(nedges,1:2,jl_bnd:ju_bnd+1,kl_bnd:ku_bnd+1))
+    allocate(recvary2e(nedges,il_bnd:iu_bnd+1,1:2,kl_bnd:ku_bnd+1))
+    allocate(recvarz2e(nedges,il_bnd:iu_bnd+1,jl_bnd:ju_bnd+1,1:2))
+
+
+    allocate(tbedge_facex_y(nedges,1:2,jl_bnd:ju_bnd+1,kl_bnd:ku_bnd+1,1))
+    allocate(tbedge_facex_z(nedges,1:2,jl_bnd:ju_bnd+1,kl_bnd:ku_bnd+1,1))
+    allocate(tbedge_facey_x(nedges,il_bnd:iu_bnd+1,1:2,kl_bnd:ku_bnd+1,1))
+    allocate(tbedge_facey_z(nedges,il_bnd:iu_bnd+1,1:2,kl_bnd:ku_bnd+1,1))
+    allocate(tbedge_facez_x(nedges,il_bnd:iu_bnd+1,jl_bnd:ju_bnd+1,1:2,1))
+    allocate(tbedge_facez_y(nedges,il_bnd:iu_bnd+1,jl_bnd:ju_bnd+1,1:2,1))
+
+    allocate(recvarx1(nbndmax,1:2,jl_bnd:ju_bnd,kl_bnd:ku_bnd))
+    allocate(recvary1(nbndmax,il_bnd:iu_bnd,1:2,kl_bnd:ku_bnd))
+    allocate(recvarz1(nbndmax,il_bnd:iu_bnd,jl_bnd:ju_bnd,1:2))
+    allocate(bndtempx1(nfluxes,1:2,jl_bnd:ju_bnd,kl_bnd:ku_bnd))
+    allocate(bndtempy1(nfluxes,il_bnd:iu_bnd,1:2,kl_bnd:ku_bnd))
+    allocate(bndtempz1(nfluxes,il_bnd:iu_bnd,jl_bnd:ju_bnd,1:2))
+
+  
+    allocate(facevarx(nbndvar,il_bnd:iu_bnd+1,jl_bnd:ju_bnd, kl_bnd:ku_bnd,maxblocksf))
+    allocate(facevary(nbndvar,il_bnd:iu_bnd,jl_bnd:ju_bnd+k2d, kl_bnd:ku_bnd,maxblocksf)) 
+    allocate(facevarz(nbndvar,il_bnd:iu_bnd,jl_bnd:ju_bnd,kl_bnd:ku_bnd+k3d,maxblocksf))
+    
+    allocate(ldtcomplete(maxblocks))
+    allocate(time_loc(maxblocks))
+    
+  end subroutine physicaldata_init
+end module physicaldata
+
+
+
+
+
+

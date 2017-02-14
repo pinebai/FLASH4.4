@@ -1,0 +1,75 @@
+#!/usr/bin/env python
+
+import flash.flashfile as ff
+import numpy as np
+from optparse import OptionParser
+
+def symmetry(varlist, expr, filename, relative=False, minval=None):
+    ffile = ff.FlashFile2d(filename)
+
+    # Evaluate the input expression:
+    vardict = {}
+    vardict.update(np.__dict__)
+
+    for var in varlist:
+        vardict[var] = ffile.uniformGrid(var)
+    arr = eval(expr, globals(), vardict)
+
+    # Apply minimum value:
+    if minval != None: arr[arr < minval] = minval
+
+    # Compute relative error:
+    if relative:
+        errmat = np.abs(arr - arr.transpose())/(np.abs(arr) + np.abs(arr.transpose()))
+    else:
+        errmat = np.abs(arr - arr.transpose())
+    minidx = np.unravel_index(errmat.argmax(),errmat.shape)
+    
+    xmin = ffile.realScalar("xmin", rtp=True)
+    xmax = ffile.realScalar("xmax", rtp=True)
+    ymin = ffile.realScalar("ymin", rtp=True)
+    ymax = ffile.realScalar("ymax", rtp=True)
+    dx   = (xmax-xmin)/errmat.shape[1] 
+    dy   = (ymax-ymin)/errmat.shape[1]
+    
+    coord = (minidx[0] * dx + dx/2, minidx[1] * dy + dy/2)
+
+    return errmat.max(), minidx, coord, arr[minidx[0],minidx[1]]
+
+# Parse options:
+parser = OptionParser()
+parser.add_option("--expr", dest="expr", default=None,
+                  help="Expression to generate array")
+parser.add_option("--relative", dest="relative", default=False,
+                  action="store_true",
+                  help="Compute relative error instead of absolute")
+parser.add_option("--minval", dest="minval", default=None,
+                  help="Minimum value", type="float")
+options, args = parser.parse_args()
+
+var = args.pop(0)
+var = var.split(",")
+
+expr = options.expr
+if expr == None:
+    expr = var[0]
+
+if options.relative == False:
+    errstr = "Max Abs Err"
+else:
+    errstr = "Max Rel Err"
+
+# Process the files:
+print "# Variables  = %s" % (",".join(var))
+print "# Expression = %s" % (expr)
+print "# %s  %s  %s  %6s  %6s  %s  %s" % ("File Name".center(23), errstr.center(13),
+                                          "Cell Val".center(13),
+                                          "I", "J", "X (cm)".center(13), "Y (cm)".center(13))
+print "# " + "".join(99*["-"])
+
+for filename in args:
+    maxval, minidx, coord, cellval = symmetry(var, expr, filename, relative=options.relative, minval=options.minval)
+
+    print "%25s  %13.6e  %13.6e  %6i  %6i  %13.6e  %13.6e" % (filename, maxval, cellval,
+                                                              minidx[0], minidx[1], 
+                                                              coord[0], coord[1])

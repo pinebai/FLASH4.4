@@ -1,0 +1,53 @@
+# Configuration File for setup StirFromFile
+#
+# For example applications see Federrath et al. 2008, ApJ 688, L79,
+# Federrath et al. (2010, A&A 512, A81)
+#
+# Use the external Fortran tool in
+# source/Simulation/SimulationMain/StirFromFile/forcing_generator/
+# to generate a driving time sequence before running this setup.
+# This generates a file that is read by the module StirFromFileMain to drive turbulence
+# with a prescribed forcing pattern and time sequence (fully reproducible turbulent driving).
+
+REQUIRES Driver
+REQUIRES physics/sourceTerms/Stir/StirMain/FromFile
+REQUIRES physics/sourceTerms/Polytrope/PolytropeMain
+REQUIRES physics/Eos
+REQUIRES Grid
+
+# Magnetic Resistivity
+#REQUIRES physics/materialProperties/MagneticResistivity/MagneticResistivityMain
+# Viscosity
+#REQUIRES physics/materialProperties/Viscosity/ViscosityMain
+# Diffusive time step calculation
+#REQUIRES physics/Diffuse/DiffuseMain
+
+
+D      c_ambient       reference sound speed
+D      rho_ambient     reference density
+D      magnetic        using magnetic field in z direction
+D      MagField_z      magnitude of constant B-field in z
+
+PARAMETER c_ambient      REAL     1.e0
+PARAMETER rho_ambient    REAL     1.e0
+PARAMETER magnetic       BOOLEAN  FALSE
+PARAMETER MagField_z     REAL     1.e0
+
+# additional variables
+# magnitude of vorticity and divergence of velocity
+VARIABLE mvrt
+VARIABLE dvvl
+# VARIABLE rtrf
+# VARIABLE dvrf
+
+# Tracer Particles
+#PARTICLETYPE passive INITMETHOD lattice MAPMETHOD weighted ADVMETHOD passive
+#REQUIRES Particles/ParticlesMain
+#REQUESTS Particles/ParticlesMain/passive/Euler
+#REQUESTS Particles/ParticlesMapping/meshWeighting/CIC
+#REQUESTS Particles/ParticlesInitialization/Lattice
+#REQUESTS IO/IOMain
+#REQUESTS IO/IOParticles
+#PARTICLEPROP pden REAL
+#PARTICLEMAP TO pden FROM VARIABLE dens
+#PARAMETER particle_attribute_1 STRING "pden"

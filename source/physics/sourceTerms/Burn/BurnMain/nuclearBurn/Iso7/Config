@@ -1,0 +1,13 @@
+#	Configuration file for the "iso7" minimal alpha-chain burn network.
+#  Originally said for flash2
+#  REQUIRES materials/composition/iso7 OR materials/composition/wddef
+#  However, LBR can't find a wddef in the source tree so I'm going with iso7
+
+SPECIES  HE4     #Properties   A=4.,  Z=2.,  Eb=28.29603)
+SPECIES  C12     #Properties   A=12., Z=6.,  Eb=92.16294)
+SPECIES  O16     #Properties   A=16., Z=8.,  Eb=127.62093)
+SPECIES  NE20    #Properties  A=20., Z=10., Eb=160.64788)
+SPECIES  MG24    #Properties  A=24., Z=12., Eb=198.25790)
+SPECIES  SI28    #Properties  A=28., Z=14., Eb=236.53790)
+SPECIES  NI56    #Properties  A=56., Z=28., Eb=484.00300)
+

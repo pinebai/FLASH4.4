@@ -1,0 +1,39 @@
+
+physics/sourceTerms/Burn
+    useBurn [BOOLEAN] [FALSE]
+        shall I burn?
+
+physics/sourceTerms/Burn/BurnMain
+    enucDtFactor [REAL] [1.e30]
+        Valid Values: Unconstrained
+        Limit timestep to limit total energy deposited by burning is kept
+        artificially high to effectively turn off limiting by default
+    useShockBurn [BOOLEAN] [FALSE]
+        Is burning allowed within shocks?
+
+physics/sourceTerms/Burn/BurnMain/nuclearBurn
+    algebra [INTEGER] [1]
+        Valid Values: 1 to 2
+        choice of linear algebra package & 1 = MA28 ;  2 = GIFT
+    nuclearDensMax [REAL] [1.0E14]
+        Valid Values: 0 to INFTY
+        Max burning density
+    nuclearDensMin [REAL] [1.0E-10]
+        Valid Values: 0 to INFTY
+        Min burning density
+    nuclearNI56Max [REAL] [1.0]
+        Valid Values: 0 to INFTY
+        Max Ni56 mass frac. for burning
+    nuclearTempMax [REAL] [1.0E12]
+        Valid Values: 0 to INFTY
+        Max burning temperature
+    nuclearTempMin [REAL] [1.1E8]
+        Valid Values: 0 to INFTY
+        Min burning temperature
+    odeStepper [INTEGER] [1]
+        Valid Values: 1 to 2
+        choice of ode time stepper 1 = Bader-Deuflhard variable order 2 =
+        Rosenbrock 4th order
+    useBurnTable [BOOLEAN] [FALSE]
+        choice of rate evaluation FALSE = analytic rates TRUE = table
+        interpolation

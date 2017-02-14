@@ -1,0 +1,29 @@
+#       Configuration file for 2D Field Loop MHD problem
+#	James Stone, www.astro.princeton.edu/~jstone
+
+REQUIRES physics/Hydro/HydroMain
+REQUIRES physics/Eos/EosMain/Gamma
+
+D   tiny	    Threshold value used for numerical zero
+D   rx	            Field loop advection angle = atan(rx/ry)
+D   ry
+D   xCtr	    x center of the computational domain
+D   yCtr	    y center of the computational domain
+D   zCtr	    z center of the computatoinal domain
+D   U_initial	    Strength of initial vector fields
+D   Az_initial	    Strength of initial z-component of magnetic vector potential
+D   R_fieldLoop	    Radius of field loop
+
+PARAMETER tiny         REAL     1.e-16
+PARAMETER rx	       REAL     1.
+PARAMETER ry           REAL     2.
+PARAMETER xCtr	       REAL     1.
+PARAMETER yCtr	       REAL     0.5
+PARAMETER zCtr	       REAL     0.0
+PARAMETER U_initial    REAL     2.23606796749979
+PARAMETER Az_initial   REAL     0.001
+PARAMETER R_fieldLoop  REAL     0.3
+PARAMETER velz_initial REAL     0.0
+
+VARIABLE vecz                  # vector potential Az
+VARIABLE curz                  # vector potential jz

@@ -1,0 +1,218 @@
+!!****if* source/physics/sourceTerms/Burn/BurnMain/nuclearBurn/Aprox13/bn_burner
+!!
+!! NAME
+!!  
+!!  bn_burner
+!!
+!! SYNOPSIS
+!! 
+!!  bn_burner(real(in)  :: tstep,
+!!       real(in)  :: temp,
+!!       real(in)  :: density,
+!!       real(in)  :: xIn(:),
+!!       real(out) :: xOut(:),
+!!       real(out) :: sdotRate)
+!!
+!!  
+!! DESCRIPTION
+!!
+!!  aprox13, the second network installed in flash 1.5
+!!  like the original iso13 network, but adds 
+!!  (a,p)(p,g) sequences through fe52 to ni56 and neutrino losses
+!!  Routine bn_burner drives the aprox13 network  
+!!     given time step tstep, temperature temp, density density, and 
+!!     composition xIn, this routine returns the burned composition xOut
+!!     and the energy generation rate sdotRate.
+!!
+!! ARGUMENTS
+!!
+!!  tstep:    time step 
+!!  temp:     temperature
+!!  density:  density
+!!  xIn:      composition in
+!!  xOut:     composition out
+!!  sdotRate: energy generation rate
+!!
+!! PARAMETERS
+!!
+!!  algebra     integer  specifies choice of algebra ma28=1 or gift=2
+!!  odeStepper  integer  specifies integration method bader-deuflhard=1 or rosenbrock=2
+!!  useTable    integer  generate raw rates using table approximation=1 or direct method=2
+!!
+!! NOTES
+!!  Within the network setup process for aprox13
+!!  routine bn_network sets up the odes 
+!!  routine bn_networkDenseJakob sets up the dense aprox13 jacobian 
+!!  routine bn_networkSparsePointers builds the nonzero locations for networkSparseJakob
+!!  routine bn_networkSparseJakob sets up the sparse aprox13 jacobian 
+!!  routine bn_networkRates generates the raw reaction rates for routine aprox13
+!!  routine bn_networkTable generates the raw rates using table interpolation
+!!  routine bn_networkScreen applies screening corrections to the raw rates
+!!
+!!  within the general network integration process:
+!!  this file uses 8 routines to drive the integration of 
+!!  nuclear reaction networks with 2 choices of the time stepper
+!!  and 2 choices for the linear algebra.
+!!  All of these following routines are "steper" in bn_netIntegrate()
+!!  routine bn_netIntegrate drives the integration of the odes
+!!  routine bn_baderMa28 drives a bader-deuflhard step with ma28 algebra
+!!  routine bn_baderStepMa28 is a bader-deuflhard stepper with ma28 algebra
+!!  routine bn_baderGift drives a bader-deuflhard step with gift algebra
+!!  routine bn_baderStepGift is a bader-deuflhard stepper with ma28 algebra
+!!  routine bn_pzExtr does extrapolations for any of the simpr_* routines
+!!  routine bn_rosenMa28 drives a rosenbrock step with ma28 algebra
+!!  routine bn_rosenGift drives a rosenbrock step with gift algebra
+!!
+!!***
+
+
+subroutine bn_burner(tstep,temp,density,xIn,xOut,sdotRate)
+
+  use bn_interface, ONLY:  bn_azbar, bn_sneutx
+  use bnIntegrate_interface, ONLY:  bn_netIntegrate
+!! DEV In future, should rename this files to be bn_networkTab, bn_networkRat, bn_networkScreen
+!! DEV and create interfaces for them.  Then bn_burner could be generic (I think)
+!! use bnNetwork_itnerface, ONLY: bn_networkTable, bn_networkRates, bn_networkScreen
+
+  use Burn_dataEOS, ONLY:  btemp, den
+  use Burn_data, ONLY: bn_algebra, bn_odeStepper, bn_useBurnTable, &
+       & xmass, ymass, xoktot, xbadtot, bion, sneut, aion
+
+  implicit none
+
+#include "constants.h"
+#include "Flash.h"
+
+
+  ! arguments
+  real, intent(IN)               :: tstep,temp,density
+  real, intent(OUT)              :: sdotRate
+  real, intent(IN), dimension(NSPECIES) :: xIn   
+  real, intent(OUT), dimension(NSPECIES):: xOut
+
+  ! local variables
+
+  external         bn_baderMa28, bn_baderGift,bn_rosenMa28,bn_rosenGift       
+  external         bn_network, bn_networkSparseJakob, bn_networkSparsePointers, bn_networkDenseJakob
+
+  integer            :: i,ii,k,nok,nbad,kount
+  integer, parameter :: tdim = 10
+  integer, parameter :: iprint = 1   ! set to 1 for more diagnostics
+  integer, parameter :: nostore = 0
+
+  ! DEV what is tdim?  Some sort of dimension for time
+  real            ::  stptry,stpmin,ys2(NSPECIES),           &
+       &                 ttime(tdim),elem(NSPECIES,tdim)
+  real, parameter :: avo  = 6.0221367e23
+  real, parameter :: ev2erg = 1.602e-12
+  real, parameter :: conv = ev2erg*1.0e6*avo
+  real, parameter :: tol    = 1.0e-5
+  real, parameter :: beg = 0.0e0
+  real, parameter :: odescal = 1.0e-6      
+
+
+  !..set the the material and network variables
+  btemp = temp
+  den  = density
+
+  do i=1,NSPECIES
+     xmass(i) = xIn(i)
+  enddo
+
+  call bn_azbar()   !! generates ymass
+
+  do i=1,NSPECIES
+     ys2(i) = ymass(i)
+  enddo
+
+
+  !! get the reaction rates from a table or by formula
+
+  if (bn_useBurnTable) then
+     call bn_networkTable()
+  else
+     call bn_networkRates()
+  endif
+  !!  some sort of corrections to ratraw to produce ratdum
+  call bn_networkScreen(ymass)
+
+
+  !..set the time step variables for a single point burn
+  stptry = tstep
+  stpmin = stptry * 1.0e-20
+
+
+  !..bader-deuflhard integration
+  if (bn_odeStepper .eq. 1) then
+
+     !..with ma28 algebra
+     if (bn_algebra .eq. 1) then
+        call bn_netIntegrate(beg,stptry,stpmin,tstep,ys2,                &
+             &              tol,beg,nostore,                            &
+             &              ttime,elem,tdim,NSPECIES,tdim,NSPECIES,         &
+             &              nok,nbad,kount,odescal,iprint,              &
+             &              bn_network,bn_networkSparseJakob,bn_networkSparsePointers,bn_baderMa28)
+        !!  last line is derivs,    jakob,   bjakob,  steper
+
+
+        !..with gift algebra
+     else if (bn_algebra .eq. 2) then
+        call bn_netIntegrate(beg,stptry,stpmin,tstep,ys2,                &
+             &              tol,beg,nostore,                            &
+             &              ttime,elem,tdim,NSPECIES,tdim,NSPECIES,         &
+             &              nok,nbad,kount,odescal,iprint,              &
+             &              bn_network,bn_networkDenseJakob,bn_networkSparsePointers,bn_baderGift)
+
+
+     end if
+
+
+     !..rosenbrock integration
+  else if (bn_odeStepper .eq. 2) then
+
+     !..with ma28 algebra
+     if (bn_algebra .eq. 1) then
+        call bn_netIntegrate(beg,stptry,stpmin,tstep,ys2,                &
+             &              tol,beg,nostore,                            &
+             &              ttime,elem,tdim,NSPECIES,tdim,NSPECIES,         &
+             &              nok,nbad,kount,odescal,iprint,              &
+             &              bn_network,bn_networkSparseJakob,bn_networkSparsePointers,bn_rosenMa28)
+
+
+        !..with gift algebra
+     else if (bn_algebra .eq. 2) then
+        call bn_netIntegrate(beg,stptry,stpmin,tstep,ys2,                &
+             &              tol,beg,nostore,                            &
+             &              ttime,elem,tdim,NSPECIES,tdim,NSPECIES,         &
+             &              nok,nbad,kount,odescal,iprint,              &
+             &              bn_network,bn_networkDenseJakob,bn_networkSparsePointers,bn_rosenGift)
+
+
+     endif
+  endif
+
+
+  xoktot  = xoktot + real(nok)
+  xbadtot = xbadtot + real(nbad)
+
+
+  !..the average energy generated over the time step
+  sdotRate = 0.0e0
+  do k=1,NSPECIES
+     sdotRate = sdotRate + (ys2(k) - ymass(k)) * bion(k)
+  enddo
+  sdotRate = sdotRate * conv/tstep
+
+
+  !..take into neutrino losses
+  call bn_sneutx()
+  sdotRate = sdotRate - sneut
+
+
+  !..update the composition 
+  do i=1,NSPECIES
+     xOut(i)  = ys2(i) * aion(i)
+  enddo
+  return
+
+end subroutine bn_burner

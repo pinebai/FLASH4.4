@@ -1,0 +1,29 @@
+#CCOMP = gcc
+CCOMP   = ${MPI_PATH}/bin/mpicc
+CFLAGS = -c -O2 -Wall
+LFLAGS = -o
+CDEFINES   = -DNO_HDF4 -DNO_NCDF -DNEED_MPI
+
+MPI_PATH   = /Users/weide/flashdeps/mpich2-1.3.2p1
+HDF5PATH   = /Users/weide/flashdeps/hdf5-1.8.6
+
+##CFLAGS = -c -I/sw/include -I/opt/local/var/macports/software/hdf5/1.6.9_0/opt/local/include -DH5_USE_16_API -I/usr/local/pkgs/pnetcdf-1.2.0/gcc/include -DNO_HDF4 -DNO_NCDF
+CFLAGS += -I${MPI_PATH}/include -I$(HDF5PATH)/include -DH5_USE_16_API -I$(NCMPI_PATH)/include 
+
+#LIBS = -L/sw/lib -L/opt/local/var/macports/software/hdf5/1.6.9_0/opt/local/lib -lhdf5 -lm
+##LIBS = -L/usr/local/pkgs/pnetcdf-1.2.0/gcc/lib -L/opt/local/var/macports/software/hdf5/1.6.9_0/opt/local/lib -L/sw/lib -lhdf5 -lm
+LIBS += -L$(HDF5PATH)/lib -lhdf5 -lz -lm 
+LIBS += -L${MPI_PATH}/lib -lmpich
+
+EXENAME = sfocu
+OBJS = main.o sfocu.o flash_reader.o namecmp.o flash_reader_hdf5.o flash_reader_chombo.o sameblock.o options.o
+
+.SUFFIXES: .c .o
+.c.o :
+	$(CCOMP) $(CFLAGS) $(CDEFINES) $*.c
+
+default: $(OBJS)
+	$(CCOMP) $(OBJS) $(LIBS) $(LFLAGS) $(EXENAME)
+
+clean:
+	rm $(OBJS) $(EXENAME)

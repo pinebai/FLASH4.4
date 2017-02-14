@@ -1,0 +1,9 @@
+# Config file for the cool module
+
+# cool/radloss
+
+DEFAULT CoolMain
+
+D useCool  Runtime control for turning off cooling
+PARAMETER useCool  BOOLEAN FALSE
+

@@ -1,0 +1,105 @@
+#       runtime parameters, nxb = nyb = nzb = 64
+#       128^3 grid, gamma = 7/5
+
+xmax            = 1.
+xmin            = 0.
+ymax            = 1.
+ymin            = 0.
+zmax            = 1.
+zmin            = 0.
+
+basenm          = "driventurb_3d_"
+
+restart         = .false.
+
+
+# file numbers - if you restart you have to change the checkpointFileNumber
+checkpointFileNumber	= 0
+plotFileNumber		= 0
+particleFileNumber	= 0
+
+# set the time between dumps
+checkpointFileIntervalTime  = 0.5
+plotFileIntervalTime	    = 0.25
+particleFileIntervalTime    = 0.25	
+
+# set the number of steps between dumps
+checkpointFileIntervalStep  = 0
+plotFileIntervalStep	    = 0
+particleFileIntervalStep    = 0	
+
+
+
+useParticles= .true.
+pt_numX = 5
+pt_numY = 5 
+pt_numZ = 5 
+pt_maxPerProc=1000
+
+
+
+plot_var_1  = "dens"
+plot_var_2  = "pres"
+plot_var_3  = "temp"
+plot_var_4  = "velx"
+plot_var_5  = "vely"
+plot_var_6  = "velz"
+
+plot_grid_var_1 = "mvrt"
+
+gamma           = 1.4
+
+cfl             = 0.5
+nend            = 20
+tmax            = 20.0
+
+xl_boundary_type      = "periodic"
+xr_boundary_type      = "periodic"
+yl_boundary_type      = "periodic"
+yr_boundary_type      = "periodic"
+zl_boundary_type      = "periodic"
+zr_boundary_type      = "periodic"
+
+st_stirmax           = 25.1327
+st_stirmin           =  6.2832
+st_energy            =  5.E-6
+st_decay             =  0.5
+st_freq              = 1
+eintSwitch          = 0.
+
+dtinit = 1.e-5
+dtmin = 1.e-12    # This parameter must be << minimum timestep
+                  #  in order to avoid numerical instability
+
+smallt = 1.e-15
+smalle = 1.e-10
+
+#   AMR refinement parameters
+#lrefine_max = 6
+#refine_var_1 = "dens"
+
+#These parameters below are only necessary for the Uniform Grid
+
+iProcs = 2      #num procs in i direction
+jProcs = 2      #num procs in j direction
+kProcs = 1 
+
+# When using UG, iProcs, jProcs and kProcs must be specified.
+# These are the processors along each of the dimensions
+
+#FIXEDBLOCKSIZE mode ::
+# When using fixed blocksize, iGridSize etc are redundant in
+# runtime parameters. These quantities are calculated as 
+# iGridSize = NXB*iprocs
+# jGridSize = NYB*jprocs
+# kGridSize = NZB*kprocs
+
+#NONFIXEDBLOCKSIZE mode ::
+# iGridSize etc must be specified. They constitute the global
+# number of grid points in the physical domain without taking 
+# the guard cell into account. The local blocksize is calculated
+# as iGridSize/iprocs  etc.
+ 
+iGridSize = 32
+jGridSize = 32
+kGridSize = 32

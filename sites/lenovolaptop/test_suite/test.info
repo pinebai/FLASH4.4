@@ -1,0 +1,63 @@
+<lenovolaptop>
+  <UnitTest>
+    <Eos>
+      <Multigamma>
+        <Chombo>
+          <AMR>
+            <3d>
+              setupName: unitTest/Eos/Multigamma
+              setupOptions: -auto -3d +chombo_amr +noio -debug
+              numProcs: 1
+              parfiles: <pathToSimulations>/unitTest/Eos/Multigamma/chombo_3d.par
+            </3d>
+          </AMR>
+          <UG>
+            <3d>
+              setupName: unitTest/Eos/Multigamma
+              setupOptions: -auto -3d +chombo_ug +noio -debug
+              numProcs: 1
+              parfiles: <pathToSimulations>/unitTest/Eos/Multigamma/chombo_3d.par
+            </3d>
+          </UG>
+        </Chombo>
+      </Multigamma>
+    </Eos>
+    <PFFT_PoissonFD>
+      <Chombo>
+        <UG>
+          <3d>
+            setupName: unitTest/PFFT_PoissonFD
+            setupOptions: -auto -3d +chombo_ug +noio -debug
+            numProcs: 4
+            pathToParfiles: <pathToSimulations>/unitTest/PFFT_PoissonFD
+            parfiles: <pathToParfiles>/test_UG_4p_3d_16cube.par <pathToParfiles>/test_UG_4p_3d_32cube.par <pathToParfiles>/test_UG_4p_3d_64cube.par <pathToParfiles>/test_UG_4p_3d_128cube.par
+          </3d>
+        </UG>
+      </Chombo>
+    </PFFT_PoissonFD>
+  </UnitTest>
+  <Comparison>
+    <Sedov>
+      <Chombo>
+        <AMR>
+          <2d>
+            setupName: Sedov
+            setupOptions: -auto +chombo_amr -debug
+            numProcs: 4
+            shortPathToBenchmark: <siteDir>/2010-12-13/<buildDir>/<runDir>/<chkMax>
+            parfiles: <pathToSimulations>/Sedov/chombo_2d.par
+          </2d>
+        </AMR>
+        <UG>
+          <2d>
+            setupName: Sedov
+            setupOptions: -auto +chombo_ug -debug
+            numProcs: 4
+            shortPathToBenchmark: <siteDir>/2010-12-13/<buildDir>/<runDir>/<chkMax>
+            parfiles: <pathToSimulations>/Sedov/chombo_2d.par
+          </2d>
+        </UG>
+      </Chombo>
+    </Sedov>
+  </Comparison>
+</lenovolaptop>

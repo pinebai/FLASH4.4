@@ -1,0 +1,31 @@
+#       Configuration file for MHD Current Sheet problem
+#	James Stone, www.astro.princeton.edu/~jstone
+
+REQUIRES physics/Hydro/HydroMain
+REQUIRES physics/Eos/EosMain/Gamma
+
+# -----------------  For Resistive MHD setup ------------------#
+REQUIRES physics/materialProperties/Conductivity/ConductivityMain/Constant-diff
+REQUIRES physics/materialProperties/Viscosity/ViscosityMain
+REQUIRES physics/materialProperties/MagneticResistivity/MagneticResistivityMain
+#------------------ End of Resistive MHD setup ----------------#
+REQUIRES physics/Diffuse/DiffuseFluxBased
+
+D   tiny	    Threshold value used for a numerical zero
+D   beta            Initial beta plasma
+D   B0              Magnitude of By
+D   U0              Amplitude of U (x-velocity)
+
+PARAMETER tiny         REAL     1.e-16
+PARAMETER beta         REAL     0.2
+PARAMETER B0           REAL     1.0
+PARAMETER U0           REAL     0.1
+
+
+VARIABLE magp                 	# magnetic pressure
+VARIABLE totp			# total pressure (pres + magp)
+VARIABLE beta			# plasma beta
+VARIABLE vecz			# vector potential Az
+VARIABLE curx			# current density jx
+VARIABLE cury			# current density jy
+VARIABLE curz			# current density jz

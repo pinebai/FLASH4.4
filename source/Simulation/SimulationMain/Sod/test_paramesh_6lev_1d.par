@@ -1,0 +1,78 @@
+#	Runtime parameters for the Sod shock-tube problem.
+
+#	Parameters for initial model
+
+#		Density, pressure, and velocity on either side of interface
+
+sim_rhoLeft	= 1.
+sim_rhoRight	= 0.125
+sim_pLeft		= 1.
+sim_pRight		= 0.1
+sim_uLeft		= 0.
+sim_uRight		= 0.
+
+sim_peleLeft  = 0.7999999992
+sim_pionLeft  = 0.2
+sim_peleRight = 0.08
+sim_pionRight = 0.02
+# Set radiation energy to be really low:
+sim_pradLeft  = 0.8e-09
+sim_pradRight = 0.0
+
+eosModeInit = "dens_ie_gather" # "eos_nop"
+
+#		Angle and position of interface relative to x and y axes
+
+sim_xangle		= 0.
+sim_yangle		= 90.
+sim_posn		= 0.5
+
+###############
+#             #
+#     EOS     #
+#             #
+############### 
+#		Gas ratio of specific heats
+
+gamma           = 1.4
+#gammaIon        = 1.6666666666666667 # changing this is not effective for multiTemp/Gamma Eos
+gammaEle        = 1.3333333333333333
+
+eosMode ="dens_ie_gather"
+eos_combinedTempRule           = 0
+
+# Set material properties:
+eos_singleSpeciesA = 1.0
+eos_singleSpeciesZ = 4.0
+
+#	Computational volume parameters
+
+
+#		Size of computational volume
+
+xmin		= 0.
+xmax		= 1.
+
+#		Boundary conditions
+
+xl_boundary_type      = "outflow"
+xr_boundary_type      = "outflow"
+
+#	Simulation (grid, time, I/O) parameters
+
+cfl		= 0.8
+lrefine_max     = 6
+refine_var_1    = "dens"
+basenm          = "sod_1d_6lev_"
+restart         = .false.
+plot_var_1 = "dens"
+checkpointFileIntervalTime          = 0.2
+nend            = 1000
+tmax            = 0.2
+convertToConsvdInMeshInterp = .true.
+
+run_comment	= "1D Sod problem"
+log_file	= "sod_1d_6lev.log"
+eintSwitch     = 1.e-4
+
+hy_eosModeAfter                        = "dens_ie_gather"

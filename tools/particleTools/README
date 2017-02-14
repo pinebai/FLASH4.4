@@ -1,0 +1,15 @@
+README for the flash particle sorter:
+
+Provides a consistient ordering for particles in a set of flash output files
+based upon the pattern in the template file given.  This will usually be the
+first file in a simulation.
+
+USAGE:
+
+<mpi running information> partSort <filename w/o number> <template file number> <first file to sort> <last file to sort>
+
+an example would be:
+
+    mpirun -np 4 partSort driventurb_hdf5_part_ 0 1 4
+
+This will sort files 1-4 using file 0 as the template.

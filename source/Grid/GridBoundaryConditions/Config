@@ -1,0 +1,8 @@
+# Config file for source/Grid/GridBoundaryConditions
+
+REQUIRES Grid/GridMain
+
+# In case both Flash2HSE and OneRow are included, give files
+# from the latter subtree preference in case of multiple
+# implementation of the same interface.
+CHILDORDER Flash2HSE Flash3HSE OneRow

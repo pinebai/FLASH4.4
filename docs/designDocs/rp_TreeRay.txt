@@ -1,0 +1,49 @@
+
+physics/TreeRay
+    useTreeRay [BOOLEAN] [FALSE]
+        Whether TreeRay calculations should be performed.
+
+physics/TreeRay/TreeRayMain
+    tr_bhErrControl [STRING] ["erad_cell"]
+        Valid Values: "erad_cell", "erad_tot", "mion_tot"
+
+    tr_bhMaxDist [REAL] [1e99]
+        Valid Values: Unconstrained
+
+    tr_bhRayRadRes [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    tr_bhRelErr [REAL] [0.01]
+        Valid Values: Unconstrained
+
+    tr_boundary_type [STRING] ["periodic"]
+        Valid Values: Unconstrained
+
+    tr_ilFinePix [INTEGER] [4]
+        Valid Values: Unconstrained
+
+    tr_ilNNS [INTEGER] [25]
+        Valid Values: Unconstrained
+
+    tr_ilNPhi [INTEGER] [50]
+        Valid Values: Unconstrained
+
+    tr_ilNR [INTEGER] [50]
+        Valid Values: Unconstrained
+
+    tr_ilNTheta [INTEGER] [25]
+        Valid Values: Unconstrained
+
+    tr_nSide [INTEGER] [1]
+        Valid Values: Unconstrained
+
+    useTreeRay [BOOLEAN] [TRUE]
+        Whether TreeRay calculations should be performed.
+
+physics/TreeRay/TreeRayMain/OpticalDepth
+    tr_odCDTOIndex [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    tr_odMaxDist [REAL] [1e99]
+        Valid Values: Unconstrained
+

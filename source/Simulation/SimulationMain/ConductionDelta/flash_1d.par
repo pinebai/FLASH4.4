@@ -1,0 +1,121 @@
+
+#	Runtime parameters for the ConductionDelta problem.
+
+#		Density and perturbation information
+
+orientation     = 1
+rho_init	= 1.
+sim_tempBackground = 1.0
+sim_Q           = 1.0E-5
+
+sim_xctr		= 1.0 #0.5
+sim_yctr		= 1.0 #0.5
+sim_zctr		= 1.0 #0.5
+
+smallP = 1.0e-50
+smallE = 1e-22
+
+#		Gas ratio of specific heats
+
+gamma           = 1.4
+
+cond_constantIsochoric = 2.0E9
+useConductivity = .true.
+
+
+#		Viscosity information
+useViscosity = .true.
+visc_whichCoefficientIsConst = 1
+diff_visc_nu = 120
+diff_visc_mu = 240
+
+#               Artificial viscosity
+
+cvisc           = 0.
+##cvisc           = 5.0e4
+
+hy_fluxRepresentation = "fluxes"
+
+#	Computational volume parameters
+
+#		Grid dimensionality and geometry
+
+geometry = cartesian
+
+#		Size of computational volume
+
+xmin		= 0.
+xmax		= 4.
+
+ymin		= 0.
+ymax		= 2.
+
+zmin		= 0.
+zmax		= 2.
+
+#		Boundary conditions
+
+xl_boundary_type = "periodic"
+xr_boundary_type = "periodic"
+
+yl_boundary_type = "periodic"
+yr_boundary_type = "periodic"
+
+zl_boundary_type = "periodic"
+zr_boundary_type = "periodic"
+
+
+#	Simulation (grid, time, I/O) parameters
+
+cfl		= 0.45
+dt_diff_factor  = 0.45 #0.70
+##dtmin           = 1e-8 # 4.059820E-05
+basenm          = "conduction_"
+restart         = .false.
+checkpointFileIntervalTime          = 4e-5   # 0.00197
+checkpointFileIntervalStep          = 20
+nend            = 1000
+
+restart                 = .false.
+checkpointFileNumber    = 0
+plotFileNumber          = 0
+##plotFileIntervalTime    = .0002
+
+
+# initial time offset; see Simulation_initBlock.F90 for details
+
+toffset         = .001
+tmax            = .0024
+#tmax            = .20
+
+run_comment     = "Linear conduction test problem."
+log_file        = "conduction.log"
+eintSwitch     = 1.e-4
+
+# AMR refinement parameters
+lrefine_min     = 3
+lrefine_max     = 3
+refine_var_1    = "temp"
+refine_cutoff_1 = 0.0015
+derefine_cutoff_1 = 0.0005
+refine_filter_1 = 1e-10
+
+nblockx         = 4
+#nblocky         = 1
+#nblockz         = 1
+
+# Uniform grid specific parameters
+# see note below for more explanation
+
+#iProcs = 1	#number or procs in the i direction	
+jProcs = 2
+kProcs = 2
+
+# These parameter are needed only in non fixed blocksize mode
+iGridSize = 64   # global number of points along IAXIS
+jGridSize = 64
+kGridSize = 64
+
+plot_var_1 = "temp"
+plot_var_2 = "dens"
+plot_var_3 = "pres"

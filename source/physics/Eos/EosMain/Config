@@ -1,0 +1,69 @@
+#	Equation of state main child unit
+
+# 	EosMain/Gamma	     - Perfect-gas equation of state
+#	EosMain/Multigamma - Mixture of perfect gases with different gammas
+#	EosMain/Helmholtz  - Timmes' high-temperature eos using interpolation
+#			     from a Helmholtz free energy table
+#       EosMain/Degenerate - not provided in FLASH4 beta release
+#       EosMain/Tabulated  - Eos based on tables (currently only for multiTemp)
+#       EosMain/multiTemp/*  - multiTemp (i.e., currently 3-Temperature)
+#                              variants of various implementations
+
+DEFAULT Gamma
+PPDEFINE FLASH_EOS
+EXCLUSIVE Gamma multiTemp Degenerate
+EXCLUSIVE Multigamma multiTemp Degenerate
+EXCLUSIVE Helmholtz multiTemp Degenerate
+
+USESETUPVARS threadBlockList, threadWithinBlock
+
+#It is possible the following EOSs are not thread safe and so we
+#CONFLICT for now.
+IF threadBlockList
+   CONFLICTS physics/Eos/EosMain/Gamma/RHD
+ENDIF
+
+IF threadWithinBlock
+   CONFLICTS physics/Eos/EosMain/Tabulated
+   CONFLICTS physics/Eos/EosMain/multiTemp
+   CONFLICTS physics/Eos/EosMain/Gamma/RHD
+ENDIF
+
+#We only provide a runtime parameter for threading within the block.
+#There is no block list to thread in EOS - the block list is in Hydro.
+#Whatever thread strategy we choose we need a thread safe EOS.
+IF threadWithinBlock
+   PARAMETER threadEosWithinBlock BOOLEAN TRUE
+ELSE
+   PARAMETER threadEosWithinBlock BOOLEAN FALSE
+ENDIF
+
+
+REQUIRES physics/Eos/localAPI
+
+D eintSwitch   a rarely used switch which ensures that internal energy calculations
+D &            maintain sufficient precision. Important only if energyTotal is dominated by energyKinetic.
+D &            If (energyInternal < eintSwitch*energyKinetic) then
+D &            some routines (Eos/Helmholtz, Hydro/hy_updateSoln) will NOT calculate energyInternal by subtraction,
+D &            but rather through direct calculation.
+PARAMETER    eintSwitch   REAL    0.0   
+
+
+D gamma       Ratio of specific heats for gas (available ONLY for Eos/Gamma)
+PARAMETER gamma         REAL    1.6667 [0.0 to ] 
+
+D eos_singleSpeciesA       Nucleon number for the gas (available ONLY for Eos with single species)
+PARAMETER eos_singleSpeciesA         REAL    1.00  [0.0 to ]
+
+D eos_singleSpeciesZ       Proton number for the gas (available ONLY for Eos with single species)
+PARAMETER eos_singleSpeciesZ         REAL    1.00  [0.0 to ]
+
+D eos_logLevel       Control verbosity of messages from the Eos unit.
+D & See Eos.h for relevant EOS_LOGLEVEL_* definitions.
+PARAMETER eos_logLevel               INTEGER  700  [0 to ]
+
+D eos_entrEleScaleChoice selects a scale variant for representing electron entropy.
+D & See code in eos_idealGamma for the meaning of the various choices.
+D & The choice that corresponds most closely to the Sackur-Tetrode equation 
+D & in physical units should be 3, closely followed by 2.
+PARAMETER eos_entrEleScaleChoice     INTEGER 6	[1 to 8]

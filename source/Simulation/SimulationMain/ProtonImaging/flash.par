@@ -1,0 +1,126 @@
+# Runtime parameters for the proton imaging unit test.
+
+basenm               = "omega2015PI_"    # has to match the basename of the checkpoint file
+useProtonImaging     = .true.
+checkpointFileIntervalStep = 0
+checkpointFileNumber =  22
+restart              = .true.
+useConductivity      = .false.
+useDiffuse           = .false.
+useEnergyDeposition  = .false.
+useHeatexchange      = .false.
+useOpacity           = .false.
+useHydro             = .false.
+
+##########################
+#  PARTICLES PARAMETERS  #
+##########################
+
+keepLostParticles  = .false.
+
+###############################
+#  PROTON IMAGING PARAMETERS  #
+###############################
+
+pi_maxProtonCount            = 1000000
+pi_printBeams                = .true.
+pi_printMain                 = .true.
+pi_printDetectors            = .true.
+pi_printProtons              = .false.
+pi_cellStepTolerance         = 1.0e-06
+pi_cellWallThicknessFactor   = 1.0e-06
+pi_ignoreElectricalField     = .true.        # default true
+pi_recordOffscreenProtons    = .false.       # default false
+pi_screenProtonBucketSize    = 1000000
+pi_RungeKuttaMethod          = "CashKarp45"  # is default, others -> BogShamp23,Fehlberg34
+pi_recalculateCellData       = .true.
+pi_opaqueBoundaries          = .true.
+
+pi_numberOfDetectors = 1
+
+pi_detectorCenterX_1           = 0.0         # irrelevant (detector aligned wrt beam)
+pi_detectorCenterY_1           = 0.0         # irrelevant (detector aligned wrt beam)
+pi_detectorCenterZ_1           = 0.0         # irrelevant (detector aligned wrt beam)
+pi_detectorNormalX_1           = 0.0         # irrelevant (detector aligned wrt beam)
+pi_detectorNormalY_1           = 0.0         # irrelevant (detector aligned wrt beam)
+pi_detectorNormalZ_1           = 0.0         # irrelevant (detector aligned wrt beam)
+pi_detectorSideLength_1        = 10.0
+pi_detectorSideTiltingAngle_1  = 0.0
+pi_detectorSideTiltingAxis_1   = "z"
+pi_detectorAlignWRTbeamNr_1    = 1           # place detector along beam 1 path
+pi_detectorDistance2BeamLens_1 = 28.0
+#pi_protonDeterminism           = .true.
+
+pi_numberOfBeams = 1
+
+pi_beamLensX_1                 = 0.577385296
+pi_beamLensY_1                 = -0.577169414
+pi_beamLensZ_1                 = -0.177496985
+pi_beamLensRadius_1            = 0.01        # radius of beam cone at lens
+pi_beamTargetX_1               = 0.0
+pi_beamTargetY_1               = 0.0
+pi_beamTargetZ_1               = 0.4
+pi_beamApertureAngle_1         = 26.8        # conical aperture angle (degrees)
+pi_beamTime2Launch_1           = 0.0         # do it immediately
+pi_beamDetector_1              = 1           # target detector screen number
+pi_beamNumberOfProtons_1       = 20000000    # number of protons to be fired from beam
+pi_beamNoBoundaryCondition_1   = .true.      # ignore domain boundary condition ?
+pi_beamProtonEnergy_1          = 3.          # MeV
+pi_useParabolicApproximation   = .true.
+
+##########################
+# SIMMULATION PARAMETERS #
+##########################
+
+sim_printBlockVariables    = .false.
+
+#######################
+#  HYDRO PARAMETERS   #
+#######################
+#
+# No HYDRO parameters needed! HYDRO not included in setup!
+#
+#######################
+#    EOS PARAMETERS   #
+#######################
+#
+# No EOS parameters needed! EOS not included in setup!
+#
+#########################
+#   OUTPUT PARAMETERS   #
+#########################
+#
+# No IO parameters needed! IO is included in setup, but no IO is performed!
+#
+#######################
+#   TIME PARAMETERS   #
+#######################
+tmax           = 1.0e-08
+dtmin          = 1.0e-15  # irrelevant -> no Hydro
+dtinit         = 1.0e-14  # irrelevant -> no Hydro
+dtmax          = 1.0e-11  # irrelevant -> no Hydro
+nend           = 1        # irrelevant -> no Hydro
+
+#######################
+#   MESH PARAMETERS   #
+#######################
+#
+# Refinement levels.
+#
+lrefine_max = 5
+lrefine_min = 5
+nblockx = 1
+nblocky = 1
+nblockz = 2
+xl_boundary_type = "outflow"
+xmax = .25
+xmin = -.25
+xr_boundary_type = "outflow"
+yl_boundary_type = "outflow"
+zmax =   0.90
+zmin =  -0.10
+yr_boundary_type = "outflow"
+zl_boundary_type = "outflow"
+zr_boundary_type = "outflow"
+ymax = .25
+ymin = -.25

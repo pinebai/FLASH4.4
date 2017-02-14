@@ -1,0 +1,8 @@
+
+monitors/Timers/TimersMain/MPINative
+    eachProcWritesSummary [BOOLEAN] [FALSE]
+        Should each process write its summary to its own file?  If true, each
+        process will write its summary to a file named timer_summary_<processor
+        id>
+    writeStatSummary [BOOLEAN] [TRUE]
+        Should timers write the max/min/avg values for timers?

@@ -1,0 +1,18 @@
+#Config file for Gravity/Poisson unit test
+# [/source/Gravity/GravityMain/Poisson/unitTest]
+
+REQUIRES physics/Gravity/GravityMain/Poisson
+
+# NOTE!  Because the unitTest is at the same level as the Poisson solver, none of the solvers
+#  get picked up.  You MUST do ./setup unitTest/Poisson3 -auto -with-unit=phyics/Grid/GridMain/Poisson/Multipole -3d 
+#  (or something like that)
+
+D apot_variable           analytical solution for potential, initial condition
+D errm_variable	      	  analytical minus calculated potential 
+D errd_variable	      	  analytical divided by calculated potential
+D errn_variable	      	  analytical minus calculated potential, divided by analytical potential
+
+VARIABLE apot           # analytical solution for potential, initial condition
+VARIABLE errm		# analytical minus calculated potential 
+VARIABLE errd	        # analytical divided by calculated potential
+VARIABLE errn	        # analytical minus calculated potential, divided by analytical potential

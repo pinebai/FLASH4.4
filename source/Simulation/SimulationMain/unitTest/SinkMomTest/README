@@ -1,0 +1,20 @@
+This test is described in the Users Guide.
+
+The test's operation as a  "unit test" is not
+yet fully documented in the U.G. For this, a file
+unitTest_0000 will be generated that contains
+either SUCCESS or FAILURE, plus some additional
+summary information on changes in total mass
+and momenta.  SUCCESS or FAILURE are determined
+based on the following tolerance runtime parameters:
+   PARAMETER sim_massTol          REAL
+   PARAMETER sim_momXTol          REAL
+   PARAMETER sim_momYTol          REAL
+   PARAMETER sim_momZTol          REAL
+
+
+A movie generated from the FLASH4 sink momentum test can be found here:
+  http://www.ita.uni-heidelberg.de/~chfeder/pubs/sinks/Federrath_flash_momsinks.mp4
+
+This website contains movies and tests for the sink particles:
+  http://www.ita.uni-heidelberg.de/~chfeder/pubs/sinks/sinks.shtml?lang=en

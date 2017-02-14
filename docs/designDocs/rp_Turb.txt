@@ -1,0 +1,12 @@
+
+physics/sourceTerms/Turb
+    useTurb [BOOLEAN] [TRUE]
+        flags whether the Turbulence unit is being used
+
+physics/sourceTerms/Turb/TurbMain
+    turb_c2 [REAL] [0.9]
+        Valid Values: Unconstrained
+        is the calibrated constant for determining the turbulent velocity
+    turb_stepSize [INTEGER] [1]
+        Valid Values: Unconstrained
+        size of stencil in computing the laplacian and curl

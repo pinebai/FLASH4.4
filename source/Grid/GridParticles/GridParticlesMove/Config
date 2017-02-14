@@ -1,0 +1,75 @@
+# Config file for source/Grid/GridParticles
+
+REQUIRES Grid/GridMain
+REQUIRES flashUtilities/sorting
+#REQUESTS Particles
+
+USESETUPVARS Grid
+
+IF Grid=='UG'
+  REQUESTS Grid/GridParticles/GridParticlesMove/UG/Directional
+ELSEIF Grid == 'PM2'
+  REQUIRES Grid/GridParticles/GridParticlesMove/Sieve
+ELSE
+  REQUESTS Grid/GridParticles/GridParticlesMove/paramesh
+  REQUESTS Grid/GridParticles/GridParticlesMove/Sieve
+ENDIF
+
+D gr_ptRemove  boolean.  This is a switch which determines the action if the number
+D of particles on a processor exceeds the maximum allowed
+D if the parameter is false, then the run aborts, if it is
+D true, then some algorithm is applied to reduce the number of
+D particles
+PARAMETER gr_ptRemove BOOLEAN FALSE
+
+D gr_ptRemoveAlgo integer  The algorithm used in determining which particles to remove
+D if gr_ptRemove is true
+PARAMETER gr_ptRemoveAlgo INTEGER 2
+
+D gr_ptNumToReduce  integer  if particles are to be removed at runtime, how many
+D should be removed in one iteration
+PARAMETER gr_ptNumToReduce INTEGER 10
+
+D gr_ptSieveCheckFreq integer the frequency for checking the convergence of the
+D sieve algorithm.Value 1 implies check after every exchange, n implies check after n 
+D exchanges 
+PARAMETER gr_ptSieveCheckFreq INTEGER 1
+
+SUGGEST IO/IOParticles/
+
+
+
+D gr_ptRefineOnPtMaxPerProc controls whether refinement criteria based on the
+D & number of particles PER PROCESSOR are used. These work by strengthening
+D & refinement criteria requested through the max_particles_per_blk and
+D & min_particles_per_blk RPs.  Requires RP refine_on_particle_count to be TRUE.
+
+D gr_ptMaxPerProcUpperThresh A threshold. When the number of particles on a
+D & processor gets above (ptMaxPerProcUpperThresh * number of blocks on the
+D & processor), the effective max_particles_per_blk for blocks on this
+D & processor may be lowered.
+
+D gr_ptMaxPerProcLowerThresh A threshold. When the number of particles on a
+D & processor gets above (ptMaxPerProcLowerThresh * number of blocks on the
+D & processor), the effective min_particles_per_blk for blocks on this
+D & processor may be lowered.
+
+D gr_ptMaxPerProcBlockFactor When the effective max_particles_per_blk is lowered on a
+D & processor because refinement criteria based on the
+D & number of particles PER PROCESSOR are used, then the new effective
+D & max_particles_per_blk is set to (gr_ptMaxPerProcBlockFactor * pt_maxPerProc).
+D &  In addition, when the effective min_particles_per_blk is lowered on a
+D & processor because refinement criteria based on the
+D & number of particles PER PROCESSOR are used, then the new effective
+D & min_particles_per_blk is set to (0.5^NDIM * gr_ptMaxPerProcBlockFactor *
+D & pt_maxPerProc).
+
+D gr_ptMaxPerProcBlockNoFuzz A safety margin for estimating the size of
+D & basically unpredictable changes of the 
+D & number of blocks on a processor when remeshing happens.
+
+PARAMETER gr_ptRefineOnPtMaxPerProc   BOOLEAN	 FALSE
+PARAMETER gr_ptMaxPerProcUpperThresh  REAL	 0.25	       [0.0 to 1.0]
+PARAMETER gr_ptMaxPerProcLowerThresh  REAL	 0.0625	       [0.0 to 1.0]
+PARAMETER gr_ptMaxPerProcBlockFactor  REAL	 0.70	       [0.0 to 1.0]
+PARAMETER gr_ptMaxPerProcBlockNoFuzz  INTEGER	 3	       [0 to ]

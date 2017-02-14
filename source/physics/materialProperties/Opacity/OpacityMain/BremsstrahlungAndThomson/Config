@@ -1,0 +1,12 @@
+# Config file for the Opacity/OpacityMain/BremsstrahlungAndThomson implementation
+
+D opac_emit_constval scaling factor for emission opacity
+PARAMETER op_emitScale REAL 1.0
+
+D opac_trans_constval scaling factor for transport opacity 
+PARAMETER op_transScale REAL 1.0
+
+D opac_absorb_constval scaling factor for absorption opacity
+PARAMETER op_absorbScale REAL 1.0
+
+CONFLICTS physics/materialProperties/Opacity/OpacityMain/Multispecies

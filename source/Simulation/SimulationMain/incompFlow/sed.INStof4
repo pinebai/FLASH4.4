@@ -1,0 +1,33 @@
+# This file details the changes in the runtime parameters names from INS branch to Flash4 
+# for simulations under source/Simulation/SimulationMain/incompFlow
+# (from former locations under  source/Simulation//SimulationMain/INavierStokes).
+# Use it like this:
+# prompt> sed -f sed.INStof4 flash.par > flash.par.new
+# prompt> mv flash.par.new flash.par
+# syntax shows old name next to new name
+#s/INS branch/f4/
+
+
+s/invRe/ins_invRe/i
+s/isgs/ins_isgs/i
+s/cflflg/ins_cflFlg/i
+#s/cfl/ins_cfl/i
+s/sigma/ins_sigma/i
+s/dtspec/ins_dtSpec/i
+s/intschm/ins_intSchm/i
+s/pressure_correct/ins_pressureCorrect/i
+s/vel_prolong_method/ins_velProlongMethod/i
+s/gravX/ins_gravX/i
+s/gravY/ins_gravY/i
+s/gravZ/ins_gravZ/i
+s/dpdx/ins_dpdx/i
+s/dpdy/ins_dpdy/i
+s/dpdz/ins_dpdz/i
+s/constantmass/ins_constantMass/i
+s/WBREF/ins_WBREF/i
+s/area_solids/ins_areaSolids/i
+
+s/statistics_steps/ins_ins_statsSteps/i
+s/restart_statistics/ins_ins_statsRestart/i
+s/start_statistics_time/ins_ins_statsStartTime/i
+

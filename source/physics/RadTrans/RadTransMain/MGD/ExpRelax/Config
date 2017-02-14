@@ -1,0 +1,29 @@
+# Requires the roots unit to solve for a quartic polynomial
+REQUIRES numericalTools/Roots
+
+# Create a variable to store the old radiation energy density:
+D urol_variable old radiation energy density
+VARIABLE urol
+
+# Create a variable to store the old specific electron internal
+# energy:
+D eeol_variable old specific electron internal energy
+VARIABLE eeol
+
+D teol_variable old electron temperature
+D dedu_variable See RAGE paper (Gittings et al 2008)
+D utot_variable total (radiation plus electron) energy density
+D cvel_variable specific electron heat capacity at constant volume
+D alph_variable alpha
+D lgal_variable log alpha
+
+VARIABLE teol
+VARIABLE dedu
+VARIABLE utot
+VARIABLE cvel
+VARIABLE alph
+VARIABLE lgal
+
+D rt_expRelaxMaxIter	Maximum number of iterations in ExpRelax outer loop
+PARAMETER rt_expRelaxMaxIter	INTEGER	3	[1 ...]
+

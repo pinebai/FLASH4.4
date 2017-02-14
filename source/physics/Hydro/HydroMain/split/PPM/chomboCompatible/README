@@ -1,0 +1,43 @@
+Experiments with Sod simulation and different Hydro modes.  Key
+parameters in chomboLike.par for all experiments are
+  eintSwitch     = 0.0
+  hy_fluxRepresentation = "hybrid"
+
+(All explanations assume a 1D simulation with blocks consisting of 8
+internal cells and 4 guard cells.)
+
+
+Standard Sod
+------------
+
+All non-boundary internal cells are updated by Hydro (i.e. cells 6 to
+11).  FLASH calls Paramesh to obtain the conserved fluxes for coarse
+blocks.  Hydro uses the fluxes to update boundary internal cells
+(i.e. cells 5 and cells 12).
+
+./setup Sod -auto +pm4dev -parfile=chomboLike.par
+
+
+Experimental Sod (Chombo-compatible Hydro)
+------------------------------------------
+
+All internal cells are updated by Hydro (i.e. cells 5 to 12).  FLASH
+calls PARAMESH to obtain the conserved flux correction for coarse
+blocks.  Hydro uses the flux correction to correct boundary internal
+cells (i.e. cells 5 and 12).
+
+./setup Sod -auto chomboCompatibleHydro=True +pm4dev -parfile=chomboLike.par
+
+1). Use the following parameters for the standard FLASH update solution
+  chomboLikeUpdateSoln = .false.
+  excludeGradPresFromFlux = .true.
+
+Magnitude difference in density between this and standard Sod using
+8-procs: 1.577e-13
+
+2). Use the following parameters for the Chombo-like update solution
+  chomboLikeUpdateSoln = .true.
+  excludeGradPresFromFlux = .false.
+
+Magnitude difference in density between this and standard Sod using
+8-procs: 2.287e-13

@@ -1,0 +1,12 @@
+# Config file for the HeatMain code subunit
+
+# available implementations are
+
+# StatPlusGauss (stat+gauss, not included in the regular FLASH code release)
+# Neutrino
+# RadioactiveDecay (heating from Ni Co decay, not included in regular FLASH code release)
+
+REQUIRES Driver
+
+DEFAULT StatPlusGauss
+

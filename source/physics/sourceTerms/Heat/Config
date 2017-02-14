@@ -1,0 +1,11 @@
+# Config file for the Heat code unit
+
+# available implementations include
+
+# HeatMain/Neutrino
+
+DEFAULT HeatMain
+
+D useHeat   runtime control for turning the heat on or off
+PARAMETER useHeat    BOOLEAN FALSE
+

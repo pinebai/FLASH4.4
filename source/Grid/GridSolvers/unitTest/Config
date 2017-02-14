@@ -1,0 +1,8 @@
+
+# Runtime parameters used by unit tests of Grid solvers
+
+D gr_testTolL2		Maximum L2 error norm that is tolerable
+D gr_testTolLinf	Maximum Linf error norm that is tolerable
+PARAMETER gr_testTolL2		REAL	1.E-10	[0.0 ...]
+PARAMETER gr_testTolLinf	REAL	1.E-10	[0.0 ...]
+

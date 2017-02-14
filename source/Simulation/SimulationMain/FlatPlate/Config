@@ -1,0 +1,32 @@
+REQUIRES Grid/GridBoundaryConditions/OneRow
+REQUIRES physics/Hydro
+REQUIRES physics/Eos/EosMain/Gamma
+
+
+D               pAmbient        Initial ambient pressure
+D               rhoAmbient      Initial ambient density
+D		windVel 	Inflow velocity (parallel to x-axis)
+
+PARAMETER sim_pAmbient     REAL    1.0
+PARAMETER sim_rhoAmbient   REAL    1.4
+PARAMETER sim_rhoBulk      REAL    10.
+PARAMETER sim_windVelx	   REAL	   1.0
+PARAMETER sim_windVely	   REAL	   1.0
+PARAMETER sim_windVelz	   REAL	   1.0
+PARAMETER sim_radius	   REAL    0.2
+PARAMETER sim_xCtr	   REAL    0.3
+PARAMETER sim_yCtr	   REAL    0.5
+PARAMETER sim_zCtr	   REAL    0.5
+PARAMETER sim_number	   INTEGER 1
+PARAMETER sim_Mach	   REAL    1.0
+
+D sim_xangle  Angle made by diaphragm normal w/x-axis (deg)
+PARAMETER sim_xangle	REAL	0.       [0 to 360]
+
+D sim_ yangle Angle made by diaphragm normal w/y-axis (deg)
+PARAMETER sim_yangle	REAL	90.      [0 to 360]
+
+D sim_ yangle Angle made by diaphragm normal w/z-axis (deg)
+PARAMETER sim_zangle	REAL	90.      [0 to 360]
+
+VARIABLE bdry

@@ -1,0 +1,7 @@
+iProcs = 1
+jProcs = 3
+kProcs = 1
+
+iGridSize=32
+jGridSize=24
+kGridSize=1 

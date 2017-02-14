@@ -1,0 +1,55 @@
+# The setup that tests the Proton Imaging unit.
+#
+# Sample setup line:
+#
+#   ./setup unitTest/ProtonImaging
+#
+#             -auto
+#             -3d
+#             -geometry=cartesian
+#             -parfile=flash.par
+#             -maxblocks=4000
+#             +protonImaging
+#             -without-unit=physics/Hydro    (get rid of Hydro -> get rid of a ton of UNK variables using memory)
+#             -without-unit=physics/Eos      (is also not needed here)
+#             -objdir=objectProtonImaging
+#             -nxb=8
+#             -nyb=8
+#             -nzb=8
+#             +noio                          (no IO -> avoid writing huge plot and checkpoint files)
+#             pi_maxBeams=1
+#             pi_maxDetectors=1
+#             threadProtonTrace=True         (enables threading of proton tracing)
+#
+# The +protonImaging shortcut activates the inclusion of the Proton Imaging unit.
+#
+
+REQUIRES diagnostics/ProtonImaging/ProtonImagingMain
+REQUIRES Simulation/SimulationMain/unitTest/ProtonImaging/Validation1
+#
+# Define unk variables to be used by proton imaging unit. This is necessary, because Hydro is not
+# used for setup. The variables needed are the 3 components of the magnetic and electric field
+# and the boundary indicator.
+#
+VARIABLE elex
+VARIABLE eley
+VARIABLE elez
+VARIABLE magx
+VARIABLE magy
+VARIABLE magz
+VARIABLE bdry
+#
+# Parameters
+#
+
+D       sim_xCenter                    The x-coordinate of the center location
+D       sim_zCenter                    The z-coordinate of the center location
+D       sim_clockwiseB                 Should B point clockwise (inward force) from each radial position?
+D       sim_magneticFluxDensity        The value of the magnetic flux density B
+D       sim_printBlockVariables        Print what is in each block on each processor?
+
+PARAMETER  sim_xCenter                REAL     0.5
+PARAMETER  sim_zCenter                REAL     0.5
+PARAMETER  sim_clockwiseB             BOOLEAN  false
+PARAMETER  sim_magneticFluxDensity    REAL     0.0
+PARAMETER  sim_printBlockVariables    BOOLEAN  false

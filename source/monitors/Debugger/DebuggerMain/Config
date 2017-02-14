@@ -1,0 +1,12 @@
+USESETUPVARS use_dmalloc, use_ddt
+
+#DDT uses DMALLOC under-the-hood but does not provide a dmalloc.h
+#header file and so I manually add the dmalloc.h function prototypes.
+#There should be no reason to specify +dmalloc and +ddt together.
+IF use_dmalloc and use_ddt
+  SETUPERROR "The +ddt and +dmalloc shortcuts cannot be used together"
+ENDIF
+
+EXCLUSIVE mcheck dmalloc
+
+PARAMETER doHeapCheck BOOLEAN TRUE

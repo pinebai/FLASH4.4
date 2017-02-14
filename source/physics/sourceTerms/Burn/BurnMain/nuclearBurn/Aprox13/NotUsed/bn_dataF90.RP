@@ -1,0 +1,11 @@
+
+Module Burn_dataRP
+
+
+!..add these rates for the rp network 
+!! this was common block /netc13c/
+      integer          irpg19e,  irap18e, irpg14n, irpg22g, irap26i,    &
+     &                 irap44t,  irpg12c, irap14o, irpg17f, irgp17f,    &
+     &                 irpg16o,  irag15o, irag16o
+
+end Module Burn_dataRP

@@ -1,0 +1,257 @@
+##python:genLines
+
+def genLines (setupvars):
+
+    yield """
+REQUIRES  flashUtilities/rng
+REQUIRES  numericalTools/Roots
+REQUIRES  numericalTools/RungeKutta
+REQUIRES  Grid/GridParticles
+REQUESTS  IO/IOMain/hdf5/parallel
+REQUIRES  diagnostics/ProtonImaging/localAPI
+REQUIRES  diagnostics/ProtonImaging/ProtonImagingMain/oneTimestep/ProtonBeams
+REQUIRES  diagnostics/ProtonImaging/ProtonImagingMain/oneTimestep/ProtonDetection
+REQUIRES  diagnostics/ProtonImaging/ProtonImagingMain/oneTimestep/ProtonsCreate
+REQUIRES  diagnostics/ProtonImaging/ProtonImagingMain/oneTimestep/ProtonsTrace
+REQUIRES  diagnostics/ProtonImaging/ProtonImagingMain/oneTimestep/ProtonUtilities
+REQUIRES  diagnostics/ProtonImaging/ProtonImagingMain/oneTimestep/ProtonIO
+
+PPDEFINE  FLASH_PIMG
+
+D       bdry_variable   The boundary indicator in each cell
+D       elex_variable   The center average x-component of the electric field in each cell
+D       eley_variable   The center average y-component of the electric field in each cell
+D       elez_variable   The center average z-component of the electric field in each cell
+D       magx_variable   The center average x-component of the magnetic flux in each cell
+D       magy_variable   The center average y-component of the magnetic flux in each cell
+D       magz_variable   The center average z-component of the magnetic flux in each cell
+
+VARIABLE bdry
+VARIABLE elex
+VARIABLE eley
+VARIABLE elez
+VARIABLE magx
+VARIABLE magy
+VARIABLE magz
+
+D       pi_3Din2D                      Use the 3D protons in a 2D cylindrical grid proton tracing?
+D       pi_3Din2DwedgeAngle            Wedge angle (degrees, must be < 180) for 3D in 2D simulations
+D       pi_cellStepTolerance           The allowed cell fractional error (units = cell edge) for a proton path step
+D       pi_cellWallThicknessFactor     Fraction of the shortest cell edge defining the cell wall thickness
+D       pi_detectorDGwriteFormat       Format string for writing out diagnostic variables to detector file(s)
+D       pi_detectorFileNameTimeStamp   If true, a time stamp is added to each detector file name
+D       pi_detectorXYwriteFormat       Format string for writing out proton (x,y) pairs to detector file(s)
+D       pi_flagDomainMissingProtons    Should domain missing protons be flagged (program aborted)?
+D       pi_ignoreElectricalField       If true, the effect of the electrical field is ignored (default).
+D       pi_IOaddBeamCapsules           If true, the frame of the beam capsule(s) will be added to the plot
+D       pi_IOaddDetectorScreens        If true, the frame of the detector screen(s) will be added to the plot
+D       pi_IOaddProtonsCapsule2Domain  If true, the proton path from capsule to domain will be added to the plot
+D       pi_IOaddProtonsDomain2Screen   If true, the proton path from domain to screen will be added to the plot
+D       pi_IOmaxBlockCrossingNumber    The (estimated) maximum number of complete block crossings for each proton
+D       pi_IOnumberOfProtons2Plot      Number of IO protons that are to be plotted
+D       pi_IOresolutionCapsuleFrame    The capsule frame resolution to plot the frame of the beam capsule(s)
+D       pi_IOresolutionScreenFrame     The screen frame resolution to plot the frame of the detector screen(s)
+D       pi_maxProtonCount              Maximum number of protons per processor
+D       pi_numberOfBeams               Total number of proton beams
+D       pi_numberOfDetectors           Total number of proton detectors
+D       pi_opaqueBoundaries            If true, the protons do not go through cells belonging to boundaries
+D       pi_printBeams                  Print details about each beam?
+D       pi_printDetectors              Print details about each detector?
+D       pi_printMain                   Print details about the proton imaging run?
+D       pi_printProtons                Print details about each proton initially generated?
+D       pi_protonDeterminism           If true, the Grid Unit will use the Sieve Algorithm to move the proton particle.
+D       pi_randomNumberSeedIncrement   Sets the seed increment for the random number generator
+D       pi_randomNumberSeedInitial     Sets the initial seeds for the random number generator
+D       pi_recalculateCellData         If true, the proton imaging calculates its own cell data for each block
+D       pi_recordOffScreenProtons      If true, the protons missing the detector screen will also be recorded.
+D       pi_RungeKuttaMethod            The Runge Kutta method to be used for proton tracing.
+D       pi_screenProtonBucketSize      Bucket size for flushing out screen protons to disk.
+D       pi_screenProtonDiagnostics     If true, calculates/records extra diagnostic values for the screen protons.
+D       pi_useIOprotonPlot             This flag controls whether IO proton plotting should be used
+D       pi_useParabolicApproximation   If true, the parabolic path approximation is used (enhanced performance).
+D       useProtonImaging               Use the proton imaging?
+D       threadProtonTrace              Use threading when tracing the protons through each block?
+
+PARAMETER  pi_3Din2D                     BOOLEAN    false
+PARAMETER  pi_3Din2DwedgeAngle           REAL       0.0
+PARAMETER  pi_cellStepTolerance          REAL       1.0e-06
+PARAMETER  pi_cellWallThicknessFactor    REAL       1.0e-06
+PARAMETER  pi_detectorDGwriteFormat      STRING     "es15.5"
+PARAMETER  pi_detectorFileNameTimeStamp  BOOLEAN    true
+PARAMETER  pi_detectorXYwriteFormat      STRING     "es20.10"
+PARAMETER  pi_flagDomainMissingProtons   BOOLEAN    true
+PARAMETER  pi_ignoreElectricalField      BOOLEAN    true
+PARAMETER  pi_IOaddBeamCapsules          BOOLEAN    false
+PARAMETER  pi_IOaddDetectorScreens       BOOLEAN    false
+PARAMETER  pi_IOaddProtonsCapsule2Domain BOOLEAN    false
+PARAMETER  pi_IOaddProtonsDomain2Screen  BOOLEAN    false
+PARAMETER  pi_IOmaxBlockCrossingNumber   INTEGER    5
+PARAMETER  pi_IOnumberOfProtons2Plot     INTEGER    0
+PARAMETER  pi_IOresolutionCapsuleFrame   REAL       1.0e-02
+PARAMETER  pi_IOresolutionScreenFrame    REAL       1.0e-02
+PARAMETER  pi_maxProtonCount             INTEGER    100000
+PARAMETER  pi_numberOfBeams              INTEGER    -1
+PARAMETER  pi_numberOfDetectors          INTEGER    -1
+PARAMETER  pi_opaqueBoundaries           BOOLEAN    false
+PARAMETER  pi_printBeams                 BOOLEAN    false
+PARAMETER  pi_printDetectors             BOOLEAN    false
+PARAMETER  pi_printMain                  BOOLEAN    false
+PARAMETER  pi_printProtons               BOOLEAN    false
+PARAMETER  pi_protonDeterminism          BOOLEAN    false
+PARAMETER  pi_randomNumberSeedIncrement  INTEGER    1
+PARAMETER  pi_randomNumberSeedInitial    INTEGER    1
+PARAMETER  pi_recalculateCellData        BOOLEAN    false
+PARAMETER  pi_recordOffScreenProtons     BOOLEAN    false
+PARAMETER  pi_RungeKuttaMethod           STRING     "CashKarp45"
+PARAMETER  pi_screenProtonBucketSize     INTEGER    100000
+PARAMETER  pi_screenProtonDiagnostics    BOOLEAN    false
+PARAMETER  pi_useIOprotonPlot            BOOLEAN    false
+PARAMETER  pi_useParabolicApproximation  BOOLEAN    false
+PARAMETER  useProtonImaging              BOOLEAN    true
+
+USESETUPVARS threadProtonTrace
+IF threadProtonTrace
+   PARAMETER threadProtonTrace BOOLEAN true
+ELSE
+   PARAMETER threadProtonTrace BOOLEAN false
+ENDIF
+"""
+
+    ##################################
+    #                                #
+    #     CREATE BEAM PARAMETERS     #
+    #                                #
+    ##################################
+
+    #   Set the maximum number of proton beams:
+    #   --------------------------------------
+    #   The maximum number of beams is in the variable maxBeams, which is added
+    #   to Flash.h via a PPDEFINE statement. The default maximum number of beams
+    #   is 6. The user can increase this number by using the pi_maxBeams=<new number>
+    #   setup option. A runtime parameter pi_numberOfBeams is then created to store
+    #   the actual number of beams. Next we loop over the maximum number of beams
+    #   and create the runtime parameters pi_<property>_<beam number> to specify
+    #   the properties of each beam.
+
+    maxBeams = 6
+    if "pi_maxBeams" in setupvars:
+        maxBeams = int(setupvars["pi_maxBeams"])
+
+    yield "PPDEFINE PI_MAXBEAMS " + str (maxBeams)
+
+    for i in xrange (maxBeams):
+
+    	var1  = "pi_beamCapsuleX_"                  + str (i+1)
+    	var2  = "pi_beamCapsuleY_"                  + str (i+1)
+    	var3  = "pi_beamCapsuleZ_"                  + str (i+1)
+    	var4  = "pi_beamCapsuleRadius_"             + str (i+1)
+    	var5  = "pi_beamCapsuleGrainLevel_"         + str (i+1)
+    	var6  = "pi_beamTargetX_"                   + str (i+1)
+    	var7  = "pi_beamTargetY_"                   + str (i+1)
+    	var8  = "pi_beamTargetZ_"                   + str (i+1)
+    	var9  = "pi_beamTargetRadius_"              + str (i+1)
+    	var10 = "pi_beamApertureAngle_"             + str (i+1)
+    	var11 = "pi_beamProtonEnergy_"              + str (i+1)
+    	var12 = "pi_beamTime2Launch_"               + str (i+1)
+    	var13 = "pi_beamDetector_"                  + str (i+1)
+    	var14 = "pi_beamNumberOfProtons_"           + str (i+1)
+    	var15 = "pi_beamNoBoundaryCondition_"       + str (i+1)
+
+    	yield "D " + var1  + " The x coordinate of the capsule center for beam "                  + str (i+1)
+    	yield "D " + var2  + " The y coordinate of the capsule center for beam "                  + str (i+1)
+    	yield "D " + var3  + " The z coordinate of the capsule center for beam "                  + str (i+1)
+    	yield "D " + var4  + " Radius of spherical capsule for beam "                             + str (i+1)
+    	yield "D " + var5  + " The grain level of capsule for beam "                              + str (i+1)
+    	yield "D " + var6  + " The x coordinate of the target (direction) for beam "              + str (i+1)
+    	yield "D " + var7  + " The y coordinate of the target (direction) for beam "              + str (i+1)
+    	yield "D " + var8  + " The z coordinate of the target (direction) for beam "              + str (i+1)
+    	yield "D " + var9  + " Radius of target area for beam "                                   + str (i+1)
+    	yield "D " + var10 + " Aperture angle (conical opening, in degrees) of beam "             + str (i+1)
+    	yield "D " + var11 + " The energy of the protons in the beam (in MeV) "                   + str (i+1)
+    	yield "D " + var12 + " The simulation time at which the beam should launch its protons "  + str (i+1)
+   	yield "D " + var13 + " The target detector of the beam "                                  + str (i+1)
+   	yield "D " + var14 + " The number of protons in the beam "                                + str (i+1)
+   	yield "D " + var15 + " Option to ignore domain boundary conditions for beam "             + str (i+1)
+
+    	yield "PARAMETER " + var1  + " REAL       -HUGE(1.0)"
+    	yield "PARAMETER " + var2  + " REAL       -HUGE(1.0)"
+    	yield "PARAMETER " + var3  + " REAL       -HUGE(1.0)"
+    	yield "PARAMETER " + var4  + " REAL       -HUGE(1.0)"
+    	yield "PARAMETER " + var5  + " INTEGER    -HUGE(1)"
+    	yield "PARAMETER " + var6  + " REAL       -HUGE(1.0)"
+    	yield "PARAMETER " + var7  + " REAL       -HUGE(1.0)"
+    	yield "PARAMETER " + var8  + " REAL       -HUGE(1.0)"
+    	yield "PARAMETER " + var9  + " REAL       -HUGE(1.0)"
+    	yield "PARAMETER " + var10 + " REAL       -HUGE(1.0)"
+    	yield "PARAMETER " + var11 + " REAL       -HUGE(1.0)"
+    	yield "PARAMETER " + var12 + " REAL       -HUGE(1.0)"
+    	yield "PARAMETER " + var13 + " INTEGER    -HUGE(1)"
+    	yield "PARAMETER " + var14 + " INTEGER    -HUGE(1)"
+    	yield "PARAMETER " + var15 + " BOOLEAN     false"
+
+
+    ##################################
+    #                                #
+    #   CREATE DETECTOR PARAMETERS   #
+    #                                #
+    ##################################
+
+    #   Set the maximum number of proton detectors:
+    #   ------------------------------------------
+    #   The maximum number of detectors is in the variable maxDetectors, which is added
+    #   to Flash.h via a PPDEFINE statement. The default maximum number of detectors
+    #   is 1. The user can increase this number by using the pi_maxDetectors=<new number>
+    #   setup option. A runtime parameter pi_numberOfDetectors is then created to store
+    #   the actual number of detectors. Next we loop over the maximum number of detectors
+    #   and create the runtime parameters pi_<property>_<detector number> to specify
+    #   the properties of each detector.
+
+    maxDetectors = 1
+    if "pi_maxDetectors" in setupvars:
+        maxDetectors = int(setupvars["pi_maxDetectors"])
+
+    yield "PPDEFINE PI_MAXDETECTORS " + str (maxDetectors)
+
+    for i in xrange (maxDetectors):
+
+    	var1  = "pi_detectorCenterX_"            + str (i+1)
+    	var2  = "pi_detectorCenterY_"            + str (i+1)
+    	var3  = "pi_detectorCenterZ_"            + str (i+1)
+        var4  = "pi_detectorNormalX_"            + str (i+1)
+        var5  = "pi_detectorNormalY_"            + str (i+1)
+        var6  = "pi_detectorNormalZ_"            + str (i+1)
+        var7  = "pi_detectorPinholeDist2Det_"    + str (i+1)
+        var8  = "pi_detectorPinholeRadius_"      + str (i+1)
+        var9  = "pi_detectorSideLength_"         + str (i+1)
+        var10 = "pi_detectorSideTiltingAngle_"   + str (i+1)
+        var11 = "pi_detectorSideTiltingAxis_"    + str (i+1)
+        var12 = "pi_detectorAlignWRTbeamNr_"     + str (i+1)
+        var13 = "pi_detectorDist2BeamCapsule_"   + str (i+1)
+
+    	yield "D " + var1  + " The x coordinate of the square detector center "                    + str (i+1)
+    	yield "D " + var2  + " The y coordinate of the square detector center "                    + str (i+1)
+    	yield "D " + var3  + " The z coordinate of the square detector center "                    + str (i+1)
+    	yield "D " + var4  + " The x coordinate of the square detector normal vector "             + str (i+1)
+    	yield "D " + var5  + " The y coordinate of the square detector normal vector "             + str (i+1)
+    	yield "D " + var6  + " The z coordinate of the square detector normal vector "             + str (i+1)
+        yield "D " + var7  + " The pinhole center distance from the detector center "              + str (i+1)
+        yield "D " + var8  + " The pinhole radius "                                                + str (i+1)
+    	yield "D " + var9  + " The side length of the square detector "                            + str (i+1)
+    	yield "D " + var10 + " Side tilting angle (degrees) from tilting axis "                    + str (i+1)
+    	yield "D " + var11 + " Global tilting axis to be used for side tilting "                   + str (i+1)
+    	yield "D " + var12 + " Place detector screen along beam nr? If <= 0, no placing "          + str (i+1)
+    	yield "D " + var13 + " Distance from beam capsule center (if detector placed along beam) " + str (i+1)
+
+    	yield "PARAMETER " + var1  + " REAL       -HUGE(1.0)"
+    	yield "PARAMETER " + var2  + " REAL       -HUGE(1.0)"
+    	yield "PARAMETER " + var3  + " REAL       -HUGE(1.0)"
+    	yield "PARAMETER " + var4  + " REAL       -HUGE(1.0)"
+    	yield "PARAMETER " + var5  + " REAL       -HUGE(1.0)"
+    	yield "PARAMETER " + var6  + " REAL       -HUGE(1.0)"
+        yield "PARAMETER " + var7  + " REAL       -HUGE(1.0)"
+        yield "PARAMETER " + var8  + " REAL       -HUGE(1.0)"
+    	yield "PARAMETER " + var9  + " REAL       -HUGE(1.0)"
+    	yield "PARAMETER " + var10 + " REAL       -HUGE(1.0)"
+    	yield "PARAMETER " + var11 + ' STRING     " "'
+    	yield "PARAMETER " + var12 + " INTEGER    -HUGE(1)"
+    	yield "PARAMETER " + var13 + " REAL       -HUGE(1.0)"

@@ -1,0 +1,16 @@
+Hello World
+-----------
+This is the Default setup that tests the stubs
+
+This is a sample Unit Test, which prints "Hello World!" 5 times on the 
+master processor. The exact greeting as well as the number of times it is
+printed is defined in flash.par 
+
+Problems?
+
+1. After the setup is run, if we look at the "Setup_initnameValueLL.F90" file,
+   the lines for greeting and repeat come twice.
+2. The driver_global uses the simulation data directly, which is not a good idea
+   in general. Is there a clean way for Driver_global to get access to runtimeparameters?
+
+

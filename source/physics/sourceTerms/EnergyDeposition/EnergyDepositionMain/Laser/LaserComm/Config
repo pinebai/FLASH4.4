@@ -1,0 +1,11 @@
+USESETUPVARS useAsyncLaser
+
+REQUIRES flashUtilities/sorting/quicksort
+
+IF useAsyncLaser
+   DEFAULT Async
+ELSE
+   DEFAULT Sync
+ENDIF
+
+EXCLUSIVE *

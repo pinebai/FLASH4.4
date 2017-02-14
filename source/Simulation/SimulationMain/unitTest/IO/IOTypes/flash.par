@@ -1,0 +1,37 @@
+
+
+#paramesh grid will not refine on its own. 
+#set this to higher values to create more blocks
+lrefine_max = 3
+lrefine_min = 3
+
+#can also create more initial blocks in paramesh this way
+nblockx = 1
+nblocky = 1
+nblockz = 1
+
+
+#for uniform grid must specify the number of procs in each direction
+#remember for ug only 1 block per processor
+iprocs = 2
+jprocs = 1
+kprocs = 1
+
+igridsize = 64
+jgridsize = 64
+kgridsize = 64
+
+
+#must specify which variables to output for plotfile
+plot_var_1 = "var1"
+plot_var_2 = "var2"
+plot_var_3 = "var3"
+
+
+#particles
+useParticles = .true.
+pt_numX = 25
+pt_numY = 25
+pt_numZ = 25
+
+pt_maxPerProc = 20000

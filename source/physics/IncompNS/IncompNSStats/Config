@@ -1,0 +1,23 @@
+# Config file for turbulent statistics computation unit.
+
+# Runtime Parameters:
+PARAMETER ins_statsSteps INTEGER 1       # Number of time steps between stats computation. 
+PARAMETER ins_statsRestart BOOLEAN TRUE  # Restart Statistics.
+PARAMETER ins_statsStartTime REAL 0.0   # Initial time left before starting to compute stats.
+
+# Variables:
+# Time Average Velocities, on cell faces:
+FACEVAR vavg 
+
+# Pressure Time average, on cell centers:
+VARIABLE pavg 
+
+# Reynolds stress terms, on cell centers:  
+VARIABLE uuav
+VARIABLE uvav
+VARIABLE uwav
+VARIABLE vvav
+VARIABLE vwav
+VARIABLE wwav
+VARIABLE ppav
+

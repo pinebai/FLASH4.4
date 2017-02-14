@@ -1,0 +1,25 @@
+# Request the Runge Kutta unit.
+#
+#     ./setup unitTest/RungeKutta/3Dcircle -auto
+#
+REQUIRES  numericalTools/RungeKutta
+
+D       sim_errorFraction              The error fraction for the dependent variables
+D       sim_RungeKuttaMethod           The method for the Runge Kutta stepper
+D       sim_rx0                        The initial x position of the particle
+D       sim_ry0                        The initial y position of the particle
+D       sim_rz0                        The initial z position of the particle
+D       sim_speed                      The speed of the particle
+D       sim_stepSize                   The step size
+D       sim_numberOfCircles            The number of circles the particle has to sweep
+D       sim_numberOfRungeKuttaSteps    The number of Runge Kutta steps to be performed
+
+PARAMETER  sim_errorFraction                  REAL       1.0e-8
+PARAMETER  sim_RungeKuttaMethod               STRING     "Fehlberg45"
+PARAMETER  sim_rx0                            REAL       1.0
+PARAMETER  sim_ry0                            REAL       1.0
+PARAMETER  sim_rz0                            REAL       1.0
+PARAMETER  sim_speed                          REAL       1.0
+PARAMETER  sim_stepSize                       REAL       0.1
+PARAMETER  sim_numberOfCircles                INTEGER      1
+PARAMETER  sim_numberOfRungeKuttaSteps        INTEGER     10

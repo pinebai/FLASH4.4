@@ -1,0 +1,25 @@
+HDF5 "CheckpointFile.hdf5" {
+GROUP "/" {
+   DATASET "unknown" {
+      DATATYPE  H5T_IEEE_F64LE
+      DATASPACE  SIMPLE { ( 16 ) / ( 16 ) }
+      DATA {
+      (0): 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3
+      }
+      ATTRIBUTE "maximum" {
+         DATATYPE  H5T_IEEE_F64LE
+         DATASPACE  SIMPLE { ( 4 ) / ( 4 ) }
+         DATA {
+         (0): 3.2, 6.4, 9.6, 10.8
+         }
+      }
+      ATTRIBUTE "minimum" {
+         DATATYPE  H5T_IEEE_F64LE
+         DATASPACE  SIMPLE { ( 4 ) / ( 4 ) }
+         DATA {
+         (0): 2.1, 5.3, 8.5, 9.7
+         }
+      }
+   }
+}
+}

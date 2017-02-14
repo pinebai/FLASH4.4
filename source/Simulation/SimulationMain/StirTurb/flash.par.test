@@ -1,0 +1,59 @@
+#       runtime parameters
+lrefine_max	= 1
+lrefine_min 	= 1
+
+nblockx         = 2
+nblocky         = 2
+nblockz         = 2
+
+xmax            = 1.
+xmin            = 0.
+ymax            = 1.
+ymin            = 0.
+zmax            = 1.
+zmin            = 0.
+
+basenm          = "driventurb_3d_"
+
+restart         = .false.
+cpnumber        = 0
+ptnumber        = 0
+trstrt          = 0.5
+tplot           = 0.25
+
+plot_var_1  = "dens"
+plot_var_2  = "pres"
+plot_var_3  = "temp"
+plot_var_4  = "velx"
+plot_var_5  = "vely"
+plot_var_6  = "velz"
+
+diffuse_therm   = .false.     # no thermal diffusion
+diffuse_visc    = .false.     # will need some laplacian viscosity
+diff_visc_nu    = .1
+
+gamma           = 1.4
+istir           = 1
+
+nend            = 10000
+tmax            = 20.0
+nrefs           = 1000000     # No AMR, please.
+
+xl_boundary_type      = "periodic"
+xr_boundary_type      = "periodic"
+yl_boundary_type      = "periodic"
+yr_boundary_type      = "periodic"
+zl_boundary_type      = "periodic"
+zr_boundary_type      = "periodic"
+
+st_stirmax           = 25.1327
+st_stirmin           =  6.2832
+st_energy            =  1.E-4
+st_decay             =  0.5
+eintSwitch          = 0.
+
+dtini = 1.e-5
+dtmin = 1.e-5
+
+smallt = 1.e-15
+smalle = 1.e-10

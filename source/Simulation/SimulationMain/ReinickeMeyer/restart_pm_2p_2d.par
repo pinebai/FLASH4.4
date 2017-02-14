@@ -1,0 +1,150 @@
+#  Runtime parameters for the Reinicke Meyer-ter-Vehn (RMTV) explosion problem.
+#
+#  Reinicke, P., Meyer-ter-Vehn, J., The point explosion with heat conduction, 
+#  Phys. Fluids A, 1807, 3, 1991
+#
+#  Timmes, F. X., Fryxell, B., and Hrbek, G. M., Two- and Three-Dimensional 
+#  properties of the Tri-Lab Verification Test Suite for Code Project A, 
+#  Los Alamos National Laboratory.
+#
+
+##################
+#                #
+#     OUTPUT     #
+#                #
+##################
+basenm      = "rmtv_"
+run_comment = "Reinicke Meyer-ter-Vehn explosion"
+log_file    = "rmtv.log"
+
+# CHECKPOINTING:
+restart                    = .true.
+checkpointFileIntervalTime = 0
+checkpointFileIntervalStep = 10
+checkpointFileNumber       = 14
+
+# PLOT:
+plotfileIntervalTime = 0.
+plotfileIntervalStep = 0
+plotfileNumber       = 0
+
+# Write out FLASH density/temperature and analytic solution
+plot_var_1 = "dens"
+plot_var_2 = "temp"
+plot_var_3 = "arho"
+plot_var_4 = "atmp"
+
+
+################
+#              #
+#     TIME     #
+#              #
+################
+dtinit         = 1.0E-18
+dtmin          = 1.0E-18
+tinitial       = 0.2e-09
+tmax           = 0.6e-09
+nend           = 1000
+
+# Shorten last step:
+dr_shortenLastStepBeforeTMax = .true.
+
+
+#################
+#               #
+#     HYDRO     #
+#               #
+#################
+useHydro = .true.
+cfl      = 0.4
+
+order            = 3        # Interpolation order (first/second/third/fifth order)
+slopeLimiter     = "vanLeer"# Slope limiters (minmod, mc, vanLeer, hybrid, limited)
+LimitedSlopeBeta = 1.       # Slope parameter for the "limited" slope by Toro
+charLimiting     = .true.   # Characteristic limiting vs. Primitive limiting
+use_avisc        = .true.   # use artificial viscosity (originally for PPM)
+cvisc            = 0.1      # coefficient for artificial viscosity
+use_flattening   = .false.  # use flattening (dissipative) (originally for PPM)
+use_steepening   = .false.  # use contact steepening (originally for PPM)
+use_upwindTVD    = .false.  # use upwind biased TVD slope for PPM (need nguard=6)
+RiemannSolver    = "hllc"   # Roe, HLL, HLLC, LLF, Marquina, hybrid
+entropy          = .false.  # Entropy fix for the Roe solver
+shockDetect      = .false.  # Shock Detect for numerical stability
+addThermalFlux   = .false.  # Turn off explicit conduction
+use_hybridOrder  = .false.  # Enforce Riemann density jump
+
+# Boundary conditions:
+xl_boundary_type = "reflecting"
+xr_boundary_type = "outflow"
+yl_boundary_type = "reflecting"
+yr_boundary_type = "outflow"
+zl_boundary_type = "reflecting"
+zr_boundary_type = "outflow"
+
+
+###############
+#             #
+#     EOS     #
+#             #
+###############
+eos_singleSpeciesA = 1.0
+gamma              = 1.25
+eosModeInit        = "dens_temp"
+
+
+##############################
+#                            #
+#     THERMAL CONDUCTION     #
+#                            #
+##############################
+useDiffuse      = .true.
+useConductivity = .true.
+
+cond_K0                  = 1.0
+cond_DensityExponent     = -2.0
+cond_TemperatureExponent = +6.5
+
+# This simulation takes very long time steps, use fully implicit
+# conduction:
+diff_thetaImplct = 1.0
+
+# The unsplit diffusion solver is implicit, so the compute_dt routine
+# is meaningless:
+dt_diff_factor = 1.0e+100
+
+
+################
+#              #
+#     GRID     #
+#              #
+################
+geometry = "cylindrical"
+
+nblockx     = 2
+nblocky     = 2
+lrefine_min = 1
+lrefine_max = 5
+
+# Refine both density and temperature to resolve both the blast and
+# thermal waves:
+refine_var_1 = "dens"
+refine_var_2 = "temp"
+
+# Set domain size:
+xmin = 0.
+xmax = 1.
+ymin = 0.
+ymax = 1.
+zmin = 0.
+zmax = 1.
+
+
+######################
+#                    #
+#     SIMULATION     #
+#                    #
+######################
+
+# Set initial/final position of the thermal front:
+sim_rfInit  = 0.45
+

@@ -1,0 +1,44 @@
+USESETUPVARS PfftSolver
+
+IF PfftSolver not in ["","SimplePeriodicSolver","SoPeriodicSolverFD","HomBcTrigSolver","Generic_Direct","DirectSolver"]
+   SETUPERROR The variable PfftSolver is not in ["","SimplePeriodicSolver","SoPeriodicSolverFD","HomBcTrigSolver","Generic_Direct","DirectSolver"]
+ENDIF
+IF PfftSolver=="SimplePeriodicSolver"
+   REQUIRES Grid/GridSolvers/Pfft/SimplePeriodicSolver
+   REQUIRES ./SimplePeriodic
+ELSEIF PfftSolver=="SoPeriodicSolverFD"
+   REQUIRES Grid/GridSolvers/Pfft/DirectSolver/SecondOrder_FD3p
+ELSEIF PfftSolver=="HomBcTrigSolver"
+   REQUIRES Grid/GridSolvers/Pfft/HomBcTrigSolver
+   REQUIRES ./HomBcTrig
+ELSEIF PfftSolver=="Generic_Direct"
+   REQUIRES Grid/GridSolvers/Pfft/DirectSolver/Generic_Direct
+ELSE
+   REQUIRES Grid/GridSolvers/Pfft/DirectSolver
+ENDIF
+
+D xl_mg_boundary_type lower (left) boundary condition in x dir
+PARAMETER xl_mg_boundary_type STRING "periodic"
+
+D xr_mg_boundary_type upper (right) boundary condition in x dir
+PARAMETER xr_mg_boundary_type STRING "periodic"
+
+D yl_mg_boundary_type lower boundary condition in y dir
+PARAMETER yl_mg_boundary_type STRING "periodic"
+
+D yr_mg_boundary_type upper boundary condition in y dir
+PARAMETER yr_mg_boundary_type STRING "periodic"
+
+D zl_mg_boundary_type lower boundary condition in z dir
+PARAMETER zl_mg_boundary_type STRING "periodic"
+
+D zr_mg_boundary_type upper boundary condition in z dir
+PARAMETER zr_mg_boundary_type STRING "periodic"
+
+D maxDirectSolveLevel Level that will be used to perform direct FFT solve.
+D It is set to a large value so that it is ignored by default 
+D (the level actually used by the solver is the minumum value of 
+D this level and the finest fully refined level).
+PARAMETER maxDirectSolveLevel INTEGER 9999 [1 to 9999]
+
+PPDEFINE PFFT_WITH_MULTIGRID

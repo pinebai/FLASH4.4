@@ -1,0 +1,11 @@
+This I/O implementation was originally designed for PARAMESH, however,
+it should support UG and NOFBS (although this is tested less).
+
+Setup lines:
+
+PARAMESH: ./setup Sedov -auto -unit=IO/IOMain/hdf5/parallel/PM_argonne +pm4dev
+UG: ./setup Sedov -auto +ug -unit=IO/IOMain/hdf5/parallel/PM_argonne
+NOFBS: ./setup Sedov -auto -nofbs +ug -unit=source/IO/IOMain/hdf5/parallel/PM_argonne
+
+Add particle I/O: ... -unit=IO/IOParticles/hdf5/parallel
+WARNING: THE DEFAULT PARTICLE I/O IS SERIAL!!!

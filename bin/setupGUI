@@ -1,0 +1,20 @@
+#!/bin/csh
+#script to launch Fui
+
+#set initial directory
+set INIT_DIR = `pwd`
+
+if (! $?FLASH_HOME) then
+  echo "FLASH_HOME not defined, using default location ~/FLASH2.0/"
+  set FUI_DIR = ~/FLASH2.0/tools/fui/java.src
+else
+  set FUI_DIR =  $FLASH_HOME/tools/fui/java.src/
+endif
+
+#change to FUI directory
+cd $FUI_DIR
+#run FUI
+java -classpath . Fui 
+#change back to initial directory when complete
+cd $INIT_DIR
+

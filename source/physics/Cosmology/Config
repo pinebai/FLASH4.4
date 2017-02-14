@@ -1,0 +1,13 @@
+#  Configuration file for the cosmology module.
+
+#  Available implementations:
+
+#    matter+lambda         FLRW cosmology containing matter and cosmological
+#                            constant
+
+DEFAULT CosmologyMain
+
+D useCosmology whether to use the Cosmology implementation or not
+# A parfile should not include 'useCosmology=.TRUE.' unless CosmologyMain is included.
+# Value is meant to be overridden if CosmologyMain implementation gets included.
+PARAMETER useCosmology	       BOOLEAN CONSTANT FALSE

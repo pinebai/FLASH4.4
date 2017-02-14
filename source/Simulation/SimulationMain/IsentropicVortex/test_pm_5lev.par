@@ -1,0 +1,85 @@
+#  Runtime parameter file for the isentropic vortex problem
+#  Adaptive mesh, 5 levels max refinement
+
+#               AMR parameters
+
+lrefine_max     = 5
+lrefine_min     = 2
+refine_var_1     = "dens"
+
+pt_numX	= 20
+pt_numY	= 20
+
+pt_maxPerProc = 400
+
+useParticles = .true.
+
+pt_initialXMin = 0.0
+pt_initialXMax = 10.0
+pt_initialYMin = 0.0
+pt_initialYMax = 10.0
+pt_initialZMin = 0.0
+pt_initialZMax = 10.0
+
+
+#		simulation parameters
+convertToConsvdInMeshInterp = .true. 
+basenm          = "isentropic_vortex_"
+log_file        = "isentropic_vortex.log"
+stats_file      = "isentropic_vortex.dat"
+restart         = .false.
+checkpointFileIntervalTime = 0.0
+checkpointFileIntervalStep = 100
+checkpointFileNumber = 0	
+
+nend            = 200
+tmax            = 10.
+
+#nblockx		= 2
+#nblocky		= 2
+
+cfl		= .95
+
+#		problem parameters
+
+gamma           = 1.4
+rho_ambient     = 1.0
+p_ambient       = 1.0
+u_ambient       = 1.0
+v_ambient       = 1.0
+
+dtmin           = 2.5e-02
+dtmax           = 2.5e-02
+dtinit           = 2.5e-02
+
+vortex_strength	= 5.0
+xctr            = 5.0
+yctr            = 5.0
+
+xmin            = 0.0
+xmax            = 10.0
+ymin            = 0.0
+ymax            = 10.0
+
+nx_subint       = 1
+ny_subint       = 1
+
+geometry        = "cartesian"
+
+xl_boundary_type = "periodic"
+xr_boundary_type = "periodic"
+zl_boundary_type = "periodic"
+zr_boundary_type = "periodic"
+
+smlrho          = 1.e-100
+smallp          = 1.e-100
+smalle          = 1.e-100
+smallt          = 1.e-100
+
+nriem           = 5
+convertToConsvdInMeshInterp   = .true.
+use_steepening  = .false.
+cvisc           = 0.
+eintSwitch     = 0.
+
+plot_var_1 = "dens"

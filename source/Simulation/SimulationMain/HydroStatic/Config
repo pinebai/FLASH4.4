@@ -1,0 +1,25 @@
+# Config file for a simple HydroStatic setup
+#
+# Run setup like this:
+#  ./setup -1d HydroStatic -auto -debug 
+# or
+#  ./setup -2d HydroStatic -auto -debug 
+#
+# Test of fixed-values user boundary conditions.
+
+REQUESTS PhysicalConstants
+REQUESTS Grid
+# May also work without the following line
+# REQUESTS Grid/GridBoundaryConditions/Flash2HSE
+REQUESTS Grid/GridBoundaryConditions/Flash3HSE
+
+REQUESTS physics/Gravity
+REQUESTS physics/Hydro
+#REQUESTS physics/Diffuse
+#REQUESTS physics/materialProperties/Viscosity/ViscosityMain/Constant
+#REQUESTS physics/materialProperties/Conductivity/ConductivityMain/Constant
+
+PARAMETER sim_xyzRef	REAL 0.5
+PARAMETER sim_presRef	REAL 1.0
+PARAMETER sim_tempRef	REAL 300.0
+

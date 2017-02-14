@@ -1,0 +1,30 @@
+
+
+FC = gfortran
+CC = gcc -g
+FFLAGS = -O3 -g -fdefault-real-8 -fdefault-double-8 -ffree-line-length-none
+
+
+FSRC  = fakef.F90 ut_contourSurfaceInterface.F90 ut_contourSurfaceAreaBlock.F90 \
+       UnitTest_contourSurface.F90
+
+CSRC = fakec.c iso.c
+
+FOBJ = $(FSRC:.F90=.o)
+COBJ = $(CSRC:.c=.o)
+
+PROG = UnitTest_contourSurface
+
+all: $(PROG)
+
+$(PROG): $(COBJ) $(FOBJ)
+	$(FC) $(FFLAGS) -o $(PROG) $(COBJ) $(FOBJ)
+
+%.o:  %.F90
+	$(FC) -c $< $(FFLAGS) -o $@
+
+%.o:  %.c
+	$(CC) -c $< -o $@
+
+clean:
+	rm -f $(COBJ) $(FOBJ) $(PROG) *.mod

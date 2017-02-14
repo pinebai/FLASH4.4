@@ -1,0 +1,5 @@
+DEFAULT IonizeMain
+
+D   useIonize       Whether Ionize calculations should be performed.
+# Value is meant to be overridden if IonizeMain gets included.
+PARAMETER useIonize    BOOLEAN  FALSE

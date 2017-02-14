@@ -1,0 +1,34 @@
+#Lynns first attempt at testing
+# Pattern rule
+%.o : %.F90
+	mpif90 -C -o $@ -c $<
+
+all:  PhysicalConstants_data.o pc_utilities.o pc_testing.o \
+	 PhysicalConstants_get.o \
+	PhysicalConstants_init.o PhysicalConstants_unitTest.o
+	mpif90 -o testPhysicalConstants  PhysicalConstants_data.o  \
+		PhysicalConstants_get.o	PhysicalConstants_init.o  \
+		pc_testing.o pc_utilities.o \
+		PhysicalConstants_unitTest.o
+	echo all done
+
+clean:
+	rm -f *.o *.mod	test
+	echo clean done	
+
+
+# Dependency rules
+PhysicalConstants_get.o:	PhysicalConstants_data.mod	
+PhysicalConstants_init.o:	PhysicalConstants_data.mod	
+pc_testing.o:	PhysicalConstants_data.mod	
+pc_utilities.o:	PhysicalConstants_data.mod
+PhysicalConstants_test.o:	PhysicalConstants_data.mod 
+
+
+#Compiling source files
+PhysicalConstants_data.mod:	PhysicalConstants_data.F90 
+	mpif90 -c -C PhysicalConstants_data.F90
+
+#end of Makefile
+
+

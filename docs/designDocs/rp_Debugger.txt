@@ -1,0 +1,4 @@
+
+monitors/Debugger/DebuggerMain
+    doHeapCheck [BOOLEAN] [TRUE]
+

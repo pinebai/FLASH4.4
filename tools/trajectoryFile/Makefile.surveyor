@@ -1,0 +1,36 @@
+#HDF5_PATH = /usr/local/hdf5/1.6.9/intel
+#MPI_PATH = /usr/local/mpich/1.2.7p1/intel
+
+
+# Surveyor
+HDF5_PATH = /soft/apps/hdf5-1.8.0
+CFLAGS_HDF5  = -D H5_USE_16_API
+
+# Intrepid
+#HDF5_PATH = /home/robl/soft/phdf5-1.8.3
+#CFLAGS_HDF5  = -D H5_USE_16_API
+# -DNOUNDERSCORE -I/bgsys/drivers/ppcfloor/arch/include
+MPI_PATH = 
+
+CFLAGS = -std=c99 -c -I$(HDF5_PATH)/include -g  -DIBM -DNOUNDERSCORE -D_FILE_OFFSET_BITS=64 $(CFLAGS_HDF5)
+
+LFLAGS = -o
+
+CCOMP = /bgsys/drivers/V1R4M0_320_2009-090815P/ppc/comm/default/bin/mpixlc
+
+LIBS = -L$(HDF5_PATH)/lib -lhdf5 -lm
+
+EXENAME = trajectorySort
+
+OBJS = getOptions.o readFlashParticles.o sortParticles.o trajectory.o writeTrajectoryFile.o
+
+.SUFFIXES: .c .o
+
+.c.o : 
+	$(CCOMP) $(CFLAGS) $(CDEFINES) $*.c
+
+default: $(OBJS)
+	$(CCOMP) $(LFLAGS) $(EXENAME) $(OBJS) $(LIBS) 
+
+clean: 
+	rm $(OBJS) $(EXENAME)

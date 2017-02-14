@@ -1,0 +1,12 @@
+# Config file for the Opacity/OpacityMain/Constcm2g implementation
+
+D op_emitConst Constcm2g value for emission opacity [cm^2/g]
+PARAMETER op_emitConst REAL 1.0
+
+D op_transConst Constcm2g value for transport opacity [cm^2/g]
+PARAMETER op_transConst REAL 1.0
+
+D op_absorbConst Constcm2g value for absorption opacity [cm^2/g]
+PARAMETER op_absorbConst REAL 1.0
+
+CONFLICTS physics/materialProperties/Opacity/OpacityMain/Multispecies

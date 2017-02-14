@@ -1,0 +1,5 @@
+PARAMETER totalSharedVars INTEGER 12
+NONREP MASS_SCALAR X 3 totalSharedVars x???
+
+#The choices above mean that the flash.par meshCopyCount value
+#can only be 4, 6 or 12!

@@ -1,0 +1,42 @@
+#	Configuration file for Source Term: Stir/StirMain/Generate
+#
+#	Parameters:
+#
+
+REQUIRES flashUtilities/rng
+
+D	  st_seed               random number generator seed 
+PARAMETER st_seed        INTEGER    2
+
+D         st_energy             energy input/mode
+PARAMETER st_energy      REAL       .01
+
+D         st_decay              correlation time for driving
+PARAMETER st_decay       REAL       .1
+
+D         st_stirmax            maximum stirring *wavenumber*
+PARAMETER st_stirmax     REAL       62.8
+
+D         st_stirmin            minimum stirring *wavenumber*
+PARAMETER st_stirmin     REAL       31.4
+
+D  st_freq      the frequency of stirring
+PARAMETER st_freq        INTEGER    1
+
+
+D The parameter is to allow reproducibility across
+D platforms. With value true all random numbers generated are
+D saved in a file called "saved_random_numbers"
+PARAMETER st_saveReproducible BOOLEAN FALSE
+
+D With this parameter true instead of generating its own
+D random numbers, the code reads in saved random numbers 
+D from a file called "saved_random_numbers"
+PARAMETER st_reproducible BOOLEAN  FALSE
+
+
+# Slots to store acceleration
+
+VARIABLE accx               
+VARIABLE accy               
+VARIABLE accz               

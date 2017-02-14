@@ -1,0 +1,10 @@
+#	Config file for the Incompressible Navier Stoke solver
+DEFAULT IncompNSMain
+
+# localAPI comes earlier while linking source files into the object directory,
+# so it can be overriden easily by non-stub implementations elsewhere
+CHILDORDER localAPI
+
+D useIncompNS       Should the IncompNS unit be used?
+# Value is meant to be overridden if an IncompNSMain implementation gets included
+PARAMETER useIncompNS    BOOLEAN CONSTANT FALSE 

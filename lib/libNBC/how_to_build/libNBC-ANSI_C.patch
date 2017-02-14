@@ -1,0 +1,17 @@
+diff -ru libNBC-1.1.1-orig/nbc_neighbor_helpers.c libNBC-1.1.1/nbc_neighbor_helpers.c
+--- libNBC-1.1.1-orig/nbc_neighbor_helpers.c	2013-05-07 09:34:50.296996948 -0500
++++ libNBC-1.1.1/nbc_neighbor_helpers.c	2013-05-07 10:01:05.369315906 -0500
+@@ -94,11 +94,11 @@
+       break;
+     case MPI_GRAPH: /* graph */
+       {
+-        int rank;
++        int rank, i;
+         MPI_Comm_rank(comm, &rank);
+         res = MPI_Graph_neighbors(comm, rank, maxindegree, sources);
+         if (MPI_SUCCESS != res) { printf("MPI Error in MPI_Graph_neighbors_count() (%i)\n", res); return res; }
+-        for(int i=0; i<maxindegree; i++) destinations[i] = sources[i];
++        for(i=0; i<maxindegree; i++) destinations[i] = sources[i];
+       }
+       break;
+ #ifdef HAVE_MPI22

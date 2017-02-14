@@ -1,0 +1,353 @@
+#ifndef CPP_NODE_NAME
+#define CPP_NODE_NAME node
+#endif
+
+#ifndef CPP_LIST_NAME
+#define CPP_LIST_NAME list
+#endif
+
+  !------- This is generic list code suitable for any node type -------!
+  !This code can be included in any module.  The module must have a 
+  !definition of a list which consists of a head (H) and tail (T) node 
+  !pointer.  There must also be a definiton of a node which consists of a 
+  !a pointer to the next node (next) and a pointer to the previous node (prev).
+  !Also the following subroutines must be provided by the user: 
+  !create_node(), destroy_node() and print_node().
+
+  !The code is designed so that a list object is passed as an argument into 
+  !each function.  This means:
+  !  1. Multiple lists of the same type can be maintained by the caller.
+  !  2. Lists of different node types can be created in different FLASH units.
+
+  !My notation is this file:
+  !L: List, H: Head node, T: Tail node, N: New node, X: Temporary node, 
+  !R: Return node.
+
+  subroutine initialise_list(L)
+    implicit none
+    type(CPP_LIST_NAME), pointer :: L
+
+    allocate(L)
+
+    !Essential because API functions check if H & T are null.
+    nullify(L % H, L % T)  
+  end subroutine initialise_list
+
+
+  !Insert element at beginning.
+  subroutine push_front(L, N)
+    implicit none
+    type(CPP_LIST_NAME), pointer :: L
+    type(CPP_NODE_NAME), pointer :: N
+
+    if (associated(L % H)) then
+       L % H % prev => N      !Attach new node at start of current list.
+       N % next => L % H
+    else
+       L % T => N             !Start the list using new node.
+       nullify(L % T % next)  !Only 1 item so next node is null.
+    end if
+
+    L % H => N                !Set head pointer to point to the just added node.
+    nullify(L % H % prev)     !New node at the start so previous node is null.
+  end subroutine push_front
+
+
+  !Delete first element.
+  subroutine pop_front(L)
+    implicit none
+    type(CPP_LIST_NAME), pointer :: L
+    type(CPP_NODE_NAME), pointer :: X
+
+    if (associated(L % H)) then
+       if (associated(L % H % next)) then
+          X => L % H
+
+          L % H => L % H % next  !The next node is now the head node...
+          nullify(L % H % prev)  !As such, it has no previous node anymore.
+
+          call destroy_node(X)   !Custom deallocation.
+       else
+          !Check that H & T are pointing to the same target.
+          if (.not. (associated(L % H, L % T))) then
+             call Driver_abortFlash & 
+                  ("Error in pop_front: H & T point to different targets?")
+          end if
+
+          nullify(L % H % prev)    !NOTE: We already know that H % next is null.
+          call destroy_node(L % H) !Custom deallocation.
+          nullify(L % H, L % T)    !All items deleted so nullify node pointers.
+       end if
+    end if
+  end subroutine pop_front
+
+
+  !Add element at the end.
+  subroutine push_back(L, N)
+    implicit none
+    type(CPP_LIST_NAME), pointer :: L
+    type(CPP_NODE_NAME), pointer :: N
+
+    if (associated(L % H)) then
+       L % T % next => N       !Attach new node at end of current list.
+       N % prev => L % T       !Only 1 item so previous node is null.
+    else
+       L % H => N              !Start the list using new node.
+       nullify(L % H % prev)
+    end if
+
+    L % T => N                 !Set tail pointer to point to just added node.
+    nullify(L % T % next)      !New node is at the end so make it point to null.
+  end subroutine push_back
+
+
+  !Delete last element 
+  subroutine pop_back(L)
+    implicit none
+    type(CPP_LIST_NAME), pointer :: L
+    type(CPP_NODE_NAME), pointer :: X
+
+    if (associated(L % T)) then
+       if (associated(L % T % prev)) then
+          X => L % T
+
+          L % T => L % T % prev  !The previous node is now the tail node...
+          nullify(L % T % next)  !As such, it has no next node anymore.
+
+          call destroy_node(X)   !Custom deallocation.
+       else
+          !Check that H & T are pointing to the same target.
+          if (.not. (associated(L % H, L % T))) then
+             call Driver_abortFlash & 
+                  ("Error in pop_back: H & T point to different targets?")
+          end if
+
+          nullify(L % T % next)    !NOTE: We already know that T % prev is null.
+          call destroy_node(L % T) !Custom deallocation.
+          nullify(L % H, L % T)    !All items deleted so nullify node pointers.
+       end if
+    end if
+  end subroutine pop_back
+
+
+  subroutine finalise_list(L, fromFront)
+    implicit none
+    type(CPP_LIST_NAME), pointer :: L
+    logical, optional :: fromFront
+    logical :: deleteFromFront
+
+    deleteFromFront = .false.
+    if (present(fromFront)) then
+       if (fromFront .eqv. .true.) then
+          deleteFromFront = .true.
+       end if
+    end if
+
+    !Delete each and every node from the list.
+    if (deleteFromFront .eqv. .true.) then
+       do while (associated(L % H))
+          call pop_front(L)
+       end do
+    else
+       do while (associated(L % T))
+          call pop_back(L)
+       end do
+    end if
+    nullify (L % H, L % T)
+
+    !Free memory space for list container.
+    deallocate(L)
+    nullify(L)
+  end subroutine finalise_list
+
+
+  subroutine print_list(L, unitNumber)
+    implicit none
+    integer, intent(IN) :: unitNumber
+    type(CPP_LIST_NAME), pointer :: L
+    type(CPP_NODE_NAME), pointer :: X
+
+    if (.not.(associated(L))) then
+       write(unitNumber,*) "NONE -> List is null!"
+    else if (.not.(associated(L % H)) .or. .not.(associated(L % T))) then
+       write(unitNumber,*) "NONE -> List is empty!"
+    else
+       X => L % H
+       do while (.not. (associated(X, L % T)))
+          call print_node(unitNumber, X)
+          X => X % next
+       end do
+       call print_node(unitNumber, L % T)
+    end if
+
+  end subroutine print_list
+
+
+  subroutine list_size(L, listSize)
+    implicit none
+    type(CPP_LIST_NAME), pointer :: L
+    integer, intent(OUT) :: listSize
+    type(CPP_NODE_NAME), pointer :: X
+
+    listSize = 0
+    X => L % H
+    do while (associated(X))
+      listSize = listSize + 1
+      X => X % next
+    end do
+  end subroutine list_size
+
+
+  !Rewrite with OpenMP 3.0 tasking as this is a much better solution.  
+  !Requires > gcc 4.4.
+  subroutine map_impure_fn(fnToApply, L, headToTailDirection, parallelFlag)
+    !$ use omp_lib
+    implicit none
+    interface
+       integer function fnToApply(item)
+         CPP_NODE_DEFINITION
+         implicit none
+         type(CPP_NODE_NAME), pointer  :: item
+       end function fnToApply
+    end interface
+    type(CPP_LIST_NAME), pointer :: L
+    logical, optional, intent(IN) :: headToTailDirection, parallelFlag
+    type(CPP_NODE_NAME), pointer :: X
+    integer :: iErr
+    logical :: executeInparallel, headToTail, bErrAll
+
+    bErrAll = .false.
+    if (present(parallelFlag)) then
+      executeInParallel = parallelFlag
+    else
+      executeInParallel = .false.
+    end if
+    
+    if (present(headToTailDirection)) then
+      headToTail = headToTailDirection
+    else
+      headToTail = .true.
+    end if
+
+    !Begin parallel region when required.
+    !$omp parallel if (executeInParallel .eqv. .true.),&
+    !$omp private(X,iErr),&
+    !$omp reduction(.or.:bErrAll)
+
+    if (headToTail .eqv. .true.) then
+       X => L % H
+    else
+       X => L % T
+    end if
+
+    !Check whether there is a node in the list.
+    do while (associated(X))
+
+       !Each thread traverses the list with a private copy of X.  The single block 
+       !ensures that only 1 thread applies fnToApply() in each iteration step.
+       !$omp single
+       iErr = fnToApply(X)
+       bErrAll = bErrAll .or. (iErr /= 0)
+       !$omp end single nowait
+
+       if (headToTail .eqv. .true.) then
+          X => X % next
+       else
+          X => X % prev
+       end if
+
+    end do
+    !$omp end parallel
+
+    if (bErrAll .eqv. .true.) then
+       call Driver_abortFlash("[map_impure_fn]: Error applying functions")
+    end if
+  end subroutine map_impure_fn
+
+
+
+
+  !The function we apply is designed to interact with the outside world, i.e. it
+  !is not a pure function.  Some uses include printing details about a node or 
+  !sending /receiving an MPI message.  A return value of zero indicates success.
+  !We require the user to create a pre-processor definition named 
+  !CPP_NODE_DEFINITION which contains a "use module" statement for the node.
+  subroutine apply_fn_to_nodes(fnToApply, L)
+    implicit none
+    interface
+       integer function fnToApply(item)
+         CPP_NODE_DEFINITION
+         implicit none
+         type(CPP_NODE_NAME), pointer  :: item
+       end function fnToApply
+    end interface
+    type(CPP_LIST_NAME), pointer :: L
+    type(CPP_NODE_NAME), pointer :: X
+    integer :: ierr
+
+    if (.not.(associated(L % H)) .or. .not.(associated(L % T))) then
+       !Commented out: Now a NULL operation when the list is empty.
+       !call Driver_abortFlash("[apply_fn_to_nodes]: List is empty")
+    else
+       X => L % H
+
+       do while (.not. (associated(X, L % T)))
+          ierr = fnToApply(X)
+          if (ierr /= 0) then
+             call Driver_abortFlash("[apply_fn_to_nodes]: Error in function")
+          end if
+          X => X % next
+       end do
+
+       ierr = fnToApply(L % T)
+       if (ierr /= 0) then
+          call Driver_abortFlash("[apply_fn_to_nodes]: Error in function")
+       end if
+    end if
+  end subroutine apply_fn_to_nodes
+
+
+  !Apply a function to each node, and return the node in which the 
+  !function returns .true..  S (Start node) will normally be L % H 
+  !(Start of list) with headToTailDirection=.true. or L % T (End of list) 
+  !with headToTailDirection=.false..  However, this function can be 
+  !repeatedly called to find more than 1 matching node by using R 
+  !(Return node) as the new S (Start node).
+  subroutine get_matching_node(fnNodeTest, S, R, headToTailDirection)
+    implicit none
+    interface
+       logical function fnNodeTest(item)
+         CPP_NODE_DEFINITION
+         implicit none
+         type(CPP_NODE_NAME), pointer  :: item
+       end function fnNodeTest
+    end interface
+    type(CPP_NODE_NAME), pointer :: S  !Start node.
+    type(CPP_NODE_NAME), pointer :: R  !Return node.
+    logical, optional, intent(IN) :: headToTailDirection
+
+    type(CPP_NODE_NAME), pointer :: X  !Temporary node
+    logical :: headToTail
+   
+    if (present(headToTailDirection)) then
+      headToTail = headToTailDirection
+    else
+      headToTail = .true.
+    end if
+
+    nullify(R)  !So that we return null if no matching node found.
+    X => S
+
+    do while (associated(X))
+       if (fnNodeTest(X) .eqv. .true.) then
+          R => X  !Set return node to the target node of X.
+          exit
+       end if
+
+       if (headToTail .eqv. .true.) then
+          X => X % next
+       else
+          X => X % prev
+       end if
+    end do
+  end subroutine get_matching_node

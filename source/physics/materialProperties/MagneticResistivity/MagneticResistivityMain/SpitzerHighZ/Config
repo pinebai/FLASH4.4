@@ -1,0 +1,8 @@
+D res_ieTimeCoef Constant coefficient for scaling ion/ele coupling time
+PARAMETER res_ieTimeCoef REAL 1.0 [0.0 ...]
+
+D res_coef  Constant coefficient for scaling the final resistivity
+PARAMETER res_coef REAL 1.0 [0.0 ...]
+
+D res_maxRes Ceiling value applied to the magnetic resistivities; use -1.0 to disable.
+PARAMETER res_maxRes REAL -1.0 [-1.0, 0.0 ...]

@@ -1,0 +1,11 @@
+# Config file for RadTrans/RadTransMain unit
+DEFAULT MGD
+
+# Require the local API
+REQUIRES physics/RadTrans/localAPI
+
+D         useRadTrans flag to indicate whether radiative transfer is in use
+PARAMETER useRadTrans BOOLEAN TRUE
+
+D rt_dtFactor Coefficient for RadTrans time step
+PARAMETER rt_dtFactor REAL 0.1 [0.0+ ... ]

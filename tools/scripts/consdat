@@ -1,0 +1,68 @@
+#!/usr/bin/env python
+"""
+This script loads a FLASH .dat file and checks for conservation in
+mass, total momentum, and total energy
+"""
+
+import numpy as np
+import sys
+
+datfn = sys.argv[1] # Get the .dat file name...
+data = np.loadtxt(datfn)
+
+# The dat file columns are:
+time_col = 0 # time (s)
+mass_col = 1 # mass (g)
+xmom_col = 2 # x-momentum (g*cm/s)
+ymom_col = 3 # y-momentum (g*cm/s)
+zmom_col = 4 # z-momentum (g*cm/s)
+etot_col = 5 # total energy (ergs)
+ekin_col = 6 # kinetic energy (ergs)
+eint_col = 7 # internal energy (ergs)
+emag_col = 8 # (optional) magnetic energy (ergs)
+
+magenergy = True if data.shape[1] == 9 else False
+
+if magenergy:
+    print "SIMULATION INCLUDES MAGNETIC ENERGY\n"
+else:
+    print "SIMULATION DOES NOT INCLUDE MAGNETIC ENERGY\n"
+
+###################################
+#                                 #
+#     CHECK MASS CONSERVATION     #
+#                                 #
+###################################
+init  = data[ 0,mass_col]
+final = data[-1,mass_col]
+relchange  = (final - init) / (0.5*(final + init))
+
+print "Mass Conservation"
+print "-----------------"
+print "  Initial (g) = %23.16e" % init
+print "  Final   (g) = %23.16e" % final
+print "  Change  (g) = %23.16e" % (final - init)
+print "  Rel. Change = %23.16e" % relchange
+
+
+#####################################
+#                                   #
+#     CHECK ENERGY CONSERVATION     #
+#                                   #
+#####################################
+init  = data[ 0,etot_col]
+final = data[-1,etot_col]
+
+if magenergy: 
+    init  = init  + data[ 0,emag_col]
+    final = final + data[-1,emag_col]
+
+relchange  = (final - init) / (0.5*(final + init))
+
+print "\n"
+print "Total Energy Conservation"
+print "-------------------------"
+print "  Initial (ergs) = %23.16e" % init
+print "  Final   (ergs) = %23.16e" % final
+print "  Change  (ergs) = %23.16e" % (final - init)
+print "  Rel. Change    = %23.16e" % relchange

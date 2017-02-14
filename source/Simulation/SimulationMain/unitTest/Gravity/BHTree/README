@@ -1,0 +1,24 @@
+This is how to setup a basic unit test (see also section "BHTree Poisson solver
+unit test" in the Flash User's Guide):
+
+1. Create initial conditions:
+  - edit bes-generator.py and eventually modify parameters at lines 15-26
+  - run the generator and create file with radial profiles, e.g:
+
+./bes-generator.py > be1sm+1+4-xi06-mf10
+
+2. Compile flash, e.g.:
+
+cd <FLASH_DIRECTORY>
+./setup unitTest/BHTree -auto -3d -maxblocks=1000 -nxb=8 -nyb=8 -nzb=8
+cd object
+make
+
+3. Copy the executable (flash4), the radial profile file (be1sm+1+4-xi06-mf10)
+and the parameter file (e.g. flash_perr_la05.par; rename it to flash.par) into a
+model directory and run the simulation, e.g.:
+
+mpiexec -n 8 ./flash4
+
+4. Inspect the field array perr in the created hdf file for the tree gravity
+solver error.

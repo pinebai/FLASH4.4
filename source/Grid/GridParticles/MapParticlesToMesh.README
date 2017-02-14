@@ -1,0 +1,66 @@
+
+The F2 implementation of MapParticlesToMesh works as follows :
+
+Step 1. 
+Find all processors that have neighbors of all leaf blocks on
+myPE. That gives the maximum number of possible receives.
+
+Step 2.
+Apply the mapping a particle at a time. If a particle is at the edge
+of the block, the smearing overflows into the guard cells. Accumulate
+all the values in scratch storage equal to unk.
+
+Step 3. Do a reverse of guardcell fill so that the mapped particle
+values can be sent back to the interiors of the blocks corresponding
+to the guardcells. This is where the knowledge of neighbors is used.
+
+       The reverse guardcell fill may involve some restriction and 
+       prolongation. How conservative will be corresponding mapping ?
+
+
+The new proposed algorithm.
+
+Step 1. 
+Augment the particles data structure with two more fields: Total mass
+of the particle, current mass of the particle.
+
+Step 2. 
+Use the seive algorithm as per the following pseudocode :
+
+
+Put_particles_in_sieve.
+Repeat until (currentmass(all particles)==0) 
+For each particle i 
+  For each block j on myPE
+    if(i maps on j) 
+        do the mapping
+        currentmass(i) = currentmass(i)-mass_mapped_on(j)
+    end if
+    do global sum of currentmass
+    if(currentmass_global_sum /= 0) 
+       send mySieve to neighbor
+       receive sieve from neighbor
+    end if
+  end For
+end For
+
+The mapping routine will change slightly from the one in F2, in that
+the range of cells being mapped will be limited to the interior only
+on all blocks. And the blocks will have to be aware that in some
+instances, the particle may be sitting on one of the guardcells of the
+block when the mapping is being done. As far as I can make out, the 
+actual mapping consists of calculating the weight to be given to each
+cell, and then just taking out that fraction and adding it to the
+appropriate variable of the block.
+
+There will also have to be a routine to calculate the
+mass_mapped_on(j). We will have to figure out this routine.
+
+The Interface: The current interface appears to be good enough. It
+only has the particle property, the unk variable and mode. The mode
+decides whether the variable should zeroed before adding the
+mapped values. The Particles unit will call Grid_mapParticlesToMesh,
+and Grid_mapParticlesToMesh will call Particles_mapParticleToMesh to
+calculate the mapping. I don't see the need for any other interface
+at this time.
+

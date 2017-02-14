@@ -1,0 +1,193 @@
+\documentclass[10pt]{article}
+
+\addtolength{\oddsidemargin}{-1.0in}
+\usepackage{graphicx}  % if you want to include PostScript figures
+\usepackage{xspace} % for proper spacing after macros
+\usepackage{color}
+\usepackage{longtable}
+\usepackage{multirow}
+
+\begin{document}
+
+\title{Test-Suite Grid, List of Tests}
+
+\author{}
+
+\section*{Introduction}
+This is the grid for making sure that the test suite provides maximum 
+possible coverage for minimum possible number of tests. The information
+should also be helpful in letting people pick a smaller subset for their 
+own personal use. The first section can be used to pick commandline
+options for the setup script. At the end of the document the tests are
+listed in the sequence which would minimize repeat compilations of
+various units.
+
+\section*{List and Coverage}
+\begin{tabular}{|c|c|c|c|c|c|c|}\hline
+\# &App&Dim&Primary&Grid&IO&Others\\\hline
+1&OrzTang&2&USM&UGFB&PnetType&Gam\\\hline
+2&BlastBS&2&8Wave&UGNFB&HDFPAr&Gam\\\hline
+3&BlastBS&3&USM&PM4.0&HDFSer&Gam\\\hline
+4&rotor&2&USM&UGNFB&HDFPar&Part(pass)\\\hline
+5**&CldShk&3&8wave&Chombo&HDFPar&\\\hline
+6&CSheet&2&USM&PMDev&PnetType&Magres,FluxDiff,STS\\\hline
+7$\dagger\dagger$&RT&2&USM&PM4.0&HDFSer&\\\hline
+8**&Briowu&1&USM&Chombo&HDFPar&\\\hline
+9**&RHDSod&2&RHD&Chombo&HDFSer&RHDGam\\\hline
+10&RHDRiem&2&RHD&PMDev&PnetCDF&RHDGam\\\hline
+11***&RSHK&1&2T+&PM4.0&HDFPar&Hypre,EosTab,Cond,MGD,OpTab\\\hline
+12&MGDStp&2&2T+&UGNFB&HDFPar&Hypre,G2+,Cond,MGD,OpConst\\\hline
+13&MGDStp&3&2T+&PM4DEV&HDFPar&Hypre,G2+,Cond,MGD,OpConst\\\hline
+14*&RSHK2D&2-CYL&2T+&PMDEV&HDFPar&Hypre,EosTab,Cond,MGD,OpTab\\\hline
+15&SuOlson&1-SPH&1T&UGFB&HDFPar&Hypre,MGD,OpConst,Cond,HX\\\hline
+16**&Shafranov&1&2T&PM4DEV&HDFPar&Hypre,Gam,Cond,SELE Hydro\\\hline
+17$\dagger\dagger$&WDdef&3&PPM&PM4Dev& HDFPar& EosHelm,GravMP,BurnParam\\\hline
+18 & Cellular & 2 & PPM & PM4Dev & HDFSer & BurnNuc,EosHelm \\\hline
+19&2Gamma&2D &PPM & UG & PnetCDF & \\\hline
+20&Plasma&2D && UGNFB & HDFPar &ChargedParticles \\\hline
+21&Plasma&1D && UGFB & PnetCDF &ChargedParticles \\\hline
+22$\dagger$&Stirturb&3D &UnPPM& UGNFB & HDFSer &Stir, Particles,Gamma \\\hline
+23&Stirturb&3D &PPM& PM4Dev & HDF5Type &Stir, Particles,multiGamma \\\hline
+24&Neitest&1D &PPM& PM4.0 & HDF5Ser &Ionize, multiGamma \\\hline
+25&Orbit&3D &Gravity& PM4Dev & HDF5Par &massiveParticles,multiGrid \\\hline
+26&Pancake&2D &Gravity& PM4Dev & PnetCDF &massiveParticles, multiGrid \\\hline
+27&Pancake&2D &UnPPM/Grav& PM4.0 & HDF5Par &massiveParticles, multiGrid \\\hline
+28**&Maclaurin&2D &Gravity& UGNFB & HDF5Par & multiPole \\\hline
+29&Sod(Se)  &1D &2T     & PM4.0 & HDF5Ser & multiGamma $2^+$T \\\hline
+30&2Gamma   &1D &$2^+$T$\rightarrow$1T & UGFB & PnetCDF & multiGamma $2^+$T \\\hline
+31&ReinickeMeyer&2D	 &PPM     &PM4Dev & HDF5Par &Diffuse,Hydro \\\hline
+32&Sedov & 2D & UnPPM & UG &HDF5TYPE & Particles \\\hline
+33&SodStep & 2D & UnPPM & PM4DEV & HDF5TYPE & \\ \hline
+34&Jeans & 2D & Gravity &  UGNFB & HDF5TYPE & Pfft\\ \hline
+35&WindTunnel & 2D & PPM & PM4DEV & HDF5Type & \\\hline
+36&2Blast & 1D & UnPPM & PM4DEV & HDF5TYPE & Particles \\\hline
+37&SedovSelfGrav&1D&PPM& PM4.0&HDF5Ser&gravity\\\hline
+38&RTFlame&2D&UnPPM&PM4DEV&HDF5Par&flame, constt gravity, hydrostatic bc \\\hline
+39&PoisParticles&2D&gravity&PM4.0&HDF5Par&particle based refinement \\\hline
+\hline
+\end{tabular}
+\footnotesize {** -  removed}\\   \footnotesize{*** - temporarily removed}\\
+\footnotesize{$\dagger$ - altered\    $\dagger\dagger$ - not included in flash4 branch}\\
+
+
+\section*{Grid}
+\begin{center}
+\begin{longtable}{ | p{0.5in} | p{0.8in} | *{10}{ p{0.4in} | } }
+\hline
+\multicolumn{2}{ | c | }{Physics}
+& \multicolumn{2}{ c | }{UG}
+& \multicolumn{2}{ c | }{Paramesh}
+& \multicolumn{1}{ c | }{Chombo}
+& \multicolumn{3}{ c | }{HDF5}
+& \multicolumn{2}{ c | }{PnetCDF}\\\hline
+& & FBS & NoFBS
+& 4.0 & 4Dev
+&
+& Serial & Parallel & Type
+& Parallel & Type\\\hline\hline
+\endfirsthead
+
+\multicolumn{11}{c}
+{\tablename\ \thetable\ -- \textit{Continued from previous page}} \\
+\hline
+\multicolumn{2}{ | c | }{Physics}
+& \multicolumn{2}{ c | }{UG}
+& \multicolumn{2}{ c | }{Paramesh}
+& \multicolumn{1}{ c | }{Chombo}
+& \multicolumn{3}{ c | }{HDF5}
+& \multicolumn{2}{ c | }{PnetCDF}\\\hline
+& & FBS & NoFBS
+& 4.0 & 4Dev
+&
+& Serial & Parallel & Type
+& Parallel & Type\\\hline\hline
+\endhead
+
+\hline
+\endlastfoot
+
+\hline \multicolumn{11}{r}{\textit{Continued on next page}} \\
+\endfoot
+
+\multirow{1}{*}{Hydro} & SplitPPM & 18 & & 23 & 16, 17, 22, 31, 35 & & 17, 23 & 16, 31 & 35 & 18, 22 &\\
+& 2T+ & 29 & 12? & 11, 28 & 13, 15, 30 & & 28, 30 & 11, 12, 13, 15 & & 29 &\\
+& Unsplit & 32 & 21 & 26 & 33, 36 & & & 21, 26 & 32, 33, 36 & &\\
+& RHD & & & & 10 & 9 & 10 & 9 & & &\\
+& 8wave & & 2 & & & 5 & 2 & 5 & & &\\
+& USM & 1 & 4 & 3, 7 & 6 & 8 & 3, 7 & 4, 8 & & & 1, 6\\
+\hline
+
+\multirow{1}{*}{EOS} & Gamma & 1, 14 & 2, 4, 21 & 3 & & & 3 & 2, 4, 14, 21 & & & 1\\
+& G2T+ & & 12 & & 1,5 & & & 12, 15 & & &\\
+& MultiGamma & 18 & & 23 & & & & & 23 & 18 & 22\\
+& MG2T+ & 29 & & 28 & & & 28 & & & 29 &\\
+& Helm & & & & 16, 17 & & 17 & 16 & & &\\
+& EosTab & & & 11 & 13, 30 & & 30 & 11, 13 & & &\\
+& RHDG & & & & 10 & 9 & 10 & 9 & & &\\
+\hline
+
+\multirow{1}{*}{Diffuse} & Hypre & 14 & 12 & 11 & 13, 15 & & & 11, 12, 13, 14, 15 & & &\\
+& Split & & & & 30 & & 30 & & & &\\
+& CG & & & & & & & & & &\\
+& Fluxes & & & & 6 & & & & & & 6\\
+\hline
+
+\multirow{1}{*}{Gravity} & const & & &7 & & & 7 & & & &\\
+& PMass & & & & & & & & & &\\
+& PlanePar & & & & & & & & & &\\
+& Self & & 27, 34 & 26 & 16, 24, 25& & & 16, 24, 26, 27 & 34 & 25 &\\
+\hline
+
+\multirow{1}{*}{Particles} & Tracer & & 4 & & 16 & & 4 & 16 & & &\\
+& Massive & & & 27 & 25, 26 & & 25, 27 & 26 & & &\\
+& Charged & 20 & 19 & & & & & 19 & & 20 &\\
+\hline
+
+\multirow{1}{*}{Burn} & Nuc & & & & 17 & & 17 & & & &\\
+& Param & & & & 16 & & & 16 & & &\\
+\hline
+
+\multirow{1}{*}{SourceT} & EnerDep & & & & & & & & & &\\
+& MGD & & 12 & 11 & 13 & & & 11, 12, 13 & & &\\
+& HeatExch & & & 11 & 13, 15, 30 & & 30 & 11, 13, 15 & & &\\
+& Stir & & 21 & & 22 & & & 22 & & 21 &\\
+& Ionize & & & 23 & & & 23 & & & &\\
+& Heat & & & & & & & & & &\\
+& Cool & & & & & & & & & &\\
+\hline
+
+\multirow{1}{*}{MatProp} & OpConst & & 12 & & & & & 12 & & &\\
+& OpTable & & & 11 & 13 & & & 11, 13 & & &\\
+& Conduc & 14 & 12 & 11 & 13, 15, 30 & & 30 & 11, 12, 13, 14, 15 & & &\\
+& Visc & & & & & & & & & &\\
+& MagR & & & & 6 & & & & & & 6\\
+\hline
+
+\multirow{1}{*}{Poisson} & OldMpole & & & & & & & & & &\\
+& NewMpole & & 28 & & 17 & & & 17, 28 & & &\\
+& MgridHG & & & 27 & 25, 26 & & & 25, 27 & & 26 &\\
+& MgridMC & & & & & & & & & &\\
+& MgridHy & & & & & & & & & &\\
+\hline
+
+\multirow{1}{*}{PartMove} & DirUG & 32 & 22 & & & & & & 32 & & 22\\
+& PtoP & & & 27 & 16, 26, 36 & & & 16, 27 & 36 & 26 &\\
+& Sieve & & & 27 & 16, 26, 36 & & & 16, 27 & 36 & 26 &\\
+\hline
+
+\multirow{1}{*}{PartMap} & Quad & 32 & 22 & &36 & & & & 32, 36 & & 22\\
+& CIC & & & 27 & 16, 26, 36 & & & 16, 27 & 36 & 26 &\\
+& Sieve & & & 27 & 16, 26, 36 & & & 16, 27 & 36 & 26 &\\
+& PtoP & & & 27 & 16, 26, 36 & & & 16, 27 & 36 & 26 &\\
+\hline
+
+\multirow{1}{*}{STS} & STS & & & &6 & & & & & & 6\\
+
+\end{longtable}
+\end{center}
+
+
+
+\section*{Organization to Minimize Recompilation}
+
+\end{document}

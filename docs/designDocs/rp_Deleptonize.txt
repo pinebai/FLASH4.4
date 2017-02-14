@@ -1,0 +1,30 @@
+
+physics/sourceTerms/Deleptonize
+    useDeleptonize [BOOLEAN] [FALSE]
+        runtime control for turning the deleptonization on or off
+
+physics/sourceTerms/Deleptonize/DeleptonizeMain
+    delep_Enu [REAL] [10.0]
+        Valid Values: Unconstrained
+
+    delep_rhoOne [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    delep_rhoTwo [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    delep_yOne [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    delep_yTwo [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    delep_yc [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    threadDelepBlockList [BOOLEAN] [TRUE]
+        Turn on block-list threading for the Deleptonize implementation?
+    threadDelepWithinBlock [BOOLEAN] [TRUE]
+        Turn on within-block threading for the Deleptonize implementation?
+    useEntr [BOOLEAN] [TRUE]
+

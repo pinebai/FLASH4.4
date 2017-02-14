@@ -1,0 +1,86 @@
+#  Runtime parameter file for the isentropic vortex problem
+#  Adaptive mesh, 3 levels max refinement
+#
+#
+# The completion of the run is processor dependent.
+#
+# Mesh abort when using 3 processors
+#
+#      75 3.7203E+00 2.5000E-02  (8.594E+00, 7.656E+00, 0.000E+00) |  1.036E-01
+# MayDay: MayDay: TreeIntVectSet.cpp:1995: Assertion `bxNumPts != 0' failed. !!!
+#
+#
+
+
+#               AMR parameters
+
+lrefine_max     = 3
+refine_var_1     = "dens"
+
+
+#		simulation parameters
+basenm          = "isentropic_vortex_"
+log_file        = "isentropic_vortex.log"
+stats_file      = "isentropic_vortex.dat"
+restart         = .false.
+checkpointFileIntervalTime = 0.0
+checkpointFileIntervalStep = 100
+checkpointFileNumber = 0	
+
+nend            = 200
+tmax            = 10.
+
+#nblockx		= 2
+#nblocky		= 2
+
+cfl		= .95
+
+#		problem parameters
+
+gamma           = 1.4
+rho_ambient     = 1.0
+p_ambient       = 1.0
+u_ambient       = 1.0
+v_ambient       = 1.0
+
+dtmin           = 2.5e-02
+dtmax           = 2.5e-02
+dtinit           = 2.5e-02
+
+vortex_strength	= 5.0
+xctr            = 5.0
+yctr            = 5.0
+
+xmin            = 0.0
+xmax            = 10.0
+ymin            = 0.0
+ymax            = 10.0
+
+nx_subint       = 1
+ny_subint       = 1
+
+geometry        = "cartesian"
+
+xl_boundary_type = "periodic"
+xr_boundary_type = "periodic"
+zl_boundary_type = "periodic"
+zr_boundary_type = "periodic"
+
+smlrho          = 1.e-100
+smallp          = 1.e-100
+smalle          = 1.e-100
+smallt          = 1.e-100
+
+nriem           = 5
+use_steepening  = .false.
+cvisc           = 0.
+eintSwitch     = 0.
+
+plot_var_1 = "dens"
+
+flux_correct = .false.
+
+brmeshrefineblockfactor = 8
+maxblocksize = 8
+igridsize = 8
+jgridsize = 8

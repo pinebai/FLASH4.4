@@ -1,0 +1,81 @@
+Using Blktri solver (solverflag = 1) in DirectSolver
+
+The analytical solution on each point (xi,yi,zi)  is:
+
+  Phi_ijk = sin(2.*PI*xi*pfb_waven_x/Lx + pfb_alpha_x) * &
+            cos(2.*PI*yi*pfb_waven_y/Ly) * &
+            cos(2.*PI*zi*pfb_waven_z/Lz)
+
+And the source:
+
+  F_ijk  = -4.*PI**2 * ( (pfb_waven_x/Lx)**2. + (pfb_waven_y/Ly)**2. + (pfb_waven_z/Lz)**2. ) * Phi_ijk
+
+
+example setup:
+./setup unitTest/PFFT_BlktriFD  -3d -auto +ug -nxb=64 -nyb=16 -nzb=64 -debug
+
+example flash.par:
+# Wavenumbers in x, y and z for the solution.
+waven_x = 1.
+waven_y = 1.
+waven_z = 1.
+
+# Phase angle for the solution in x (in rads)
+alpha_x = .314159265358979
+
+
+#       Grid dimensionality and geometry
+geometry        = "cartesian"
+
+
+#       Size of computational volume
+xmin            =  0.
+xmax            =  1.
+ymin            =  0.
+ymax            =  1.
+zmin            =  0.
+zmax            =  1.
+
+
+
+#       Boundary conditions
+xl_boundary_type = "periodic"
+xr_boundary_type = "periodic"
+yl_boundary_type = "outflow"
+yr_boundary_type = "outflow"
+zl_boundary_type = "outflow"
+zr_boundary_type = "outflow"
+iProcs          = 1     #number of procs in the i direction
+jProcs          = 4     #number of procs in the j direction
+kProcs          = 1     #number of procs in the k direction
+
+
+results:
+Run with a processor grid 4x1 in the (y,z) plane, 64^3 grid.
+L2 and Linf norms of absolute error are:
+
+ L2 error =   5.548976819361736E-007
+ Linf error =   8.012952907118231E-004
+ ############################################
+
+
+
+
+TESTS RUN
+---------
+
+(Compiled in -opt mode because absoft compiler wrongly deduces an array is accessed 
+out of bounds in -debug mode).
+PARAMESH:
+
+    setupName: unitTest/PFFT_BlktriFD
+    setupOptions: -auto +serialIO +pm3 +hdf5 -3d -nxb=8 -nyb=8 -nzb=8 -maxblocks=2000 -opt
+    numProcs: 4
+    parfiles: <pathToSimulations>/unitTest/PFFT_BlktriFD/flash_pm_3d.par
+
+UG:
+
+    setupName: unitTest/PFFT_BlktriFD
+    setupOptions: -3d -auto +ug -nxb=64 -nyb=16 -nzb=64 -opt
+    numProcs: 4
+    parfiles: <pathToSimulations>/unitTest/PFFT_BlktriFD/flash_ug_3d_4P.par

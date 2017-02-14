@@ -1,0 +1,21 @@
+# LoadLeveler submission script for bassi.nersc.gov
+#
+#@ job_name        = flash_wd_def
+#@ output          = flash.$(jobid).out
+#@ error           = flash.$(jobid).err
+#@ job_type        = parallel
+#@ environment     = COPY_ALL
+#@ notification    = complete
+#@ network.MPI     = sn_all,not_shared,us
+#@ node_usage      = not_shared
+#@ class           = special
+#@ bulkxfer        = yes
+#
+#
+#@ tasks_per_node  = 8
+#@ node            = 64
+#@ wall_clock_limit= 48:00:00
+#
+#@ queue
+
+poe flash3

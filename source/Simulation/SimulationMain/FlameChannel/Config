@@ -1,0 +1,64 @@
+# configuration file for the three stage flame noise test
+
+REQUIRES Driver
+REQUIRES physics/Hydro
+REQUIRES physics/sourceTerms/Flame/FlameEffects/EIP
+REQUIRES physics/sourceTerms/Flame/FlameSpeed/Constant/TFI
+REQUIRES flashUtilities/contourSurface
+
+PARAMETER useBurn      BOOLEAN true
+
+D rho_ambient Density of unburned material
+D t_ambient   Temperature of unburned material
+PARAMETER rho_ambient  REAL    2.e9
+PARAMETER t_ambient    REAL    5.0e7
+
+D ignite Determines if simulation begins with a flame front in it
+D frac_perturb Size of burned region, scaled to domain size (generally x extent)
+PARAMETER ignite       BOOLEAN TRUE
+PARAMETER frac_perturb REAL    .5
+
+D variableInflow is a boolean and allows inflow rate to match burning rate
+D inflowVortex is a boolean. True means no vortices, false means vortices 
+D Target temperature and velocities are attempted. These targets
+D are strictly maintained if the sig's are 1 and not at all if 0.
+D sig's should be between 0 and 1
+PARAMETER variableInflow BOOLEAN FALSE
+PARAMETER inflowVortex   BOOLEAN FALSE
+PARAMETER sigT           REAL    1.
+PARAMETER sigP           REAL    0.
+PARAMETER sigVx          REAL    1.
+PARAMETER sigVy          REAL    0.
+PARAMETER sigVz          REAL    0.
+
+D yctr is the y-coordinate center of one vortex
+D the pairing vortex is mirrored about the center of the domain
+PARAMETER yctr_vortex  REAL    1.
+
+D restart_vortex says that a vortex will be inserted upon restart
+D in only the fuel, this assumes constant density in the y-z plane
+PARAMETER restart_vortex BOOLEAN FALSE
+
+D xbegin_vortex is the x coordinate that defines the left side of
+D the inserted vortical structure
+PARAMETER xbegin_vortex REAL 0.
+PARAMETER xend_vortex   REAL 0.
+
+D vortexStrength is the strength of the vortex (should be of order density)
+D vortexSize is the radius of an individual vortex
+PARAMETER vortexStrength REAL 5.0
+PARAMETER vortexSize     REAL 0.25
+
+PARAMETER smooth_level   INTEGER     0
+PARAMETER vrms           REAL        1.e7
+PARAMETER turbfield_filename STRING  "turb_vel_field.hdf5"
+PARAMETER turbfield_xmin REAL        0.0
+PARAMETER turbfield_xmax REAL        15.e5
+PARAMETER turbfield_ymin REAL        -7.5e5
+PARAMETER turbfield_ymax REAL        7.5e5
+PARAMETER turbfield_zmin REAL        -7.5e5
+PARAMETER turbfield_zmax REAL        7.5e5
+
+
+VARIABLE fspd # flame speed
+VARIABLE ph1d # phi1 dot

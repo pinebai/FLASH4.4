@@ -1,0 +1,102 @@
+#	Configuration file for blast waves in inhomogeneous media
+
+REQUIRES Driver
+REQUIRES physics/Hydro
+REQUIRES physics/Eos/EosMain/Multigamma
+REQUIRES Multispecies
+
+PPDEFINE PLANAR_SEDOV       0
+PPDEFINE CYLINDRICAL_SEDOV  1
+PPDEFINE SPHERICAL_SEDOV    2
+
+PPDEFINE CONST_RHO_ATMOS    0
+PPDEFINE CONST_P_ATMOS      1
+
+SPECIES FLD1
+SPECIES FLD2
+SPECIES FLD3
+
+D sim_geo specifies the geometry of the problem, not the geometry of the grid
+PARAMETER sim_geo       INTEGER   0
+
+D sim_atmos specifies the type of atmosphere for region 1
+PARAMETER sim_atmos1    INTEGER   0
+
+D sim_atmos specifies the type of atmosphere for region 2
+PARAMETER sim_atmos2    INTEGER   0
+
+D sim_useE Use total energy to define energy source
+PARAMETER sim_useE      BOOLEAN FALSE
+
+D sim_ibound Bounday/Discontinuity present?
+PARAMETER sim_ibound	BOOLEAN FALSE      
+
+D sim_rhoIn Density inside the energy source 
+PARAMETER sim_rhoIn	REAL    1.       [0 to ]
+
+D sim_pIn Pressure inside the energy source 
+PARAMETER sim_pIn	REAL    1.       [0 to ]
+
+D sim_EIn Total energy inside the energy source
+PARAMETER sim_EIn       REAL    1.       [0 to ]
+
+D sim_AIn Atomic weight inside the energy source 
+PARAMETER sim_AIn	REAL    1.      [1 to ]
+
+D sim_ZIn Atomic number inside the energy source 
+PARAMETER sim_ZIn	REAL    1.      [1 to ]
+
+D sim_gammaIn gamma inside the energy source 
+PARAMETER sim_gammaIn	REAL    1.4      [1.1 to ]
+
+D sim_xcIn x location of the center of the energy source 
+PARAMETER sim_xcIn	REAL    0.   
+
+D sim_ycIn y location of the center of the energy source 
+PARAMETER sim_ycIn	REAL    0.   
+
+D sim_zcIn z location of the center of the energy source 
+PARAMETER sim_zcIn	REAL    0.   
+
+D sim_rIn radius of the energy source 
+PARAMETER sim_rIn	REAL    0.1      [0 to ]
+
+D sim_rho1 Density in region 1 
+PARAMETER sim_rho1	REAL    1.       [0 to ]
+
+D sim_p1 Pressure in region 1 
+PARAMETER sim_p1	REAL    1.       [0 to ]
+
+D sim_A1 Atomic weight in region 1 
+PARAMETER sim_A1	REAL    1.      [1 to ]
+
+D sim_Z1 Atomic number in region 1 
+PARAMETER sim_Z1	REAL    1.      [1 to ]
+
+D sim_gamma1 gamma in region 1 
+PARAMETER sim_gamma1	REAL    1.4      [1.1 to ]
+
+D sim_h1 Thickness of region 1 
+PARAMETER sim_h1	REAL    1.       
+
+D sim_sh1 Scale height in region 1 
+PARAMETER sim_sh1	REAL    1.       
+
+D sim_rho1 Density in region 2 
+PARAMETER sim_rho2	REAL    1.       [0 to ]
+
+D sim_p1 Pressure in region 2 
+PARAMETER sim_p2	REAL    1.       [0 to ]
+
+D sim_A1 Atomic weight in region 2 
+PARAMETER sim_A2	REAL    1.      [1 to ]
+
+D sim_Z2 Atomic number in region 2 
+PARAMETER sim_Z2	REAL    1.      [1 to ]
+
+D sim_gamma2 gamma in region 2 
+PARAMETER sim_gamma2	REAL    1.4      [1.1 to ]
+
+D sim_sh1 Scale height in region 2 
+PARAMETER sim_sh2	REAL    1.       
+

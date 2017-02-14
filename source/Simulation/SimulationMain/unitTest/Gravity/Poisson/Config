@@ -1,0 +1,34 @@
+#		Configuration file for Huang & Greengard Poisson test
+#		(Huang, J., & Greengard, L. 1999, SIAM J. Sci. Comput.,
+#               21, 1551)
+
+
+REQUIRES Driver
+REQUIRES physics/Gravity/GravityMain/Poisson
+REQUIRES Grid
+
+IF withParticles
+  REQUESTS IO/IOMain
+  REQUESTS IO/IOParticles
+  REQUIRES Particles/ParticlesMain/active/massive
+  REQUIRES Particles/ParticlesInitialization/Lattice
+  REQUIRES Particles/ParticlesMapping/meshWeighting/CIC
+  REQUESTS Particles/ParticlesMapping/meshWeighting/MapToMesh
+
+  # These particles do need mass
+  PARTICLEPROP mass REAL
+  # And in order to use particles, we need to have velocity on the grid
+  VARIABLE velx TYPE: PER_MASS
+  VARIABLE vely TYPE: PER_MASS
+  VARIABLE velz TYPE: PER_MASS
+
+# If this problem is NOT static, meaning it has time steps, then you 
+# want the following includes
+#  REQUESTS Particles/ParticlesMain/active/massive/Leapfrog
+#  REQUESTS Particles/ParticlesForces/longRange/gravity/ParticleMesh
+ENDIF
+
+D sim_subSample   Reflects the subsampling philosophy of Multipole.  See 
+D &                physics/Grid/GridSolvers/Multipole/Config/mpole_subSample
+PARAMETER sim_subSample INTEGER 7 [1 to 12]
+

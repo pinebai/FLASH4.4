@@ -1,0 +1,49 @@
+# The setup that tests the Laser quadratic tube ring problem.
+#
+# Sample setup line:
+#
+#   ./setup unitTest/Laser_quadraticTube/RingExpPotential 
+#
+#             -auto
+#             -3d
+#             -geometry=cartesian
+#             -parfile=flash.par
+#             -maxblocks=4000
+#             +laser                         (default -> Kaiser, +laserCubicInterpolation -> overrides Kaiser)
+#             +asyncLaser                    (if present -> asynchronous movement rays between blocks)
+#             -without-unit=physics/Hydro    (get rid of Hydro -> get rid of a ton of UNK variables using memory)
+#             -without-unit=physics/Eos      (is also not needed here)
+#             -objdir=objectLaserRingExpPot
+#             -nxb=12                        (the 12 x 8 x 12 block configuration leads to cubic cells)
+#             -nyb=8
+#             -nzb=12
+#             +noio                          (no IO -> avoid writing huge plot and checkpoint files)
+#             ed_maxPulses=1
+#             ed_maxPulseSections=2
+#             ed_maxBeams=1
+#             threadRayTrace=True            (enables threading of ray tracing)
+#
+# The +laser shortcut handles the logistics for properly including the Energy Deposition unit.
+# For running in cubic interpolation mode, change +laser to +laserCubicInterpolation
+#
+
+REQUIRES physics/sourceTerms/EnergyDeposition/EnergyDepositionMain/Laser
+#
+# Define unk variables to be used by laser unit. These 2 + the additional depo variable
+# defined in the Energy Deposition unit will be all the UNK variables needed.
+#
+VARIABLE dens
+VARIABLE tele
+#
+# Parameters
+#
+
+D       sim_printBlockVariables        Print what is in each block on each processor?
+D       sim_totalNumberOfBoxes         The overall number of boxes to hold the results.
+D       sim_potentialAlpha             The exponent value of the potential.
+D       sim_exitPowerFraction          The fraction of initial ray power that should remain on exit.
+
+PARAMETER  sim_printBlockVariables  BOOLEAN  false
+PARAMETER  sim_totalNumberOfBoxes   INTEGER  10000
+PARAMETER  sim_alpha                INTEGER  2
+PARAMETER  sim_exitPowerFraction    REAL     0.5

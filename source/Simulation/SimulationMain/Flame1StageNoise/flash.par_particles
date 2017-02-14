@@ -1,0 +1,97 @@
+run_comment = "planar 1-stage flame at rho = 3.e8"
+basenm   = "flame_1stage_"
+
+restart  = .false.
+checkpointFileNumber = 0
+plotFileNumber = 0
+
+checkpointFileIntervalTime    = 5.e-4
+plotFileIntervalTime          = 1.e2
+
+
+tmax     = 0.5e0
+nend     = 200000
+
+dtinit = 1.e-9
+dtmin = 1.e-9
+
+rho_ambient  = 3.e8
+t_ambient    = 5.e8
+
+ignite       = .true.
+# pseudo_1d=true means flat initial condition instead of spherical in mult-d
+pseudo_1d    = .true.
+frac_perturb = .1
+
+# unburned and burned material
+# 50/50 CO
+ye_unburned = 0.5
+sumyi_unburned  =  0.072917
+
+# to 50/50 O/Mg24
+ye_burned = 0.5
+sumyi_burned = 0.052083
+flame_deltae  = 2.8e17
+
+# to Ni56
+# ye_burned = 0.5
+# sumyi_burned = 0.017857
+# flame_deltae = 7.8587e17
+
+fl_fsConstFlameSpeed = 8.0e6
+
+# standard ADR parameters
+fl_epsilon_0            = 1.e-3
+fl_epsilon_1            = 1.e-3
+fl_kpp_fact             = 1.309e0
+fl_b                    = 3.2e0
+
+# refine on temperature and enuc
+refine_var_1 = "dens"
+refine_var_2 = "pres"
+
+cfl = .8
+
+smallt = 1.e5
+
+xmin = 0.e0
+xmax = 100.0e5
+ymin = 0.e0
+ymax = 10.0e5
+zmin = 0.e0
+zmax = 10.0e5
+
+lrefine_max = 4
+lrefine_min = 4
+
+geometry = "cartesian"
+
+xl_boundary_type = "reflect"
+xr_boundary_type = "outflow"
+
+yl_boundary_type = "periodic"
+yr_boundary_type = "periodic"
+
+zl_boundary_type = "periodic"
+zr_boundary_type = "periodic"
+
+nblockx = 10
+nblocky = 1
+nblockz = 1
+
+
+# particles
+
+useParticles = .true.
+pt_maxPerProc = 10000
+
+pt_initialXMin = 0e5
+pt_initialXMax = 100e5
+pt_initialYMin = 0.0
+pt_initialYMax = 10e5
+pt_initialZMin = 0
+pt_initialZMax = 10e5
+pt_numX = 100
+pt_numY = 1
+pt_numZ = 1
+

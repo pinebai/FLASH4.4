@@ -1,0 +1,15 @@
+# Configuration File for a unit test which demonstrates a valgrind
+# violation.  The violation depends on the number of mesh variables in
+# some way.  This is not yet understood.
+
+VARIABLE aaaa
+VARIABLE aaab
+VARIABLE aaac
+VARIABLE aaad
+VARIABLE aaae
+VARIABLE aaaf
+VARIABLE aaag
+VARIABLE aaah
+VARIABLE aaai
+
+#The UG error does not happen if I set GUARDCELLS to 1 or 2

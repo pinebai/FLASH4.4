@@ -1,0 +1,17 @@
+USESETUPVARS mpi3
+
+#The distributed counter makes use of MPI-3 and is the default
+#implementation when FLASH is setup with +mpi3 or +libnbc.  The
+#master-slave counter should work with all MPI implementations since
+#it makes use of MPI-1 only.  It has optional MPI-3 features which
+#will be conditionally compiled when using a setup line as follows
+# > ... +mpi3 -unit=flashUtilities/UTCounter/MasterSlave
+# > ... +libnbc -unit=flashUtilities/UTCounter/MasterSlave
+
+IF mpi3
+   DEFAULT Distributed
+ELSE
+   DEFAULT MasterSlave
+ENDIF
+
+EXCLUSIVE Distributed MasterSlave

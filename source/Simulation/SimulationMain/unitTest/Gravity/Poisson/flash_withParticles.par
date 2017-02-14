@@ -1,0 +1,80 @@
+#	Runtime parameters for the Huang & Greengard Poisson test problem.
+#       This flash.par is setup for the multipole solver, 3d cartesian
+#       Also uses particles.  Use this setup call to produce a simulation
+#       with adaptive refinement and active particles:
+# ./setup unitTest/Gravity/Poisson -auto -3d -with-unit=Particles -with-unit=Particles/Initialization/Lattice -parfile=flash_withParticles.par 
+
+#	Computational volume parameters
+
+#		Grid dimensionality and geometry
+
+geometry = "cartesian"
+
+#		Size of computational volume
+# Note that Huang and Greengard work on a domain of [-1,1]^2 in 2d
+xmin		= -3.
+xmax		= 3.
+ymin		= -3.
+ymax		= 3.
+zmin		= -1.
+zmax		= 1.
+Nblockx		= 3
+Nblocky		= 3
+Nblockz		= 1
+
+#		Boundary conditions
+
+xl_boundary_type = "periodic"
+xr_boundary_type = "periodic"
+yl_boundary_type = "periodic"
+yr_boundary_type = "periodic"
+zl_boundary_type = "periodic"
+zr_boundary_type = "periodic"
+grav_boundary_type = "periodic"  #was "isolated"
+
+#	Simulation (grid, time, I/O) parameters
+
+lrefine_max     = 4
+basenm          = "poistest_"
+restart         = .false.
+
+checkpointFileNumber = 0
+checkpointFileIntervalTime = 999
+checkpointFileIntervalStep = 999
+
+plotfileNumber = 0
+plotfileIntervalTime = 999
+plotfileIntervalStep = 999
+
+nend            = 0
+tmax            = 999.
+refine_var_1	= "dens"
+refine_var_2	= "none"
+
+useGravity      = .true.
+
+run_comment     = "Huang & Greengard Poisson test problem"
+log_file        = "poistest_.log"
+
+smlrho = 1.E-10
+sim_subSample = 7
+
+
+refine_cutoff_1   = 0.1
+derefine_cutoff_1 = 0.05
+msgbuffer       = .false.
+eintSwitch     = 1.e-4
+
+# particle stuff
+useParticles = .true.
+pt_numX = 10
+pt_numY = 10
+pt_numZ = 3
+pt_maxPerProc = 400
+pt_initialXMin = -2.5
+pt_initialXMax = 2.5
+pt_initialYMin = -2.5
+pt_initialYMax = 2.5
+pt_initialZMin = -0.8
+pt_initialZMax = 0.8
+

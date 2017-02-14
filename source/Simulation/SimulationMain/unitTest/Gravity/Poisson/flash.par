@@ -1,0 +1,71 @@
+#	Runtime parameters for the Huang & Greengard Poisson test problem.
+#       This flash.par is setup for the multipole solver
+
+#	Computational volume parameters
+
+#		Grid dimensionality and geometry
+
+geometry = "cartesian"
+
+#		Size of computational volume
+# Note that the example in Huang and Greengard has a domain of [-1,1]^2
+xmin		= -2.
+xmax		= 2.
+ymin		= -2.
+ymax		= 2.
+zmin		= -2.
+zmax		= 2.
+Nblockx		= 1
+Nblocky		= 1
+Nblockz		= 1
+
+#		Boundary conditions
+
+xl_boundary_type = "periodic"
+xr_boundary_type = "periodic"
+yl_boundary_type = "periodic"
+yr_boundary_type = "periodic"
+zl_boundary_type = "periodic"
+zr_boundary_type = "periodic"
+grav_boundary_type = "isolated"
+
+#	Simulation (grid, time, I/O) parameters
+
+lrefine_max     = 4
+basenm          = "poistest_"
+restart         = .false.
+
+checkpointFileNumber = 0
+checkpointFileIntervalTime = 999
+checkpointFileIntervalStep = 999
+
+plotfileNumber = 0
+plotfileIntervalTime = 999
+plotfileIntervalStep = 999
+
+nend            = 0
+tmax            = 999.
+refine_var_1	= "dens"
+refine_var_2	= "none"
+
+useGravity      = .true.
+
+run_comment     = "Huang & Greengard Poisson test problem"
+log_file        = "poistest_7lev.log"
+
+smlrho = 1.E-10
+sim_subsample = 7
+
+mgrid_max_vcycles       = 100
+mgrid_max_iter_change   = 1.E-6
+mgrid_max_residual_norm = 1.E-6
+mgrid_solve_max_iter    = 5000
+#mgrid_nsmooth           = 8
+#mgrid_smooth_tol        = 1.E-6
+#mgrid_jacobi_weight     = 1.
+mgrid_print_norm        = .true.
+
+
+refine_cutoff_1   = 0.1
+derefine_cutoff_1 = 0.05
+msgbuffer       = .false.

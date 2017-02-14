@@ -1,0 +1,52 @@
+# Configuration file for the Barnes-Hut tree Poisson solver contributed by Richard Wunsch
+
+# This solver requires (some version of) Paramesh
+REQUIRES Grid/GridMain/paramesh
+
+# Set up a name to use if ifdef/ifndef within the fortran code.
+#  Note this name cannot be used in Config files, only .F90.
+
+# Parameters:
+D gr_bhPhysMACTW      - if true, physical MACs are used for calculation during
+D & tree walk
+D gr_bhPhysMACComm    - if true, physical MACs are used for calculation during
+D & communication of block trees
+D gr_bhTreeLimAngle   - limit opening angle (if only geometric MAC is used)
+D gr_bhTreeSafeBox    - relative (w.r.t. to the block size) size of a cube
+D & around each block in which the target cell cannot be located in tree walk
+D & during interaction of the target cell with this block
+D gr_bhUseUnifiedTW   - if true, the unified tree walk (Barnes-Hut type) is
+D & used; otherwise, MAC for long distance interaction (with non-leaf block) is
+D & evaluated only once for all cells in the block
+D gr_bhTWMaxQueueSize - maximum number of elements in the priority queue
+
+PARAMETER gr_bhPhysMACTW           BOOLEAN     FALSE
+PARAMETER gr_bhPhysMACComm         BOOLEAN     FALSE
+PARAMETER gr_bhTreeLimAngle        REAL        0.5	[ 0 ... ]
+PARAMETER gr_bhTreeSafeBox         REAL        1.2	[ ... ]
+PARAMETER gr_bhUseUnifiedTW        BOOLEAN     TRUE
+PARAMETER gr_bhTWMaxQueueSize      INTEGER     10000 [ 1 ... ]
+
+# The following parameters are related to an option to accept solution
+# from previous time-step without recalculating it; it also modifies block
+# distribution among processors to achieve reasonable load balancing;
+# these features are highly experimental and it is not recommended to switch
+# them on in this version; also, the block appropriate work load has to be 
+# included into file:
+# Grid/GridMain/paramesh/paramesh4/Paramesh4dev/PM4_package/mpi_source/mpi_amr_refine_derefine.F90
+#USESETUPVARS bhtreeLB
+#IF bhtreeLB
+#PPDEFINE GRAV_TREE_LB
+#VARIABLE WRKL
+#ENDIF
+#PARAMETER gr_bhAcceptAccurateOld   BOOLEAN     FALSE
+#PARAMETER gr_bhLoadBalancing       BOOLEAN     FALSE
+#PARAMETER gr_bhMaxBlkWeight        REAL        10.0 [ 2.0 ... ]
+
+
+# For debugging: minimum and maximum mass allowed in a cell of block-trees
+D gr_bhTreeMincellmass For debugging: minimum mass allowed in a cell of block-trees
+D gr_bhTreeMaxcellmass For debugging: maximum mass allowed in a cell of block-trees
+PARAMETER gr_bhTreeMincellmass REAL        1.0d-99
+PARAMETER gr_bhTreeMaxcellmass REAL        1.0d99
+

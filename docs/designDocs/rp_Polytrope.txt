@@ -1,0 +1,41 @@
+
+physics/sourceTerms/Polytrope
+    usePolytrope [BOOLEAN] [FALSE]
+        Runtime switch for turning the polytropic eos on/off
+
+physics/sourceTerms/Polytrope/PolytropeMain
+    polytropeDens1 [REAL] [1e99]
+        Valid Values: Unconstrained
+
+    polytropeDens2 [REAL] [1e99]
+        Valid Values: Unconstrained
+
+    polytropeDens3 [REAL] [1e99]
+        Valid Values: Unconstrained
+
+    polytropeDens4 [REAL] [1e99]
+        Valid Values: Unconstrained
+
+    polytropeDens5 [REAL] [1e99]
+        Valid Values: Unconstrained
+
+    polytropeGamma1 [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    polytropeGamma2 [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    polytropeGamma3 [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    polytropeGamma4 [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    polytropeGamma5 [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    polytropeKonst [REAL] [1.0]
+        Valid Values: Unconstrained
+        press = polytropeKonst*dens^polytropeGamma1 for dens1 <= dens <= dens2
+    usePolytrope [BOOLEAN] [FALSE]
+        Runtime switch for turning the polytropic eos on/off

@@ -1,0 +1,204 @@
+#include "mangle_names.h"
+#include <hdf5.h>
+#include "hdf5_flash.h"
+/*#include <mpi.h>*/
+#include "Flash.h"
+#include "constants.h"
+#include "io_comp_decomp.h"
+
+int Driver_abortFlashC(char* message);
+
+/* 
+   This function writes out a single unknown (passed from the checkpoint 
+   routine), giving the record a label from the varnames or species
+   database 
+   
+   The dimensions of the unknowns array (nvar, nxb, nyb, nzb, maxblocks)
+   are passed through as arguments.  The dataspace (what gets written
+   to disk) and the memory space (how the unknowns array is accessed in
+   local memory) are defined based on these passed values.  This allows
+   use to pass an unk array that has all the guardcells + interior cells
+   (as in the checkpointing), or a dummy unk array that has just the 
+   interior cells (in this case, nguard would be passed as 0).
+*/
+
+
+void FTOC(io_h5write_unknowns_bp)(int* myPE,
+                         hid_t* file_identifier,
+                         int* nxb,             /* num of zones in x dir*/
+                         int* nyb,             /* num of zones in y */
+                         int* nzb,             /* num of zones in z */
+                         double* unknowns,     /* [totblks][NZB][NYB][NXB]*/
+                         char record_label[5], /* add char-null termination */
+                         int* local_blocks,  
+                         int* total_blocks,
+                         int* global_offset)
+{
+
+  hid_t dataspace, dataset, memspace, dxfer_template, dataset_plist, 
+    attribute_space, attribute,x_dataset;
+
+  hid_t compress_type;
+
+  herr_t status;
+
+  int rank;
+  hsize_t dimens_1d[1], dataspace_dimens_1d[1];
+
+  hsize_t start_1d[1], stride_1d[1], count_1d[1];
+
+#ifdef CHUNK
+  hsize_t dimens_chunk[4];
+#endif
+
+  char record_label_info[22];
+  char record_label_new[5];
+
+  int ierr;
+  comp_type *compressed_data;
+
+  compress_t compress_info;
+
+  strcpy(record_label_info, "abcd compress info"); /* abcd overwritten in next line */
+  strncpy(record_label_info, record_label,4);
+
+  printf("record_label_info = %s\n ", record_label_info);
+
+  /* 
+     the variable names are 4 characters long -- copy this into 
+     record_label_new, the 5th character is for the \0 termination 
+  */
+
+  strncpy(record_label_new, record_label,4);
+  *(record_label_new + 4) = '\0';
+ 
+
+  /* make call to IO_comp_decomp */
+  compressed_data = io_compress(unknowns, 
+                        (*nxb)*(*nyb)*(*nzb)*(*local_blocks),
+                        &compress_info);
+
+  compress_info.local_blocks = *local_blocks;
+  
+  dimens_1d[0] = *total_blocks;
+
+  /* create a new simple dataspace of 1 dimen */    
+  dataspace = H5Screate_simple(1, dimens_1d, NULL);
+  
+  /* create an empty vessel sized to hold one type worth of data */    
+  compress_type = H5Tcreate(H5T_COMPOUND, sizeof(compress_t));
+  
+  /* subdivide the empty vessel into its component sections (name and value) */    
+  H5Tinsert(compress_type, "min", HOFFSET(compress_t, min), H5T_NATIVE_DOUBLE);
+  
+  H5Tinsert(compress_type, "max", HOFFSET(compress_t, max), H5T_NATIVE_DOUBLE);
+  
+  H5Tinsert(compress_type, "step", HOFFSET(compress_t, step), H5T_NATIVE_DOUBLE);
+  
+  H5Tinsert(compress_type, "comp_size", HOFFSET(compress_t, comp_size), H5T_NATIVE_INT);
+  
+  H5Tinsert(compress_type, "local_blocks", HOFFSET(compress_t, local_blocks), H5T_NATIVE_INT);
+  
+  x_dataset = H5Dcreate(*file_identifier, record_label_info, compress_type,
+                  dataspace, H5P_DEFAULT);
+  
+  if (*myPE == 0) {
+    /* write the data into the checkpoint file */    
+    status = H5Dwrite(x_dataset, compress_type, H5S_ALL, H5S_ALL,
+                  H5P_DEFAULT, &compress_info);
+    
+    if (status < 0) {
+      printf("Error writing %s to checkpoint file\n", record_label_new);
+    }
+  }    
+  H5Dclose(x_dataset);
+  
+  /*now do the actual data*/
+
+  /* set the dimensions of the dataset */
+  rank = 1;
+  dimens_1d[0] = *total_blocks*(*nxb)*(*nyb)*(*nzb);
+
+  dataspace = H5Screate_simple(rank, dimens_1d, NULL);
+
+  dataset_plist = H5Pcreate(H5P_DATASET_CREATE);
+
+  if ((*myPE == MASTER_PE) && (*global_offset != 0)) {
+    dataset = H5Dopen(*file_identifier, record_label_new); 
+    if(dataset < 0) {
+      Driver_abortFlashC("Error: H5Dopen io_h5write_unk\n");
+    }
+  }else {
+    
+    dataset = H5Dcreate(*file_identifier, record_label_new,
+                  H5T_NATIVE_INT, dataspace, dataset_plist); 
+    if(x_dataset < 0) {
+      Driver_abortFlashC("Error: H5Dcreate io_h5write_unk\n");
+    }    
+  }
+
+  start_1d[0] = (hsize_t) (*global_offset)* compress_info.comp_size;
+
+  stride_1d[0] = 1;
+
+  count_1d[0] = (hsize_t) compress_info.comp_size;
+
+
+  ierr = H5Sselect_hyperslab(dataspace, H5S_SELECT_SET, start_1d, 
+                        stride_1d, count_1d, NULL);
+
+
+ if(ierr < 0){
+    printf("%s\n", "Error: unable to select hyperslab for unknowns dataspace");
+    Driver_abortFlashC("Error: unable to select hyperslab for unknowns dataspace");
+ }
+
+
+  memspace = H5Screate_simple(rank, dimens_1d, NULL);
+
+  /* setting the transfer template */
+  dxfer_template = H5Pcreate(H5P_DATASET_XFER);
+
+  /* this is the platform dependent SGI stuff */
+  /* default for now */
+  /* ierr = H5Pset_hyper_cache(dxfer_template, 1u, 0u);*/ 
+  /*ierr = H5Pset_dxpl_mpio(dxfer_template, H5FD_MPIO_INDEPENDENT);*/
+  /*ierr = H5Pset_preserve(dxfer_template, 0u);*/
+
+ 
+#ifdef DEBUG_IO
+  printf("UNKNOWNS: dataspace = %d\n", (int) dataspace);
+#endif
+
+
+  /*!!DEV -kda I've removed the max and min parts for now */
+
+  /* write the data */
+  /* H5T_NATIVE_UCHAR is not in the official HDF5 documentation
+     but is supported (see H5Tpublic.h). H5T_NATIVE_CHAR evaluates
+     to either UCHAR or SCHAR depending on whether by default chars
+     are signed or not. On zingiber using pgcc, HDF5 had issues
+     performing this test. So we say UCHAR directly.  */
+
+  status = H5Dwrite(dataset, H5T_NATIVE_UCHAR, memspace, dataspace, 
+                dxfer_template, compressed_data);
+#ifdef DEBUG_IO
+  printf("UNKNOWNS: wrote unknowns, status = %d\n", (int) status);
+#endif
+  
+  H5Pclose(dxfer_template);
+
+  H5Pclose(dataset_plist);
+
+  H5Sclose(memspace); 
+  H5Sclose(dataspace);
+  H5Dclose(dataset);
+
+  H5Tclose(compress_type);
+
+  free(compressed_data);
+
+}
+
+
+

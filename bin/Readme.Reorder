@@ -1,0 +1,135 @@
+
+This readme gives details about how the re-ordering stuff works. 
+
+Background
+----------
+Certain arrays are dimensioned as (variable,x,y,z,...). For performance reasons 
+it might be good to re-dimension them as (x,y,z,variable,...). Theoretically this
+amounts to changing all occurrences of 
+
+arrname(variable,x,y,z,...) to arrname(x,y,z,variable,...)
+
+Some things to be taken care of
+
+* variable, x, y, z may actually be complex expressions split across multiple lines
+* Need to know which "arrnames" need to be reordered
+* Some of the arrays are 4 dimensional while others are 5 dimensional
+* MPI Calls to communicate this information would depend on the order of indices.
+
+Implementation
+--------------
+
+To handle these issues the following have been done
+
+* All code changed to F90 Free Form. This makes rearranging code a lot easier 
+  (in F77 fixed format, it was possible to reorder valid code and get invalid code)
+
+* Arrays which need to be switched need to identified. For this, we add a special
+  marker in the F90 source in the following format
+
+  !! REORDER(4): var1,var2,...
+  !! REORDER(5): varx,vary,...
+
+  Any number of these may occur in the source. The order and placement do not matter.
+  As a matter of convention, place these right after or before the declaration of the 
+  variable.
+
+* Talking about declarations, make sure the declaration is in the format
+
+  real, .... :: varname(nvar,nxb,nyb,nzb)
+
+  and not 
+
+  real, ...., dimension(nvar,nxb,nyb,nzb) :: varname
+
+  In the first case, the re-order script would change the declaration also correctly.
+
+Writing code
+------------
+
+In most cases, the only change your code will need to work with reordered indices is
+the reordering of indices in array access. This is automatically done by the reorder 
+script. 
+
+If your algorithm depends on the ordering, then you have two choices. 
+- Use an #ifdef
+- Have an addl subdirectory for re-ordered stuff
+
+Using #ifdef
+------------
+
+When reordering is in effect, a pre-processor variable INDEXREORDER is defined. So 
+you can write your code as follows
+
+#ifdef INDEXREORDER
+
+   ... array(var, x, y, z...) ...
+
+#else
+ 
+   ... array(var, x, y, z...) ...
+#endif
+
+Note that even in the case where INDEXREORDER is true, the code is written in the
+unswitched order; it will be switched by the setup script.
+
+Using an addl subdirectory
+--------------------------
+
+Lets you have files abc.F90 and pqr.F90 in the current directory of which abc.F90
+needs to be rewritten completely for the reordered case. Then create a subdirectory
+called "X" ("UnitReordered" might be better name) which contains 
+abc.F90 for the reordered case 
+
+If your abc.F90 has no "REORDER(4)/(5)" statement, it will not be butchered. So in that case,
+the code should access the array using
+
+array(x,y,z,varname)
+
+Now in the Config file for Unit add the following
+
+---------
+IF GridIndexReordered
+   REQUIRES ./X
+ENDIF
+---------------
+
+This ensures that the subdirectory "X" is included when reordering happens.
+
+Setup Script and Reordering
+---------------------------
+
+* When the -indexreorder option is given to the setup script it does the following
+
+  - defines the "INDEXREORDER" pre processor symbol
+  - Defines the GridIndexReordered Setup Variable
+  - adjusts the Makefile so that the "reorder.sh" script is run everytime before a make happens
+
+setup_depends.py
+-----------------
+
+This script usually generates dependencies for all the F90 files. In addition it generates the
+reorder.sh script based on the reorder.tpl template. It figures out the list of files which 
+need to be reordered (does it contain an REORDER(4)/(5)?) and the reorder.sh script processes
+these files every time it is called (which is for every gmake)
+
+reorder.sh
+----------
+An instruction in the object directory Makefile causes this script to run when the user calls "gmake".
+We don't want "reorder" to change the contents of the FLASH source directory, so if a file (say "foo.F90")
+needs to be re-ordered, "reorder.sh" will rename the corresponding symbolic link in the object directory
+to "foo.F90.orig" ("foo.F90.orig" will now be a symbolic link). It then instructs setup_reorder.py to
+butcher the contents of the ".orig" file in memory and re-save them under the name "foo.F90". This new
+"foo.F90" will not be a symbolic link to anything, so if you need to edit the file from "source", make
+sure you edit the ".orig" version.
+
+If gmake is called again later, it will check if "foo.F90.orig" was modified after "foo.F90" was generated.
+Only in this case does it regenerate "foo.F90" from "foo.F90.orig"
+
+"reorder.sh --clean" removes the file "foo.F90" and renames the symbolic link "file.F90.orig" to "foo.F90"
+
+setup_reorder.py
+----------------
+
+This is the work horse. It reads in the file, parses the REORDER instructions changes the code
+and writes out the new file.

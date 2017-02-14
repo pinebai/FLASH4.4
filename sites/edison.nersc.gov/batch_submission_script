@@ -1,0 +1,36 @@
+#PBS -S /bin/bash
+#PBS -q debug
+#PBS -l mppwidth=24
+#PBS -l walltime=00:10:00
+#PBS -N flash
+
+
+cd $PBS_O_WORKDIR
+
+# Compute processor: 12-core Intel "Ivy Bridge" processor (2.4GHz)
+# Compute node: dual-socket Ivy Bridge with 64 GB memory (2 NUMA domains)
+
+RANKS=2
+RANKS_PER_NODE=2
+RANKS_PER_NUMA_DOMAIN=1
+
+export OMP_NUM_THREADS=12
+export OMP_STACKSIZE=32M
+
+# So that ifort compiled applications dump core:
+export decfort_dump_flag='y'
+ulimit -c unlimited
+
+
+# for Intel compiled programs
+# the "-cc numa_node" option should be used if the number of threads is less than or equal 12
+# (note: use "-cc none" instead for other number of threads)
+
+aprun \
+      -n ${RANKS} \
+      -N ${RANKS_PER_NODE} \
+      -S ${RANKS_PER_NUMA_DOMAIN} \
+      -d ${OMP_NUM_THREADS} \
+      -ss \
+      -cc numa_node \
+      ./flash4

@@ -1,0 +1,31 @@
+#       Configuration file for the Sedov explosion problem
+#       (Sedov, L. I., 1959, Similarity and Dimensional Methods
+#       in Mechanics [New York:  Academic])
+
+REQUIRES Driver
+REQUIRES physics/Hydro
+REQUIRES physics/Eos
+REQUIRES physics/materialProperties/Conductivity/ConductivityMain/PowerLaw 
+REQUESTS physics/Diffuse/DiffuseMain/Unsplit
+
+IF withParticles
+   PARTICLETYPE passive INITMETHOD lattice MAPMETHOD quadratic ADVMETHOD rungekutta
+
+   REQUIRES Particles/ParticlesMain
+   REQUESTS Particles/ParticlesInitialization/Lattice
+   REQUESTS Particles/ParticlesMapping/Quadratic
+   REQUESTS IO/IOMain/
+   REQUESTS IO/IOParticles
+ENDIF
+
+LINKIF Driver_evolveFlash.F90       physics/Hydro/HydroMain/unsplit
+LINKIF Driver_evolveFlash.F90.SPLIT physics/Hydro/HydroMain/split
+
+VARIABLE ARHO  # Analytical solution (density).
+VARIABLE ATMP  # Analytical solution (temperature).
+VARIABLE AVLX  # Analytical solution (velx)
+VARIABLE AVLY  # Analytical solution (vely)
+VARIABLE AVLZ  # Analytical solution (velz)
+
+D sim_rfInit  Initial thermal front position [cm]
+PARAMETER sim_rfInit  REAL 0.9

@@ -1,0 +1,79 @@
+#	Runtime parameters for the Woodward-Colella interacting blast problem.
+
+#	Parameters for initial model
+
+#		Density, pressure, and velocity in each section of the grid
+
+sim_rhoLeft        =    1.
+sim_rhoMid         =    1.
+sim_rhoRight       =    1.
+sim_pLeft          =    1000.
+sim_pMid           =    0.01
+sim_pRight         =    100.
+sim_uLeft          =    0.
+sim_uMid           =    0.
+sim_uRight         =    0.
+
+#		Angle and position of interfaces relative to x and y axes
+
+sim_xangle		=    0.
+sim_yangle		=    90.
+sim_posnL           =    0.1
+sim_posnR           =    0.9
+
+#		Gas ratio of specific heats
+
+gamma           = 1.4
+
+
+#		Size of computational volume
+
+xmin		= 0.
+xmax		= 1.
+
+#		Boundary conditions
+
+xl_boundary_type = "reflect"
+xr_boundary_type = "reflect"
+
+#	Simulation (grid, time, I/O) parameters
+
+cfl		= 0.8
+basenm          = "2blast_ug_1d_"
+restart         = .true.
+checkpointFileNumber = 1
+checkpointFileIntervalStep = 523
+nend            = 4
+tmax            = 0.038
+
+checkpointFileIntervalStep = 2
+
+run_comment	= "Woodward-Colella blast wave (to t=0.038)"
+log_file	= "2blast_ug_1d.log"
+
+#       Misc parameters
+
+eintSwitch     = 0.
+
+#	The parameters below are only necessary for the Uniform Grid
+
+#iGridSize	= 100	#defined as nxb * iprocs
+#jGridSize	= 100	#defined as nyb * jprocs
+#kGridSize	= 1	#defined as nzb * kprocs
+iProcs		= 4	#num procs in i direction
+jProcs		= 1	#num procs in j direction
+kProcs		= 1	#num procs in k direction
+
+# When using UG, iProcs, jProcs and kProcs must be specified.
+# These are the processors along each of the dimensions
+# FIXEDBLOCKSIZE mode ::
+#	When using fixed blocksize, iGridSize etc are redundant in
+#	runtime parameters. These quantities are calculated as 
+#	iGridSize = NXB*iprocs
+#	jGridSize = NYB*jprocs
+#	kGridSize = NZB*kprocs
+# NONFIXEDBLOCKSIZE mode ::
+#	iGridSize etc must be specified. They constitute the global
+#	number of grid points in the physical domain without taking 
+#	the guard cell into account. The local blocksize is calculated
+#	as iGridSize/iprocs  etc.

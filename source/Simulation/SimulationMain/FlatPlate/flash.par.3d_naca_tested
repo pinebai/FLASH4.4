@@ -1,0 +1,151 @@
+#	Runtime parameters for the rigid solid body problem 
+#	sim_number = 1 (cylinder);
+#	sim_number = 2 (naca0015);
+#	sim_number = 3 (naca2412);
+#	sim_number = 4 (flatplate);
+#	sim_number = 5 (solid wall);
+#	sim_number = 6 (3d sphere);
+
+#	Parameters for initial model
+
+#		Ambient pressure and density and inflow velocity.
+
+sim_pAmbient	= 1.0
+sim_rhoAmbient	= 1.4
+sim_windVelx    = 1.0
+sim_windVely	= 1.0
+sim_windVelz	= 0.0
+sim_rhoBulk	= 2.
+sim_xAngle	= 10.
+
+#	Four different simulation setups
+#	First one: Cylinder
+# ------------------------
+# cylinder
+sim_number	= 3
+sim_radius	= 0.2
+sim_xCtr        = 0.3
+sim_yCtr        = 0.5
+sim_zCtr	= 0.0
+xmin		=-1.0
+xmax		= 2.0
+ymin		=-1.0
+ymax		= 1.0
+zmin		=-1.0
+zmax		= 1.0
+sim_Mach	= 2.0
+
+#	Second-fourth ones: airfoils/flat plate
+# ------------------------
+# naca airfoil / flat plate
+#sim_number = 4 for NACA0015; 3 for NACA2412; 4 for flat plate
+#sim_number 	= 3
+#xmin		= -1.0
+#xmax		=  2.0
+#ymin		= -1.0
+#ymax		=  1.0
+#sim_windVelx     = 1.
+#sim_xAngle	= 0.
+#sim_Mach	= 0.65
+
+#	Need these for flat plate
+#sim_radius = 0.5 #length in x-direction
+#sim_xCtr   = 0.5
+#sim_yCtr   = 0.
+
+
+#		Gas ratio of specific heats
+
+gamma           = 1.4
+
+#	Computational volume parameters
+
+#		Grid geometry
+
+geometry = "cartesian"
+
+#		Size of computational volume
+
+Nblockx		= 1
+Nblocky		= 1
+Nblockz		= 1
+
+
+#		Boundary conditions
+xl_boundary_type = "user" #for supersonic flow
+#xl_boundary_type = "outflow" #for subsonic flow
+xr_boundary_type = "outflow"
+
+yl_boundary_type = "outflow"
+yr_boundary_type = "outflow"
+
+zl_boundary_type = "outflow"
+zr_boundary_type = "outflow"
+
+
+#	Simulation (grid, time, I/O) parameters
+
+cfl		= 0.8
+lrefine_min     = 3
+lrefine_max	= 6
+refine_var_1 = "dens"
+refine_var_2 = "pres"
+refine_var_3 = "bdry"
+
+basenm          = "flatplate_aoa0_mach0.65a_"
+restart         = .true.
+checkpointFileIntervalStep          = 10 #150
+checkpointFileIntervalTime          = 0.01
+#plotFileIntervalTime          = 0.1
+checkpointFileNumber = 0
+nend            = 100000
+tmax            = 1.8
+eintSwitch     = 1.e-6
+nrefs		= 5 #10000000
+
+eosModeInit = "dens_pres"
+
+
+
+## -------------------------------------------------------------##
+##  SWITCHES SPECIFIC TO THE UNSPLIT HYDRO SOLVER               ##
+#	I. INTERPOLATION SCHEME:
+order		= 5      # Interpolation order (first/second/third/fifth order)
+slopeLimiter    = "minmod"   # Slope limiters (minmod, mc, vanLeer, hybrid, limited)
+LimitedSlopeBeta= 1.     # Slope parameter for the "limited" slope by Toro
+charLimiting	= .true. # Characteristic limiting vs. Primitive limiting
+
+use_avisc	= .false. # use artificial viscosity (originally for PPM)
+cvisc		= 0.1     # coefficient for artificial viscosity
+use_flattening	= .false. # use flattening (dissipative) (originally for PPM)
+use_steepening	= .false. # use contact steepening (originally for PPM)
+use_upwindTVD	= .false. # use upwind biased TVD slope for PPM (need nguard=6)
+
+#	II. RIEMANN SOLVERS:
+
+entropy         = .false.     # Entropy fix for the Roe solver
+
+#	III. STRONG SHOCK HANDELING SCHEME:
+shockDetect	= .false.     # Shock Detect for numerical stability
+## -------------------------------------------------------------##
+
+use_hybridorder =  .false.
+RiemannSolver	= "hybrid"
+
+
+## ---------------------------------------------------------------##
+##  SWITCHES SPECIFIC TO THE SUPER-TIME-STEPPING (STS) ALGORITHM  ##
+##  NOTE: For details on using STS runtime parameters, please     ##
+##        refer to user's guide (Driver chapter).                 ##
+useSTS                  = .false.
+nstepTotalSTS           = 5
+nuSTS                   = 0.2
+## ---------------------------------------------------------------##
+
+
+iGridSize = 32   #global number of gridpoints along x, excluding gcells
+jGridSize = 32   #global number of gridpoints along y, excluding gcells
+kGridSize = 32
+iProcs = 4	#num procs in i direction
+jProcs = 2	#num procs in j direction
+kProcs = 2

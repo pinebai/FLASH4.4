@@ -1,0 +1,33 @@
+# Coniguration file for the radiative sub- and supercritical shock tests 
+#
+# Setup call:
+#   ./setup CriticalRadShock_FLASH4.2 -auto -1d -maxblocks=500 mgd_meshgroups=1
+REQUIRES Driver
+REQUESTS physics/Diffuse/DiffuseMain/Unsplit
+REQUESTS physics/Eos/EosMain/multiTemp/Gamma
+REQUESTS physics/materialProperties/Opacity/OpacityMain/Constant
+REQUESTS physics/RadTrans/RadTransMain/MGD
+REQUESTS physics/sourceTerms/Heatexchange/HeatexchangeMain/Spitzer
+
+##########################
+#                        #
+#   RUNTIME PARAMETERS   #
+#                        #
+##########################
+D sim_rho reference density
+PARAMETER sim_rho   REAL 1.0
+
+D sim_tgas gas temperature
+PARAMETER sim_tgas REAL 1.0
+
+D sim_trad radiation temperature
+PARAMETER sim_trad REAL 1.0
+
+D sim_velx speed of gas
+PARAMETER sim_velx REAL 1.0
+
+D sim_M0 shock mach number
+PARAMETER sim_M0  REAL 1.0
+
+D sim_P0 ratio of radiation pressure to material pressure
+PARAMETER sim_P0  REAL 1.0

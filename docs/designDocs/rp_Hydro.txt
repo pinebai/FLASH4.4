@@ -1,0 +1,676 @@
+
+physics/Hydro
+    useHydro [BOOLEAN] CONSTANT [FALSE]
+        Whether Hydro calculations should be performed.
+
+physics/Hydro/HydroMain
+    UnitSystem [STRING] ["none"]
+        Valid Values: Unconstrained
+        System of Units
+    cfl [REAL] [0.8]
+        Valid Values: Unconstrained
+        Courant factor
+    irenorm [INTEGER] [0]
+        Valid Values: Unconstrained
+        Renormalize the abundances before eos
+    threadHydroBlockList [BOOLEAN] [TRUE]
+
+    threadHydroWithinBlock [BOOLEAN] [TRUE]
+
+    updateHydroFluxes [BOOLEAN] [TRUE]
+        whether fluxes computed by Hydro should be used to update the solution
+        (currently, probably only used in split PPM Hydro)
+    useHydro [BOOLEAN] [TRUE]
+        Should any Hydro calculations be performed?
+    use_cma_advection [BOOLEAN] [FALSE]
+        Use the CMA advection with partial masses being primary variables; thos
+        parameter only affects the unsplit PPM hydro solver.
+    use_cma_flattening [BOOLEAN] [FALSE]
+        Use the flattening procedure for the abundances as described in the CMA
+        paper; this parameter only affects the unsplit PPM hydro solver.
+    use_steepening [BOOLEAN] [TRUE]
+
+
+physics/Hydro/HydroMain/split/MHD_8Wave
+    RoeAvg [BOOLEAN] [TRUE]
+
+    hall_parameter [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    hyperResistivity [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    irenorm [INTEGER] [0]
+        Valid Values: Unconstrained
+
+    killdivb [BOOLEAN] [TRUE]
+
+    small [REAL] [1.E-10]
+        Valid Values: Unconstrained
+        Cutoff value
+    smalle [REAL] [1.E-10]
+        Valid Values: Unconstrained
+        Cutoff value for energy
+    smallp [REAL] [1.E-10]
+        Valid Values: Unconstrained
+        Cutoff value for pressure
+    smallt [REAL] [1.E-10]
+        Valid Values: Unconstrained
+        Cutoff value for temperature
+    smallu [REAL] [1.E-10]
+        Valid Values: Unconstrained
+        Cutoff value for velocity
+    smallx [REAL] [1.E-10]
+        Valid Values: Unconstrained
+        Cutoff value for abundances
+    smlrho [REAL] [1.E-10]
+        Valid Values: Unconstrained
+        Cutoff value for density
+
+physics/Hydro/HydroMain/split/PPM
+    charLimiting [BOOLEAN] [TRUE]
+        use characteristic variables for slope limiting
+    cvisc [REAL] [0.1]
+        Valid Values: Unconstrained
+        Artificial viscosity constant
+    dp_sh [REAL] [0.33]
+        Valid Values: Unconstrained
+
+    dp_sh_md [REAL] [0.33]
+        Valid Values: Unconstrained
+        pressure jump for multi-dimensional shock detection
+    epsiln [REAL] [0.33]
+        Valid Values: Unconstrained
+        PPM shock detection parameter
+    hy_eosModeAfter [STRING] ["dens_ie"]
+        Valid Values: "dens_ie", "dens_pres", "dens_temp", "dens_ie_all",
+        "dens_ie_scatter", "dens_ie_gather", "dens_ie_sele_gather",
+        "dens_ie_shocksele_gather", "dens_temp_equi", "dens_temp_all",
+        "dens_temp_gather", "dens_ie_recal_gather"
+        Eos mode to apply at the end of a hydro sweep, after hy_ppm_updateSoln
+        is done. Some meaningful choices are (1): == eosMode (traditional), (2):
+        "dens_ie" for MODE_DENS_EI (which are normally the same!).
+    hy_fluxRepresentation [STRING] ["fluxes"]
+        Valid Values: "hybrid", "fluxes", "auto"
+        determines the nature of the data stored in flux arrays. With this
+        parameter set to "fluxes", the fluxes and cell volumes used in the Hydro
+        method are calculated correctly using geometry measures (in units
+        matching those in which coordinates are represented). If
+        hy_fluxRepresentation is "hybrid", fluxes are calculated in a simpler
+        way; for example, the fluxes in Cartesian coordinates use the convention
+        Face Area == 1 (and thus Cell Volume == dx during the X sweep, etc.).
+        Both settings lead to a correct algorithm, because what is ultimately
+        applied in the Hydro update is of the form fluxes times dt/CellVolume,
+        so cell areas (thus fluxes) and volumes can be multiplied by an
+        arbitrary constant (as long as it is done consistently) without changing
+        results (except for rounding effects). The setting here must match
+        Paramesh's understanding of what the "fluxes" are that it is being
+        passed if Grid_conserveFluxes is called: If hy_fluxRepresentation is
+        "fluxes", then Paramesh4 should have set consv_fluxes==.true., 
+        consv_flux_densities==.false. If hy_fluxRepresentation is "hybrid", then
+        Paramesh4 should have set consv_fluxes==.false.,
+        consv_flux_densities==.true. Hydro_init will try to set Paramesh to the
+        right mode if possible, this requires Paramesh to be compiled in LIBRARY
+        mode. If this fails, the flux representation will be modified to
+        correspond to what the Grid unit supports. A third possible value for
+        hy_fluxRepresentation is "auto", in which case the Hydro code unit will
+        pick either "fluxes" or "hybrid" based on geometry and support in Grid.
+    hybrid_riemann [BOOLEAN] [FALSE]
+        use HLLE in shocks to remove odd-even decoupling
+    igodu [INTEGER] [0]
+        Valid Values: Unconstrained
+        Use Godunov method
+    iplm [INTEGER] [0]
+        Valid Values: Unconstrained
+        Use linear profiles
+    leveque [BOOLEAN] [FALSE]
+        modify states due to gravity -- leveque's way.
+    nriem [INTEGER] [10]
+        Valid Values: Unconstrained
+        No. of iterations in Riemann solver
+    omg1 [REAL] [0.75]
+        Valid Values: Unconstrained
+        PPM dissipation parameter omega1
+    omg2 [REAL] [10.]
+        Valid Values: Unconstrained
+        PPM dissipation parameter omega2
+    ppmEintCompFluxConstructionMeth [INTEGER] [0]
+        Valid Values: -1, 0 to 7
+
+    ppmEintFluxConstructionMeth [INTEGER] [0]
+        Valid Values: -1, 0 to 2, 4 to 6
+        selects a method for constructing energy fluxes, for internal energy,
+        from the results of calling the Riemann solver. Note that the eintSwitch
+        runtime parameter controls whether internal energy fluxes, rather than
+        total energy fluxes, are sometimes used for updating the energy
+        variables (both internal and total) in a given cell (depending on the
+        ratio of kinetic to internal energy in that cell).
+    ppmEnerCompFluxConstructionMeth [INTEGER] [0]
+        Valid Values: 0 to 7, 11 to 17, 20 to 27
+
+    ppmEnerFluxConstructionMeth [INTEGER] [0]
+        Valid Values: 0 to 2, 4 to 6, 11 to 12, 14 to 16, 20 to 27
+        selects a method for constructing energy fluxes, for total
+        (internal+kinetic) energy, from the results of calling the Riemann
+        solver.
+    ppm_modifystates [BOOLEAN] [FALSE]
+        modify states due to gravity -- our way.
+    rieman_tol [REAL] [1.0e-5]
+        Valid Values: Unconstrained
+        Converge factor for Riemann solver
+    small [REAL] [1.E-10]
+        Valid Values: Unconstrained
+        Cutoff value ... DEV: for what?
+    smalle [REAL] [1.E-10]
+        Valid Values: Unconstrained
+        Cutoff value for energy
+    smallp [REAL] [1.E-10]
+        Valid Values: Unconstrained
+        Cutoff value for pressure
+    smallt [REAL] [1.E-10]
+        Valid Values: Unconstrained
+        Cutoff value for temperature
+    smallu [REAL] [1.E-10]
+        Valid Values: Unconstrained
+        Cutoff value for velocity
+    smallx [REAL] [1.E-10]
+        Valid Values: Unconstrained
+        Cutoff value for abundances
+    smlrho [REAL] [1.E-10]
+        Valid Values: Unconstrained
+        Cutoff value for density
+    vgrid [REAL] [0.]
+        Valid Values: Unconstrained
+        Scale factor for grid velocity
+
+physics/Hydro/HydroMain/split/PPM/chomboCompatible
+    chomboLikeUpdateSoln [BOOLEAN] [true]
+        Use a simplified hy_ppm_updateSoln
+    excludeGradPresFromFlux [BOOLEAN] [false]
+        PLUTO like excludeGradPresFromFlux=.true., FLASH like
+        excludeGradPresFromFlux=.false.
+
+physics/Hydro/HydroMain/split/PPM/multiTemp
+    hy_3Ttry_Arelated [BOOLEAN] [FALSE]
+        a code switch for hydro_1d, determines how fluxes for eint-without-PdV
+        are computed. TRUE: eia (Energy Internal Advected) fluxes always based
+        on eint fluxes calculation. FALSE: eia fluxes always calculated based on
+        advecting eint like any old mass scalar. Difference should matter only
+        for ppmEintCompFluxConstructionMeth=0,4. Eia fluxes themselves only
+        matter for cases B0,B1, or for E1 (with D2 or D3).
+    hy_3Ttry_B [INTEGER] [2]
+        Valid Values: 0, 1, 2, 3
+        How to deal with "work" term
+    hy_3Ttry_B_rad [INTEGER] [-1]
+        Valid Values: -1, 0, 1, 2, 3
+        How to deal with "work" term for radiation, i.e. for Erad, -1 means same
+        as hy_3Ttry_B
+    hy_3Ttry_D [REAL] [2.0]
+        Valid Values: 0.0, 1.0, 1.25, 1.5, 1.75, 1.875, 2.0, 3.0
+        How to consolidate energies. Values: 0. Do not, 1. Trust Eele, discard
+        Eion, 1.5 Trust Eele, discard Eion, 2. Trust combined Eint, recalibrate
+        both components, etc.
+    hy_3Ttry_E [INTEGER] [1]
+        Valid Values: 1, 2
+        How to recalibrate (if D2 or D3)
+    hy_3Ttry_F [INTEGER] [2]
+        Valid Values: 2, 3
+        What to consolidate/recalibrate (if E2)
+    hy_3Ttry_G [INTEGER] [1]
+        Valid Values: 0, 1
+        What to use for component P (if B1)
+    hy_3Ttry_Q [INTEGER] [0]
+        Valid Values: 0 to 2
+        Whether to implement preferential allocation of shock heating (over and
+        above heating through adiabatic compression) to ions; 2 for additional
+        debug info from rieman.
+    hy_3Ttry_useShockDetect [BOOLEAN] [FALSE]
+        a code switch for multiTemp hy_ppm_updateSoln, determines whether some
+        special handling (currently, code to implement correct preferention
+        shock heating of ions, as for hy_3Ttry_B3) is done only in cells where a
+        "shock has been detected". Shock detection depends on runtime parameter
+        dp_sh_md, see the Hydro_detectShock routine.
+    hy_dbgReconstConsvSele [BOOLEAN] [FALSE]
+        whether to reconstruct electron entropy ("Sele") in conservative form.
+    hy_eosModeAfter [STRING] ["dens_ie_gather"]
+        Valid Values: "dens_ie", "dens_pres", "dens_temp", "dens_ie_all",
+        "dens_ie_scatter", "dens_ie_gather", "dens_ie_sele_gather",
+        "dens_ie_shocksele_gather", "dens_temp_equi", "dens_temp_all",
+        "dens_temp_gather", "dens_ie_recal_gather"
+        Eos mode to apply at the end of a hydro sweep, after hy_ppm_updateSoln
+        is done. Some meaningful choices are (1): == eosMode (traditional), (2):
+        "dens_ie_sele_gather" for MODE_DENS_EI_SELE_GATHER.
+
+physics/Hydro/HydroMain/split/RHD
+    reconType [INTEGER] [2]
+        Valid Values: Unconstrained
+        Order of reconstruction
+    small [REAL] [1.E-10]
+        Valid Values: Unconstrained
+        Cutoff value
+    smalle [REAL] [1.E-10]
+        Valid Values: Unconstrained
+        Cutoff value for energy
+    smallp [REAL] [1.E-10]
+        Valid Values: Unconstrained
+        Cutoff value for pressure
+    smallt [REAL] [1.E-10]
+        Valid Values: Unconstrained
+        Cutoff value for temperature
+    smallu [REAL] [1.E-10]
+        Valid Values: Unconstrained
+        Cutoff value for velocity
+    smallx [REAL] [1.E-10]
+        Valid Values: Unconstrained
+        Cutoff value for abundances
+    smlrho [REAL] [1.E-10]
+        Valid Values: Unconstrained
+        Cutoff value for density
+
+physics/Hydro/HydroMain/unsplit
+    EOSforRiemann [BOOLEAN] [FALSE]
+        Turn on/off calls to Eos for thermo of reconstructed face states
+        (MODE_DENS_PRES)
+    LimitedSlopeBeta [REAL] [1.0]
+        Valid Values: Unconstrained
+        Any real value specific for the Limited Slope limiter
+    RiemannSolver [STRING] ["HLLC"]
+        Valid Values: Unconstrained
+        Roe, HLL, HLLC, Marquina, MarquinaModified, Hybrid or local
+        Lax-Friedrichs, plus HLLD for MHD
+    addThermalFlux [BOOLEAN] [TRUE]
+
+    charLimiting [BOOLEAN] [TRUE]
+        Apply limiting for characteristic variable
+    conserveAngMom [BOOLEAN] [FALSE]
+        Conservative formulation for cylindrical coordinates regarding the
+        toroidal momentum
+    cvisc [REAL] [0.1]
+        Valid Values: Unconstrained
+
+    entropy [BOOLEAN] [FALSE]
+        Entropy Fix routine for the Roe Riemann solver
+    entropyFixMethod [STRING] ["HARTENHYMAN"]
+        Valid Values: Unconstrained
+        Entropy fix method for the Roe Riemann solver: Harten or HartenHyman
+    hy_3Torder [INTEGER] [-1]
+        Valid Values: -1, 1, 2, 3, 5
+        Reconstruction order for eint, eele, eion, erad in HEDP simulations
+    hy_cflFallbackFactor [REAL] [0.9]
+        Valid Values: Unconstrained
+        factor for scaling CFL factor when it is lowered because of fallback in
+        problematic cells
+    hy_eosModeGc [STRING] ["see eosMode"]
+        Valid Values: "see eosMode", "eos_nop", "dens_ie_gather",
+        "dens_ie_recal_gather", "dens_ie_scatter", "dens_ie_all",
+        "dens_ie_sele_gather", "dens_temp_equi", "dens_temp_all",
+        "dens_temp_gather"
+        Eos mode that the Hydro unit should apply to guard cells before the
+        first major loop, i.e., before computing Riemann input states by
+        reconstruction etc. The special value "see eosMode" can be used to
+        indicate the mode set by the runtime parameter "eosMode". Other values
+        are as for "eosMode".
+    hy_fPresInMomFlux [REAL] [1.0]
+        Valid Values: 0.0 to 1.0
+        Percentage of the pressure gradient (values range from 0 to 1) that is
+        treated as part of momentum fluxes
+    hy_fallbackLowerCFL [BOOLEAN] [FALSE]
+        Lower the simulation CFL if fallin back to a lower reconstruction order
+        in problematic cells
+    hy_fullSpecMsFluxHandling [BOOLEAN] [TRUE]
+        Are species and mass scalars updated with fluxes that have undergone the
+        full treatment applied to other fluxes, including fine-coarse-boundary
+        flux correction if that is done to fluxes of other conserved variables?
+    hybridOrderKappa [REAL] [0.]
+        Valid Values: Unconstrained
+        A constant value to determine shock strengths for hybrid order
+    hydroComputeDtOption [INTEGER] [-1]
+        Valid Values: -1, 0, 1
+        An option where to compute hydro dt. Choices are integer values [-1, 0,
+        1] as follows: -1: Hydro_computeDt.F90,  the old standard way that has
+        most extensive supports and well-tested; 0: hy_uhd_energyFix.F90, a
+        light weighted version without calling a global loop Hydro_computeDt; 1:
+        hy_getFaceFlux.F90,   another light weighted dt call during flux
+        calculations.
+    irenorm [INTEGER] [0]
+        Valid Values: Unconstrained
+        Renormalize abundances
+    order [INTEGER] [2]
+        Valid Values: 1, 2, 3, 5, 6
+        1st order Godunov scheme, 2nd MUSCL-Hancock scheme, or 3rd PPM, 5th WENO
+    radiusGP [REAL] [2.]
+        Valid Values: Unconstrained
+
+    shockDetect [BOOLEAN] [FALSE]
+        Switch to use a strong compressive shock detection
+    shockLowerCFL [BOOLEAN] [FALSE]
+        Lower the simulation CFL if shocks are detected
+    sigmaGP [REAL] [3.]
+        Valid Values: Unconstrained
+
+    slopeLimiter [STRING] ["vanLeer"]
+        Valid Values: Unconstrained
+        mc, vanLeer, minmod, hybrid, limited
+    small [REAL] [1.E-10]
+        Valid Values: Unconstrained
+        Cutoff value
+    smalle [REAL] [1.E-10]
+        Valid Values: Unconstrained
+        Cutoff value for energy
+    smallp [REAL] [1.E-10]
+        Valid Values: Unconstrained
+        Cutoff value for pressure
+    smallt [REAL] [1.E-10]
+        Valid Values: Unconstrained
+        Cutoff value for temperature
+    smallu [REAL] [1.E-10]
+        Valid Values: Unconstrained
+        Cutoff value for velocity
+    smallx [REAL] [1.E-10]
+        Valid Values: Unconstrained
+        Cutoff value for abundances
+    smlrho [REAL] [1.E-10]
+        Valid Values: Unconstrained
+        Cutoff value for density
+    tiny [REAL] [1.e-16]
+        Valid Values: Unconstrained
+        A threshold value for an arbitrarily small number
+    transOrder [INTEGER] [1]
+        Valid Values: 0, 1, 2, 3, 4
+        order of approximating transeverse flux derivative in data
+        reconstruction
+    use_3dFullCTU [BOOLEAN] [TRUE]
+        Turn on/off the full CTU scheme that gives CFL <= 1 for 3D
+    use_auxEintEqn [BOOLEAN] [TRUE]
+        Turn on/off solving the auxilary internal energy equation
+    use_avisc [BOOLEAN] [FALSE]
+
+    use_flattening [BOOLEAN] [FALSE]
+        Switch for PPM flattening
+    use_gravHalfUpdate [BOOLEAN] [TRUE]
+        Include gravitational accelerations to hydro coupling at n+1/2
+    use_hybridOrder [BOOLEAN] [FALSE]
+        Apply RH jump condition to check monotonicity of reconstructed values
+    use_steepening [BOOLEAN] [FALSE]
+        Switch for steepening contact discontinuities for 3rd order PPM
+    use_upwindTVD [BOOLEAN] [FALSE]
+        Turn on/off upwinding TVD slopes
+    wenoMethod [STRING] ["WENO5"]
+        Valid Values: Unconstrained
+
+
+physics/Hydro/HydroMain/unsplit/MHD_StaggeredMesh
+    E_modification [BOOLEAN] [TRUE]
+        Switch for modified electric fields calculation from flux
+    E_upwind [BOOLEAN] [FALSE]
+        Switch for upwind update for induction equations
+    ForceHydroLimit [BOOLEAN] [FALSE]
+        Switch to force B=0 limit, i.e., the solver will not update B fields
+    conserveAngField [BOOLEAN] [FALSE]
+        Turn on/off alternate formulation for toroidal induction
+    energyFix [BOOLEAN] [FALSE]
+        Switch for an energy correction for CT scheme
+    hallVelocity [BOOLEAN] [FALSE]
+        Switch to use u_ele = u - J/(ne qe)
+    hy_bier1TA [REAL] [-1.0]
+        Valid Values: Unconstrained
+        Atomic number to use for 1T Biermann Battery term
+    hy_bier1TZ [REAL] [-1.0]
+        Valid Values: Unconstrained
+        Ionization number to use for 1T Biermann Battery term
+    hy_biermannCoef [REAL] [1.0]
+        Valid Values: Unconstrained
+        Coefficient of Biermann Battery flux
+    hy_biermannSource [BOOLEAN] [FALSE]
+        Switch to implement battery term as an external source
+    killdivb [BOOLEAN] [TRUE]
+        Switch for maintaing solenoidal field
+    killdivb8w [BOOLEAN] [FALSE]
+        Switch for maintaing solenoidal field using Powell's 8wave
+    prolMethod [STRING] ["INJECTION_PROL"]
+        Valid Values: Unconstrained
+        Injection or Balsara's method in prolongation
+    use_Biermann [BOOLEAN] [FALSE]
+        Switch to add the Battery term for B-field generation
+    use_Biermann1T [BOOLEAN] [FALSE]
+        Switch to add the 1T Battery term for B-field generation
+
+physics/Hydro/HydroMain/unsplit/multiTemp
+    hy_3TMode [STRING] ["ragelike"]
+        Valid Values: "ragelike", "crashlike", "entropy"
+        Indictates the 3T model to use
+    hy_3Ttry_B [INTEGER] [0]
+        Valid Values: 0, 1, 2
+        How to deal with component energy "work" term
+    hy_3Ttry_B_rad [INTEGER] [-1]
+        Valid Values: -1, 0, 1, 2
+        How to deal with "work" term for radiation, i.e. for Erad, -1 means same
+        as hy_3Ttry_B
+    hy_3Ttry_D [REAL] [2.0]
+        Valid Values: 0.0, 2.0, 3.0
+        How to consolidate energies. Values: 0. Do not, 1. Trust Eele, discard
+        Eion, 1.5 Trust Eele, discard Eion, 2. Trust combined Eint, recalibrate
+        both components.
+    hy_3Ttry_E [INTEGER] [1]
+        Valid Values: 1, 2
+        How to recalibrate component energy (if D2)
+    hy_3Ttry_F [INTEGER] [2]
+        Valid Values: 2, 3
+        What to consolidate/recalibrate (if E2)
+    hy_3Ttry_G [INTEGER] [4]
+        Valid Values: 0, 1, 2, 4
+        What to use for component P (if B1)
+    hy_eosModeAfter [STRING] ["dens_ie_gather"]
+        Valid Values: "dens_ie", "dens_pres", "dens_temp", "dens_ie_all",
+        "dens_ie_scatter", "dens_ie_gather", "dens_ie_sele_gather",
+        "dens_temp_equi", "dens_temp_all", "dens_temp_gather",
+        "dens_ie_recal_gather"
+        Eos mode to apply at the end of a state advance, before Hydro returns.
+        This is currently ONLY used with multiTemp, and ignored otherwise! Some
+        meaningful choices are (1): == eosMode (traditional), (2):
+        "dens_ie_sele_gather" for MODE_DENS_EI_SELE_GATHER.
+
+physics/Hydro/HydroMain/unsplit_rad
+    EOSforRiemann [BOOLEAN] [FALSE]
+        Turn on/off calls to Eos for thermo of reconstructed face states
+        (MODE_DENS_PRES)
+    LimitedSlopeBeta [REAL] [1.0]
+        Valid Values: Unconstrained
+        Any real value specific for the Limited Slope limiter
+    RiemannSolver [STRING] ["HLLC"]
+        Valid Values: Unconstrained
+        Roe, HLL, HLLC, Marquina, MarquinaModified, Hybrid or local
+        Lax-Friedrichs, plus HLLD for MHD
+    addThermalFlux [BOOLEAN] [TRUE]
+
+    charLimiting [BOOLEAN] [TRUE]
+        Apply limiting for characteristic variable
+    conserveAngMom [BOOLEAN] [FALSE]
+        Conservative formulation for cylindrical coordinates regarding the
+        toroidal momentum
+    cvisc [REAL] [0.1]
+        Valid Values: Unconstrained
+
+    entropy [BOOLEAN] [FALSE]
+        Entropy Fix routine for the Roe Riemann solver
+    entropyFixMethod [STRING] ["HARTENHYMAN"]
+        Valid Values: Unconstrained
+        Entropy fix method for the Roe Riemann solver: Harten or HartenHyman
+    hy_3Torder [INTEGER] [-1]
+        Valid Values: -1, 1, 2, 3, 5
+        Reconstruction order for eint, eele, eion, erad in HEDP simulations
+    hy_cflFallbackFactor [REAL] [0.9]
+        Valid Values: Unconstrained
+        factor for scaling CFL factor when it is lowered because of fallback in
+        problematic cells
+    hy_eosModeGc [STRING] ["see eosMode"]
+        Valid Values: "see eosMode", "eos_nop", "dens_ie_gather",
+        "dens_ie_recal_gather", "dens_ie_scatter", "dens_ie_all",
+        "dens_ie_sele_gather", "dens_temp_equi", "dens_temp_all",
+        "dens_temp_gather"
+        Eos mode that the Hydro unit should apply to guard cells before the
+        first major loop, i.e., before computing Riemann input states by
+        reconstruction etc. The special value "see eosMode" can be used to
+        indicate the mode set by the runtime parameter "eosMode". Other values
+        are as for "eosMode".
+    hy_fPresInMomFlux [REAL] [1.0]
+        Valid Values: 0.0 to 1.0
+        Percentage of the pressure gradient (values range from 0 to 1) that is
+        treated as part of momentum fluxes
+    hy_fallbackLowerCFL [BOOLEAN] [FALSE]
+        Lower the simulation CFL if fallin back to a lower reconstruction order
+        in problematic cells
+    hy_fullSpecMsFluxHandling [BOOLEAN] [TRUE]
+        Are species and mass scalars updated with fluxes that have undergone the
+        full treatment applied to other fluxes, including fine-coarse-boundary
+        flux correction if that is done to fluxes of other conserved variables?
+    hybridOrderKappa [REAL] [0.]
+        Valid Values: Unconstrained
+        A constant value to determine shock strengths for hybrid order
+    hydroComputeDtOption [INTEGER] [-1]
+        Valid Values: -1, 0, 1
+        An option where to compute hydro dt. Choices are integer values [-1, 0,
+        1] as follows: -1: Hydro_computeDt.F90,  the old standard way that has
+        most extensive supports and well-tested; 0: hy_uhd_energyFix.F90, a
+        light weighted version without calling a global loop Hydro_computeDt; 1:
+        hy_getFaceFlux.F90,   another light weighted dt call during flux
+        calculations.
+    irenorm [INTEGER] [0]
+        Valid Values: Unconstrained
+        Renormalize abundances
+    order [INTEGER] [2]
+        Valid Values: 1, 2, 3, 5, 6
+        1st order Godunov scheme, 2nd MUSCL-Hancock scheme, or 3rd PPM, 5th WENO
+    radiusGP [REAL] [2.]
+        Valid Values: Unconstrained
+
+    shockDetect [BOOLEAN] [FALSE]
+        Switch to use a strong compressive shock detection
+    shockLowerCFL [BOOLEAN] [FALSE]
+        Lower the simulation CFL if shocks are detected
+    sigmaGP [REAL] [3.]
+        Valid Values: Unconstrained
+
+    slopeLimiter [STRING] ["vanLeer"]
+        Valid Values: Unconstrained
+        mc, vanLeer, minmod, hybrid, limited
+    small [REAL] [1.E-10]
+        Valid Values: Unconstrained
+        Cutoff value
+    smalle [REAL] [1.E-10]
+        Valid Values: Unconstrained
+        Cutoff value for energy
+    smallp [REAL] [1.E-10]
+        Valid Values: Unconstrained
+        Cutoff value for pressure
+    smallt [REAL] [1.E-10]
+        Valid Values: Unconstrained
+        Cutoff value for temperature
+    smallu [REAL] [1.E-10]
+        Valid Values: Unconstrained
+        Cutoff value for velocity
+    smallx [REAL] [1.E-10]
+        Valid Values: Unconstrained
+        Cutoff value for abundances
+    smlrho [REAL] [1.E-10]
+        Valid Values: Unconstrained
+        Cutoff value for density
+    tiny [REAL] [1.e-16]
+        Valid Values: Unconstrained
+        A threshold value for an arbitrarily small number
+    transOrder [INTEGER] [1]
+        Valid Values: 0, 1, 2, 3, 4
+        order of approximating transeverse flux derivative in data
+        reconstruction
+    use_3dFullCTU [BOOLEAN] [TRUE]
+        Turn on/off the full CTU scheme that gives CFL <= 1 for 3D
+    use_auxEintEqn [BOOLEAN] [TRUE]
+        Turn on/off solving the auxilary internal energy equation
+    use_avisc [BOOLEAN] [FALSE]
+
+    use_flattening [BOOLEAN] [FALSE]
+        Switch for PPM flattening
+    use_gravHalfUpdate [BOOLEAN] [TRUE]
+        Include gravitational accelerations to hydro coupling at n+1/2
+    use_hybridOrder [BOOLEAN] [FALSE]
+        Apply RH jump condition to check monotonicity of reconstructed values
+    use_steepening [BOOLEAN] [FALSE]
+        Switch for steepening contact discontinuities for 3rd order PPM
+    use_upwindTVD [BOOLEAN] [FALSE]
+        Turn on/off upwinding TVD slopes
+    wenoMethod [STRING] ["WENO5"]
+        Valid Values: Unconstrained
+
+
+physics/Hydro/HydroMain/unsplit_rad/multiTemp
+    hy_3TMode [STRING] ["ragelike"]
+        Valid Values: "ragelike", "crashlike", "entropy", "castrolike"
+        Indictates the 3T model to use
+    hy_3Ttry_B [INTEGER] [1]
+        Valid Values: 0, 1, 2
+        How to deal with component energy "work" term
+    hy_3Ttry_B_rad [INTEGER] [2]
+        Valid Values: -1, 0, 1, 2
+        How to deal with "work" term for radiation, i.e. for Erad, -1 means same
+        as hy_3Ttry_B
+    hy_3Ttry_D [REAL] [2.0]
+        Valid Values: 0.0, 2.0, 3.0
+        How to consolidate energies. Values: 0. Do not, 1. Trust Eele, discard
+        Eion, 1.5 Trust Eele, discard Eion, 2. Trust combined Eint, recalibrate
+        both components.
+    hy_3Ttry_E [INTEGER] [1]
+        Valid Values: 1, 2
+        How to recalibrate component energy (if D2)
+    hy_3Ttry_F [INTEGER] [2]
+        Valid Values: 2, 3
+        What to consolidate/recalibrate (if E2)
+    hy_3Ttry_G [INTEGER] [1]
+        Valid Values: 0, 1, 2, 4, 5
+        What to use for component P (if B1)
+    hy_eosModeAfter [STRING] ["dens_ie_gather"]
+        Valid Values: "dens_ie", "dens_pres", "dens_temp", "dens_ie_all",
+        "dens_ie_scatter", "dens_ie_gather", "dens_ie_sele_gather",
+        "dens_temp_equi", "dens_temp_all", "dens_temp_gather",
+        "dens_ie_recal_gather"
+        Eos mode to apply at the end of a state advance, before Hydro returns.
+        This is currently ONLY used with multiTemp, and ignored otherwise! Some
+        meaningful choices are (1): == eosMode (traditional), (2):
+        "dens_ie_sele_gather" for MODE_DENS_EI_SELE_GATHER.
+    hy_lam3ScaleFactor [REAL] [1.0]
+        Valid Values: 0.0 to 1.0
+        experimental scaling factor for lambda terms in FLA Hydro
+    hy_maxSmoothVarVal [REAL] [1.0]
+        Valid Values: Unconstrained
+        upper bound of value range where smoothing is applied.
+    hy_minSmoothVarVal [REAL] [0.0]
+        Valid Values: Unconstrained
+        lower bound of value range where smoothing is applied.
+    hy_mtPresRatLambda3Min [REAL] [0.0]
+        Valid Values: 0.0 to 1.0
+        experimental minimum value for the 3*lambda factor to scale updated
+        pressure ratios (from Eos call) in hy_uhd_ragelike with radflah.
+    hy_mtScaleAccel [REAL] [1.0]
+        Valid Values: 0.0 to 1.0
+        experimental scaling factor for per-component kinetic energy change
+        terms in hy_uhd_unsplitUpdateCastroLike
+    hy_mtScaleLorentz [REAL] [1.0]
+        Valid Values: 0.0 to 1.0
+        experimental scaling factor for component Lorentz coupling terms in
+        hy_uhd_unsplitUpdateCastroLike
+    hy_mtScaleWork [REAL] [1.0]
+        Valid Values: 0.0 to 1.0
+        experimental scaling factor for component work terms in
+        hy_uhd_unsplitUpdateCastroLike
+    hy_smoothCoeff [REAL] [1.0]
+        Valid Values: Unconstrained
+        smoothing coefficient, used in some SOR-like methods
+    hy_smoothIterations [INTEGER] [0]
+        Valid Values: 0 to INFTY
+        number of smoothing iterations, 0 means no smoothing is applied.
+    hy_smoothMethod [STRING] ["SMOOTH_3POINT"]
+        Valid Values: "SMOOTH_3POINT", "SMOOTH_SOR", "SMOOTH_HARMONIC_SOR"
+        smoothing method
+    hy_useMaxSmoothVarVal [BOOLEAN] [FALSE]
+        Use upper bound on values to be smoothed?
+    hy_useMinSmoothVarVal [BOOLEAN] [FALSE]
+        Use lower bound on values to be smoothed?

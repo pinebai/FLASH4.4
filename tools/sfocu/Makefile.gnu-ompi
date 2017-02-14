@@ -1,0 +1,32 @@
+#/opt/bin/make -f Makefile.flash
+CCOMP = /opt/ompi/current/bin/mpicc
+CFLAGS = -c -O2 -Wall
+LFLAGS = -o
+LIBS =
+#Available defines: NO_HDF4, NO_HDF5, NEED_MPI NO_NCDF
+#Comment this out if your hdf5 doesn't need mpi. Sfocu should run as a single
+#processor job in any case.
+
+CDEFINES   = -DNO_HDF4 -DNEED_MPI
+HDF5PATH   = /opt/hdf5/current
+NCMPI_PATH = /opt/pnetcdf/current
+MPI_PATH   = /opt/ompi/current
+
+CFLAGS += -I${MPI_PATH}/include -I$(HDF5PATH)/include -DH5_USE_16_API -I$(NCMPI_PATH)/include 
+LIBS += -L$(HDF5PATH)/lib -lhdf5 -lz -lm 
+LIBS += -L$(NCMPI_PATH)/lib -lpnetcdf
+LIBS += -L${MPI_PATH}/lib -lmpi 
+
+EXENAME = sfocu
+OBJS = main.o sfocu.o flash_reader.o namecmp.o flash_reader_ncdf.o \
+	flash_reader_hdf5.o flash_reader_chombo.o sameblock.o options.o
+
+.SUFFIXES: .c .o
+.c.o :
+	$(CCOMP) $(CFLAGS) $(CDEFINES) $*.c
+
+default: $(OBJS)
+	$(CCOMP) $(OBJS) $(LIBS) $(LFLAGS) $(EXENAME)
+
+clean:
+	rm $(OBJS) $(EXENAME)

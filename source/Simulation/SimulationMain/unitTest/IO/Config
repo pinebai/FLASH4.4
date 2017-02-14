@@ -1,0 +1,28 @@
+#	Configuration file for the null implementation
+
+
+REQUIRES Driver
+REQUIRES IO
+
+USESETUPVARS withParticles
+
+IF withParticles
+   PARTICLETYPE passive INITMETHOD lattice MAPMETHOD quadratic ADVMETHOD rungekutta
+
+   REQUIRES Particles/ParticlesMain
+   REQUESTS Particles/ParticlesInitialization/Lattice
+   REQUESTS Particles/ParticlesMapping/Quadratic
+ENDIF
+
+
+VARIABLE var1               
+VARIABLE var2               
+VARIABLE var3               
+VARIABLE var4               
+VARIABLE var5               
+
+#uncomment these to test particle io
+
+VARIABLE velx TYPE: PER_MASS  
+VARIABLE vely TYPE: PER_MASS  
+VARIABLE velz TYPE: PER_MASS  

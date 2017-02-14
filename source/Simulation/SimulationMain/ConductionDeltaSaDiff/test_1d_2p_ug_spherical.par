@@ -1,0 +1,171 @@
+# Runtime parameters for the Conduction Delta Diffusion problem.
+# That is Conduction Delta with Implicit Diffusion (separte operator).
+
+basenm  = "conduction_"
+
+# Density and perturbation information
+orientation     = 0
+rho_init	= 1.
+sim_Q           = 1.0E5
+
+sim_xctr		= 0.0 #0.5
+sim_yctr		= 1.0 #0.5
+sim_zctr		= 1.0 #0.5
+
+# POWER LAW CONDUCTIVITY
+cond_TemperatureExponent = 0
+iniCondTemperatureExponent = 0
+cond_K0 = 2.0e9 #2.7434842249657061e36
+
+smallP = 1.0e-50
+smallE = 1e-22
+
+#		Gas ratio of specific heats
+
+gamma           = 1.4
+
+#CONSTANT CONDUCTIVITY
+cond_constantIsochoric = 2.0E9
+
+useHydro = .FALSE.
+updateHydroFluxes = .FALSE.
+useConductivity = .true.
+useDiffuseVisc = .false.
+useDiffuseSpecies = .false.
+
+#               Artificial viscosity
+
+cvisc           = 0.
+
+#	Computational volume parameters
+
+#		Grid dimensionality and geometry
+
+geometry = spherical
+
+#		Size of computational volume
+
+xmin		= 0.
+xmax		= 2.
+ymin		= 0.
+ymax		= 2.
+zmin		= 0.
+zmax		= 2.
+
+# Hydro Boundary conditions.
+xl_boundary_type = "reflecting"
+xr_boundary_type = "reflecting"
+yl_boundary_type = "reflecting"
+yr_boundary_type = "reflecting"
+zl_boundary_type = "reflecting"
+zr_boundary_type = "reflecting"
+
+# Simulation (grid, time, I/O) parameters
+checkpointFileIntervalTime          = 4e-5   # 0.00197
+checkpointFileIntervalStep          = 20
+nend            = 999999 #00
+restart                 = .false.
+checkpointFileNumber    = 0
+plotFileNumber          = 0
+
+
+# initial time offset; see simulation_initBlock.F90 for details
+
+toffset         = .001
+tmax            = .0024
+
+run_comment = "Linear conduction test problem from delta-shape initial temp."
+log_file        = "conduction.log"
+eintSwitch     = 1.e-4
+
+# AMR refinement parameters
+lrefine_min     = 1
+lrefine_max     = 1 #6
+refine_var_1    = "temp"
+
+nblockx         = 8
+nblocky         = 1
+nblockz         = 1
+
+# Uniform grid specific parameters
+# see note below for more explanation
+
+iProcs = 2 	#number or procs in the i direction	
+jProcs = 1
+kProcs = 1
+
+# These parameter are needed only in non fixed blocksize mode
+iGridSize = 256  # global number of points along IAXIS
+jGridSize = 128
+kGridSize = 1
+
+plot_var_1 = "temp"
+plot_var_2 = "dens"
+
+## -------------------------------------------------------------##
+##  SWITCHES SPECIFIC TO THE UNSPLIT STAGGERED MESH MHD SOLVER  ##
+#       I. INTERPOLATION SCHEME:
+order           = 3      # Data reconstruction order 
+#                          [1st(1st order Godunov),2nd(MUSCL-Hancock),3rd(PPM),5th(WENO)]
+transOrder	= 3      # 1st, 2nd, 3rd for transverse flux derivative 
+#                          (WARNING: 2nd order is not recommended)
+slopeLimiter    = "mc"   # Slope limiters (minmod, mc, vanLeer, hybrid, limited)
+LimitedSlopeBeta= 1.     # Slope parameter for the "limited" slope by Toro
+charLimiting    = .true. # Characteristic limiting vs. Primitive limiting
+use_steepening	= .true. # Contact steepening for PPM
+use_flattening	= .true. # Flattening for 2nd,3rd,and 5th order methods
+use_upwindTVD	= .false. # Enable upwind biased TVD slope limiter specific for PPM
+use_avisc	= .true.
+cvisc		= 0.1
+
+
+#       II. RIEMANN SOLVERS:
+RiemannSolver   = "roe"	# Roe, HLL, HLLC, HLLD, LF
+shockInstabilityFix = .false.	# Carbuncle instability fix for the Roe solver
+entropy         = .false.     	# Entropy fix for the Roe solver
+EOSforRiemann	= .false.     # Call EOS in Riemann flux calculations
+
+
+#       III. STRONG SHOCK HANDELING SCHEME:
+shockDetect     = .false.     	# Shock Detect for numerical stability
+
+
+## -------------------------------------------------------------##
+##  SWITCHES SPECIFIC TO DIFFUSION PARAMETERS		        ##
+useDiffuse		= .true.
+useDiffuseTherm         = .true.  #needed in Diffuse_computeDt for conductive dt
+useDiffuseVisc          = .false. #needed in Diffuse_computeDt for viscous dt
+useDiffuseMagneticResistivity	= .false.
+useDiffuseSpecies	= .false.
+
+## -------------------------------------------------------------##
+##  SWITCHES SPECIFIC TO THE SUPER-TIME-STEPPING ALGORITHM      ##
+
+useHydro = .false.
+updateHydroFluxes = .false.
+useDiffuseVisc = .false.
+useDiffuseSpecies = .false.
+
+useConductivity         = .true.
+cond_constantIsochoric  = 2.e9 #2.0E9
+useSTS                  = .false.
+useSTSforDiffusion      = .false.
+nstepTotalSTS           = 8
+nuSTS                   = 0.001
+allowDtSTSDominate	= .false.
+## -------------------------------------------------------------##
+
+cfl		= 0.8
+dt_diff_factor  = 0.8 #0.70
+
+diff_eleXlBoundaryType = "outflow"
+diff_eleXrBoundaryType = "outflow"
+diff_eleYlBoundaryType = "outflow"
+diff_eleYrBoundaryType = "outflow"
+diff_eleZlBoundaryType = "outflow"
+diff_eleZrBoundaryType = "outflow"
+
+dr_shortenLastStepBeforeTMax = .true.
+
+
+

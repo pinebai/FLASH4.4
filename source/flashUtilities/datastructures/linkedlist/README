@@ -1,0 +1,52 @@
+The files in this directory help create a generic doubly linked list.
+
+The code can be included into a user-defined list module according 
+to the following template:
+
+FILE A:
+!-----------------------------------------------------------------------
+module CustomNode
+type(node)
+  type(node), pointer :: next, prev
+  !Additional fields may be inserted for the custom node.
+end type node
+
+contains
+
+!Provide definitions for the subroutines:
+!create_node()
+!destroy_node()
+!print_node()
+end module CustomNode
+!-----------------------------------------------------------------------
+
+FILE B:
+!-----------------------------------------------------------------------
+module CustomList
+use CustomNode
+type(list)
+  type(node), pointer :: H, T
+end type list
+
+contains
+
+#define CPP_NODE_DEFINITION use CustomNode
+#include "ut_listMethods.includeF90"
+#undef CPP_NODE_DEFINITION
+end module CustomList
+!-----------------------------------------------------------------------
+
+
+Notes: 
+
+The node type may be customised by inserting extra fields.  As
+these new fields may themselves be pointer arrays, we require the user
+to provide an implementation for create_node() and destroy_node()
+subroutines.  create_node() allows us to nullify all pointer fields and
+initialise any scalar fields, and destroy_node() allows us to free all memory.
+
+The user must provide a pre-processor defintion named CPP_NODE_DEFINITION which
+substitutes the appropriate "use module" line for this node type.  It is 
+required because ut_listMethods.includeF90 includes a higher-order function 
+named apply_fn_to_nodes().  This function accepts a function which has a pointer
+to a node argument, and so we must provide the appropriate definition of a node.

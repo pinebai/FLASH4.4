@@ -1,0 +1,13 @@
+REQUIRES IO/IOMain/pnetcdf
+
+CONFLICTS IO/IOMain/hdf5
+CONFLICTS IO/IOMain/direct
+
+USESETUPVARS Grid
+
+#DEFAULT PM
+#
+#IF Grid=='UG'
+#   DEFAULT UG
+#ENDIF
+

@@ -1,0 +1,203 @@
+#  Runtime parameters for the Reinicke Meyer-ter-Vehn (RMTV) explosion problem.
+
+##################
+#                #
+#     OUTPUT     #
+#                #
+##################
+basenm      = "rmtv_"
+run_comment = "Reinicke Meyer-ter-Vehn explosion"
+log_file    = "rmtv.log"
+
+# CHECKPOINTING:
+restart                    = .false.
+
+checkpointFileIntervalTime = 0.64839999e-10
+checkpointFileIntervalStep = 2000
+checkpointFileNumber = 0
+
+# PLOT:
+plotfileIntervalTime = 0.
+plotfileIntervalStep = 0
+plotfileNumber       = 0
+
+# Write out FLASH density/temperature and analytic solution
+plot_var_1 = "dens"
+plot_var_2 = "temp"
+plot_var_3 = "arho"
+plot_var_4 = "atmp"
+
+
+
+
+#################
+#               #
+#     HYDRO     #
+#               #
+#################
+useHydro = .true.
+updateHydroFluxes = .TRUE.
+cfl            = 0.8
+charLimiting	= .true. # Characteristic limiting vs. Primitive limiting
+use_steepening	= .false. # use contact steepening (originally for PPM)
+
+## -------------------------------------------------------------##
+##  SWITCHES SPECIFIC TO THE UNSPLIT HYDRO SOLVER               ##
+#	I. INTERPOLATION SCHEME:
+order		= 3      # Interpolation order (first/second/third/fifth order)
+slopeLimiter    = "mc"   # Slope limiters (minmod, mc, vanLeer, hybrid, limited)
+LimitedSlopeBeta= 1.     # Slope parameter for the "limited" slope by Toro
+
+use_avisc	= .true. # use artificial viscosity (originally for PPM)
+cvisc		= 0.1     # coefficient for artificial viscosity
+use_flattening	= .false. # use flattening (dissipative) (originally for PPM)
+use_upwindTVD	= .false. # use upwind biased TVD slope for PPM (need nguard=6)
+
+#	II. RIEMANN SOLVERS:
+RiemannSolver	= "Roe"       # Roe, HLL, HLLC, LLF, Marquina
+entropy         = .false.     # Entropy fix for the Roe solver
+
+#	III. STRONG SHOCK HANDELING SCHEME:
+shockDetect	= .false.     # Shock Detect for numerical stability
+## -------------------------------------------------------------##
+
+# Boundary conditions:
+xl_boundary_type = "reflecting"
+xr_boundary_type = "outflow"
+
+yl_boundary_type = "reflecting"
+yr_boundary_type = "outflow"
+
+zl_boundary_type = "outflow"
+zr_boundary_type = "outflow"
+
+
+###############
+#             #
+#     EOS     #
+#             #
+###############
+eos_singleSpeciesA = 0.0964853376986125
+gamma              = 1.25
+eosModeInit        = "dens_temp"
+
+
+##############################
+#                            #
+#     THERMAL CONDUCTION     #
+#                            #
+##############################
+useDiffuse      = .true.
+useConductivity = .true.
+
+## 1.0E+024/(11604.505*1000)**7.5
+cond_K0                  = 1.035858299605994e-29
+cond_DensityExponent     = -2.0
+cond_TemperatureExponent = +6.5
+
+# This simulation may take very long time steps, use fully implicit
+# conduction:
+diff_thetaImplct = 1.0
+
+dt_diff_factor = 200.0
+
+
+################
+#              #
+#     GRID     #
+#              #
+################
+geometry = "spherical"
+
+nblockx = 4
+nblocky = 1
+
+lrefine_min	= 1
+lrefine_max     = 8
+
+# Refine both density and temperature to resolve both the blast and
+# thermal waves:
+refine_var_1 = "dens"
+refine_var_2 = "temp"
+
+# Set domain size:
+xmin		= 0.
+xmax		= 1.
+ymin		= 0.
+ymax		= 1.
+zmin		= 0.
+zmax		= 1.
+
+
+######################
+#                    #
+#     SIMULATION     #
+#                    #
+######################
+
+# Set initial/final position of the thermal front:
+sim_rfInit  = 0.45
+
+
+
+eintSwitch     = 1.e-4
+
+
+# Uniform Grid specific parameters 
+# see note below for more explanation
+
+#iGridSize = 8   #global number of gridpoints along x, excluding gcells
+#jGridSize = 8   #global number of gridpoints along y, excluding gcells
+#kGridSize = 1
+iProcs = 1	#num procs in i direction
+jProcs = 1	#num procs in j direction
+kProcs = 1
+
+
+# When using UG, iProcs, jProcs and kProcs must be specified.
+# These are the processors along each of the dimensions
+#FIXEDBLOCKSIZE mode ::
+# When using fixed blocksize, iGridSize etc are redundant in
+# runtime parameters. These quantities are calculated as 
+# iGridSize = NXB*iprocs
+# jGridSize = NYB*jprocs
+# kGridSize = NZB*kprocs
+#NONFIXEDBLOCKSIZE mode ::
+# iGridSize etc must be specified. They constitute the global
+# number of grid points in the physical domain without taking 
+# the guard cell into account. The local blocksize is calculated
+# as iGridSize/iprocs  etc.
+ 
+ 
+## ---------------------------------------------------------------##
+##  SWITCHES SPECIFIC TO THE SUPER-TIME-STEPPING (STS) ALGORITHM  ##
+##  NOTE: For details on using STS runtime parameters, please     ##
+##        refer to user's guide (Driver chapter).                 ##
+useSTS                  = .false.
+nstepTotalSTS           = 9 
+nuSTS                   = 0.99 #0.2 #0.2
+## ---------------------------------------------------------------##
+
+dtinit	= 1.0E-15
+dtmin	= 1.0E-31
+dtmax   = 2.0E-14
+
+
+#tinitial = 1.6209906636641351e-10
+tinitial = 1.88315e-10
+#tmax = 3.24198132732827E-010
+#tmax = 4.8629719909924054e-10
+tmax = 5.12515e-10
+nend            = 9999999
+
+
+dr_shortenLastStepBeforeTMax = .true.
+
+tstep_change_factor = 1.05
+
+
+
+
+# cells : nblockx * nxb * 2**(lrefinemax-1)
+
+

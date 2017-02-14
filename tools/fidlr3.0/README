@@ -1,0 +1,24 @@
+2003-08-06  M. Zingale
+
+This version of fidlr uses the native HDF5 support built into IDL 5.6.
+Earlier versions of IDL will not work.  
+
+Only HDF5 is supported by these routines -- HDF v. 4.x support has been
+dropped.
+
+There is preliminary support for spherical geometries in 2-d only.
+Performance is not great, but it is tough to make it better without
+sacrificing quality/ accuracy, or resorting to coding it as a DLM
+(which I don't want to do -- that is a pain to support).
+
+Particles are partially supported, and in 2-d Cartesian only.  The
+tagging does not work at the moment.
+
+2003-09-09 B. Gallagher
+
+Added netcdf support, any Flash netcdf data should work the same way as
+HDF5 data, minus particle data. This will be coming soon.
+
+2005-01-27 D. Sheeler
+
+Added netcdf particle support. 

@@ -1,0 +1,5 @@
+#	Configuration file for the gravitational physics module:
+#	user-defined gravitational field
+
+# All implementations within this file are stubs to be replaced by the end-user
+# within their Simulation directory.

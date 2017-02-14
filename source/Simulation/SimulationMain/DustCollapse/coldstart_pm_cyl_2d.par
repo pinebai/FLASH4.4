@@ -1,0 +1,94 @@
+#	Runtime parameters for the dust collapse problem.
+
+#	Parameters for initial model
+
+sim_initDens	= 1.E9
+sim_initRad	= 6.5E8
+sim_tAmbient	= 1.E9
+sim_ictr	= 0.
+sim_ictr	= 0.
+
+#		Gas ratio of specific heats
+
+gamma           = 1.6666667
+
+#	Computational volume parameters
+
+#		Grid dimensionality and geometry
+
+geometry = "cylindrical"
+
+#		Size of computational volume
+
+xmin		= 0.
+xmax		= 1.4E9
+ymin		= -7.E8
+ymax		= 7.E8
+Nblockx		= 4
+Nblocky		= 4
+
+#		Boundary conditions
+
+xl_boundary_type = "reflect"
+xr_boundary_type = "outflow"
+yl_boundary_type = "outflow"
+yr_boundary_type = "outflow"
+grav_boundary_type = "isolated"
+
+#	Simulation (grid, time, I/O) parameters
+
+cfl		= 0.8
+lrefine_max     = 4
+basenm          = "dustcoll_"
+restart         = .false.
+
+checkpointFileIntervalTime          = 0.0358
+checkpointFileIntervalStep    =  5000
+
+plotFileIntervalTime     = 1000.
+
+nend            = 5000
+
+tmax            = 0.0358
+
+refine_var_1	= "dens"
+refine_var_2	= "none"
+
+mpole_lmax	= 0
+useGravity        = .true.
+
+run_comment     = "Dust collapse problem"
+log_file        = "dustcoll.log"
+
+smlrho          = 1.E5
+smallp          = 1.E5
+smalle          = 1.E1
+smallt          = 1.E-7
+
+dtinit           = 1.E-5
+dtmax           = 1.E-2
+nriem           = 100
+cvisc           = 0.
+#eintSwitch     = 1.E-4
+
+convertToConsvdForMeshCalls   = .true.
+#monotone        = .true.
+
+## -------------------------------------------------------------##
+##  SWITCHES SPECIFIC TO THE UNSPLIT HYDRO SOLVER               ##
+#	I. INTERPOLATION SCHEME:
+order		= 3      # Interpolation order (first/second/third/fifth order)
+slopeLimiter    = "mc"   # Slope limiters (minmod, mc, vanLeer, hybrid, limited)
+LimitedSlopeBeta= 1.     # Slope parameter for the "limited" slope by Toro
+charLimiting	= .true. # Characteristic limiting vs. Primitive limiting
+
+use_avisc	= .false. # use artificial viscosity (originally for PPM)
+#cvisc		= 0.1     # coefficient for artificial viscosity
+use_flattening	= .TRUE. # use flattening (dissipative) (originally for PPM)
+use_upwindTVD	= .false. # use upwind biased TVD slope for PPM
+
+#	II. RIEMANN SOLVERS:
+RiemannSolver	= "HLLC"       # Roe, HLL, HLLC, LLF, Marquina
+entropy         = .false.     # Entropy fix for the Roe solver
+
+shocklowerCFL = .TRUE.

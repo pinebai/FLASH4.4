@@ -1,0 +1,106 @@
+Various Notes On Using the Interface For HYPRE From FLASH That Shravan
+Made For Solving Diffusion Problems In High Energy Density Physics
+Applications And Related Purposes.
+
+Chicago 2011-09-27, Shravan and KW
+
+
+Using HYPRE
+
+THese represent "solvers" AND "preconditioners"
+
+#define HYPRE_AMG 0
+#define HYPRE_ILU 1
+#define HYPRE_PCG 2
+#define HYPRE_BICGSTAB 3
+#define HYPRE_GMRES 4
+#define HYPRE_SPLIT 5
+#define HYPRE_PARASAILS 6
+#define HYPRE_HYBRID 7
+#define HYPRE_NONE 8 
+
+Solvers
+-------
+The three main ones:
+ PCG, - requires a symmetric matrix.
+     if not, fails with arithmetic exception in pcg.c.
+     (debugger shows attempt to do sqrt(<negative number>). 
+
+ BICGSTAB, (symmetry not required)
+ GMRES (symmetry not required)
+
+Others:
+ SPLIT - very inefficient solver, but will maintain the same
+ solution exactly when nprocs changes - not true of any of the
+ three others).  Shravan will never use this.  
+ 
+ AMG - can also be used as solver.  (symmetry not required)
+ (requires changing some additional settings - has been done by
+ Shravan - see gr_hypreSetupSolver.F90.  That's where one can add a
+ new solver or modify settings for an existing one.)
+
+When doing MGDStep problem (e.g., 1D from test suite),
+everyting else than PCG does not converge when tolerance is 10e-12.
+(10e-7, 10e-8 is fine.)
+Others require 10000 iterations, this we regard as failure.
+
+GMRES has additional parameter which probably need to be tweaked.
+See the HYPRE manual.
+
+HYBRID is a smart one. automatically picks a preconditioner based on
+the condition number.  Default choices for preconditioners in this
+case are AMG and Diagonal Scaling (basically == Jacobi). For AMG, the
+same options apply as for using it as a standalone preconditioner.
+
+PARASAILS has not been tested by Shravan.  Assumption is that it does
+an SPAI.  (sparse approximate inverse.)  "This is basically a preconditioner."
+
+ILU requires some changes to the HYPRE source (F90 interface needs
+addition to expose existing C functions.)
+
+
+Note, settings for the AMG preconditioners are from Rob @ LLNL -
+specifc settings for Eureka-like machines.
+
+
+
+See Runtime Parameter defined in Grid/GridSolvers/HYPRE/Config !!!
+See that file to see which of the above-mentioned
+solvers/preconditioners can be used as solvers and which can be used
+as preconditioners and which for both purposes.
+
+PARAMETER gr_hypreFloor is only useful for using HYPRE to solve
+(advance) Diffusion problem, NOT for Poisson problem!
+For Poisson problem, the application of this floor in
+gt_hypreUpdateSoln should not be there.  Get rid of it when/if making
+Poisson solver using HYPRE.
+
+
+ConductionDelta is so well-conditioned and typically run with an
+explicit CGFL no, it is not a demanding test at all.
+However, if periodic bcs get implemented, they should be tested with
+ConductionDelta with dt_dff_factor=5.  SHould blow unless everything
+is implemented correctly.
+
+The idea is that you run it for a sufficiently short time that solution
+can match the analytical one.  
+
+
+Shravan really believes in ramping up the timestep VERY SLOWWWWLY
+from very low dtinit.  In, e.g.,  RadShock, there is no time limiting
+for Diffusion or Conduction operator - just Hydro.  Which can be 10e6
+times the explicit value based on Diffuison / Conduction.  So Shravan
+believes that by starting with sufficiently small steps angd gradually
+tamping up, we can maintain transient accuracy.
+
+Shravan would like to draw attention to the fact that there is a
+routine called dr_limitDt which tries to limit change in (any) UNK
+variable to, say, 20%, based on maximum change in that variable in the
+previous timestep. (Corrective, not predictive.) It is in repository
+but currently not called anywhere.
+
+ReineckeMeyer has a customized Diffuse_computeDt, which is
+"predictive".  (does explicit advance, than limits timestep based on
+the maximum change in the variable.)
+
+

@@ -1,0 +1,165 @@
+#!/usr/bin/env python
+
+# import visit_writer
+import tables
+import numpy
+from sys import argv
+
+import warnings
+warnings.filterwarnings('ignore', category=tables.NaturalNameWarning)
+
+# Load the data:
+def write_vtk (filename):
+    print "Processing file:", filename
+#
+#     ...h5file -> will contain the name of the file, the last modification
+#                  time and the object tree.
+#
+    h5file = tables.openFile (filename, "r")
+#
+#
+#     ...Read nstep and time from plot file:
+#        "%-80s" % "nstep" -> form an 80 character string with 'nstep' left-justified
+#        yyy = h5file.getNode ("/xxx") -> extracts object named xxx and puts it in object yyy
+#        l = yyy.getWhereList ("name == xxx") -> location of xxx in object yyy
+#        yyy[l]["value"] -> extracts value of yyy[l]
+#        hasattr (xxx,__len__) -> returns 'true', if xxx has array (lengths) property
+#
+#
+    n = "%-80s" % "nstep"
+    t = h5file.getNode ("/integer scalars")
+    w = t.getWhereList ("name == n")
+    nstep = t[w]["value"]
+    if hasattr (nstep, '__len__') and 0 < len (nstep):
+        nstep = nstep[0]
+
+    n = "%-80s" % "time"
+    t = h5file.getNode ("/real scalars")
+    w = t.getWhereList ("name == n")
+    time = t[w]["value"]
+    if hasattr (time, '__len__') and 0 < len (time):
+        time = time[0]
+#
+#
+#     ...Check, if the 'ProtonData' child object is present in the plot file.
+#        If it is, extract the number of 'ProtonData' entries (number of rows).
+#
+#
+    if not "ProtonData" in h5file.root:
+       print "No proton data in \"" + filename + "\" skipping...\n"
+       h5file.close ()
+       return
+
+    data = h5file.root.ProtonData[:,:]
+    nrow = data.shape[0]
+    h5file.close()
+#
+#
+#     ...The proton data is sitting as a 2D array in 'data', the colums containing
+#        [tags,x,y,z]. Sort the proton data according to the tag values.
+#
+#
+    tags = data[:,0]
+    indx = tags.argsort (kind="mergesort")
+    sorted_data = numpy.empty ((nrow,4))
+
+    for i in xrange (len (indx)):
+        sorted_data[i,:] = data[indx[i],:]
+
+    # count = 0
+    # for row in sorted_data:
+    #     count += 1
+    #     tag,x,y,z = row    
+    #     print "%5i %i %15.6e %15.6e %15.6e" % (count, tag, x,y,z)
+    # print "\n\n"
+    # print sorted_data.shape
+#
+#
+#     ...Create the visit VTK file.
+#
+#
+    pos = []
+    connectivity = []
+
+    tag = sorted_data[0,0]
+    count = 0
+    for i in xrange (nrow):
+        count += 1
+    
+        pos.append (sorted_data[i,1])   # add x position to pos list
+        pos.append (sorted_data[i,2])   # add y position to pos list
+        pos.append (sorted_data[i,3])   # add z position to pos list
+
+        if count > 1: 
+           connectivity.append ((3, i-1,i))
+
+        if i == nrow-1 or tag != sorted_data[i+1,0]:
+           if i != nrow-1: 
+              tag = sorted_data[i+1,0]
+              count = 0
+
+    sim   = filename.split("_")[0]
+    cycle = filename.split("_")[-1]
+    name  = sim + "_protons_" + str(cycle)
+
+    filenameVisit = open (name + ".vtk", "w")
+
+    filenameVisit.write ("# vtk DataFile Version 2.0\n")
+    filenameVisit.write ("Written using VisIt writer\n")
+    filenameVisit.write ("ASCII\n")
+    filenameVisit.write ("DATASET UNSTRUCTURED_GRID\n")
+#
+#
+#     ...Write out time and cycle information.
+#
+#
+    filenameVisit.write ("FIELD FieldData 2\n")
+    filenameVisit.write ("TIME 1 1 double\n")
+    filenameVisit.write (str (time) + "\n")
+    filenameVisit.write ("CYCLE 1 1 int\n")
+    filenameVisit.write (str (nstep) + "\n")
+#
+#
+#     ...Write out all points.
+#
+#
+    filenameVisit.write ("POINTS %i double\n" % (len (pos) / 3))
+
+    count = 0
+    for i in xrange (len(pos)):
+        filenameVisit.write ("%20.12e " % pos[i])
+        count = count + 1
+        if count == 9:
+           filenameVisit.write ("\n")
+           count = 0
+    if count != 0:
+       filenameVisit.write ("\n")
+
+    filenameVisit.write ("CELLS %i %i\n" % (len(connectivity), 3*len(connectivity)))
+    for i in xrange (len(connectivity)):
+        filenameVisit.write ("2 %i %i\n" % (connectivity[i][1], connectivity[i][2]))
+
+    filenameVisit.write ("CELL_TYPES %i\n" % len(connectivity))
+    for i in xrange (len(connectivity)):
+        filenameVisit.write ("3 \n")
+
+    filenameVisit.write ("CELL_DATA %i\n" % len(connectivity))
+    filenameVisit.write ("POINT_DATA %i\n" % (len(pos)/3))
+#    filenameVisit.write ("SCALARS RayPower_Watts double\n")
+#    filenameVisit.write ("LOOKUP_TABLE default\n")
+#
+#    count = 0
+#    for i in xrange(len(powers)):
+#        if powers[i] < 1.0e-300: powers[i] = 0.0
+#        fhand.write("%20.12e " % powers[i])
+#        count = count + 1
+#        if count == 9:
+#            fhand.write("\n")
+#            count = 0
+#    if count != 0:
+#        fhand.write("\n")
+#    fhand.write("\n")
+
+filenames = argv[1:]
+for filename in filenames:
+    write_vtk (filename)

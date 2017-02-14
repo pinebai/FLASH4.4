@@ -1,0 +1,22 @@
+#!/bin/csh
+# Sample DPCS script to be submitted with psub
+#PSUB -r scaling_test # sets job name (limit of 7 characters)
+#PSUB -tM 0:59:00 # sets maximum total CPU time
+#PSUB -lt 0:59:00 # sets maximum per cpu time
+#PSUB -c pbatch
+#PSUB -ln 8 # number of nodes
+#PSUB -x # export current env var settings
+#PSUB -o scaling_test.out # sets output log name
+#PSUB -e scaling_test.err # sets error log name
+#PSUB -nr # do NOT rerun job after system reboot
+#PSUB -ro # send output log directly to file
+#PSUB -re # send err log directly to file
+#PSUB -mb # send email at execution start
+#PSUB -me # send email at execution finish
+#PSUB # no more psub commands
+# job commands start here
+
+set echo
+setenv LD_LIBRARY_PATH /usr/local/hdf5/hdf5-1.4.5/parallel/prod/lib
+cd /p/ga1/dubey/FLASH
+srun -N 8 -n 16 ./flash2

@@ -1,0 +1,21 @@
+#       Configuration file for Orszag Tang MHD vortex problem
+#	(Orszag and Tang, J. Fluid Mech., 90:129--143, 1979)
+
+REQUIRES physics/Hydro/HydroMain
+REQUIRES physics/Eos/EosMain/Gamma
+
+USESETUPVARS withParticles
+
+IF withParticles
+   PARTICLETYPE passive INITMETHOD lattice MAPMETHOD quadratic ADVMETHOD rungekutta
+
+   REQUIRES Particles/ParticlesMain
+   REQUESTS IO/IOMain
+   REQUESTS IO/IOParticles
+   REQUESTS Particles/ParticlesMapping/Quadratic
+   REQUESTS Particles/ParticlesInitialization/Lattice
+ENDIF
+
+D   tiny	    Threshold value used for numerical zero
+PARAMETER tiny         REAL     1.e-16
+PARAMETER perturbation REAL     0.2

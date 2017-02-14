@@ -1,0 +1,27 @@
+# A simple setup that tests several features of the Laser unit.
+#
+# Sample setup line:
+#
+#   ./setup unitTest/Laser_quadraticTube/testII -auto -3d -geometry=cartesian -parfile=flash.par.3D
+#           -maxblocks=600 +laser ed_maxPulses=1 ed_maxPulseSections=2 ed_maxBeams=1
+#
+# The +laser shortcut handles the logistics for properly including the Energy Deposition unit.
+# For running the 2D verion, change -3d to -2d and -parfile=flash.par.3D to -parfile=flash.par.2D
+# For high refinement levels > 4, adjust -maxblocks= and the number of processors accordingly.
+#
+
+REQUIRES physics/sourceTerms/EnergyDeposition/EnergyDepositionMain/Laser
+REQUIRES physics/Eos/EosMain/multiTemp/Gamma
+#
+# Define unk variables to be used by laser unit
+#
+VARIABLE dens
+VARIABLE tele
+VARIABLE eele
+#
+# Parameters
+#
+
+D       sim_printBlockVariables        Print what is in each block on each processor?
+
+PARAMETER  sim_printBlockVariables  BOOLEAN  false

@@ -1,0 +1,2 @@
+DEFAULT Constant
+EXCLUSIVE Constant LaminarOnly BuoyancyCompensation TurbulenceInteraction

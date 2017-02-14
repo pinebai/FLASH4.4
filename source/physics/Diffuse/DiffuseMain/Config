@@ -1,0 +1,84 @@
+REQUESTS physics/materialProperties/Conductivity
+REQUESTS physics/Hydro
+
+# Note: No default!!
+#DEFAULT UG
+
+# mutually exclusive with other implementations
+EXCLUSIVE Unsplit Split CG
+
+
+REQUIRES physics/Diffuse/localAPI
+
+D	  useDiffuse whether any method of the Diffuse unit should contribute to fluxes
+PARAMETER useDiffuse      BOOLEAN  TRUE
+D	  dt_diff_factor  factor that scales the timestep returned by Diffuse_computeDt
+PARAMETER dt_diff_factor  REAL     0.8
+D	  useDiffuseTherm   whether Diffuse_therm should contribute to fluxes
+PARAMETER useDiffuseTherm   BOOLEAN  TRUE       # thermal conductivity
+D	  useDiffuseVisc    whether Diffuse_visc should contribute to fluxes
+PARAMETER useDiffuseVisc    BOOLEAN  TRUE       # explicit viscosity
+D	  useDiffuseSpecies whether Diffuse_species [TO BE IMPLEMENTED] should contribute to fluxes
+PARAMETER useDiffuseSpecies BOOLEAN  TRUE       # species diffusion
+D	  diffusion_cutoff_density  density below which we no longer diffuse
+PARAMETER diffusion_cutoff_density REAL 1.e-30
+
+D	  useDiffuseComputeDtTherm    flags whether Diffuse_computeDt considers thermal conduction
+D	  useDiffuseComputeDtVisc     flags whether Diffuse_computeDt considers viscosity
+D	  useDiffuseComputeDtSpecies  flags whether Diffuse_computeDt considers species mass diffusion
+D	  useDiffuseComputeDtMagnetic flags whether Diffuse_computeDt considers magnetic resistivity
+PARAMETER useDiffuseComputeDtTherm    BOOLEAN TRUE
+PARAMETER useDiffuseComputeDtVisc     BOOLEAN TRUE
+PARAMETER useDiffuseComputeDtSpecies  BOOLEAN TRUE
+PARAMETER useDiffuseComputeDtmagnetic BOOLEAN TRUE
+
+PARAMETER diff_useEleCond      BOOLEAN FALSE
+PARAMETER diff_useIonCond      BOOLEAN FALSE
+
+
+D diff_scaleFactThermSaTempDiff	Factor applied to the temperature difference
+D & (or internal energy difference)
+D & that is computed by the standalone thermal Diffusion implementation.
+D diff_scaleFactThermSaTime	Factor applied to the time step for which 
+D & the standalone thermal Diffusion implementation computes the temperature
+D & (or internal energy) increase or decrease.
+
+PARAMETER diff_scaleFactThermSaTempDiff	REAL	1.0
+PARAMETER diff_scaleFactThermSaTime	REAL	1.0
+
+D diff_eleXlBoundaryType Electron conduction bcTypes.
+PARAMETER diff_eleXlBoundaryType STRING "outflow"
+PARAMETER diff_eleXrBoundaryType STRING "outflow"
+PARAMETER diff_eleYlBoundaryType STRING "outflow"
+PARAMETER diff_eleYrBoundaryType STRING "outflow"
+PARAMETER diff_eleZlBoundaryType STRING "outflow"
+PARAMETER diff_eleZrBoundaryType STRING "outflow"
+
+D diff_ionXlBoundaryType Ion conduction bcTypes.
+PARAMETER diff_ionXlBoundaryType STRING "outflow"
+PARAMETER diff_ionXrBoundaryType STRING "outflow"
+PARAMETER diff_ionYlBoundaryType STRING "outflow"
+PARAMETER diff_ionYrBoundaryType STRING "outflow"
+PARAMETER diff_ionZlBoundaryType STRING "outflow"
+PARAMETER diff_ionZrBoundaryType STRING "outflow"
+
+
+D dfcf_variable for holding left-hand multiplier 'factor A' for Diffuse_solveScalar calls
+VARIABLE DFCF                  # A variable field by which the RHS of Diffusion equation can be scaled.
+
+# Variable to store flux limit in each cell
+D fllm_variable stores flux limit (input) when Diffuse_fluxLimiter is called
+VARIABLE FLLM
+
+D diff_eleFlMode Electron conduction flux limiter mode
+PARAMETER diff_eleFlMode STRING "fl_none" ["fl_none", "fl_harmonic", "fl_minmax", "fl_larsen", "fl_levermorepomraning1981"]
+
+D diff_ionFlMode Ion conduction flux limiter mode
+PARAMETER diff_ionFlMode STRING "fl_none" ["fl_none", "fl_harmonic", "fl_minmax", "fl_larsen"]
+
+D diff_eleFlCoef Electron conduction flux limiter coefficient
+PARAMETER diff_eleFlCoef REAL 1.0
+
+D diff_ionFlCoef Ion conduction flux limiter coefficient
+PARAMETER diff_ionFlCoef REAL 1.0
+

@@ -1,0 +1,79 @@
+#ifndef POINTER_INTENT_IN
+#  define POINTER_INTENT_IN pointer,intent(in)
+#  ifdef __INTEL_COMPILER
+#    if (__INTEL_COMPILER_BUILD_DATE < 20110812)
+#      undef POINTER_INTENT_IN
+#      define POINTER_INTENT_IN pointer
+#    endif
+#  endif
+
+#  ifdef __GNUC__
+#    if __GNUC__ <= 4
+#      if __GNUC_MINOR__ < 2
+#        undef POINTER_INTENT_IN
+#        define POINTER_INTENT_IN pointer
+#      endif
+#    endif
+#  endif
+
+#  ifdef __fcc__
+#    if __fcc_version__ <= 0x0300
+#      undef POINTER_INTENT_IN
+#      define POINTER_INTENT_IN pointer
+#    endif
+#  endif
+
+#  ifdef __ABSOFT__
+#    undef POINTER_INTENT_IN
+#    define POINTER_INTENT_IN pointer
+#  endif
+
+#endif
+
+#ifndef POINTER_INTENT_OUT
+#  define POINTER_INTENT_OUT pointer,intent(out)
+
+#  ifdef __GNUC__
+#    if __GNUC__ <= 4
+#      if __GNUC_MINOR__ < 2
+#        undef POINTER_INTENT_OUT
+#        define POINTER_INTENT_OUT pointer
+#      endif
+#    endif
+#  endif
+
+#  ifdef __fcc__
+#    if __fcc_version__ <= 0x0300
+#      undef POINTER_INTENT_OUT
+#      define POINTER_INTENT_OUT pointer
+#    endif
+#  endif
+
+#  ifdef __ABSOFT__
+#    undef POINTER_INTENT_OUT
+#    define POINTER_INTENT_OUT pointer
+#  endif
+#endif
+
+
+#ifndef VALUE_INTENT
+#  define VALUE_INTENT(i) value,intent(i)
+
+#  ifdef __GNUC__
+#    if __GNUC__ <= 4
+#      if __GNUC__ < 4
+#        undef VALUE_INTENT
+#        define VALUE_INTENT(i) INTENT(i)
+#      endif
+#      if __GNUC_MINOR__ < 2
+#        undef VALUE_INTENT
+#        define VALUE_INTENT(i) INTENT(i)
+#      endif
+#    endif
+#  endif
+
+#  ifdef __PGI
+#    undef VALUE_INTENT
+#    define VALUE_INTENT(i) INTENT(i)
+#  endif
+#endif

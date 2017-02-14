@@ -1,0 +1,32 @@
+# Configuration file for the unit test of mixed boundaries with the Tree Poisson Solver
+
+REQUIRES Driver
+REQUIRES physics/Hydro
+REQUIRES Multispecies
+REQUIRES physics/Eos/EosMain/Multigamma
+REQUIRES physics/Gravity/GravityMain/Poisson/BHTree
+REQUIRES PhysicalConstants/PhysicalConstantsMain
+
+# abar - A of mol hydrogen in multifluid database
+PARAMETER abar_1              REAL    2.3
+PARAMETER abar_2              REAL    0.6
+PARAMETER gamma_1             REAL    1.0001
+PARAMETER gamma_2             REAL    1.0001
+
+D  sim_temp_c Temperature inside cylinder
+D  sim_dens_c Density inside cylinder
+D  sim_temp_a Temperature outside cylinder
+D  sim_press_a Pressure outside the cylinder
+PARAMETER sim_temp_c	      REAL    10.0
+PARAMETER sim_dens_c	      REAL    1.6605387e-24
+PARAMETER sim_temp_a	      REAL    100.0
+PARAMETER sim_press_a	      REAL    6.853383244768104e-16
+
+PARAMETER sim_solutionErrorTolerance1 REAL 1.e-3 [0 ... ]
+PARAMETER sim_solutionErrorTolerance2 REAL 1.e-3 [0 ... ]
+
+VARIABLE PANL
+VARIABLE PERR
+
+SPECIES FLD1
+SPECIES FLD2

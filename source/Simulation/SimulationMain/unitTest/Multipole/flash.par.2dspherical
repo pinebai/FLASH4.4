@@ -1,0 +1,62 @@
+# Runtime parameters for the Multipole unitTest, a MacLaurin spheroid problem.
+#
+#               2D spherical version:
+#
+#     calculation domain    R     = from 0. to 0.5
+#                           theta = from 0. to 180. (degrees)
+#
+#     center of spheroid at R     = 0.
+#                           theta = 0.
+#
+#-------------------------------------------------------------------------------
+# Parameters for initial model
+
+density                   = 1.        # Spheroid density (rho)
+eccentricity              = 0.9       # Eccentricity of spheroid (e)
+equatorialSemimajorAxis   = 0.25      # Equatorial semimajor axis (a1)
+xctr                      = 0.        # Coordinate R of center of spheroid
+yctr                      = 0.        # Coordinate theta of center of spheroid
+nsubzones                 = 2         # Number of averaging sub-zones per axis
+                                      # This is to ensure a non-blocky spheroid
+                                      # density near the surface of the spheroid
+
+#-------------------------------------------------------------------------------
+# Computational geometry and volume parameters
+
+geometry                  = "spherical"
+xmin                      = 0.                 # smallest R of domain
+xmax                      = 0.5                # largest  R of domain
+ymin                      = 0.                 # smallest theta of domain
+ymax                      = 180.               # lergest  theta of domain
+xl_boundary_type          = "reflecting"       # has to be set, otherwise error
+xr_boundary_type          = "outflow"          # better than default "periodic"
+yl_boundary_type          = "outflow"          # better than default "periodic"
+yr_boundary_type          = "outflow"          # better than default "periodic"
+
+#-------------------------------------------------------------------------------
+# Adaptive mesh parameters
+
+lrefine_max               = 4         # Maximum refinement level
+lrefine_min               = 4         # Minimum refinement level
+                                      # (force uniform refinement)
+refine_var_1              = "dens"    # Density triggers grid refinement
+Nblockx                   = 1         # Number of top-level blocks for R
+Nblocky                   = 2         # since the R is "half-range"
+Nblockz                   = 1
+
+#-------------------------------------------------------------------------------
+# Time and I/O parameters
+
+run_comment               = "Maclaurin spheroid test"   # Comment for log file
+basenm                    = "Maclaurin_"                # Base name output files
+restart                   = .false.             # Start from checkpoint file?
+checkpointFileNumber      = 0                   # Initial checkpoint file number
+plot_var_1                = "dens"
+
+#-------------------------------------------------------------------------------
+# Physics/solver parameters
+
+mpole_Lmax                = 6         # Maximum multipole moment
+mpole_PrintRadialInfo     = .false.   # Print out radial info
+mpole_DumpMoments         = .false.   # Print out multipole moments
+#-------------------------------------------------------------------------------

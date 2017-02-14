@@ -1,0 +1,17 @@
+      common/timing/secsperclock,                                       &
+     & irtc_ghost,irtc_ghostsrl,irtc_ghostc2f,                          &
+     & irtc_cploc,irtc_cprem,                                           &
+     & irtc_prolong,                                                    &
+     & irtc_restrict,                                                   &
+     & irtc_testref,                                                    &
+     & irtc_refderef,                                                   &
+     & irtc_total
+      real secsperclock
+      integer irtc_ghost,irtc_ghostsrl,irtc_ghostc2f,                   &
+     & irtc_cploc,irtc_cprem,                                           &
+     & irtc_prolong,                                                    &
+     & irtc_restrict,                                                   &
+     & irtc_testref,                                                    &
+     & irtc_refderef,                                                   &
+     & irtc_total
+!

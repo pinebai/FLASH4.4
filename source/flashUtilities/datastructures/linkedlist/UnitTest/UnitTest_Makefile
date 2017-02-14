@@ -1,0 +1,40 @@
+# Makefile to create a program which tests the contiguous 
+# conversion procedures independently of FLASH.
+
+MF      = UnitTest_Makefile
+FC      = gfortran
+FFLAGS  = -g -Wall -pedantic-errors -fbounds-check \
+	-fimplicit-none -Wconversion -Wunderflow \
+	-Wimplicit-interface -fbacktrace -fdump-core -Werror \
+	-ffpe-trap=invalid,zero,overflow,underflow \
+	-finit-real=nan -finit-integer=-9999 -fopenmp
+
+#Lahey compiler
+#FC      = lf95
+#FFLAGS  = -g --trace --trap --chk[aes] -CcdRR8
+
+#Absoft compiler
+#FC	= absf90
+#FFLAGS	= -g -N113 -en -m64 -et -trap=INVALID,DIVBYZERO,OVERFLOW -B111 -Rb -Rc -Rs -safefp +B71
+
+#Intel compiler
+#FC	= ifort
+#FFLAGS	= -g -r8 -i4 -check bounds -check format -check output_conversion -warn all -real_size 64
+
+INCLS   =
+LIBS    =
+SRC     = UnitTest_NodeObject.F90 \
+	UnitTest_ListObject.F90 \
+	UnitTest.F90
+
+OBJ     = $(SRC:.F90=.o)
+EXE     = UnitTest_List
+
+all:    $(OBJ)
+	$(FC) $(FFLAGS) -o $(EXE) $(OBJ) $(LIBS)
+
+%.o:    %.F90
+	$(FC) -c $< $(FFLAGS) $(INCLS) -o $@
+
+clean:
+	rm -f $(OBJ) $(EXE) *.mod

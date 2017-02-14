@@ -1,0 +1,12 @@
+diff -ru libNBC-1.1.1-orig/nbc_ibcast_inter.c libNBC-1.1.1/nbc_ibcast_inter.c
+--- libNBC-1.1.1-orig/nbc_ibcast_inter.c	2009-03-03 08:25:16.000000000 -0600
++++ libNBC-1.1.1/nbc_ibcast_inter.c	2013-05-07 10:58:02.000000000 -0500
+@@ -40,7 +40,7 @@
+       int remsize;
+ 
+       res = MPI_Comm_remote_size(comm, &remsize);
+-      if(MPI_SUCCESS != res) { printf("MPI_Comm_remote_size() failed\n", res); return res; }
++      if(MPI_SUCCESS != res) { printf("MPI_Comm_remote_size() failed (%i)\n", res); return res; }
+ 
+       for (peer=0;peer<remsize;peer++) {
+         /* send msg to peer */

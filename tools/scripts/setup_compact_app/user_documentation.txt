@@ -1,0 +1,216 @@
+Compact applications
+--------------------
+
+There is complete source for many different compact applications.  The
+applications are already configured and so the FLASH setup script is
+not needed.  The applications in UG directory are configured with the
+FLASH Non Fixed Block Size (NoFBS) uniform grid and the applications
+in PM directory are configured with the Adaptive Mesh Refinement (AMR)
+package Paramesh.
+
+To build each application you must customize the Makefile.h in the
+compact application directories for your current machine.  Information
+about Makefile.h can be found in the FLASH user guide.  Once
+customized the application can be built with gnu make.  FLASH can then
+be launched using:
+
+mpiexec -n ${NPROC} ./flash4
+where NPROC is the number of MPI processes.
+
+The compact application directories contain a parameter file named
+flash.par.  The default parameters can be modified in the flash.par to
+run the problem at a different scale.  The parameters that change the
+global and per process problem size are shown below.
+
+Most of the compact applications provide a built-in comparison against
+a known analytical solution.  The exceptions are Sedov and MGDStep.
+To ensure that these applications give expected results you should
+compare the appropriate checkpoint file against the benchmark
+checkpoint file using the FLASH tool named sfocu.  A successful run
+will give a magnitude error difference of less than 1E-12.
+
+
+Uniform Grid (see NoFBS UG in user guide)
+-----------------------------------------
+
+The FLASH application must be run with NPROC MPI processes, where
+NPROC is iprocs * jprocs * kprocs in 3D, iprocs * jprocs in 2D and
+iprocs in 1D.
+
+Cells in global grid: igridsize, jgridsize, kgridsize.
+Number of MPI processes in global grid: iprocs, jprocs, kprocs.
+
+Therefore, cells in each local grid: igridsize/iprocs,
+jgridsize/jprocs, kgridsize/kprocs.
+
+For strong scaling keep the global grid size fixed and for weak
+scaling keep the local grid size fixed.
+
+
+Adaptive Mesh Refinement Grid (see Paramesh in user guide)
+----------------------------------------------------------
+
+Number of top-level blocks: nblockx, nblocky, nblockz
+Minimum refinement level: lrefine_min
+Maximum refinement level: lrefine_max
+
+The effective number of cells at the finest refinement level is
+(nblockx * nblocky * nblockz) * (NXB * NYB * NZB) * 2^(lrefine_max-1)
+where NXB,NYB,NZB are constants defined in Flash.h
+
+For strong scaling keep nblockx, nblocky, nblockz, lrefine_min and
+lrefine_max fixed.  Weak scaling is more difficult because it requires
+that the average number of leaf blocks per MPI process stays constant.
+See the FLASH user guide for a definition of leaf blocks.  The average
+number of leaf blocks after a re-griding event is written to the FLASH
+log file.
+
+The FLASH application can be run with any number of MPI processes
+provided that this number is less than the global number of blocks in
+the computational domain.  This is because the I/O unit that is
+included with some Paramesh applications (e.g. Sedov application)
+requires that there is at least 1 block per MPI process.
+
+
+Guard Cell Tests
+----------------
+
+The GCell application fills guard cells using data existing in
+neighboring blocks.  It tests that the MPI communication to fill guard
+cells is functioning correctly.  The Paramesh version has a more
+complicated guard cell fill which can also involve interpolation or
+averaging when neighboring blocks exist at a different refinement
+level.
+
+
+EOS Tests
+---------
+
+The EOS calculations are performed on a single block.  It is a local
+computation with no parallel communication and so using multiple
+blocks in the EOS unit tests is not useful, hence, all tests use 1
+block with a FLASH uniform grid.  There are Multigamma and Helmholtz
+applications which are described in the FLASH user guide in the
+chapter "Equation of State Unit".
+
+
+Hydrodynamics Tests
+-------------------
+
+There are separate Sedov applications that perform the hydrodynamic
+advancement using split (see section "The piecewise-parabolic method
+(PPM)" in the FLASH user guide) and unsplit (see section "The unsplit
+hydro solver" in the FLASH user guide) solvers.  The test problem is
+described in the FLASH user guide in the section titled "Sedov
+Explosion".
+
+
+I/O Tests
+---------
+
+There are compact I/O applications in IO and IOTypes directories.
+Both tests make use of parallel I/O through HDF5 library.  Parallel
+collective HDF5 is enabled by default but can be disabled by setting
+useCollectiveHdf5 = .false. in the flash.par.  One thing to note is
+that the NoFBS UG application in IO directory always disables
+collective HDF5 (this does not happen for the NoFBS UG application in
+IOTypes directory).  The unit is described in the FLASH user guide in
+the chapter titled "IO Unit".
+
+The unit tests write checkpoint files, plot files and particle files.
+Checkpoint files contain the complete state of the application in
+double precision, plot files contain a subset of fluid variables (see
+plot_var_1, plot_var_2, ..., plot_var_n in flash.par) in single
+precision, and particles files contain the particles in double
+precision.  The size of the global mesh data structure is set as
+before and the number of particles is set using pt_numX, pt_numY,
+pt_numZ in the flash.par and is equal to the product of these
+parameters.
+
+  IO
+  --
+  The code in IO directory contains the standard parallel I/O
+  implementation used in most FLASH applications.  Its distinguishing
+  feature is that each fluid variable, such as density, pressure and
+  temperature, is copied one at a time from the core grid data
+  structure into a temporary array containing one fluid variable.  The
+  data in the temporary array is then written to different datasets in
+  the HDF5 file, such as "dens" for density, "pres" for pressure and
+  "temp" for temperature.
+
+
+  IOTypes
+  -------
+  The code in IOTypes directory contains an enhanced parallel I/O
+  implementation which eliminates / reduces usage of the temporary array
+  described earlier.  It selects the data in the core grid data
+  structure to be written to file using HDF5 hyperslabs (for
+  checkpoint files) and MPI derived datatypes (for plot files).  We
+  have found that selecting double precision in memory and writing to
+  single precision in file results in HDF5 not using collective
+  MPI-IO.  This happens with FLASH plot files and so our default is
+  not to use HDF5 hyperslabs and instead copy the data selected by MPI
+  derived datatypes into a temporary single precision array which is
+  then passed the HDF5 write function.
+
+  Setting packMeshChkWriteHDF5 and packMeshPlotWriteHDF5 parameters in
+  flash.par to .true. makes the I/O unit pack data selected by the MPI
+  derived datatypes into a temporary buffer.  The default is to pack
+  data only for the plot files, i.e. packMeshPlotWriteHDF5 = .true..
+  Finally, the parameter fileFormatVersion can be changed to 10 to
+  write all mesh fluid variables into a single HDF5 dataset (1 call to
+  H5Dwrite rather than N calls for N different mesh variables)
+
+
+Parallel FFT Tests (PFFT)
+-------------------------
+
+The PFFT_PoissonFD application initializes the domain with a
+combination of sin and cos functions.  It performs an FFT and compares
+against the analytical solution.  The unit is described in the FLASH
+user guide in the section titled "Pfft".
+
+The standard output from the application displays the L(infinity) norm
+of the difference between the calculated and analytical solution.  The
+following table can be created by running the application with
+different grid sizes.  Here, the cell_size column is 1/igridsize
+(igridsize = jgridsize = kgridsize) and Linf column is the L(infinity)
+norm.
+
+cell_size    Linf
+0.0625       0.40559942E-01
+0.03125      0.10726259E-01
+0.015625     0.27185068E-02
+0.0078125    0.68194028E-03
+
+A log-log plot of the tabulated data will show the scheme is
+second-order accurate.
+
+
+Gravity Tests
+-------------
+
+The Poisson3 application is described in the FLASH user guide under
+the section titled "MacLaurin".  The Poisson equation is solved with
+the Multipole solver (Poisson3_multipole application) or the hybrid
+PFFT and Multigrid solver (Poisson3_multigrid application).
+
+
+Diffusion Tests
+---------------
+
+The ConductionDeltaSaDiff application makes use of a Conjugate
+Gradient (CG) solver and has no dependence on an external library and
+the MGDStep application makes use of an Algebraic Multi Grid (AMG)
+solver provided by Hypre library.  Both applications are described in
+the FLASH user-guide: ConductionDeltaSaDiff is described in the
+section titled "The Delta-Function Heat Conduction Problem" and MGDStep is
+described in the section titled "Radiation Step Test".  We expect to
+use Hypre solvers rather than our CG solver in most HEDP applications.
+To link FLASH against Hypre you must add a HYPRE_PATH macro to
+Makefile.h that points to your Hypre installation.  We provide
+checkpoint files from MGDStep runs with the default flash.par which
+you can use to confirm that your application is running as intended.
+Note that the flash.par has a high frequency of checkpoint writes --
+you can change this using the flash.par parameter
+checkpointFileIntervalStep.

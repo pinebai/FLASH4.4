@@ -1,0 +1,83 @@
+# Parameters for the example setup
+sim_rhoLeft = 1.0
+sim_rhoRight = 1.0
+
+sim_pLeft = 4000.0
+sim_pRight = 1.0
+
+sim_shockpos = 0.2
+
+sim_idir = 1
+
+# for starting a new run
+restart         = .false.
+checkpointFileNumber        = 0
+plotFileNumber        = 0
+
+# initial, and minimum timesteps
+dtinit           = 1.0e-10
+dtmin           = 1.0e-20
+
+# Grid geometry
+geometry = "spherical"
+
+# Size of computational volume
+
+# radial coordinate
+xmin    = 0.0
+xmax    = 1.0
+
+# theta coordinate (in degrees)
+ymin    = 0.0
+ymax    = 90
+
+# phi coordinate (in degrees) -- this is not really going to be used
+zmin    = 0.0
+zmax    = 1.0
+
+# Boundary conditions
+xl_boundary_type = "reflect"
+xr_boundary_type = "outflow"
+
+yl_boundary_type = "reflect"
+yr_boundary_type = "reflect"
+
+zl_boundary_type = "outflow"
+zr_boundary_type = "outflow"
+
+plot_var_1    = "dens"
+plot_var_2    = "pres"
+plot_var_3    = "temp"
+
+# UG-specific parameters
+iprocs = 1
+jprocs = 1
+kprocs = 1
+
+# Variables for refinement test
+refine_var_1    = "dens"
+refine_var_2    = "pres"
+refine_var_3    = "none"
+refine_var_4    = "none"
+
+# Refinement levels
+lrefine_max     = 4
+lrefine_min     = 2
+
+# Number of lowest-level blocks - CURRENTLY UNUSED for UG 
+nblockx         = 2
+nblocky         = 2
+nblockz         = 1
+
+# Hydrodynamics parameters
+cfl          = 0.8
+
+# Simulation-specific parameters
+basenm          = "sod_sph_"
+
+restart         = .false.
+#checkpointFileNumber = 1
+checkpointFileIntervalTime = 7.5e-4
+checkpointFileIntervalStep = 2
+nend            = 4
+tmax            = 1.5e-3

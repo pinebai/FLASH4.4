@@ -1,0 +1,37 @@
+SRC   = gr_pfftInterfaceTypeDecl.F90 \
+      gr_pfftInterface.F90 \
+      gr_pfftFnArgEasyConstraint.F90 \
+      gr_pfftMakePencilIn3dSpace.F90 \
+      test_process_grid.F90
+OBJ   = $(SRC:.F90=.o)
+EXE   = test_process_grid
+
+FC = ifort
+FFLAGS = -g -O2
+
+SLINK = ln -s
+RM = rm -f
+
+
+all:    $(OBJ)
+	$(FC) $(FFLAGS) -o $(EXE) $(OBJ)
+
+link:
+	$(SLINK) ../../../../../Simulation/constants.h
+	$(SLINK) ../gr_pfftFnArgEasyConstraint.F90
+	$(SLINK) ../../../../localAPI/gr_pfftInterface.F90
+	$(SLINK) ../../../../localAPI/gr_pfftInterfaceTypeDecl.F90
+	$(SLINK) ../gr_pfftMakePencilIn3dSpace.F90
+
+unlink:
+	$(RM) constants.h
+	$(RM) gr_pfftFnArgEasyConstraint.F90
+	$(RM) gr_pfftInterface.F90
+	$(RM) gr_pfftInterfaceTypeDecl.F90
+	$(RM) gr_pfftMakePencilIn3dSpace.F90
+
+$(OBJ): %.o: %.F90
+	$(FC) -c $< $(FFLAGS) -o $@
+
+clean: unlink
+	$(RM) $(OBJ) $(EXE) *.mod

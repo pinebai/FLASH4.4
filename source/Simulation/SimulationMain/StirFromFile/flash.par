@@ -1,0 +1,115 @@
+
+# use the turbulence stirring module (stirring from file)
+useStir              =  .true.
+st_infilename        =  "forcingfile_seed140281.dat"
+rho_ambient          =  1.0
+c_ambient            =  1.0
+magnetic             =  .false.
+MagField_z           =  0.0
+st_computeDt         =  .false.
+
+# simulation box
+xmin            = -0.5
+xmax            = +0.5
+ymin            = -0.5
+ymax            = +0.5
+zmin            = -0.5
+zmax            = +0.5
+
+xl_boundary_type      = "periodic"
+xr_boundary_type      = "periodic"
+yl_boundary_type      = "periodic"
+yr_boundary_type      = "periodic"
+zl_boundary_type      = "periodic"
+zr_boundary_type      = "periodic"
+
+basenm          = "Turb_"
+log_file        = "flash.log"
+stats_file      = "flash.dat"
+run_comment     = "FLASH4"
+
+# file numbers - if you restart you have to change the checkpointFileNumber
+restart                 = .false.
+checkpointFileNumber	= 0
+plotFileNumber		= 0
+
+# set the time between dumps
+checkpointFileIntervalTime  = 0.5
+plotFileIntervalTime	    = 0.05 # 0.1T
+dtmax                       = 0.025
+tmax                        = 5.0
+
+# set the number of steps between dumps
+checkpointFileIntervalStep  = 0
+plotFileIntervalStep	    = 0
+
+wall_clock_time_limit = 160000.0
+wall_clock_checkpoint = 86000.0
+wr_integrals_freq = 1
+
+dtinit = 1.e-3
+dtmin  = 1.e-99  # This parameter must be << minimum timestep
+                 #  in order to avoid numerical instability
+smallt = 1.e-99
+smalle = 1.e-99
+smlrho = 1.e-99
+
+plot_var_1      = "dens"
+plot_var_2      = "velx"
+plot_var_3      = "vely"
+plot_var_4      = "velz"
+
+gamma           = 1.666667
+eintSwitch      = 1e-6
+cfl             = 0.8
+nend            = 1000000
+
+# magnetic fields
+# flux_correct          = .true.
+# killdivb              = .true.
+UnitSystem            = "CGS"
+
+# polytropic EOS
+usePolytrope         = .true.
+polytropeKonst       = 1.0 # (cs^2)
+polytropeGamma1      = 1.0
+polytropeGamma2      = 1.0
+polytropeGamma3      = 1.0
+polytropeGamma4      = 1.0
+polytropeGamma5      = 1.0
+polytropeDens1       = 1e-99
+polytropeDens2       = 1e99
+polytropeDens3       = 1e99
+polytropeDens4       = 1e99
+polytropeDens5       = 1e99
+
+#   AMR refinement parameters
+# lrefine_min = 1
+# lrefine_max = 1
+# refine_var_1 = "dens"
+# nblockx = 2
+# nblocky = 2
+# nblockz = 2
+
+#These parameters below are only necessary for the Uniform Grid
+
+iProcs = 2      #num procs in i direction
+jProcs = 2      #num procs in j direction
+kProcs = 2
+
+
+# When using UG, iProcs, jProcs and kProcs must be specified.
+# These are the processors along each of the dimensions
+
+#FIXEDBLOCKSIZE mode ::
+# When using fixed blocksize, iGridSize etc are redundant in
+# runtime parameters. These quantities are calculated as 
+# iGridSize = NXB*iprocs
+# jGridSize = NYB*jprocs
+# kGridSize = NZB*kprocs
+
+#NONFIXEDBLOCKSIZE mode ::
+# iGridSize etc must be specified. They constitute the global
+# number of grid points in the physical domain without taking 
+# the guard cell into account. The local blocksize is calculated
+# as iGridSize/iprocs  etc.

@@ -1,0 +1,66 @@
+# runtime parameters for the two-particle orbit problem
+
+lrefine_min = 2
+lrefine_max = 2
+
+# particle parameters
+
+useParticles = .true.
+pt_maxPerProc		= 2
+num_particles = 2
+
+# simulation parameters
+
+basenm			= "orbit_"
+restart			= .true.
+checkpointFileNumber				= 2
+checkpointFileIntervalStep			= 10000
+checkpointFileIntervalTime			= 1000.
+plotfileIntervalTime				= 10.
+particleFileIntervalTime 	                = 10.
+nend			= 2000
+tmax			= 3000.
+#tmax			= 10000.
+dtinit			= 2.0
+dtmin                   = 2.0
+dtmax                   = 2.0
+
+# gravity parameters
+
+useGravity = .true.
+mpole_lmax = 6
+mg_maxResidualNorm = 1.E-6
+mg_printNorm = .false.
+
+# problem parameters
+
+convertToConsvdInMeshInterp           = .false.
+
+separation              = 0.5
+ext_field               = .false.
+
+xmin			= 0.
+xmax			= 1.
+ymin			= 0.
+ymax			= 1.
+zmin			= 0.
+zmax			= 1.
+  
+geometry = "cartesian"
+
+xl_boundary_type	= "reflect"
+xr_boundary_type	= "reflect"
+yl_boundary_type	= "reflect"
+yr_boundary_type	= "reflect"
+zl_boundary_type	= "reflect"
+zr_boundary_type	= "reflect"
+grav_boundary_type      = "isolated"
+
+
+#IO Plotvars
+plot_var_1 = "gpot"
+plot_var_2 = "pden"
+plot_var_3 = "none"
+
+#refinement variables
+refine_var_1 = "none"

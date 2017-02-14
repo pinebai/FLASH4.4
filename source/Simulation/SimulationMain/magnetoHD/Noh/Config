@@ -1,0 +1,14 @@
+#       Configuration file for the 2D Cartesian MHD Noh
+
+REQUIRES physics/Hydro/HydroMain
+REQUIRES physics/Eos/EosMain/Gamma
+
+# Labels
+
+PARAMETER tiny                 REAL     1.e-16
+PARAMETER unit_density         REAL     1.e-5
+PARAMETER unit_velocity        REAL     1.e7
+PARAMETER unit_length          REAL     1.0
+
+VARIABLE vecz                  # vector potential Az
+

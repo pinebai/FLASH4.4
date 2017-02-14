@@ -1,0 +1,1 @@
+env <environment> mpiexec -n <numProcs> <pathToFlashExe> -par_file <parfile>

@@ -1,0 +1,125 @@
+#	FLASH makefile definitions for ix86 Linux (Portland Group compiler)
+
+#	Modified from 2/25/99 on 12/10/00 KMR
+#	Makefile.h.in the prototype for configure
+#
+# ATTN:	Changes to applicatins/libraries/etc should be made in configure.in
+#
+
+#----------------------------------------------------------------------------
+# Set the HDF/HDF5 and PAPI library paths 
+# -- these need to be updated for your system
+# If PAPI doesn't exist on your system, comment them out
+#----------------------------------------------------------------------------
+
+HDF4_PATH  = 
+HDF5_PATH  = 
+
+ZLIB_PATH  =
+
+PAPI_PATH  =
+PAPI_FLAGS =
+
+NCMPI_PATH =
+MPE_PATH   =
+
+#----------------------------------------------------------------------------
+#
+# Compiler and linker commands
+#
+#----------------------------------------------------------------------------
+
+FCOMP   = @F77@
+CCOMP   = @CC@
+CPPCOMP = @CXX@
+LINK    = @LINK@
+
+#  pre-processor flag
+
+PP     = -D
+
+#-----------------------------------------------------------------------------
+# Compilation flags
+#
+#  Three sets of compilation/linking flags are defined: one for optimized code
+#  code ("-opt"), one for debugging ("-debug"), and one for testing ("-test").
+#  Passing these flags to the setup script will cause the value associated with
+#  the corresponding keys (i.e. those ending in "_OPT", "_DEBUG", or "_TEST") to
+#  be incorporated into the final Makefile. For example, passing "-opt" to the
+#  setup script will cause the flags following "FFLAGS_OPT" to be assigned to
+#  "FFLAGS" in the final Makefile. If none of these flags are passed, the default
+#  behavior will match that of the "-opt" flag.
+#  In general, "-opt" is meant to optimize compilation and linking. "-debug"
+#  should enable runtime bounds checking, debugger symbols, and other compiler-
+#  specific debugging options. "-test" is useful for testing different
+#  combinations of compiler flags particular to your individual system.
+#----------------------------------------------------------------------------
+
+F90FLAGS     = @F90FLAGS@
+FFLAGS_OPT   = @FFLAGS@ @CPPFLAGS@
+FFLAGS_DEBUG = @FFLAGS_DEBUG@
+FFLAGS_TEST  =
+
+F90FLAGS     =
+
+CFLAGS_OPT   = @CFLAGS@ @CPPFLAGS@
+CFLAGS_DEBUG = @CFLAGS_DEBUG@
+CFLAGS_TEST  =
+
+CFLAGS_HDF5  =
+CFLAGS_NCMPI =
+
+#----------------------------------------------------------------------------
+# Linker flags
+#
+#  There is a seperate version of the linker flags for each of the _OPT, 
+#  _DEBUG, and _TEST cases.
+#----------------------------------------------------------------------------
+
+
+LFLAGS_OPT   = @LDFLAGS@
+LFLAGS_DEBUG = @LDFLAGS_DEBUG@
+LFLAGS_TEST  =
+
+
+#----------------------------------------------------------------------------
+# Library specific linking
+#
+#  If a FLASH module has a 'LIBRARY xxx' line in its Config file, we need to
+#  create a macro in this Makefile.h for LIB_xxx, which will be added to the
+#  link line when FLASH is built.  This allows us to switch between different
+#  (incompatible) libraries.  We also create a _OPT, _DEBUG, and _TEST
+#  library macro to add any performance-minded libraries (like fast math),
+#  depending on how FLASH was setup.
+#----------------------------------------------------------------------------
+
+
+##LIB = -L/usr/mpi/lib -L/usr/local/hdf4/lib \
+##      -lfmpich -lmpich -ljpeg -lz
+
+LIB = @LIBS@
+
+LFLAGS_OPT   =
+LFLAGS_DEBUG =
+LFLAGS_TEST  =
+
+#----------------------------------------------------------------------------
+# Additional machine-dependent object files
+#
+#  Add any machine specific files here -- they will be compiled and linked
+#  when FLASH is built.
+#----------------------------------------------------------------------------
+
+MACHOBJ = 
+
+#----------------------------------------------------------------------------
+# Additional commands
+#---------------------------------------------------------------------------- 
+
+MV   = @MV@ -f
+AR   = @AR@ -r
+RM   = @RM@ -f
+CD   = @CD@
+RL   = @RANLIB@
+ECHO = @ECHO@
+

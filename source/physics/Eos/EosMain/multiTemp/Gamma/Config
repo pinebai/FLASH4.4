@@ -1,0 +1,51 @@
+#	Config file for the perfect-gas equation of state
+# [physics/Eos/EosMain/Gamma]
+
+USESETUPVARS Mtmmmt
+
+IF not Mtmmmt
+# Should not use Eos/Gamma with more than one species
+# ... unless when using Eos/multiTemp/Gamma with Mtmmmt
+CONFLICTS Multispecies/MultispeciesMain
+ENDIF
+
+# it is possible to use a variation RHD which treats internal energy differently.
+# But only the Eos_wrapped varies for the two cases.
+
+VARIABLE gamc  EOSMAP:   GAMC  # sound-speed gamma
+VARIABLE game  EOSMAPOUT:GAME  # energy gamma
+
+
+D gamma       Ratio of specific heats for gas
+PARAMETER gamma         REAL    1.6666666666666667 [0.0 to ]
+
+D gammaIon       Ratio of specific heats for ion component
+PARAMETER gammaIon         REAL    1.6666666666666667 [0.0 to ]
+
+D gammaEle       Ratio of specific heats for electron component
+PARAMETER gammaEle         REAL    1.6666666666666667 [0.0 to ]
+
+D gammaRad       Ratio of specific heats for radiation component
+PARAMETER gammaRad         REAL    1.3333333333333333 [0.0 to ]
+
+
+D eos_singleSpeciesA       Nucleon number for the gas (for Eos tracking matter as single species)
+PARAMETER eos_singleSpeciesA         REAL    1.00794  [0.0 to ]
+D eos_singleSpeciesZ       Proton number for the gas (for Eos tracking matter as single species)
+PARAMETER eos_singleSpeciesZ         REAL    1.00  [0.0 to ]
+
+D eos_tolerance  tolerance for the Newton-Raphson iterations
+PARAMETER eos_tolerance REAL    1.e-8
+
+D eos_maxNewton  maximum number of Newton-Raphson iterations to try.
+PARAMETER eos_maxNewton INTEGER 50
+
+D eos_forceConstantInput Helmholtz routines can allow input EINT or PRES 
+D &              to change on output to preserve equilibrium.  This switch 
+D &              forces a constant input of EINT or PRES
+PARAMETER eos_forceConstantInput BOOLEAN false 
+
+USESETUPVARS SplitDriver
+IF SplitDriver
+  REQUESTS physics/Hydro/HydroMain/split/PPM/multiTemp
+ENDIF

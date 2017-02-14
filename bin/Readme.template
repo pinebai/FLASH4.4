@@ -1,0 +1,170 @@
+
+This file explains the syntax of template files.
+
+COMMENTS
+--------
+All lines starting with "##" are ignored. Lines starting
+with one # or having ## not at the start are not considered 
+comments. Empty lines are not considered comments.
+
+ESCAPE Seqences
+---------------
+\t,\n,\r and \\ are replaced with
+TAB,NEWLINE,CARRIAGE RETURN and "\" respectively
+
+Processing Algo
+---------------
+* Lines are read one at a time
+* Comment lines are ignored.
+* Escape sequences are honored
+* Percent Substitution is performed
+* Resulting line goes to the output file
+
+Magic Variables
+---------------
+For every variable X of sequence type, the following are automatically
+available for use in the Template.
+
+COUNT_X  -> contains the number of elements in X
+MAXLEN_X -> Length of the longest element in X
+
+Length of an element is # of chars it would take to write it out.
+Length(99)=2, Length(100)=3, Length(-78)=3
+
+MAXLEN of an empty sequence is defined as 0
+
+Percent Substitution
+--------------------
+All the power of templates come from here. All sequences of 
+the form
+
+%(STUFF)s
+
+is replaced by the value of "STUFF". If STUFF is an integer, you
+may replace the "s" at the end with a "d", but that is not required
+so we suggested you stick to %(STUFF)s even for integers.
+
+STUFF is in one of the following forms
+
+ VarName
+ VarName|NilValue
+ ListSpec
+ ListSpec|NilValue
+
+VarName 
+is the name of a variable whose value is provided by
+code instantiating the template. It is suggested that each
+template file list the allowed variables and their types
+as comments. Any VarName appearing in one of the first
+two forms is converted to a string and printed
+
+NilValue
+is the value printed if the value of the VarName is NULL
+For integers this means 0, for strings "" and for lists 
+the empty list
+
+If the variable is a list (or a tuple), then the formatting
+of the list can be controlled more carefully using a List 
+specification. ListSpec is in one of the following forms
+
+ListVar!INNER
+NUMBERListVar!INNER!OUTER
+
+where ListVar is the name of a variable of list type. 
+
+Padding Strings
+---------------
+In both forms ListVar may be followed by a space. If it is
+then all elements of the list when printed will expand to the
+strings of the same length (given by MAXLEN_ListVar) by adding
+spaces to the right is necessary.
+
+If no space follows ListVar then each element of the list will
+occupy as much space required to print that element.
+
+This feature has been added to deal with some Fortran Quirks 
+(see below for more details)
+
+FirstForm (ListVar!INNER)
+-------------------------
+In the first form all elements of the list are individually converted
+to strings and the string INNER is put between the converted strings.
+
+e.g. if 
+flags = ["CFLAGS","FFLAGS","CPPFLAGS"] then
+
+%(flags!,|Empty)s will result in
+
+CFLAGS,FFLAGS,CPPFLAGS
+
+and in 
+
+Empty
+
+if flags was the empty list
+
+
+SecondForm (NUMBERListVar!INNER!OUTER)
+--------------------------------------
+In the second form NUMBER is a number, ListVar is a list variable and
+INNER and OUTER are strings. In this case the elements of the list
+are grouped into blocks of size NUMBER each (last block may have fewer
+elements).
+
+All strings within a block are treated like in the FirstForm with INNER
+string placed between them. Then all the blocks are taken and OUTER string
+placed between them. 
+
+This is useful if you have long lists, and the program which will process
+you generated file does not like long lines.
+
+e.g. if
+species = ["air","water","sf6","gas","ash","coal","burn","stuff","xtra"]
+
+then 
+
+"%(4species!","!",\n"|mfrc)s"
+
+will expand to
+
+"air","water","sf6","gas",
+"ash","coal","burn","stuff",
+"xtra"
+
+
+Note that the \n gets converted to a newline before substitution is performed
+so we get what we want.
+
+
+NOTE
+----
+
+Instead of "%(4species!","!",\n"|mfrc)s" using
+
+"%(4species!","!",
+"|mfrc)s"
+
+will not work, i.e. replacing \n with an actual newline will not work since
+we process the template line by line and processing the first line will lead to an 
+error. However \t can be replaced with a TAB.
+
+FORTRAN QUIRK
+-------------
+Some versions of fortran (xlf90 compiler) cannot initialise an array of strings
+to strings having different lengths (even if overflow is not a problem). To get
+around this, follow the name of the list variables with a space in the template.
+This ensures that all entries have the same length, padded with spaces at the end
+
+e.g. if
+species = ["air","water","sf6","gas","ash","coal","burn","stuff","xtra"]
+
+then 
+
+"%(4species !","!",\n"|mfrc)s"
+
+will expand to
+
+"air  ","water","sf6  ","gas  ",
+"ash  ","coal ","burn ","stuff",
+"xtra "
+

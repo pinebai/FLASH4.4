@@ -1,0 +1,64 @@
+##python:genLines
+
+def genLines (setupvars):
+
+    yield """
+#
+# The setup that does a proton imaging on a (reduced) checkpoint file.
+#
+# Sample setup line:
+#
+#   ./setup ProtonImaging
+#
+#             -auto
+#             -3d
+#             -geometry=cartesian
+#             -parfile=flash.par
+#             -maxblocks=4000
+#             -nxb=number                    (number has to correspond to the data in checkpoint files)
+#             -nyb=number                    (number has to correspond to the data in checkpoint files)
+#             -nzb=number                    (number has to correspond to the data in checkpoint files)
+#             +protonImaging
+#             -without-unit=physics/Hydro    (get rid of Hydro -> get rid of a ton of UNK variables using memory)
+#             -without-unit=physics/Eos      (is also not needed here)
+#             -objdir=objectProtonImaging
+#             pi_maxBeams=1
+#             pi_maxDetectors=1
+#             threadProtonTrace=True         (enables threading of proton tracing)
+#
+# The +protonImaging shortcut activates the inclusion of the Proton Imaging unit.
+#
+
+REQUIRES diagnostics/ProtonImaging/ProtonImagingMain
+#
+# Define unk variables to be used by proton imaging unit. This is necessary, because Hydro is not
+# used for setup. The variables needed are the 3 components of the magnetic and electric field
+# and the boundary indicator.
+#
+VARIABLE elex
+VARIABLE eley
+VARIABLE elez
+VARIABLE magx
+VARIABLE magy
+VARIABLE magz
+VARIABLE bdry
+#
+# Parameters
+#
+
+D       sim_printBlockVariables        Print what is in each block on each processor?
+
+PARAMETER  sim_printBlockVariables    BOOLEAN  false
+"""
+
+    maxRuntimeVariables = 1000
+
+    for i in xrange (maxRuntimeVariables):
+        yield "PARAMETER " + "varReal_"    + str (i+1) + " REAL 0.0"
+        yield "PARAMETER " + "varInteger_" + str (i+1) + " INTEGER 0"
+        yield "PARAMETER " + "varLogical_" + str (i+1) + " BOOLEAN false"
+        yield "PARAMETER " + "varString_"  + str (i+1) + ' STRING " "'
+        yield         "D " + "varReal_"    + str (i+1) + " __IGNORE__"
+        yield         "D " + "varInteger_" + str (i+1) + " __IGNORE__"
+        yield         "D " + "varLogical_" + str (i+1) + " __IGNORE__"
+        yield         "D " + "varString_"  + str (i+1) + " __IGNORE__"

@@ -1,0 +1,140 @@
+#	Runtime parameters for a test setup - isothermal self-gravitating layer.
+
+
+
+# centre of the radial profile, radprof file
+sim_zMidplane     =    0.0
+sim_prof_file     = "sech2-rh0-1-T4"
+
+# tolerances for rel. error defined as: |(Phi_num - Phi_anl) / Phi_anl|
+sim_solutionErrorTolerance1 = 2.0E-3    # check after initial solve
+sim_solutionErrorTolerance2 = 2.0E-3    # check after time step (if any)  
+
+
+# properties of gases
+gamma_1           = 1.0001
+abar_1            = 0.609
+
+
+#		Grid dimensionality and geometry
+
+geometry = "cartesian"
+
+#		Size of computational volume
+xmin        = -1.5428388e+21 # 500 pc
+xmax        =  1.5428388e+21
+ymin        = -1.5428388e+21
+ymax        =  1.5428388e+21
+zmin        = -1.5428388e+21
+zmax        =  1.5428388e+21
+
+nblockx     = 1
+nblocky     = 1
+nblockz     = 1
+
+#  Adaptive Grid refinement parameters
+lrefine_max  = 4
+lrefine_min  = 4
+refine_var_1 = "none"
+refine_var_2 = "none"
+
+# field lower limits
+smlrho          = 2.4e-28 #2.40544e-30
+smallp          = 1e-30 #1e-30
+smalle          = 1e-99 #1.0 # 6.236e8 # ~ 10 K
+smallt          = 9.99
+smallu          = 1e-99 #1e-5
+
+#		Boundary conditions
+xl_boundary_type = "periodic"
+xr_boundary_type = "periodic"
+yl_boundary_type = "periodic"
+yr_boundary_type = "periodic"
+zl_boundary_type = "reflect"
+zr_boundary_type = "reflect"
+
+#	Simulation time, I/O  parameters
+nriem   = 1000
+cfl		= 0.8
+basenm          = "sech2_"
+restart         = .false.
+
+
+#	checkpoint file output parameters
+checkpointFileIntervalTime = 7.8892315e+15 # 250 Myr
+checkpointFileIntervalStep = 0
+checkpointFileNumber = 0
+
+#	plotfile output parameters
+plotfileIntervalTime = 3.1556926e+13 # 1 Myr
+plotfileIntervalStep = 0
+plotfileNumber = 0
+
+nend            = 1
+tmax            = 3.1556926e+15 # 100 Myr
+dtinit          = 3.1556926e+7
+dtmax           = 1.5778463e+13 # 0.5 Myr
+dtmin           = 3.1556926e+10  # 0.001 Myr
+
+log_file        = "sech2.log"
+eintSwitch      = 0 # 1.e-4
+run_comment     = "BE sphere"
+
+plot_var_1 = "dens"
+plot_var_2 = "pres"
+plot_var_3 = "temp"
+plot_var_4 = "velx"
+plot_var_5 = "vely"
+plot_var_6 = "velz"
+plot_var_7 = "gpot"
+plot_var_8 = "fldc"
+plot_var_9 = "flda"
+plot_var_10 = "panl"
+plot_var_11 = "perr"
+
+
+# tree solver
+useGravity          = .true.
+updateGravity       = .true.
+gr_bhPhysMACTW           = .false.
+gr_bhPhysMACComm         = .false.
+gr_bhTreeLimAngle        = 0.5
+gr_bhTreeSafeBox         = 1.2
+gr_bhUseUnifiedTW        = .false.
+gr_bhTWMaxQueueSize      = 10000
+
+# Gravity
+grv_bhNewton            = -1.0
+grv_bhMAC               = "ApproxPartialErr"
+grv_bhMPDegree          = 2
+grv_bhUseRelAccErr      = .false.
+grv_bhAccErr            = 0.1
+
+grav_boundary_type      = "mixed"
+grav_boundary_type_x    = "periodic"
+grav_boundary_type_y    = "periodic"
+grav_boundary_type_z    = "isolated"
+
+# Gravity Ewald field
+grv_bhEwaldSeriesN        = 10
+grv_bhEwaldAlwaysGenerate = .true.
+grv_bhEwaldFieldNxV42        = 32
+grv_bhEwaldFieldNyV42        = 32
+grv_bhEwaldFieldNzV42        = 32
+grv_bhEwaldNRefV42           = -1
+grv_bhLinearInterpolOnlyV42  = .true.
+grv_bhEwaldFNameAccV42       = "ewald_field_acc"
+grv_bhEwaldFNamePotV42       = "ewald_field_pot"
+grv_bhEwaldNPer              = 32
+grv_bhEwaldFName             = "ewald_coeffs"
+
+# Gravity External gravitational field
+grv_useExternalPotential   = .false.
+grv_usePoissonPotential    = .true.
+grv_bhExtrnPotFile         = "external_potential.dat"
+grv_bhExtrnPotType         = "planez"
+grv_bhExtrnPotCenterX      = 0.0
+grv_bhExtrnPotCenterY      = 0.0
+grv_bhExtrnPotCenterZ      = 0.0
+
+

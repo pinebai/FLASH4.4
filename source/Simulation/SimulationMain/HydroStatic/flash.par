@@ -1,0 +1,71 @@
+eos_singleSpeciesA = 28.8
+gamma = 1.4
+
+# Direction of constant gravity field:
+gdirec = "x"
+
+# This improves PPM for Hydrostatic conditions:
+ppm_modifystates = .TRUE.
+
+sim_tempRef = 298.15
+##sim_densRef = 0.001184 - not itself a runtime parameter
+sim_presRef = 1013250.0
+
+eachProcWritesOwnAbortLog      = .true.
+geometry                       = "cartesian"
+
+lrefine_min                    = 2
+lrefine_max                    = 5
+
+pc_unitsBase                   = "CGS"
+
+plot_var_1                = "dens"
+plot_var_2                = "pres"
+plot_var_3                = "temp"
+plot_var_4                = "velx"
+plot_var_5                = "vely"
+plot_var_6                = "velz"
+
+plotfileMetadataDP             = .false.
+refine_on_particle_count       = .true.
+
+run_comment                    = "HydroStatic-FLASH3 test run"
+useCollectiveHDF5              = .false.
+useParticles                   = .FALSE.
+
+wall_clock_checkpoint          = 60.
+
+nend = 400
+tmax = 10
+
+xmin = 0
+xmax = 800000
+
+ymin = 0
+ymax = 800000
+
+refine_var_1 = "dens"
+refine_var_2 = "pres"
+refine_var_3 = "velx"
+
+#xl_boundary_type               = "USER"
+#xr_boundary_type               = "USER"
+yl_boundary_type               = "USER"
+yr_boundary_type               = "USER"
+xl_boundary_type               = "hydrostatic+nvrefl"
+xr_boundary_type               = "hydrostatic+nvout"
+#zl_boundary_type               = "hydrostatic+nvout"
+#zr_boundary_type               = "hydrostatic+nvout"
+zl_boundary_type               = "outflow"
+zr_boundary_type               = "outflow"
+
+nblockX = 4
+nblockY = 4
+
+# Additional stuiff to play with...
+useConductivity = F
+#cond_constantIsochoric = 1000.e6
+useViscosity = F
+#diff_visc_nu = 10.0e6
+#dt_diff_factor = 0.2
+

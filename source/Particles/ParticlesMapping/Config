@@ -1,0 +1,32 @@
+#  Configuration file for particle <--> mesh mapping submodule.
+#  [/source/Particles/ParticlesMapping]
+
+#  Submodules:
+
+#    meshWeighting   all the various techniques that weight
+#                    mesh points differently
+#    Quadratic       Quadratic interpolation from the mesh to particle
+#                    positions -- not a mesh weighting, but true
+#                    interpolation
+
+REQUESTS Particles/ParticlesMain
+REQUESTS Particles/ParticlesInitialization
+
+DEFAULT Quadratic
+
+
+#DEV: CD. The PartMapping variable makes sense only if 
+#we have one particle type.  It seems it was never used anyway, 
+#as PartMapping is not in any setup shortcut or test suite 
+#setup line.
+#USESETUPVARS PartMapping
+#
+#IF PartMapping == "meshWeighting"
+#   DEFAULT meshWeighting
+#ELSEIF PartMapping == "CIC"
+#   DEFAULT meshWeighting/CIC
+#ELSEIF PartMapping not in ["","Quadratic"]
+#   SETUPERROR PartMapping has invalid value
+#ENDIF
+#
+#EXCLUSIVE Quadratic meshWeighting

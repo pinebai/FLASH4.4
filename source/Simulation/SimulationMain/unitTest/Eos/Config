@@ -1,0 +1,71 @@
+#  Configuration file for Eos test, general configuration
+#  Simulation/SimulationMain/unitTest/Eos
+#  Should be setup with prompt> ./setup unitTest/Eos/Type -auto 
+#  where "Type" is Helmholtz, Multigamma, or Gamma
+
+REQUIRES Driver
+REQUIRES Grid
+REQUIRES physics/Eos/EosMain
+REQUESTS physics/Eos/unitTest
+REQUESTS IO
+
+USESETUPVARS nDim
+
+IF nDim <> 3
+  SETUPERROR All EOS unit tests must be run in 3d.  Use ./setup unitTest/Eos -auto -3d blah blah blah
+ENDIF
+
+USESETUPVARS timeEosUnitTest
+IF timeEosUnitTest
+   REQUIRES Simulation/SimulationMain/unitTest/Eos/timeEosUnitTest
+ENDIF
+
+
+D sim_densMin       Initial distribution of density, minimum.  Even distribution between logarithm of min/max.
+D sim_densMax       Initial distribution of density, maximum.  Even distribution between logarithm of min/max.
+PARAMETER sim_densMin  REAL 1.e-2
+PARAMETER sim_densMax  REAL 1.e8
+
+D sim_tempMin       Initial distribution of temperature, minimum.  Even distribution between logarithm of min/max
+D sim_tempMax       Initial distribution of temperature, maximum.  Even distribution between logarithm of min/max
+PARAMETER sim_tempMin  REAL 1.e5
+PARAMETER sim_tempMax  REAL 1.e9
+
+D sim_presMin       Initial distribution of pressure, minimum.  Even distribution between logarithm of min/max
+D sim_presMax       Initial distribution of pressure, maximum.  Even distribution between logarithm of min/max
+PARAMETER sim_presMin  REAL 1.e-2
+PARAMETER sim_presMax  REAL 1.e7
+
+D  sim_xnMin        Initial distribution of a single species, minimum.  Even distribution between logarithm of min/max
+D  sim_xnMax        Initial distribution of a single species, maximum.  Even distribution between logarithm of min/max
+PARAMETER sim_xnMin    REAL 1.e-10
+PARAMETER sim_xnMax    REAL 1.0
+
+D sim_initialMass    Distribution of initial mass.  -1 to put gradient in SPEC(1) and SPEC(NSPECIES) 
+D &                                                   0 to divide evenly throughout SPECIES          
+D &                                                   i to put all mass on SPECIES i  
+PARAMETER sim_initialMass INTEGER -1   [-1 to ]
+
+D smallt            Cutoff value for temperature
+PARAMETER smallt        REAL    1.E-10
+
+D eosMode        The Mode for applying Eos
+PARAMETER eosMode  STRING "dens_temp"
+
+
+VARIABLE dens TYPE: PER_VOLUME EOSMAP: DENS # density
+VARIABLE velx TYPE: PER_MASS   EOSMAPIN:VELX # x-velocity
+VARIABLE vely TYPE: PER_MASS   EOSMAPIN:VELY # y-velocity
+VARIABLE velz TYPE: PER_MASS   EOSMAPIN:VELZ # z-velocity
+VARIABLE cprs # pressure
+VARIABLE ener TYPE: PER_MASS   EOSMAP: ener # specific total energy (T+U)
+VARIABLE ctmp # temperature
+VARIABLE eint TYPE: PER_MASS   EOSMAP: EINT # specific internal energy
+VARIABLE pres                  EOSMAP: PRES # storage to save pres
+VARIABLE temp                  EOSMAP: TEMP # storage to save temp
+VARIABLE oent # storage to save eint
+VARIABLE oprs # another temp storage for pres
+VARIABLE otmp # another temp storage for temp
+
+
+

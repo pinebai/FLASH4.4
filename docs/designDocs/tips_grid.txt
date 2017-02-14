@@ -1,0 +1,12 @@
+
+A list of available shortcuts relevant to the Grid unit
+
++ug     !! include the Uniform Grid implementation of Grid
++pm3    !! include the Paramesh3 implementation of Grid
++pm2    !! include the Paramesh2 implementation of Grid
++ugio   !! include Uniform Grid and the appropriate implementation of IO
++cube64 !! is equivalent to specifying -nxb=64 -nyb=64 -nzb=64
++rnf    !! setup with uniform grid, in three dimensions, 
+        !! in non-fixed blocksize mode, with -nxb=8 -nyb=16 -nzb=32 
+
+

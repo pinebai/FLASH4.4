@@ -1,0 +1,35 @@
+CCOMP = gcc
+CFLAGS = -c -O2 -Wall
+LFLAGS = -o
+LIBS =
+#Available defines: NO_HDF4, NO_HDF5, NEED_MPI
+#Comment this out if your hdf5 doesn't need mpi. Sfocu should run as a single
+#processor job in any case.
+CDEFINES = -DNEED_MPI -DNO_HDF4
+HDF5PATH = /opt/pkgs/hdf5-1.6.0
+#NCDFPATH = /opt/pkgs/parallel-netcdf
+NCDFPATH = /scratch4/sheeler/parallel-netcdf-0.9.4
+HDF4PATH = /opt/pkgs/HDF/4.1r2_irix64v6.4-n32
+ZLIBPATH = /opt/pkgs/zlib-1.1.3
+
+CFLAGS += -I$(HDF5PATH)/include -I$(NCDFPATH)/include
+LIBS += $(HDF5PATH)/lib/libhdf5.a $(NCDFPATH)/lib/libpnetcdf.a
+
+CFLAGS += -I$(HDF4PATH)/include
+LIBS += -L$(HDF4PATH)/lib -lmfhdf -ldf
+
+LIBS += $(ZLIBPATH)/lib/libz.a -L/usr/lib32 -lm -lmpi
+
+EXENAME = sfocu
+OBJS = main.o sfocu.o test_reader.o flash_reader.o namecmp.o flash_reader_hdf4.o \
+       flash_reader_hdf5.o flash_reader_chombo.o sameblock.o options.o flash_reader_ncdf.o
+
+.SUFFIXES: .c .o
+.c.o :
+	$(CCOMP) $(CFLAGS) $(CDEFINES) $*.c
+
+default: $(OBJS)
+	$(CCOMP) $(OBJS) $(LIBS) $(LFLAGS) $(EXENAME)
+
+clean:
+	rm $(OBJS) $(EXENAME)

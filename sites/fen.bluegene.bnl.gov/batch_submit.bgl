@@ -1,0 +1,36 @@
+# @ job_type = bluegene
+# @ class = normal
+#
+# The executable  that will run your parallel application should always be specified as per the next line.
+# @ executable = /bgl/BlueLight/ppcfloor/bglsys/bin/mpirun
+#
+# Run on 1024 nodes using partition B01KTB01.
+# Specify partition using the following statement. This statement is the only way a partition should ever be 
+# specified in a LoadLeveler job control file.
+# The partition you designate here indicates the number of nodes, so note that we do not specify a
+# desired number of nodes anywhere in the job control file.
+# @ bg_partition = B128MB03
+#
+# initialdir (see the next active line) will be used as the working directory for this batch job. 
+# @ initialdir = /gpfs/home2/ajackson/FLASH3/object_sed3d
+#
+# If for example your jobid is 82, your output and error will be written in
+# directory /home/johndoe/app1/runs, to files 82.out and 82.err respectively.
+# @ input = /dev/null
+# @ output = flash3.out
+# @ error = flash3.err
+# 
+# Maximum wall clock time for job will be 48 hours.
+# @ wall_clock_limit = 48:00:00
+#
+# Send email to johndoe@bnl.gov when job has completed.
+# @ notification = complete
+# @ notify_user = Aaron.Jackson@stonybrook.edu
+#
+# Specify executable for your parallel application, and arguments to that executable.
+# Note that the arguments to specify for the executable will vary depending upon the executable.
+# @ arguments = -exe /gpfs/home2/ajackson/FLASH3/object_sed3d/flash3 -cwd /gpfs/home2/ajackson/FLASH3/object_sed3d
+#
+# The next statement marks the end of the job step. This example is a one-job-step batch job,
+# so this is equivalent to saying that the next statement marks the end of the batch job.
+# @ queue

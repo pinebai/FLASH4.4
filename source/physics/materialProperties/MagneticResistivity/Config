@@ -1,0 +1,8 @@
+# Config file for source/physics/materialProperties/MagneticResistivity
+
+DEFAULT MagneticResistivityMain
+
+
+D useMagneticResistivity flags whether the magnetic resistivity material property is being used
+
+PARAMETER useMagneticResistivity BOOLEAN CONSTANT FALSE

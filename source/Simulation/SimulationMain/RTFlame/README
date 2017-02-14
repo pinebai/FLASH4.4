@@ -1,0 +1,33 @@
+Rayleigh-Taylor Flame setup
+
+author:  Dean Townsley
+
+
+Setup for simulating the propagation of Rayleigh-Taylor unstable
+flames.  This setup will work in 1,2 or 3 dimensions with little
+modification.
+
+Initially a layer of fuel is setup above a layer of hot, burned ash
+all in hydrostatic equilibrium.  (Note that "up" here is the +x
+direction) This is much like a standard R-T problem.  The lower
+boundary is reflecting and the upper is (diode) outflow.  A
+perturbation is placed on the interface between the dense overlying
+layers and the less dense underneath.
+
+As the simulation commences, the flame interface will propagate upward
+into the unburned material while R-T perturbs the interface.  The
+intention of the setup is to study the interplay between these two
+processes.
+
+Both the fuel and ash are setup as isothermal hydrostatically stable
+layers.  The reference density and temperature is used to set these
+values just above the initial position of the flame interface.
+
+For more information see
+
+Khokhlov 1995, ApJ, 449, 695
+Zingale etal 2005, ApJ, 632, 1021
+Zhang etal 2007, 656, 347
+Townsley, Asida, Jena & Lamb, in preparation
+
+

@@ -1,0 +1,502 @@
+<code>
+  <UnitTest>
+    <Eos>
+      <Helmholtz>
+        <3d>
+          <UG>
+            <twb>
+              setupName: unitTest/Eos/Helmholtz
+              setupOptions: -auto -opt -3d +ug +noio threadWithinBlock=True -noc
+              transfers: object/helm_table.dat object/SpeciesList.txt
+              numProcs: 1
+              parfiles: <pathToSimulations>/unitTest/Eos/Helmholtz/flash.par
+	      environment: OMP_NUM_THREADS=4 OMP_STACKSIZE=16M
+            </twb>
+          </UG>
+          <nofbs>
+            <twb>
+              setupName: unitTest/Eos/Helmholtz
+              setupOptions: -auto -opt -3d +nofbs +noio threadWithinBlock=True -noc
+              transfers: object/helm_table.dat object/SpeciesList.txt
+              numProcs: 1
+              parfiles: <pathToSimulations>/unitTest/Eos/Helmholtz/flash.par
+	      environment: OMP_NUM_THREADS=4 OMP_STACKSIZE=16M
+            </twb>
+          </nofbs>
+        </3d>
+      </Helmholtz>
+      <Helmholtz_tuned_1>
+        <3d>
+          <UG>
+            <twb>
+              setupName: unitTest/Eos/Helmholtz
+              setupOptions: -auto -opt -3d +ug +noio threadWithinBlock=True -noc useTunedEos=True
+              transfers: object/helm_table.dat object/SpeciesList.txt
+              numProcs: 1
+              parfiles: <pathToSimulations>/unitTest/Eos/Helmholtz/flash.par
+	      environment: OMP_NUM_THREADS=4 OMP_STACKSIZE=16M
+            </twb>
+          </UG>
+          <nofbs>
+            <twb>
+              setupName: unitTest/Eos/Helmholtz
+              setupOptions: -auto -opt -3d +nofbs +noio threadWithinBlock=True -noc useTunedEos=True
+              transfers: object/helm_table.dat object/SpeciesList.txt
+              numProcs: 1
+              parfiles: <pathToSimulations>/unitTest/Eos/Helmholtz/flash.par
+	      environment: OMP_NUM_THREADS=4 OMP_STACKSIZE=16M
+            </twb>
+          </nofbs>
+        </3d>
+      </Helmholtz_tuned_1>
+      <Helmholtz_tuned_2>
+        <3d>
+          <UG>
+            <twb>
+              setupName: unitTest/Eos/Helmholtz
+              setupOptions: -auto -opt -3d +ug +noio threadWithinBlock=True -noc useTunedEos=True -defines=AVOID_REDUNDANT_EOS_CALC
+              transfers: object/helm_table.dat object/SpeciesList.txt
+              numProcs: 1
+              parfiles: <pathToSimulations>/unitTest/Eos/Helmholtz/flash.par
+	      environment: OMP_NUM_THREADS=4 OMP_STACKSIZE=16M
+            </twb>
+          </UG>
+          <nofbs>
+            <twb>
+              setupName: unitTest/Eos/Helmholtz
+              setupOptions: -auto -opt -3d +nofbs +noio threadWithinBlock=True -noc useTunedEos=True -defines=AVOID_REDUNDANT_EOS_CALC
+              transfers: object/helm_table.dat object/SpeciesList.txt
+              numProcs: 1
+              parfiles: <pathToSimulations>/unitTest/Eos/Helmholtz/flash.par
+	      environment: OMP_NUM_THREADS=4 OMP_STACKSIZE=16M
+            </twb>
+          </nofbs>
+        </3d>
+      </Helmholtz_tuned_2>
+    </Eos>
+    <Gravity>
+      <Poisson3>
+        <3d>
+          <UG>
+            <twb>
+              setupName: unitTest/Gravity/Poisson3
+              setupOptions: -auto -test -3d +ug +cube32 +noio +newMpole threadWithinBlock=True -noc
+              numProcs: 4
+              parfiles: <pathToSimulations>/unitTest/Gravity/Poisson3/flash.par.ug
+	      environment: OMP_NUM_THREADS=4 OMP_STACKSIZE=16M
+            </twb>
+          </UG>
+          <nofbs>
+            <twb>
+              setupName: unitTest/Gravity/Poisson3
+              setupOptions: -auto -test -3d +nofbs +noio +newMpole threadWithinBlock=True -noc
+              numProcs: 4
+              parfiles: <pathToSimulations>/unitTest/Gravity/Poisson3/flash.par.ug
+	      environment: OMP_NUM_THREADS=4 OMP_STACKSIZE=16M
+            </twb>
+          </nofbs>
+          <AMR>
+            <tbl>
+              setupName: unitTest/Gravity/Poisson3
+              setupOptions: -auto -test -3d +pm4dev -maxblocks=600 +noio +newMpole threadBlockList=True -noc
+              transfers: object/amr_runtime_parameters
+              numProcs: 4
+              parfiles: <pathToSimulations>/unitTest/Gravity/Poisson3/flash.par
+	      environment: OMP_NUM_THREADS=4 OMP_STACKSIZE=16M
+            </tbl>
+            <twb>
+              setupName: unitTest/Gravity/Poisson3
+              setupOptions: -auto -test -3d +pm4dev -maxblocks=600 +noio +newMpole -test threadWithinBlock=True -noc
+              transfers: object/amr_runtime_parameters
+              numProcs: 4
+              parfiles: <pathToSimulations>/unitTest/Gravity/Poisson3/flash.par
+	      environment: OMP_NUM_THREADS=4 OMP_STACKSIZE=16M
+            </twb>
+          </AMR>
+        </3d>
+      </Poisson3>
+    </Gravity>
+    <Multipole>
+      <AMR>
+        <2d>
+          <Cylindrical>
+            <tbl>
+              setupName: unitTest/Multipole
+              setupOptions: -auto +pm4dev -geometry=cylindrical -2d -maxblocks=1000 +newMpole +noio threadBlockList=True -test -noc
+              transfers: object/amr_runtime_parameters
+              numProcs: 4
+              parfiles: <pathToSimulations>/unitTest/Multipole/flash.par.2dcylindrical
+              environment: OMP_NUM_THREADS=4 OMP_STACKSIZE=16M
+            </tbl>
+            <twb>
+              setupName: unitTest/Multipole
+              setupOptions: -auto +pm4dev -geometry=cylindrical -2d -maxblocks=1000 +newMpole +noio threadBlockList=True -test -noc
+              transfers: object/amr_runtime_parameters
+              numProcs: 4
+              parfiles: <pathToSimulations>/unitTest/Multipole/flash.par.2dcylindrical
+              environment: OMP_NUM_THREADS=4 OMP_STACKSIZE=16M
+            </twb>
+          </Cylindrical>
+        </2d>
+        <3d>
+          <Cartesian>
+            <tbl>
+              setupName: unitTest/Multipole
+              setupOptions: -auto +pm4dev -geometry=cartesian -3d -maxblocks=1000 +newMpole +noio threadBlockList=True -test -noc
+              transfers: object/amr_runtime_parameters
+              numProcs: 4
+              parfiles: <pathToSimulations>/unitTest/Multipole/flash.par
+              environment: OMP_NUM_THREADS=4 OMP_STACKSIZE=16M
+            </tbl>
+            <twb>
+              setupName: unitTest/Multipole
+              setupOptions: -auto +pm4dev -geometry=cartesian -3d -maxblocks=1000 +newMpole +noio threadBlockList=True -test -noc
+              transfers: object/amr_runtime_parameters
+              numProcs: 4
+              parfiles: <pathToSimulations>/unitTest/Multipole/flash.par
+              environment: OMP_NUM_THREADS=4 OMP_STACKSIZE=16M
+            </twb>
+          </Cartesian>
+        </3d>
+      </AMR>
+    </Multipole>
+    <Laser_quadraticTube>
+      <testII>
+        <AMR>
+          <3d>
+            <trt>
+              setupName: unitTest/Laser_quadraticTube/testII
+              setupOptions: -auto -3d -geometry=cartesian -maxblocks=600 +laser ed_maxPulses=1 ed_maxPulseSections=2 ed_maxBeams=1 threadRayTrace=True +noio
+              transfers: object/amr_runtime_parameters
+              numProcs: 4
+              parfiles: <pathToSimulations>/unitTest/Laser_quadraticTube/testII/flash.par.3D
+              environment: OMP_NUM_THREADS=4 OMP_STACKSIZE=16M
+            </trt>
+          </3d>
+        </AMR>
+      </testII>
+    </Laser_quadraticTube>
+  </UnitTest>
+  <Comparison>
+    <Cellular>
+      <AMR>
+        <2d>
+          <split>
+            <tbl>
+              setupName: Cellular
+              setupOptions: -auto -test +pnetcdf +parallelio +pm4dev -maxblocks=2000 -noc threadBlockList=True
+              transfers: object/amr_runtime_parameters object/helm_table.dat object/SpeciesList.txt
+              numProcs: 4
+              shortPathToBenchmark: <siteDir>/2012-01-13/Comparison_Cellular_AMR_2d_split/<runDir>/<chkMax>
+              parfiles: <pathToSimulations>/Cellular/coldstart_pm_2d.par
+	      environment: OMP_NUM_THREADS=4 OMP_STACKSIZE=16M
+            </tbl>
+            <twb>
+              setupName: Cellular
+              setupOptions: -auto -test +pnetcdf +parallelio +pm4dev -maxblocks=2000 -noc threadWithinBlock=True
+              transfers: object/amr_runtime_parameters object/helm_table.dat object/SpeciesList.txt
+              numProcs: 4
+              shortPathToBenchmark: <siteDir>/2012-01-13/Comparison_Cellular_AMR_2d_split/<runDir>/<chkMax>
+              parfiles: <pathToSimulations>/Cellular/coldstart_pm_2d.par
+	      environment: OMP_NUM_THREADS=4 OMP_STACKSIZE=16M
+            </twb>
+          </split>
+        </2d>
+      </AMR>
+    </Cellular>
+    <Jeans>
+      <AMR>
+        <2d>
+          <split>
+            <tbl>
+              setupName: Jeans
+              setupOptions: -auto -test +parallelio +pm4dev +hdf5 -2d -maxblocks=2000 -noc threadBlockList=True
+              transfers: object/amr_runtime_parameters
+              numProcs: 4
+              shortPathToBenchmark: <siteDir>/2012-01-13/Comparison_Jeans_AMR_2d_split/<runDir>/<chkMax>
+              parfiles: <pathToSimulations>/Jeans/coldstart_pm_2d.par
+	      environment: OMP_NUM_THREADS=4 OMP_STACKSIZE=16M
+            </tbl>
+            <twb>
+              setupName: Jeans
+              setupOptions: -auto -test +parallelio +pm4dev +hdf5 -2d -maxblocks=2000 -noc threadWithinBlock=True
+              transfers: object/amr_runtime_parameters
+              numProcs: 4
+              shortPathToBenchmark: <siteDir>/2012-01-13/Comparison_Jeans_AMR_2d_split/<runDir>/<chkMax>
+              parfiles: <pathToSimulations>/Jeans/coldstart_pm_2d.par
+	      environment: OMP_NUM_THREADS=4 OMP_STACKSIZE=16M
+            </twb>
+          </split>
+        </2d>
+      </AMR>
+    </Jeans>
+    <StirTurb>
+      <AMR>
+        <3d>
+          <split>
+            <tbl>
+              setupName: StirTurb
+              setupOptions: -auto -test -3d -unit=Particles +parallelio -noc threadBlockList=True
+              numProcs: 4
+              shortPathToBenchmark: <siteDir>/2012-01-13/Comparison_StirTurb_AMR_3d_split/<runDir>/<chkMax>
+              parfiles: <pathToSimulations>/StirTurb/coldstart_pm_3d.par
+	      environment: OMP_NUM_THREADS=4 OMP_STACKSIZE=16M
+            </tbl>
+            <twb>
+              setupName: StirTurb
+              setupOptions: -auto -test -3d -unit=Particles +parallelio -noc threadWithinBlock=True
+              numProcs: 4
+              shortPathToBenchmark: <siteDir>/2012-01-13/Comparison_StirTurb_AMR_3d_split/<runDir>/<chkMax>
+              parfiles: <pathToSimulations>/StirTurb/coldstart_pm_3d.par
+	      environment: OMP_NUM_THREADS=4 OMP_STACKSIZE=16M
+            </twb>
+          </split>
+        </3d>
+      </AMR>
+      <nofbs>
+        <3d>
+          <split>
+            <twb>
+              setupName: StirTurb
+              setupOptions: -auto -test -3d +nofbs -unit=Particles -noc -parfile=coldstart_nofbs_4p_3d.par threadWithinBlock=True
+              numProcs: 4
+              shortPathToBenchmark: <siteDir>/2012-01-13/Comparison_StirTurb_nofbs_3d_split/<runDir>/<chkMax>
+              parfiles: <pathToSimulations>/StirTurb/coldstart_nofbs_4p_3d.par
+	      environment: OMP_NUM_THREADS=4 OMP_STACKSIZE=16M
+            </twb>
+          </split>
+        </3d>
+      </nofbs>
+    </StirTurb>
+    <Sedov>
+      <AMR>
+        <2d>
+          <split>
+            <tbl>
+              setupName: Sedov
+              setupOptions: -auto -test +pm4dev +parallelio -noc threadBlockList=True
+              transfers: object/amr_runtime_parameters
+              numProcs: 4
+              shortPathToBenchmark: <siteDir>/2012-05-11/Comparison_Sedov_AMR_2d_split/<runDir>/<chkMax>
+              parfiles: <pathToSimulations>/Sedov/coldstart_pm.par
+	      environment: OMP_NUM_THREADS=4 OMP_STACKSIZE=16M
+            </tbl>
+            <twb>
+              setupName: Sedov
+              setupOptions: -auto -test +pm4dev +parallelio -noc threadWithinBlock=True
+              transfers: object/amr_runtime_parameters
+              numProcs: 4
+              shortPathToBenchmark: <siteDir>/2012-05-11/Comparison_Sedov_AMR_2d_split/<runDir>/<chkMax>
+              parfiles: <pathToSimulations>/Sedov/coldstart_pm.par
+	      environment: OMP_NUM_THREADS=4 OMP_STACKSIZE=16M
+            </twb>
+          </split>
+          <unsplit>
+            <tbl>
+              setupName: Sedov
+              setupOptions: -auto -test +uhd +pm4dev +parallelio -noc threadBlockList=True
+              transfers: object/amr_runtime_parameters
+              numProcs: 4
+              shortPathToBenchmark: <siteDir>/2012-05-11/Comparison_Sedov_AMR_2d_unsplit/<runDir>/<chkMax>
+              parfiles: <pathToSimulations>/Sedov/coldstart_pm.par
+	      environment: OMP_NUM_THREADS=4 OMP_STACKSIZE=16M
+            </tbl>
+            <twb>
+              setupName: Sedov
+              setupOptions: -auto -test +uhd +pm4dev +parallelio -noc threadWithinBlock=True
+              transfers: object/amr_runtime_parameters
+              numProcs: 4
+              shortPathToBenchmark: <siteDir>/2012-05-11/Comparison_Sedov_AMR_2d_unsplit/<runDir>/<chkMax>
+              parfiles: <pathToSimulations>/Sedov/coldstart_pm.par
+	      environment: OMP_NUM_THREADS=4 OMP_STACKSIZE=16M
+            </twb>
+          </unsplit>
+        </2d>
+      </AMR>
+    </Sedov>
+    <RTFlame>
+      <nofbs>
+        <2d>
+          <split>
+            <twb>
+              setupName: RTFlame
+              setupOptions: -auto -test +nofbs +parallelio -noc threadWithinBlock=True
+              transfers: object/helm_table.dat
+              numProcs: 4
+              shortPathToBenchmark: <siteDir>/2012-05-20/Comparison_RTFlame_nofbs_2d_split/<runDir>/<chkMax>
+              parfiles: <pathToSimulations>/<setupName>/test_nofbs_2d.par
+	      environment: OMP_NUM_THREADS=4 OMP_STACKSIZE=16M
+            </twb>
+          </split>
+          <unsplit>
+            <twb>
+              setupName: RTFlame
+              setupOptions: -auto -test +uhd +nofbs +parallelio -noc threadWithinBlock=True
+              transfers: object/helm_table.dat
+              numProcs: 4
+              shortPathToBenchmark: <siteDir>/2012-05-20/Comparison_RTFlame_nofbs_2d_unsplit/<runDir>/<chkMax>
+              parfiles: <pathToSimulations>/<setupName>/test_nofbs_2d.par
+	      environment: OMP_NUM_THREADS=4 OMP_STACKSIZE=16M
+            </twb>
+          </unsplit>
+        </2d>
+      </nofbs>
+      <AMR>
+        <2d>
+          <split>
+            <tbl>
+              setupName: RTFlame
+              setupOptions: -auto -test +pm4dev -nxb=16 -nyb=16 +parallelio -noc threadBlockList=True
+              transfers: object/amr_runtime_parameters object/helm_table.dat
+              numProcs: 4
+              shortPathToBenchmark: <siteDir>/2012-05-11/Comparison_RTFlame_AMR_2d_split/<runDir>/<chkMax>
+              parfiles: <pathToSimulations>/<setupName>/coldstart_pm_2d.par
+	      environment: OMP_NUM_THREADS=4 OMP_STACKSIZE=16M
+            </tbl>
+            <twb>
+              setupName: RTFlame
+              setupOptions: -auto -test +pm4dev -nxb=16 -nyb=16 +parallelio -noc threadWithinBlock=True
+              transfers: object/amr_runtime_parameters object/helm_table.dat
+              numProcs: 4
+              shortPathToBenchmark: <siteDir>/2012-05-11/Comparison_RTFlame_AMR_2d_split/<runDir>/<chkMax>
+              parfiles: <pathToSimulations>/<setupName>/coldstart_pm_2d.par
+	      environment: OMP_NUM_THREADS=4 OMP_STACKSIZE=16M
+            </twb>
+          </split>
+          <unsplit>
+            <tbl>
+              setupName: RTFlame
+              setupOptions: -auto -test +uhd +pm4dev +parallelio -noc -nxb=16 -nyb=16 threadBlockList=True
+              transfers: object/amr_runtime_parameters object/helm_table.dat
+              numProcs: 4
+              shortPathToBenchmark: <siteDir>/2012-05-11/Comparison_RTFlame_AMR_2d_unsplit/<runDir>/<chkMax>
+              parfiles: <pathToSimulations>/<setupName>/coldstart_pm_2d.par
+	      environment: OMP_NUM_THREADS=4 OMP_STACKSIZE=16M
+            </tbl>
+            <twb>
+              setupName: RTFlame
+              setupOptions: -auto -test +uhd +pm4dev +parallelio -noc -nxb=16 -nyb=16 threadWithinBlock=True
+              transfers: object/amr_runtime_parameters object/helm_table.dat
+              numProcs: 4
+              shortPathToBenchmark: <siteDir>/2012-05-11/Comparison_RTFlame_AMR_2d_unsplit/<runDir>/<chkMax>
+              parfiles: <pathToSimulations>/<setupName>/coldstart_pm_2d.par
+	      environment: OMP_NUM_THREADS=4 OMP_STACKSIZE=16M
+            </twb>
+          </unsplit>
+          <unsplit_tuned_1>
+            <tbl>
+              setupName: RTFlame
+              setupOptions: -auto -test +uhd +pm4dev +parallelio -noc -nxb=16 -nyb=16 threadBlockList=True useTunedEos=True
+              transfers: object/amr_runtime_parameters object/helm_table.dat
+              numProcs: 4
+              shortPathToBenchmark: <siteDir>/2012-05-11/Comparison_RTFlame_AMR_2d_unsplit_tuned_1/<runDir>/<chkMax>
+              parfiles: <pathToSimulations>/<setupName>/coldstart_pm_2d.par
+	      environment: OMP_NUM_THREADS=4 OMP_STACKSIZE=16M
+            </tbl>
+            <twb>
+              setupName: RTFlame
+              setupOptions: -auto -test +uhd +pm4dev +parallelio -noc -nxb=16 -nyb=16 threadWithinBlock=True useTunedEos=True
+              transfers: object/amr_runtime_parameters object/helm_table.dat
+              numProcs: 4
+              shortPathToBenchmark: <siteDir>/2012-05-11/Comparison_RTFlame_AMR_2d_unsplit_tuned_1/<runDir>/<chkMax>
+              parfiles: <pathToSimulations>/<setupName>/coldstart_pm_2d.par
+	      environment: OMP_NUM_THREADS=4 OMP_STACKSIZE=16M
+            </twb>
+          </unsplit_tuned_1>
+          <unsplit_tuned_2>
+            <tbl>
+              setupName: RTFlame
+              setupOptions: -auto -test +uhd +pm4dev +parallelio -noc -nxb=16 -nyb=16 threadBlockList=True useTunedEos=True -defines=AVOID_REDUNDANT_EOS_CALC
+              transfers: object/amr_runtime_parameters object/helm_table.dat
+              numProcs: 4
+              shortPathToBenchmark: <siteDir>/2012-05-11/Comparison_RTFlame_AMR_2d_unsplit_tuned_2/<runDir>/<chkMax>
+              parfiles: <pathToSimulations>/<setupName>/coldstart_pm_2d.par
+	      environment: OMP_NUM_THREADS=4 OMP_STACKSIZE=16M
+            </tbl>
+            <twb>
+              setupName: RTFlame
+              setupOptions: -auto -test +uhd +pm4dev +parallelio -noc -nxb=16 -nyb=16 threadWithinBlock=True useTunedEos=True -defines=AVOID_REDUNDANT_EOS_CALC
+              transfers: object/amr_runtime_parameters object/helm_table.dat
+              numProcs: 4
+              shortPathToBenchmark: <siteDir>/2012-05-11/Comparison_RTFlame_AMR_2d_unsplit_tuned_2/<runDir>/<chkMax>
+              parfiles: <pathToSimulations>/<setupName>/coldstart_pm_2d.par
+	      environment: OMP_NUM_THREADS=4 OMP_STACKSIZE=16M
+            </twb>
+          </unsplit_tuned_2>
+        </2d>
+      </AMR>
+    </RTFlame>
+    <WD_def_exp>
+      <AMR>
+        <3d>
+          <split>
+             <tbl>
+               setupName: WD_def_exp
+               setupOptions: -auto -opt -3d +pm4dev +parallelio -noc +cube16 -maxblocks=50 +newmpole threadBlockList=True
+               transfers: object/amr_runtime_parameters object/helm_table.dat object/coldwd_mchandra_damped.dat object/nse_dens_emq_table.txt object/nse_pres_hmq_table.txt object/SpeciesList.txt
+               numProcs: 4
+               shortPathToBenchmark: <siteDir>/2012-05-04/Comparison_WD_def_exp_AMR_3d_split/<runDir>/<chkMax>
+               parfiles: <pathToSimulations>/<setupName>/test_multithreaded_uhd.par
+               environment: OMP_NUM_THREADS=4 OMP_STACKSIZE=16M
+               errTol: 1.0e-9
+             </tbl>
+             <twb>
+               setupName: WD_def_exp
+               setupOptions: -auto -opt -3d +pm4dev +parallelio -noc +cube16 -maxblocks=50 +newmpole threadWithinBlock=True
+               transfers: object/amr_runtime_parameters object/helm_table.dat object/coldwd_mchandra_damped.dat object/nse_dens_emq_table.txt object/nse_pres_hmq_table.txt object/SpeciesList.txt
+               numProcs: 4
+               shortPathToBenchmark: <siteDir>/2012-05-04/Comparison_WD_def_exp_AMR_3d_split/<runDir>/<chkMax>
+               parfiles: <pathToSimulations>/<setupName>/test_multithreaded_uhd.par
+               environment: OMP_NUM_THREADS=4 OMP_STACKSIZE=16M
+               errTol: 1.0e-9
+            </twb>
+          </split>
+          <unsplit>
+             <tbl>
+               setupName: WD_def_exp
+               setupOptions: -auto -opt -3d +uhd +pm4dev +parallelio -noc +cube16 -maxblocks=50 +newmpole threadBlockList=True
+               transfers: object/amr_runtime_parameters object/helm_table.dat object/coldwd_mchandra_damped.dat object/nse_dens_emq_table.txt object/nse_pres_hmq_table.txt object/SpeciesList.txt
+               numProcs: 4
+               shortPathToBenchmark: <siteDir>/2012-05-20/Comparison_WD_def_exp_AMR_3d_unsplit/<runDir>/<chkMax>
+               parfiles: <pathToSimulations>/<setupName>/test_multithreaded_uhd.par
+               environment: OMP_NUM_THREADS=4 OMP_STACKSIZE=16M
+               errTol: 1.0e-9
+             </tbl>
+             <twb>
+               setupName: WD_def_exp
+               setupOptions: -auto -opt -3d +uhd +pm4dev +parallelio -noc +cube16 -maxblocks=50 +newmpole threadWithinBlock=True
+               transfers: object/amr_runtime_parameters object/helm_table.dat object/coldwd_mchandra_damped.dat object/nse_dens_emq_table.txt object/nse_pres_hmq_table.txt object/SpeciesList.txt
+               numProcs: 4
+               shortPathToBenchmark: <siteDir>/2012-05-20/Comparison_WD_def_exp_AMR_3d_unsplit/<runDir>/<chkMax>
+               parfiles: <pathToSimulations>/<setupName>/test_multithreaded_uhd.par
+               environment: OMP_NUM_THREADS=4 OMP_STACKSIZE=16M
+               errTol: 1.0e-9
+            </twb>
+          </unsplit>
+          <unsplit_tuned_1>
+             <tbl>
+               setupName: WD_def_exp
+               setupOptions: -auto -opt -3d +uhd +pm4dev +parallelio -noc +cube16 -maxblocks=50 +newmpole threadBlockList=True useTunedEos=True
+               transfers: object/amr_runtime_parameters object/helm_table.dat object/coldwd_mchandra_damped.dat object/nse_dens_emq_table.txt object/nse_pres_hmq_table.txt object/SpeciesList.txt
+               numProcs: 4
+               shortPathToBenchmark: <siteDir>/2012-05-20/Comparison_WD_def_exp_AMR_3d_unsplit/<runDir>/<chkMax>
+               parfiles: <pathToSimulations>/<setupName>/test_multithreaded_uhd.par
+               environment: OMP_NUM_THREADS=4 OMP_STACKSIZE=16M
+               errTol: 1.0e-9
+             </tbl>
+             <twb>
+               setupName: WD_def_exp
+               setupOptions: -auto -opt -3d +uhd +pm4dev +parallelio -noc +cube16 -maxblocks=50 +newmpole threadWithinBlock=True useTunedEos=True
+               transfers: object/amr_runtime_parameters object/helm_table.dat object/coldwd_mchandra_damped.dat object/nse_dens_emq_table.txt object/nse_pres_hmq_table.txt object/SpeciesList.txt
+               numProcs: 4
+               shortPathToBenchmark: <siteDir>/2012-05-20/Comparison_WD_def_exp_AMR_3d_unsplit/<runDir>/<chkMax>
+               parfiles: <pathToSimulations>/<setupName>/test_multithreaded_uhd.par
+               environment: OMP_NUM_THREADS=4 OMP_STACKSIZE=16M
+               errTol: 1.0e-9
+            </twb>
+          </unsplit_tuned_1>
+        </3d>
+      </AMR>
+    </WD_def_exp>
+  </Comparison>
+</code>

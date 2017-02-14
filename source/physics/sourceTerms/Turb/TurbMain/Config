@@ -1,0 +1,11 @@
+D turb_stepSize size of stencil in computing the laplacian and curl
+D this can be either 1 or 2
+PARAMETER turb_stepSize	INTEGER 1
+
+D turb_c2 is the calibrated constant for determining the turbulent velocity
+# PARAMETER turb_c2       REAL    0.3
+PARAMETER turb_c2       REAL    0.9
+
+VARIABLE turb
+VARIABLE lapy
+VARIABLE lapz

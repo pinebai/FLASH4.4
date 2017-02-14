@@ -1,0 +1,135 @@
+Running jobs on Eureka (tested on 13 Nov 2010)
+==============================================
+
+The nodes in Eureka contain 2 quad-core processors.  To run a parallel
+application with 1 MPI process per core, the job submission script
+must have 8 times as many MPI processes as nodes.
+
+
+Running MPI applications
+------------------------
+
+qsub -A SupernovaModels -n 5 -t 10 --mode script ./mpi1.sh
+qsub -A SupernovaModels -n 5 -t 10 --mode script ./mpi2.sh
+
+::::::::::::::
+mpi1.sh
+::::::::::::::
+#!/bin/sh
+mpirun -np 40 -machinefile $COBALT_NODEFILE ./HelloWorld_mpi1
+
+::::::::::::::
+mpi2.sh (mpd process manager, e.g. mpich2-1.2, tested with
+ * mpich2-mx-1.2.1p1..8-intel on 20 July 2011
+ * mpich2-mx-1.0.7..2 on 27 July 2011)
+::::::::::::::
+#!/bin/sh
+mpdboot -n 5 -f $COBALT_NODEFILE
+mpiexec -n 40 ./HelloWorld_mpi2
+
+::::::::::::::
+mpi2.sh (hydra process manager, e.g. mpich2-1.3)
+::::::::::::::
+#!/bin/sh
+mpiexec -n 40 -f $COBALT_NODEFILE ./HelloWorld_mpi2
+
+
+Note that if you wish to use parallel HDF5 you should check that your
+MPI environment is the same as the MPI compiler wrapper script used to
+build parallel HDF5, e.g:
+> grep "C Compiler" /soft/apps/hdf5-1.8.3-par-mx/lib/libhdf5.settings 
+C Compiler: /soft/apps/mpich2-mx-1.0.7..2/bin/mpicc (icc-11.0)
+
+This means your .softenvrc file should contain:
++mpich2-mx-1.0.7..2
++intel-11.0
+@default
+
+There is only one parallel HDF5 installation on Eureka.  If you need
+HDF5 I/O and you have a different MPI environment then you should use
+serial HDF5 or build your own parallel HDF5 with your MPI compiler
+wrapper script.
+
+
+Debugging
+---------
+qsubi -n 1 -t 20
+mpiexec -n 1 -f $COBALT_NODEFILE gdb ./HelloWorld_mpi2
+
+
+Profiling
+---------
+We can use HPCToolkit to profile applications.  No instrumentation of
+the application is needed but you should compile with -g.  The mpi2.sh
+script should be modified as follows:
+
+::::::::::::::
+mpi2.sh (mpd process manager)
+::::::::::::::
+#!/bin/sh
+mpdboot -n 5 -f $COBALT_NODEFILE
+/home/cdaley/eureka/software/hpctoolkit/5.1.0/bin/hpcrun mpiexec -n 40 ./flash4
+
+
+Running visit scripts
+---------------------
+
+We need the following softenv keys in .softenvrc in this order.
+@visit
+@default
+
+This version of visit is built against mpich-mx-1.2.7..7-1 MPI
+library, and so the parallel job launcher is mpirun.
+
+
+An example visit script is shown below:
+
+::::::::::::::
+pseudo_dens_multiple.py
+::::::::::::::
+import os, sys, glob
+
+chkdir = os.getcwd()
+chkglob = "RT_hdf5_chk_[0-9][0-9][0-9][0-9]"
+fullglob = chkdir + "/" + chkglob
+chknames = glob.glob(fullglob)
+chknames.sort()
+print "The checkpoint names are:", chknames
+
+#Here are all the specific visit commands.
+SaveWindowAtts = SaveWindowAttributes()
+SaveWindowAtts.format = SaveWindowAtts.PNG
+SetSaveWindowAttributes(SaveWindowAtts)
+
+for chkname in chknames:
+    OpenDatabase(chkname, 0)
+    AddPlot("Pseudocolor", "dens", 1, 1)
+    DrawPlots()
+    SaveWindow()
+    DeleteAllPlots()
+    CloseDatabase(chkname)
+
+CloseComputeEngine()
+sys.exit()
+
+
+
+We can launch this visit script from the command line by typing the
+following line:
+
+visit -cli -assume_format FLASH -verbose -s pseudo_dens_multiple.py
+
+This will display a graphical visit dialog box that allows us to
+specify our serial/parallel job launch preferences.
+
+
+
+The alternative way is to fully script the job launch:
+
+qsub -A SupernovaModels -n 2 -t 20 --mode script ./visit_job.sh
+
+::::::::::::::
+visit_job.sh
+::::::::::::::
+#!/bin/sh
+visit -nowin -cli -l mpirun -machinefile $COBALT_NODEFILE -nn 2 -np 16 -b SupernovaModels -t 20 -assume_format FLASH -verbose -s pseudo_dens_multiple.py

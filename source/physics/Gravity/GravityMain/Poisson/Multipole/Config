@@ -1,0 +1,6 @@
+# The following uses REQUESTS instead of REQUIRES so that one can include
+# Grid/GridSolvers/Multipole_new instead of Grid/GridSolvers/Multipole
+# after using -without-unit=Grid/GridSolvers/Multipole on the setup
+# command line; see also relevant shortcuts in bin/setup_shortcuts.txt .
+
+REQUESTS Grid/GridSolvers/Multipole

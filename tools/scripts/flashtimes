@@ -1,0 +1,16 @@
+#!/usr/bin/env python
+
+import flash.flashfile as ffile
+
+import sys
+
+print "%30s  %7s  %13s" % ("File Name", "Cycle", "Time (s)")
+print "%54s" % (54*"-")
+
+for fn in sys.argv[1:]:
+    ff = ffile.FlashFile(fn)
+    cycle = ff.integerScalar("nstep")
+    time = ff.realScalar("time")
+    print "%30s  %7i  %13.6e" % (fn, cycle, time)
+
+    ff.h5file.close()

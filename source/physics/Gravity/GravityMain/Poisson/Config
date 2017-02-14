@@ -1,0 +1,75 @@
+#	Config file for the Poisson equation module.  Available implementations are:
+
+#	Multigrid	Multigrid; also for Hybrid Multigrid that employs
+#                       Multigrid and  PFFT GridSolver implementations
+#	Multipole	Multipole summation
+#       BarnesHutTreeOlson  Barnes-Hut tree implementation by Kevin Olson, work in progress
+#       BHTree          Barnes-Hut tree implementation by Richard Wunsch, work in progress
+#       Pfft            Pencil FFT (or Parallel FFT) standalone
+
+DEFAULT Multipole
+
+EXCLUSIVE Multigrid Multipole BarnesHutTreeOlson BarnesHutTree BHTree Pfft
+
+#       Parameters:
+
+# Note that the the following two are not actually defined at this directory level.
+D         grav_boundary    External boundary condition to use for Poisson solver
+D           &                 (applied to all boundaries):  0 or ISOLATED : isolated,
+D           &                 1 or PERIODIC for periodic, 2 for Dirichlet (?).
+D           &                 Not a runtime parameter but derived from one.
+D         grav_boundary_type  String-valued version of grav_boundary.  Accepts:
+D           &                 "isolated", "periodic", "dirichlet", and maybe others,
+D           &                 depending on the Poisson solver used.
+D           &                 This is declared in the stub level of the Gravity unit
+D           &                 to allow the Grid unit to refer to this runtime parameter
+D           &                 even when no Gravity implementation is included.
+
+D grav_temporal_extrp  extrapolate or otherwise rescale
+PARAMETER grav_temporal_extrp  BOOLEAN FALSE          
+
+D updateGravity allow gravity value to be updated
+PARAMETER updateGravity BOOLEAN TRUE   
+
+D grav_unjunkPden controls whether Gravity_potentialListOfBlocks attempts
+D & to restore the part of the "pden" ("particle density") UNK variable that
+D & is due to particles, or leaves "pden" as it is, after a Poisson equation solve.
+D & This only applies meaningfully when a "pden" variable is declared
+D & and the gravitational potential is calculated by solving a Poisson
+D & equation whose right-hand side includes a mass distribution to which
+D & both hydrodynamic fluid density and massive particles contribute.
+D & The "pden" variable will have been set to the sum of the fluid density
+D & ("dens" variable) and the density resulting from mapping massive particles
+D & to the mesh,
+D & so that is what remains in "pden" when grav_unjunkPden is set to FALSE.
+D & Otherwise, "dens" will be subtraced from "pden" before Gravity_potentialListOfBlocks
+D & returns, and "pden" will be left containing only the mass density that is due to
+D & particles.
+PARAMETER grav_unjunkPden BOOLEAN TRUE
+
+
+#	Self-gravity requires that the density be defined as a variable.
+#	This should be ignored by setup if the hydro module (which also
+#	defines "dens") is included.
+VARIABLE dens TYPE: PER_VOLUME # density
+
+D gpot_variable Gravitational potential set by current time step
+D gpol_variable Gravitational potential from previous step, or intermediate value after Hydro call
+VARIABLE gpot      # grav. potential at current step
+VARIABLE gpol      # grav. potential at previous step (or at an intermediate time)
+
+#	All implementations of Gravity that do not merely apply a field
+#	constant in time, including self-gravity implementations, should
+#       define the FLASH_GRAVITY_TIMEDEP preprocessor symbol.
+#       When FLASH_GRAVITY_TIMEDEP is defined, code in other units may
+#       assume that variables gpot and gpol exist in UNK with meanings
+#       as above.
+PPDEFINE FLASH_GRAVITY_TIMEDEP
+
+
+D point_mass    mass of the central point-like object
+PARAMETER point_mass         REAL 0.e0
+
+D point_mass_rsoft softening radius for the point-like mass (in units of
+D &                 number of the finest level cells)
+PARAMETER point_mass_rsoft   REAL 0.e0

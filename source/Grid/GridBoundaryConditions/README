@@ -1,0 +1,145 @@
+Current state of boundary condition handling in the FLASH3 code (Sept. 2007)
+===============================================================
+
+NOTE: "Boundary condition handling" here only refers to the implementation
+of boundary conditions on fluid variables - for example, UNK variables -
+during regular guard cell exchange, as triggered by calling
+Grid_fillGuardcells.  In particular,
+- the behavior of particles at domain boundaries is implemented elsewhere;
+- for handling of boundary conditions for particular PDE solvers, especially,
+  Poisson solvers, see their implementations.
+
+Boundary condition (BC) support in the Grid unit has been moved into its own
+subunit, named GridBoundaryConditions.  
+There are currently (Oct. 2008) several levels of BC support that a simulation
+may use:
+1) No support.  This may be requested on the setup command line by specifying
+      --without-unit=Grid/GridBoundaryConditions
+   and is ONLY appropriate for simulations that use PERIODIC boundaries in all
+   dimensions.  This works because PERIODIC boundaries are worked into the
+   topology of the mesh itself and none of the code under Grid/
+   GridBoundaryConditions is needed to handle them.  (If other BCs are requested
+   (e.g., in flash.par) in a simulation compiled this way, they may get silently
+   ignored; so this option is not generally recommended as default configuaration.)
+
+2) Default support.  This is the level of support included by default in any
+   simulation that uses the Grid unit.
+   The code in source/Grid/GridBoundaryConditions, but not any subdirectories
+   thereof, is included.  This code provides for handling of
+      REFLECTING
+      OUTFLOW
+      DIODE
+   BCs in addition to PERIODIC.  (DIODE handling is a modified OUTFLOW, were
+   matter is provented from flowing back into the domain by setting the
+   normal velocity to zero if necessary.)
+
+2a) Support for old style one-row interfaces.  This may be requested on the
+    setup command line by specifying
+      --with=unit=Grid/GridBoundaryConditions/OneRow
+    or by including a line
+      REQUIRES Grid/GridBoundaryConditions/OneRow
+    in a simulation's Config file.
+    DIFFERENT FROM FLASH.0, this will NOT automatically pull in the code in
+      source/Grid/GridBoundaryConditions/OneRow/Flash2HSE ;
+    if you want that, see 3) below.
+    This support lets the user implement boundary conditions in a
+    simplified interface, by overriding
+    Grid_applyBCEdge.F90 and/or Grid_applyBCEdgeAllUnkVars.F90
+    files.
+
+2b) Support for FLASH2 hydrostatic BCs without one-row interfaces.
+    This may be requested on the setup command line by specifying
+      --with=unit=Grid/GridBoundaryConditions/Flash2HSE
+    or by including a line
+      REQUIRES Grid/GridBoundaryConditions/Flash2HSE
+    in a simulation's Config file.
+    This enables support for several new BC types:
+      HYDROSTATIC_F2_NVREFL
+      HYDROSTATIC_F2_NVOUT
+      HYDROSTATIC_F2_NVDIODE
+    in addition to the ones mentioned under 2) above.
+    These provide implementation of hydrostatic boundaries as in the FLASH2
+    default implementation of HSE.  The three variants differ in how the
+    Normal Velocity component is handled:
+      NVREFL - normal velocity component handled as in reflecting boundary,
+      NVOUT -  normal velocity component handled as in outflow boundary,
+      NVDIODE - normal velocity component handled as in diode boundary.
+
+3) Maximal current support: Support for FLASH2 hydrostatic BCs and one-row
+   interfaces.  This may be requested on the setup command line
+   by specifying
+      --with=unit=Grid/GridBoundaryConditions/OneRow/Flash2HSE
+    or by including a line
+      REQUIRES Grid/GridBoundaryConditions/OneRow/Flash2HSE
+    in a simulation's Config file.
+    This will automatically pull in the code under
+      source/Grid/GridBoundaryConditions/Flash2HSE
+    in addition to the code in
+      source/Grid/GridBoundaryConditions/OneRow/Flash2HSE .
+    This enables support for the same BC types as described above under 2b).
+ 
+Alternative Implementations in the Simulation directory
+=======================================================
+Users that want to implement their own handling of BCs are encouraged to
+put their own implementations of the FLASH3 interfaces in appropriate
+simulation directories under source/Simulation/SimulationMain.
+
+- If the implentation level is "default support" as in 2) above:
+  Override the default implementation of Grid_bcApplyToRegion (which
+  resides in source/Grid/GridBoundaryConditions), or provide an
+  implementation of the stub Grid_bcApplyToRegionSpecialized (which
+  resides in source/Grid).
+  See the Robodocumentation at the top of the stub files for more info.
+
+- If the implentation level includes support for one-row interfaces,
+  as in 2a) or 3) above:
+  Override the default implementation of Grid_applyBCEdge (which
+  resides in source/Grid/GridBoundaryConditions/OneRow) in simple
+  cases; or, for a BC implementation that requires either more
+  information or access to several UNK variables in the same
+  call, override the default implementation of Grid_applyBCEdgeAllUnkVars
+  (which resides in source/Grid/GridBoundaryConditions/OneRow).
+  See the Robodocumentation at the top of the stub files for more info.
+  
+  NOTE that the interface of Grid_applyBCEdge has slightly changed
+  from the alpha and beta code before the FLASH3.0 release:
+  several dummy arguments were added.  If you have an existing
+  Grid_applyBCEdge implementation that worked with FLASH3 beta
+  or earlier, PLEASE UPDATE YOUR CODE by adding those new dummy
+  arguments (even if you don't do anything with them).
+
+Getting information from a block handle (blockID) in a BC implementation
+========================================================================
+You may be used to call certain Grid functions that take a blockID argument,
+like Grid_getBlkIndexLimits, Grid_getBlkCenterCoords, Grid_getBlkRefineLevel,
+..., in order to get metainformation that is associated with a block.
+This will not necessarily work within code that implements BC handling!
+The reason is that Paramesh3, when it passes control back to FLASH3's
+code requesting that guard cells be filled at a domain boundary, may
+sometimes request guard cells for a block that does not actually reside
+on the processor executing the code.  In these cases, the block handle
+argument will be an integer > lnblocks.  We try to use the term "block handle"
+rather than "block ID" where this may occur in a subroutine argument.
+Paramesh3 keeps some metainformation about such remote blocks cached,
+so in general it is available to code, but the way to access it may
+be modified.  In particular (only in BC handling code when you would
+pass on a blockHandle dummy argument as a blockID to the listed call):
+
+   If you want to use ...,  | then ...
+   ========================================================================
+   Grid_getCellCoords       | use gr_extendedGetCellCoords instead
+   Grid_getDeltas           | use gr_extendedGetDeltas instead
+   Grid_getBlkIndexLimits   | go right ahead, should not require change
+   Grid_getBlkIndexSize     | go right ahead, should not require change
+   Grid_getBlkCenterCoords  | go right ahead, should not require change
+   Grid_getBlkRefineLevel   | go right ahead, should not require change
+   Grid_getBlkBoundBox      | go right ahead, should not require change
+   Grid_getSingelCellCoords | don't use it, it won't work right!
+   Grid_getSingelCellVol    | don't use it, it won't work right!
+   others                   | check or ask
+
+
+Klaus Weide    September 4, 2007
+  updated      October 1, 2008:  reflect reorg of code so Flash2HSE can work w/o OneRow
+
+NEEDS UPDATING for Flash3-style HSE BCs: HYDROSTATIC_NV{OUT,REFL,DIODE} !

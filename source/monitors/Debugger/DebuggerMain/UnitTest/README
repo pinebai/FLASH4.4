@@ -1,0 +1,71 @@
+This unit test contains an invalid memory write.  We can use mcheck
+(part of glibc) and dmalloc (http://dmalloc.com/) to detect the
+invalid write.
+
+The memory violation should not be noticed if we do a normal run:
+$ make run 
+./out_of_bounds
+x[0]=12.900000
+x[1]=12.900000
+x[2]=12.900000
+x[3]=12.900000
+x[4]=12.900000
+x[5]=12.900000
+x[6]=12.900000
+x[7]=12.900000
+x[8]=12.900000
+x[9]=12.900000
+x[10]=12.900000
+The memory corruption was not detected. FAIL!
+
+
+The memory violation is noticed when we use mcheck:
+$ make MCHECK=1 run
+./out_of_bounds
+x[0]=12.900000
+x[1]=12.900000
+x[2]=12.900000
+x[3]=12.900000
+x[4]=12.900000
+x[5]=12.900000
+x[6]=12.900000
+x[7]=12.900000
+x[8]=12.900000
+x[9]=12.900000
+x[10]=12.900000
+memory clobbered past end of allocated block
+make: *** [run] Aborted (core dumped)
+
+
+The memory violation is noticed when we use dmalloc with appropriate DMALLOC_OPTIONS.
+$ make DMALLOC=1 run
+./out_of_bounds
+x[0]=12.900000
+x[1]=12.900000
+x[2]=12.900000
+x[3]=12.900000
+x[4]=12.900000
+x[5]=12.900000
+x[6]=12.900000
+x[7]=12.900000
+x[8]=12.900000
+x[9]=12.900000
+x[10]=12.900000
+The memory corruption was not detected. FAIL!
+
+$ make DMALLOC=1 dmalloc_run
+env DMALLOC_OPTIONS="debug=0x4f4ed03,inter=100,log=dmalloc.log.%p" ./out_of_bounds
+x[0]=12.900000
+x[1]=12.900000
+x[2]=12.900000
+x[3]=12.900000
+x[4]=12.900000
+x[5]=12.900000
+x[6]=12.900000
+x[7]=12.900000
+x[8]=12.900000
+x[9]=12.900000
+x[10]=12.900000
+debug-malloc library: dumping program, fatal error
+   Error: failed OVER picket-fence magic-number check (err 27)
+make: *** [dmalloc_run] Aborted (core dumped)

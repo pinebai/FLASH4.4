@@ -1,0 +1,25 @@
+HDF5 "PlotFile.hdf5" {
+GROUP "/" {
+   DATASET "unknown" {
+      DATATYPE  H5T_IEEE_F32LE
+      DATASPACE  SIMPLE { ( 8 ) / ( 8 ) }
+      DATA {
+      (0): 0, 0, 1, 1, 2, 2, 3, 3
+      }
+      ATTRIBUTE "maximum" {
+         DATATYPE  H5T_IEEE_F32LE
+         DATASPACE  SIMPLE { ( 2 ) / ( 2 ) }
+         DATA {
+         (0): 3.2, 6.4
+         }
+      }
+      ATTRIBUTE "minimum" {
+         DATATYPE  H5T_IEEE_F32LE
+         DATASPACE  SIMPLE { ( 2 ) / ( 2 ) }
+         DATA {
+         (0): 2.1, 5.3
+         }
+      }
+   }
+}
+}

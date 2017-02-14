@@ -1,0 +1,174 @@
+
+#	Runtime parameters for the ConductionDeltaSaDiff problem.
+#       That is ConductionDelta with standalone diffusion.
+
+#		Density and perturbation information
+
+orientation     = 1
+rho_init	= 1.
+sim_Q           = 1.0E5
+
+sim_xctr		= 1.0 #0.5
+sim_yctr		= 1.0 #0.5
+sim_zctr		= 1.0 #0.5
+
+smallP = 1.0e-50
+smallE = 1e-22
+#		Gas ratio of specific heats
+
+gamma           = 1.4
+
+useHydro = .FALSE.
+updateHydroFluxes = .FALSE.
+useConductivity = .true.
+useDiffuseVisc = .false.
+useDiffuseSpecies = .false.
+
+#               Artificial viscosity
+
+cvisc           = 0.
+
+#	Computational volume parameters
+
+#		Grid dimensionality and geometry
+
+geometry = cartesian
+
+#		Size of computational volume
+
+xmin		= 0.
+xmax		= 2.
+
+ymin		= 0.
+ymax		= 1.
+
+zmin		= 0.
+zmax		= 1.
+
+#		Boundary conditions
+
+xl_boundary_type = "periodic"
+xr_boundary_type = "periodic"
+
+yl_boundary_type = "periodic"
+yr_boundary_type = "periodic"
+
+zl_boundary_type = "periodic"
+zr_boundary_type = "periodic"
+
+
+#	Simulation (grid, time, I/O) parameters
+
+cfl		= 0.8
+dt_diff_factor  = 0.8 #0.70
+basenm          = "conduction_"
+restart         = .false.
+checkpointFileIntervalTime          = 4e-5   # 0.00197
+checkpointFileIntervalStep          = 20
+nend            = 500
+
+restart                 = .false.
+checkpointFileNumber    = 0
+plotFileNumber          = 0
+##plotFileIntervalTime    = .0002
+
+
+# initial time offset; see simulation_initBlock.F90 for details
+
+toffset         = .001
+tmax            = .0024
+#tmax            = .20
+
+run_comment = "Linear conduction test problem from delta-shape initial temp."
+log_file        = "conduction.log"
+eintSwitch     = 1.e-4
+
+# AMR refinement parameters
+lrefine_min     = 3
+lrefine_max     = 4
+refine_var_1    = "temp"
+
+nblockx         = 1
+nblocky         = 1
+nblockz         = 1
+
+# Uniform grid specific parameters
+# see note below for more explanation
+
+iProcs = 1	#number or procs in the i direction	
+#jProcs = 2
+#kProcs = 2
+
+# These parameter are needed only in non fixed blocksize mode
+iGridSize = 400   # global number of points along IAXIS
+#jGridSize = 64
+#kGridSize = 64
+
+plot_var_1 = "temp"
+plot_var_2 = "dens"
+
+## -------------------------------------------------------------##
+##  SWITCHES SPECIFIC TO THE UNSPLIT HYDRO SOLVER               ##
+#	I. INTERPOLATION SCHEME:
+order		= 2      # Interpolation order (First/Second order)
+slopeLimiter    = "mc"   # Slope limiters (minmod, mc, vanLeer, hybrid, limited)
+LimitedSlopeBeta= 1.     # Slope parameter for the "limited" slope by Toro
+charLimiting	= .true. # Characteristic limiting vs. Primitive limiting
+
+
+#	II. RIEMANN SOLVERS:
+RiemannSolver	= "Roe"       # Roe, HLL, HLLC, LF
+shockInstabilityFix = .false. # Carbuncle instability fix for the Roe solver
+
+
+#	III. STRONG SHOCK HANDELING SCHEME:
+shockDetect	= .false.     # Shock Detect for numerical stability
+## -------------------------------------------------------------##
+
+####  1T  ####
+
+eos_singleSpeciesA = 1.71428571428571428571 # 12
+eos_singleSpeciesZ = 0.85714285714285714285 #  6
+
+####  3T  ####
+
+#eos_singleSpeciesA = 12
+#eos_singleSpeciesZ =  6
+
+diff_eleXlBoundaryType          = "periodic"
+diff_eleXrBoundaryType          = "periodic"
+#diff_eleYlBoundaryType         = "periodic"
+#diff_eleYrBoundaryType         = "periodic"
+#diff_eleZlBoundaryType         = "periodic"
+#diff_eleZrBoundaryType         = "periodic"
+
+diff_radXlBoundaryType          = "periodic"
+diff_radXrBoundaryType          = "periodic"
+#diff_radYlBoundaryType         = "periodic"
+#diff_radYrBoundaryType         = "periodic"
+#diff_radZlBoundaryType         = "periodic"
+#diff_radZrBoundaryType         = "periodic"
+
+# Radiation Diffusion power Law.
+Raddiff_K0r                    = 2.0E9
+Raddiff_TemperatureExponent    = 0
+
+# Electron Conduction power law.
+cond_K0                        = 923076923.076926
+cond_TemperatureExponent       = 0
+
+cond_constantIsochoric         = 923076923.076926
+
+
+# Radiation diffusion switch.
+diff_useRadDiffusion           = .FALSE.
+diff_useERad                   = .FALSE.
+diff_useRadFlxLimiter          = .FALSE.
+
+#Electron Conduction switch.
+diff_useEleCond                = .TRUE.
+
+
+
+sim_maxTol                     = 1.0E-3
+

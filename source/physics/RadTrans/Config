@@ -1,0 +1,8 @@
+# Config file for RadTrans unit
+DEFAULT RadTransMain
+
+D	  useRadTrans flag to indicate whether radiative transfer is in use
+PARAMETER useRadTrans BOOLEAN FALSE
+
+# localAPI comes earlier while linking so can be overriden easily
+CHILDORDER localAPI

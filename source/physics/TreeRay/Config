@@ -1,0 +1,10 @@
+#	Config file for the TreeRay unit.  Subunits (not included in FLASH 4.2 release) are:
+DEFAULT TreeRayMain
+
+CHILDORDER localAPI
+
+D   useTreeRay       Whether TreeRay calculations should be performed.
+# Value is meant to be overridden if a TreeRayMain implementation gets included
+PARAMETER useTreeRay    BOOLEAN FALSE 
+
+

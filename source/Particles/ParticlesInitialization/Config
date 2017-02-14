@@ -1,0 +1,30 @@
+# Initialization methods of spatial distribution for tracer particles
+# [source/Particles/ParticlesInitialization]
+
+# Submodules:
+
+#   WithDensity      Distribute the particles randomly, using the gas density as the
+#                    distribution function.
+#   Lattice          Distribute the particles on a uniform lattice.
+
+REQUIRES Particles/localAPI
+REQUESTS Particles/ParticlesMapping
+REQUESTS Particles/ParticlesMain
+
+D When this parameter is set to True, the last in use
+D tag value will be reset to 0. 
+PARAMETER pt_resetTag  BOOLEAN   FALSE
+
+#DEV: CD. The PartInit variable makes sense only if 
+#we have one particle type.  It seems it was never used anyway, 
+#as PartInit is not in any setup shortcut or test suite 
+#setup line.
+#USESETUPVARS PartInit
+#
+#IF PartInit == "withDensity"
+#   DEFAULT withDensity
+#ELSEIF PartInit not in ["","Lattice"]
+#   SETUPERROR PartInit has been given a bad value
+#ENDIF
+#
+#EXCLUSIVE WithDensity Lattice 

@@ -1,0 +1,75 @@
+NOTE:  Still needs more testing.
+
+This directory gives an alternative way of mapping particles' mass  
+onto the grid.  We use 1 global synchronisation point 
+(consisting of 2 MPI_AllReduce operations), and then 
+non-blocking point to point communication.  It is designed 
+to avoid the (up to a maximum) P/2 global synchronisation points 
+in MoveSieve.
+
+We use an extra MPI_AllReduce in gr_ptStoreOffBlockCells() to 
+determine the number of messages each procesor will receive.
+This involves creating an array of size P on each processor, 
+and then storing the number of messages we will send to each processor 
+in the designated processor slot.  We then perform an MPI_AllReduce 
+on this array, giving each processor an array consisting of the number of 
+messages each processor will receive.
+
+In gr_ptMoveMappedData() we refer to slot myPE in the above array,
+and use this value as the condition to break from the MPI_Irecv loop.  We 
+receive from MPI_ANY_SOURCE, meaning we do not need to know the
+sending process ID.  Pre-processor definitions are available to
+throttle the rate at which we send / recv messages.
+
+
+
+WARNING!
+--------
+
+The algorithm does not impose a specific message ordering.  This means 
+we may get different answers from the same simulation when a grid point
+receives mass accumulation from more than one processor.
+
+For example, below we have a print out of the mass accumulation on
+a corner grid point in a 2D Pancake simulation (using 4 procs).
+
+
+Run 1 (Move Sieve)
+------------------------------
+ BEFORE:  4.54075481831647150E-030
+ value to add:  1.40777664145344519E-031
+ AFTER:  4.68153248246181637E-030
+
+ BEFORE:  4.68153248246181637E-030
+ value to add:  9.85443649017411106E-031
+ AFTER:  5.66697613147922765E-030
+
+ BEFORE:  5.66697613147922765E-030
+ value to add:  6.48679259759496491E-031
+ AFTER:  6.31565539123872458E-030
+
+ THIS IS THE FINAL ANSWER:  6.31565539123872458E-030
+
+
+Run 2 (Point to Point)
+------------------------------
+ BEFORE:  4.54075481831647150E-030
+ value to add:  6.48679259759496491E-031
+ AFTER:  5.18943407807596772E-030
+
+ BEFORE:  5.18943407807596772E-030
+ value to add:  1.40777664145344519E-031
+ AFTER:  5.33021174222131189E-030
+
+ BEFORE:  5.33021174222131189E-030
+ value to add:  9.85443649017411106E-031
+ AFTER:  6.31565539123872317E-030
+
+ THIS IS THE FINAL ANSWER:  6.31565539123872317E-030
+
+
+Note, we always get the same result in MoveSieve because the message
+ordering is always the same, and so mass accumulation is in the same
+order.   This is not the case with the Point to Point implementation!!!
+Be aware that a small change in pden could potentially lead to larger 
+changes later on.

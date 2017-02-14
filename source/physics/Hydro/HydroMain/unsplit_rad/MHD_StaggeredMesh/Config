@@ -1,0 +1,4 @@
+# Config file for the Unsplit Staggered Mesh MHD solver unit.
+# We do not yet have a working version for unsplit_rad!
+
+SETUPERROR "RADFLAHD does not yet work for MHD, sorry!"

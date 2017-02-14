@@ -1,0 +1,26 @@
+# The setup that tests the Laser quadratic tube ring problem.
+#
+# Sample setup line:
+#
+#   ./setup unitTest/Laser_quadraticTube/Ring -auto -3d -geometry=cartesian -parfile=flash.par
+#           -maxblocks=4000 +laser ed_maxPulses=1 ed_maxPulseSections=2 ed_maxBeams=1
+#
+# The +laser shortcut handles the logistics for properly including the Energy Deposition unit.
+# For running in cubic interpolation mode, change +laser to +laserCubicInterpolation
+#
+
+REQUIRES physics/sourceTerms/EnergyDeposition/EnergyDepositionMain/Laser
+REQUIRES physics/Eos/EosMain/multiTemp/Gamma
+#
+# Define unk variables to be used by laser unit
+#
+VARIABLE dens
+VARIABLE tele
+VARIABLE eele
+#
+# Parameters
+#
+
+D       sim_printBlockVariables        Print what is in each block on each processor?
+
+PARAMETER  sim_printBlockVariables  BOOLEAN  false

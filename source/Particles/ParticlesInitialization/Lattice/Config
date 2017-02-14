@@ -1,0 +1,31 @@
+# Submodule for passive tracer particles to distribute the particles initially at
+# positions on a uniform lattice
+#  [source/Particles/initialization/Lattice]
+
+# Define a preprocessor symbol so code can check whether this implementation is compiled in.
+PPDEFINE PART_INITMETHOD_LATTICE
+
+D   __doc__  Lattice uniformly distributes the particles throughout physical domain
+D   pt_numX  # particles along x-axis of initial particle grid for entire domain
+D   pt_numY  # particles along y-axis of initial particle grid for entire domain
+D   pt_numZ  # particles along z-axis of initial particle grid for entire domain
+ 
+PARAMETER pt_numX        INTEGER 1
+PARAMETER pt_numY        INTEGER 1
+PARAMETER pt_numZ        INTEGER 1
+
+D   pt_initialXMin   minimum value in x for particle initialization -- by default = xmin
+D   pt_initialXMax   maximum value in x for particle initialization -- by default = xmax
+D   pt_initialYMin   minimum value in y for particle initialization -- by default = ymin
+D   pt_initialYMax   maximum value in y for particle initialization -- by default = ymax
+D   pt_initialZMin   minimum value in z for particle initialization -- by default = zmin
+D   pt_initialZMax   maximum value in z for particle initialization -- by default = zmax
+D   pt_initialRadius maximum distance from center of domain for particle initialization -- by default = -1.0 (i.e. no minimum)
+
+PARAMETER pt_initialXMin  REAL   0.0
+PARAMETER pt_initialXMax  REAL   1.0
+PARAMETER pt_initialYMin  REAL   0.0
+PARAMETER pt_initialYMax  REAL   1.0
+PARAMETER pt_initialZMin  REAL   0.0
+PARAMETER pt_initialZMax  REAL   1.0
+PARAMETER pt_initialRadius REAL  -1.0

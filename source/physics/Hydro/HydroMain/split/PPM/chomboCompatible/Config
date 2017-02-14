@@ -1,0 +1,8 @@
+PPDEFINE CHOMBO_COMPATIBLE_HYDRO
+
+D chomboLikeUpdateSoln Use a simplified hy_ppm_updateSoln
+PARAMETER chomboLikeUpdateSoln BOOLEAN true
+
+D excludeGradPresFromFlux PLUTO like excludeGradPresFromFlux=.true.,
+D & FLASH like excludeGradPresFromFlux=.false.
+PARAMETER excludeGradPresFromFlux BOOLEAN false

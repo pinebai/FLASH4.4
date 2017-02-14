@@ -1,0 +1,8 @@
+# Config file for EnergyDeposition unit
+DEFAULT EnergyDepositionMain
+
+D 	useEnergyDeposition flag indicating whether to use EnergyDeposition unit
+PARAMETER useEnergyDeposition BOOLEAN CONSTANT FALSE
+
+# localAPI 
+CHILDORDER localAPI

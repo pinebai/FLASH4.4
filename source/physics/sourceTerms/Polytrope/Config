@@ -1,0 +1,6 @@
+#  Configuration file for source term Polytrope
+
+DEFAULT PolytropeMain
+
+D           usePolytrope     Runtime switch for turning the polytropic eos on/off
+PARAMETER   usePolytrope     BOOLEAN     FALSE

@@ -1,0 +1,339 @@
+## Parameters file for radiative transfer test on Radiating Blast Wave
+#./setup radflaHD/RadBlastWave -1d -auto +spherical -nxb=16 +mgd mgd_meshgroups=1 species=h1 ManualSpeciesDirectives=True +parallelio +uhd3tr -without-unit=physics/RadTrans/RadTransMain/MGD/ExpRelax -unit=physics/RadTrans/RadTransMain/MGD/Unified
+
+# Simulation basics
+basenm			       = "rad_blast_wave_castro_hires2_klaus_c2_"
+restart			       = .false.
+checkpointFileNumber           = 0
+plotFileNumber                 = 0
+
+# IO  
+checkpointFileIntervalStep     = 1000
+checkpointFileIntervalTime     = 1000.0
+plotFileIntervalStep           = 0
+plotFileIntervalTime           = 0.
+wall_clock_time_limit          = 60480.
+
+# Time 
+tmax                            = 1.e+06
+nend                            = 4000 # 520 #1000000
+tstep_change_factor             = 1.05 #2.0
+dtinit                          = 1.E-11 #1.E-10
+#dtmax                           = 1.E-8  #0.03
+dtmin                           = 1.E-20
+sim_plotScaledPressures        = .FALSE.
+
+# Domain 
+geometry                       = "spherical"
+xmax                           = 1.0e+14
+xmin                           = 0.
+#ymax                           = 1.0e+12
+#ymin                           = 0.0
+#zmax                           = 1.e11
+#zmin                           =-1.e11
+xl_boundary_type		= "reflect"
+xr_boundary_type                = "outflow"
+#yl_boundary_type               = "reflect"
+#yr_boundary_type               = "outflow"
+#zl_boundary_type               = "outflow"
+#zr_boundary_type               = "outflow"
+
+# Grid/Refinement
+nblockx                         = 8
+nblocky                         = 4
+#nblockz                        = 4
+
+gr_lrefineMaxRedDoByLogR       = .FALSE.
+gr_lrefineMaxRedDoByTime       = .FALSE.
+gr_lrefineMaxRedLogBase        = 2.0
+gr_lrefineMaxRedRadiusFact     = 0.12
+gr_lrefineMaxRedTRef           = 50.0
+gr_lrefineMaxRedTimeScale      = 50.0
+
+lrefine_max                    = 3
+lrefine_min                    = 1
+refine_var_1                   = "dens"
+refine_var_2                   = "temp"
+#refine_var_3                   = "velx"
+refine_var_4                   = "trad"
+refine_var_5		       = "tele"
+refine_cutoff_1		       = 0.8
+refine_cutoff_2		       = 0.8
+#refine_cutoff_3	       = 0.8
+refine_cutoff_4		       = 0.8
+refine_cutoff_5	               = 0.8
+
+enableMaskedGCFill = .FALSE.
+# Simulation
+nsub                           = 4
+vel_mult                       = 0.0
+r_exp_max                      = 0.0
+r_exp_min                      = 0.0
+mass_loss                      = 1.00e-01 #1.0e-5 # Solar masses per year
+vel_wind                       = 2.48e+07 #1.0e6  # cm/s
+use_PnotT		       = .FALSE.
+irenorm			       = 1
+
+# Simulation Parameters
+r_s 			       = 2.0e+12
+t_s 			       = 1.0e+07
+t_vac 			       = 1.0e+03
+rho_s 			       = 5.0e-06
+#rho_vac 		       = 1.0e-05
+
+useHeatexchange 	       = .FALSE.
+hx_dtFactor		       = 1e+7 
+usediffuse		       = .true.
+
+
+# Hydro
+useHydro                       = .TRUE.
+cfl                            = 0.6
+interpol_order                 = 2
+updateHydroFluxes              = .TRUE.
+eintSwitch		       = 1e-4
+ppm_modifystates	       = .FALSE.
+use_cma_advection	       = .FALSE.
+
+##  SWITCHES SPECIFIC TO THE UNSPLIT HYDRO SOLVER               ##
+#       I. INTERPOLATION SCHEME:
+order           = 3          # Interpolation order (first/second/third/fifth order)
+slopeLimiter    = "minmod"   # Slope limiters (minmod, mc, vanLeer, hybrid, limited)
+LimitedSlopeBeta= 1.         # Slope parameter for the "limited" slope by Toro
+charLimiting    = .true.     # Characteristic limiting vs.Primitive limiting
+
+use_avisc       = .true.     # use artificial viscosity (originally for PPM)
+cvisc           =  0.1       # coefficient for artificial viscosity
+use_flattening  = .true.     # use flattening (dissipative) (originally for PPM)
+use_steepening  = .false.    # use contact steepening (originally for PPM)
+use_upwindTVD   = .false.    # use upwind biased TVD slope for PPM (need nguard=6)
+flux_correct    = .true.
+EOSforRiemann   = .false.
+transOrder      = 1
+use_auxEintEqn  = .TRUE.
+hydroComputeDtOption = -1
+hy_fPresInMomFlux = 0.0 
+
+#       II. RIEMANN SOLVERS: 
+RiemannSolver   = "HLL"     # Roe, HLL, HLLC, LLF, Marquina
+entropy         = .true.     # Entropy fix for the Roe solver
+
+#       III. STRONG SHOCK HANDELING SCHEME:
+shockDetect     = .TRUE.    # Shock Detect for numerical stability
+## -------------------------------------------------------------##
+
+# Gravity
+useGravity                     = .FALSE.
+updateGravity                  = .FALSE.
+grav_boundary_type             = "isolated"
+mpole_3daxisymmetry            = .false.
+mpole_dumpMoments              = .FALSE.
+mpole_PrintRadialInfo          = .false.
+mpole_IgnoreInnerZone          = .false.
+mpole_lmax                     = 0
+mpole_ZoneRadiusFraction_1     = 1.0
+mpole_ZoneExponent_1           = 0.005
+mpole_ZoneScalar_1             = 0.5
+mpole_ZoneType_1               = "logarithmic"
+#mpole_ZoneType_1              = "exponential"
+mpole_centerOnDens             = .false.
+mpole_centerOnZero             = .false.
+point_mass                     = 0. #4.0825e+33
+point_mass_rsoft               = 0.e0
+use_gravHalfUpdate             = .FALSE. 
+mpole_rscale2 		       = 1.0e-3
+mpole_scaleType2 	       = 2
+#point_mass                     = 2.61e33
+#point_mass_rsoft               = 0.e0
+
+# EOS
+eosModeInit                    = "dens_temp_gather"
+eosMode                        = "dens_ie_recal_gather"
+#eosMode                        = "dens_ie_scatter"
+hy_eosModeAfter                = "dens_ie_gather"
+#hy_eosModeAfter                = "dens_ie_scatter"
+eos_largeT                      = 1.2e11 # 1.0e11
+eos_maxNewton			= 1000
+#eos_combinedTempRule = 0
+
+hy_3tMode = "castrolike"
+hy_mtScaleLam  = 0.0
+hy_mtScaleWork = 1.0
+
+gamma                           = 1.66666666667
+gammaIon			= 1.66666666667
+gammaEle			= 1.66666666667
+eos_coulombMult			= 0.0
+eos_smallEele                   = 10.0 # 0.0 # -1.0e30
+eos_smallErad                   = 0.0 # 1.e-5 #  0.0 # 2.e3
+#eos_singleSpeciesZ		= 1.0
+#eos_singleSpeciesA		= 1.0
+
+gr_hypreSolverType             = "HYPRE_GMRES"
+
+gr_hypreUseFloor           = .FALSE.
+gr_hypreFloor              = 1.0e-12
+
+### Multigroup diffusion options ###
+rt_useMGD        = .TRUE.
+rt_mgdNumGroups  = 1
+rt_mgdBoundEntry = "grbd_manual"
+rt_mgdBounds_1   =  0.0
+rt_mgdBounds_2   =  10000000. #0.00139292180089
+rt_mgdBounds_3   =  0.001564702535
+rt_mgdBounds_4   =  0.00175766796203
+rt_mgdBounds_5   =  0.00197443066374
+rt_mgdBounds_6   =  0.00221792541603
+rt_mgdBounds_7   =  0.00249144892318
+rt_mgdBounds_8   =  0.00279870445235
+rt_mgdBounds_9   =  0.00314385197252
+rt_mgdBounds_10   =  0.00353156447686
+rt_mgdBounds_11   =  0.00396709125087
+rt_mgdBounds_12   =  0.00445632894312
+rt_mgdBounds_13   =  0.00500590140066
+rt_mgdBounds_14   =  0.00562324935008
+rt_mgdBounds_15   =  0.00631673113837
+rt_mgdBounds_16   =  0.00709573589759
+rt_mgdBounds_17   =  0.00797081066543
+rt_mgdBounds_18   =  0.0089538031828
+rt_mgdBounds_19   =  0.0100580223018
+rt_mgdBounds_20   =  0.0112984181758
+rt_mgdBounds_21   =  0.0126917846715
+rt_mgdBounds_22   =  0.0142569867429
+rt_mgdBounds_23   =  0.0160152158462
+rt_mgdBounds_24   =  0.0179902768533
+rt_mgdBounds_25   =  0.0202089103493
+rt_mgdBounds_26   =  0.0227011546757
+rt_mgdBounds_27   =  0.0255007526235
+rt_mgdBounds_28   =  0.028645608281
+rt_mgdBounds_29   =  0.0321783002214
+rt_mgdBounds_30   =  0.036146657979
+rt_mgdBounds_31   =  0.0406044096197
+rt_mgdBounds_32   =  0.0456119091707
+rt_mgdBounds_33   =  0.0512369537614
+rt_mgdBounds_34   =  0.0575557015368
+rt_mgdBounds_35   =  0.0646537027712
+rt_mgdBounds_36   =  0.0726270581439
+rt_mgdBounds_37   =  0.0815837198575
+rt_mgdBounds_38   =  0.0916449532157
+rt_mgdBounds_39   =  0.102946978448
+rt_mgdBounds_40   =  0.115642815014
+rt_mgdBounds_41   =  0.129904353346
+rt_mgdBounds_42   =  0.145924682102
+rt_mgdBounds_43   =  0.16392070241
+rt_mgdBounds_44   =  0.18413606452
+rt_mgdBounds_45   =  0.206844466613
+rt_mgdBounds_46   =  0.232353360435
+rt_mgdBounds_47   =  0.261008113919
+rt_mgdBounds_48   =  0.293196687168
+rt_mgdBounds_49   =  0.329354885085
+rt_mgdBounds_50   =  0.369972257795
+rt_mgdBounds_51   =  0.415598728716
+rt_mgdBounds_52   =  0.466852040042
+rt_mgdBounds_53   =  0.524426116424
+rt_mgdBounds_54   =  0.589100460101
+rt_mgdBounds_55   =  0.66175070467
+rt_mgdBounds_56   =  0.743360470395
+rt_mgdBounds_57   =  0.835034681561
+rt_mgdBounds_58   =  0.938014526168
+rt_mgdBounds_59   =  1.05369426053
+rt_mgdBounds_60   =  1.18364008626
+rt_mgdBounds_61   =  1.32961135529
+rt_mgdBounds_62   =  1.49358438992
+rt_mgdBounds_63   =  1.67777924048
+rt_mgdBounds_64   =  1.88468974286
+rt_mgdBounds_65   =  2.11711728286
+rt_mgdBounds_66   =  2.37820872447
+rt_mgdBounds_67   =  2.67149901564
+rt_mgdBounds_68   =  3.00095904835
+rt_mgdBounds_69   =  3.37104942099
+rt_mgdBounds_70   =  3.78678083095
+rt_mgdBounds_71   =  4.25378191503
+rt_mgdBounds_72   =  4.7783754562
+rt_mgdBounds_73   =  5.36766398854
+rt_mgdBounds_74   =  6.02962595928
+rt_mgdBounds_75   =  6.77322374993
+rt_mgdBounds_76   =  7.60852501903
+rt_mgdBounds_77   =  8.54683900939
+rt_mgdBounds_78   =  9.60086966525
+rt_mgdBounds_79   =  10.7848876325
+rt_mgdBounds_80   =  12.1149234705
+rt_mgdBounds_81   =  13.6089846921
+rt_mgdBounds_82   =  15.2872995691
+rt_mgdBounds_83   =  17.1725910053
+rt_mgdBounds_84   =  19.2903841847
+rt_mgdBounds_85   =  21.6693521601
+rt_mgdBounds_86   =  24.3417040605
+rt_mgdBounds_87   =  27.3436211748
+rt_mgdBounds_88   =  30.7157468143
+rt_mgdBounds_89   =  34.5037365874
+rt_mgdBounds_90   =  38.7588765361
+rt_mgdBounds_91   =  43.5387775043
+rt_mgdBounds_92   =  48.908155137
+rt_mgdBounds_93   =  54.939706074
+rt_mgdBounds_94   =  61.7150921977
+rt_mgdBounds_95   =  69.3260462632
+rt_mgdBounds_96   =  77.8756138787
+rt_mgdBounds_97   =  87.4795486529
+rt_mgdBounds_98   =  98.2678793959
+rt_mgdBounds_99   =  110.386670595
+rt_mgdBounds_100  =  124.0
+rt_mgdBounds_101  =  10000. 
+rt_mgdXlBoundaryType = "vacuum"
+rt_mgdXrBoundaryType = "vacuum"
+rt_mgdYlBoundaryType = "reflecting"
+rt_mgdYrBoundaryType = "vacuum"
+rt_mgdXrBoundaryTemp = 3.0e+05
+rt_mgdXlBoundaryTemp = 1.5e+06
+#rt_mgdthetaD         = 0.5
+#rt_tightIonCoupling  = .FALSE.
+rt_computeDt         = .TRUE.
+rt_dtFactor	     = 1.0e+10
+
+
+# MGD Flux limiter options:
+rt_mgdFlMode     = "fl_levermorepomraning1981"
+#rt_mgdFlMode	 = "fl_none"
+rt_mgdFlCoef     = 1.0
+
+# MGD Opacity options:
+useOpacity       = .TRUE.
+op_emitConst	= 2.0e-7     #0.4. #0.4e+3
+op_transConst	= 2.0e-10     #4.0 #e+3
+op_absorbConst   = 2.0e-7    #0.4 #0.4e+3
+
+#op_h1Absorb		     = "op_constcm2g"
+#op_h1AbsorbConstant	     = 1.0e+06
+#op_h1Emiss		     = "op_constcm2g"
+#op_h1EmissConstant	     = 1.0e+06
+#op_h1LowTemp		     = 0.0
+#op_h1Trans		     = "op_constcm2g"
+#op_h1TransConstant	     = 1.0e+08
+
+# Electron conductivity options:
+diff_useEleCond  = .false.
+diff_eleFlMode   = "fl_none"
+diff_eleFlCoef   = 50.0
+diffusion_cutoff_density = 1e40 # 1.e-4
+dt_diff_factor   = 1.e-3
+useConductivity  = .false.
+cond_constantIsochoric = 8.6173095897729779e+17 # 1e+22 ergs/s/cm/eV
+
+# Burn
+useBurn = .FALSE.
+useShockBurn = .FALSE.
+odeStepper = 1
+algebra = 1
+nuclearTempMin = 2.1e8
+nuclearTempMax = 1.0e12 
+nuclearDensMin = 1.0e-10
+nuclearDensMax = 1.0e14
+			      			       
+# Small numbers
+smallt                         = 1.0
+smlrho                         = 1.E-30
+smallp                         = 1.E-30
+#smalle                         = -1.E-30
+smallu                         = 1.E-10
+smallx                         = 1.E-100
+small                          = 1.E-100

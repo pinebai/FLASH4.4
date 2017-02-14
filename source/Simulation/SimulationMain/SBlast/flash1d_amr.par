@@ -1,0 +1,139 @@
+#	Runtime parameters for the Sedov blast problem.
+
+use_steepening = .FALSE.
+convertToConsvdInMeshInterp = .TRUE.
+
+smlrho = 1.0e-50
+smallp = 1.0e-50
+smalle = 1.0e-50
+
+cvisc = 0.1
+
+sim_atmos1 = 0
+
+sim_useE   = .TRUE.
+sim_EIn = 1.0
+sim_rIn = 0.01
+
+# Initial time
+
+tinitial = 9.225e-6     # Spherical Sedov
+# tinitial = 9.92e-5    # Cylindrical Sedov
+# tinitial = 0.0010378  # Planar Sedov
+
+sim_xcIn = 0.0
+#sim_ycIn = 0.0
+#sim_zcIn = 0.0 
+
+sim_rhoIn   = 1.0
+sim_gammaIn = 1.4
+
+sim_rho1     = 1.0
+sim_p1       = 0.0
+sim_gamma1   = 1.4
+
+#sim_rho2 = 0.0001
+#sim_p2   = 0.0
+#sim_gamma2 = 1.4
+
+#	Computational volume parameters
+
+#		Grid dimensionality and geometry
+
+# sim_geo = 0   # Planar Sedov
+# sim_geo = 1   # Cylindrical Sedov
+sim_geo = 2     # Spherical Sedov
+
+#geometry = cartesian
+#geometry = cylindrical
+geometry = spherical
+#		Size of computational volume
+
+xmin		= 0.0
+xmax		= 1
+#ymin		= -1.0
+#ymax		= 1.0
+
+#		Boundary conditions
+
+xl_boundary_type = "reflect"
+xr_boundary_type = "outflow"
+
+yl_boundary_type = "reflect"
+yr_boundary_type = "outflow"
+
+
+#	Simulation (grid, time, I/O) parameters
+
+cfl		= 0.8
+basenm          = "dumps/sb_"
+restart         = .false.
+
+#	checkpoint file output parameters
+checkpointFileIntervalTime = 0.005
+checkpointFileIntervalStep = 0
+# One might use this instead to get a reasonably smooth movie:
+# checkpointFileIntervalStep = 50
+checkpointFileNumber = 0
+
+#	plotfile output parameters
+plotfileIntervalTime = 0.005
+plotfileIntervalStep = 0
+plotfileNumber = 0
+
+nend            = 10000000
+tmax            = 0.5
+
+run_comment     = "Sedov blast problem"
+log_file        = "dumps/sb.log"
+#eintSwitch     = 1.e-3
+eintSwitch      = 0.0
+
+plot_var_1 = "dens"
+plot_var_2 = "pres"
+# plot_var_3 = "temp"
+
+#    AMR refinement parameters  
+lrefine_max     = 7
+lrefine_min     = 2
+
+refine_var_1    = "dens"
+refine_var_2    = "pres"
+
+#refine_var_3    = "fld1"
+#refine_cutoff_3 = 0.9
+#refine_filter_3 = 0.05
+#derefine_cutoff_3 = 0.5
+
+nblockx = 5
+# nblocky = 5
+# nblockz = 5
+
+# These parameters are used only for the uniform grid
+
+
+#iGridSize = 8   #defined as nxb * iprocs
+#jGridSize = 8
+#kGridSize = 1
+iProcs = 1	#number or procs in the i direction	
+jProcs = 1
+kProcs = 1
+
+# When using UG, iProcs, jProcs and kProcs must be specified.
+# These are the processors along each of the dimensions
+#FIXEDBLOCKSIZE mode ::
+# When using fixed blocksize, iGridSize etc are redundant in
+# runtime parameters. These quantities are calculated as 
+# iGridSize = NXB*iprocs
+# jGridSize = NYB*jprocs
+# kGridSize = NZB*kprocs
+#NONFIXEDBLOCKSIZE mode ::
+# iGridSize etc must be specified. They constitute the global
+# number of grid points in the physical domain without taking 
+# the guard cell into account. The local blocksize is calculated
+# as iGridSize/iprocs  etc.
+
+## Some other things one might want to try: 
+##irenorm = 1
+##use_cma_advection = .TRUE.
+###flux_correct = .FALSE.

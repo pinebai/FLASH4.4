@@ -1,0 +1,117 @@
+# Paramaters for the MGD inifinite medium simulation
+
+# Setup line:
+#./setup MGDStep -auto -1d +parallelIO -objdir=mgd.amr
+
+#(Maybe add nxb to create a specific number of grid points)
+#-nxb=50
+
+
+run_comment = "MGD test with infinite medium"
+log_file    = "mgdstep.log"
+basenm      = "mgdstep_"
+restart     = .false.
+
+
+#########################
+#   OUTPUT PARAMETERS   #
+#########################
+checkpointFileIntervalTime = 1.0
+checkpointFileIntervalStep = 20
+checkpointFileNumber       = 0
+plotFileNumber             = 0
+
+
+##########################
+#   PHYSICS PARAMETERS   #
+##########################
+useHydro        = .false.
+useHeatexchange = .false.
+useDiffuse      = .true.
+
+# Material and EOS parameters:
+eosModeInit        = "dens_temp_gather"
+gamma              = 1.4
+eos_singleSpeciesA = 4.0026032497
+eos_singleSpeciesZ = 2.0
+
+
+### Multigroup diffusion options ###
+rt_useMGD        = .true.
+rt_mgdNumGroups  = 4
+rt_mgdBoundEntry = "grbd_manual"
+rt_mgdBounds_1   = 0.0
+rt_mgdBounds_2   = 2500.0
+rt_mgdBounds_3   = 3500.0
+rt_mgdBounds_4   = 5000.0
+rt_mgdBounds_5   = 10000.0
+
+# MGD Flux limiter options:
+rt_mgdFlMode     = "fl_harmonic"
+rt_mgdFlCoef     = 1.0
+
+# MGD Opacity options:
+op_emitConst     = 10.0
+op_transConst    = 1.0e-06
+op_absorbConst   = 10.0
+
+# Electron conductivity options:
+diff_useEleCond  = .true.
+diff_eleFlMode   = "fl_harmonic"
+diff_eleFlCoef   = 50.0
+useConductivity  = .true.
+cond_constantIsochoric = 8.6173095897729779e+17 # 1e+22 ergs/s/cm/eV
+
+# Initial conditions:
+xmin = 0.0
+xmax = 1.0
+
+sim_rho1  = 1.0
+sim_tele1 = 1.160455e+07 # 1000 eV
+sim_tion1 = 5802275.0    #  500 eV
+sim_trad1 = 1.160455e+07 # 1000 eV
+
+sim_rho2  = 1.0
+sim_tele2 = 1.160455e+03 #  0.1 eV
+sim_tion2 = 5802275.0    #  500 eV
+sim_trad2 = 1.160455e+03 #  0.1 eV
+
+# Set boundary conditions:
+xl_boundary_type = "outflow"
+xr_boundary_type = "outflow"
+yl_boundary_type = "outflow"
+yr_boundary_type = "outflow"
+zl_boundary_type = "outflow"
+zr_boundary_type = "outflow"
+rt_mgdXlBoundaryType = "outflow"
+rt_mgdXrBoundaryType = "outflow"
+rt_mgdYlBoundaryType = "outflow"
+rt_mgdYrBoundaryType = "outflow"
+rt_mgdZlBoundaryType = "outflow"
+rt_mgdZrBoundaryType = "outflow"
+
+#######################
+#   TIME PARAMETERS   #
+#######################
+tstep_change_factor = 1.01
+dt_diff_factor = 1.0e+10
+rt_dtFactor    = 1.0e+10
+tmax           = 2.0e-11
+dtinit         = 1.0e-20
+dtmin          = 1.0e-22
+dtmax          = 1.0e-14
+nend           = 4000
+
+
+#######################
+#   MESH PARAMETERS   #
+#######################
+geometry = cartesian
+
+# Total number of blocks (for Paramesh):
+nblockx = 1
+nblocky = 1
+nblockz = 1
+lrefine_min = 1
+lrefine_max = 3
+refine_var_1 = "trad"

@@ -1,0 +1,199 @@
+Select a colormap: loadct 
+  reccomend either rainbow or rainbow+white
+
+device,file='file.ps',/color
+set_plot,'ps',/copy
+plot stuff
+set_plot,'x'
+device,/close
+
+
+device,'x'
+loadct,###
+plot stuff
+frame = tvrd(true=1,/order)
+write_ppm,'file.ppm',frame
+
+
+column_zoom_movie,amr655,axis,filebase='frames1k/frame',zooms=z,sranges=sr,target=targ,maxlevel=ml,log=1,snaptogrid=1,xstyle=1,ystyle=1
+
+mz=150&len=1000&z=exp(alog(mz)*(findgen(len)+1)/len)&sr=findgen(len,2)&sd=(smax-smin)/2.0&for i=0,len-1 do sr[i,*]=[smin+sd*(i+1)/len, ((smax+smin)/2.0)+sd*(i+1)/len]
+
+column_zoom_movie,amr195,axis,zooms=z,sranges=sr,target=targ,maxlevel=ml,log=1,xstyle=1,ystyle=1,outputmethod='jpeg',filebase='frames195/frame'
+
+.com get_amrcomponent.pro
+.com column_amr.pro
+.com column_zoom_movie.pro
+
+window,retain=2,xsize=640,ysize=480
+loadct,13
+.com node_addfab.pro, node_describe.pro, fab_describe.pro, amr_tree.pro
+.com node_describe.pro
+.com fab_describe.pro
+.com amr_tree.pro
+.com project_cube.pro
+.com project_node.pro
+.com column_any.pro, col_any_frame.pro
+.com col_any_widget
+.com slice_any.pro, slice_node.pro
+amr = get_amrcomponent('../plt0195', 'density')
+ml=6
+tree = amr_tree(amr,maxlevel=ml,free=1)
+targ = [1.18e+17,-3.08e+16,8.52e+16]
+;targ = [0,0,0]
+xr = [tree.boxmin[0],tree.boxmax[0]]*0.990
+yr = [tree.boxmin[1],tree.boxmax[1]]*0.990
+zr = [tree.boxmin[2],tree.boxmax[2]]*1.000
+col_any_frame,tree=tree,angles=[ -0.0, !PI/2.0-0,0.0],xrange=xr,yrange=yr,zrange=zr,outM='X',filename='delme.jpeg',target=targ,maxlevel=ml,log=1,/blur
+image = column_any(tree,[2.0*!PI/4.0,2.0*!PI/4.0,0.0*!PI/4.0],log=1,subsample=1.0,target=targ,maxlevel=ml,xrange=xr,yrange=yr,zrange=zr,imgdim=[408,408,1],blur=1);scalerrange=[10.0^(-2.5),10.0^(-2.5/2.0 + 1.5/2.0)])
+targslice = [1.54062e+17, -1.26875e+16, 7.43125e+16]
+targslice = [9.11914e+16, -4.4293e+16, 8.82461e+16]
+targslice = [9.15596e+16, -4.41514e+16, 8.85576e+16]
+image = slice_any(tree,[1,2,1],target=targslice,xrange=xr,yrange=yr)
+wh = where(image gt 0.0)
+min = min(image[wh])
+wh = where(image eq 0.0)
+if wh[0] ne -1 then image[wh] = min
+tv_colorized,bytscl(image)
+tv_colorized,bytscl(alog10(image))
+amr655 = get_amrcomponent('../plt0655', 'density')
+targ = [-3.8e+16,6.8e+16] ; amr655
+targ = [-2.7e+16, 8.9e+16] ; amr195
+dx = 1.0e+16
+axis=0
+smin=-3.24 & smax=1.94 ; amr655
+smin=-3.34 & smax=3.57 ; amr195
+loadct,13
+window,colors=2^24-1,retain=2
+column_amr,amr655,axis,log=1,xstyle=1,ystyle=1,xrange=[targ[0]-dx,targ[0]+dx],yrange=[targ[1]-dx,targ[1]+dx]
+
+amr195 = get_amrcomponent('../plt0195', 'density')
+targ = [-2.7e+16, 8.9e+16] ; amr195
+axis=0
+smin=-3.34 & smax=2.0 ; amr195
+fileb = 'f195.3/frame'
+outmethod = 'jpeg'
+colortable = 39 ; Rainbow+White so text shows up as white
+ml = 4
+mz=20&len=700&z=exp(alog(mz)*(findgen(len)+1)/len)&sr=findgen(len,2)&sd=(smax-smin)/2.0&for i=0,len-1 do sr[i,*]=[smin+sd*i/len, ((smax+smin)/2.0)+sd*i/len]
+
+mz=25&len=700&z=exp(alog(mz)*(findgen(len)+1)/len)&sr=findgen(len,2)&sd=2.4&for i=0,len-1 do sr[i,*]=[smin+sd*(i+0)/len,smax-sd*(len-i-1)/len]
+
+column_zoom_movie,amr195,axis,zooms=z,sranges=sr,target=targ,maxlevel=ml,log=1,xstyle=1,ystyle=1,outputmethod=outmethod,filebase=fileb,colort=colortable,framesonly=[699,699]
+
+
+
+
+
+mz=20&len=700&z=exp(alog(mz)*(findgen(len))/len)&sr=findgen(len,2)&sd=(smax-smin)/2.0&for i=0,len-1 do sr[i,*]=[smin+sd*i/len, ((smax+smin)/2.0)+sd*i/len]
+
+print,systime(0)
+
+column_zoom_movie,amr655,axis,filebase='frames1k/frame',zooms=z,sranges=sr,target=targ,maxlevel=ml,log=1,snaptogrid=1,xstyle=1,ystyle=1
+print,systime(0)
+
+imt = image
+wh = where(image gt double(0.0))
+imm = min(image[wh])
+wh = where(image le imm)
+imt[wh] = imm
+;imt = smooth(imt,3)
+imt = alog10(imt)
+imb = bytscl(imt)
+loadct,13
+c = intarr(256,3)
+tvlct,c,/get
+imc = intarr(512,512,3)
+for i=0,2 do imc[*,*,i] = c[imb[*,*],i]
+tv,imc,true=3
+write_jpeg,'delme.jpg',imc,true=3,quality=100
+
+spawn,'gs -sDEVICE=ppm -sOutputFile=testa.ppm -dBATCH -dNOPAUSE testa.ps quit'
+
+print,systime() & size=100 & vox = intarr(size,size,size) & vox[size/4:3*size/4,size/4:3*size/4,size/4:3*size/4] = 1 & vi = dblarr(size,size) & for i=0,size-1 do vox[i,*,*] = rot(reform(vox[i,*,*]),30,missing=0) & for i=0,size-1 do vox[*,*,i] = rot(reform(vox[*,*,i]),45,missing=0) & for i=0,size-1 do vi = vi + reform(vox[i,*,*]) & tvscl,rebin(vi,1000,1000) & print,systime()
+
+plots,[x1,x2][y1,y2],/device
+
+
+window,retain=2,xsize=640,ysize=480
+loadct,13
+.com node_addfab.pro, node_describe.pro, fab_describe.pro, amr_tree.pro
+.com node_describe.pro
+.com fab_describe.pro
+.com amr_tree.pro
+.com project_cube.pro
+.com project_node.pro
+.com column_any.pro
+.com col_any_frame.pro
+amr = get_amrcomponent('../plt0195', 'density')
+ml=6
+tree = amr_tree(amr,maxlevel=ml,free=1)
+len = 1000.0 ; frames in anim
+az = fltarr(len)
+alt = fltarr(len)
+pitch = fltarr(len)
+zoom = fltarr(len)
+zmin = 0.8
+zmax = 16.0
+zf = zmax/zmin
+zoom = zmin*exp( findgen(len)*alog(zf)/len )
+az[0:666] = 4.0*!PI/3.0*sin(!PI/2.0*findgen(667)/667.0)
+az[667:999] = az[666]
+;az[0:len/2 - 1] = 2.0*!PI*findgen(len/2)/(len/2)
+;az[len/2:len-1] = 2.0*!PI + -2.0*!PI*findgen(len/2)/(len/2)
+alt[0:99] = -1.0*!PI/2.0
+alt[100:999] = !PI/2.0*(0.5*(1-cos(!PI*findgen(900)/899.0)) - 1.0)
+;alt[0:len/2 -1] = !PI/2.0 - (!PI/4.0)*sin(2.0*!PI*findgen(len/2)/(len/2))
+;alt[len/2:len-1] = !PI/2.0 - (!PI/4.0)*sin(2.0*!PI*findgen(len/2)/(len/2))
+pitch[*] = !PI/4.0
+;pitch[900:999] = !PI/2.0*(findgen(100)^2/10000.0)
+;pitch[0:len/2 - 1] = -1*!PI/4.0*cos(2.0*!PI*findgen(len/2)/(len/2))
+;pitch[len/2:len-1] = -1*!PI/4.0*cos(2.0*!PI*findgen(len/2)/(len/2))
+minexp = -2.5
+maxexp =  1.75
+midexp = (minexp+maxexp)/2.0
+exprange =(maxexp-minexp)/2.0
+minranges = fltarr(1000)
+maxranges = fltarr(1000)
+minranges = 10.0^(minexp)*10.0^(exprange*findgen(len)/len)
+maxranges = 10.0^(midexp)*10.0^(exprange*findgen(len)/len)
+targ = [1.18e+17,-3.08e+16,8.52e+16]
+ncpu = 9999
+cpuid = 0
+for i=cpuid,999,ncpu do begin $
+  xr = [tree.boxmin[0],tree.boxmax[0]]/zoom[i] & $
+  yr = [tree.boxmin[1],tree.boxmax[1]]/zoom[i] & $
+  ;image = column_any(tree,[az[i],alt[i],pitch[i]],target=targ,maxlevel=ml,xrange=xr,yrange=yr) & $
+  filename = 'CAF/CAF'+strtrim(string(i),2)+'.jpeg' & $
+  col_any_frame,tree=tree,angles=[az[i],alt[i],pitch[i]],xrange=xr,yrange=yr,outM='X',maxlevel=ml,log=1,target=targ,filename=filename,scalerrange=[minranges[i],maxranges[i]],/blur & $
+  $
+endfor
+
+
+  ;imt = image & $
+  ;minrange = minranges[i] & $
+  ;maxrange = maxranges[i] & $
+  ;whi = where(imt lt minrange) & $
+  ;if total(whi) ne -1 then imt[whi] = minrange & $
+  ;whi = where(imt gt maxrange) & $
+  ;if total(whi) ne -1 then imt[whi] = maxrange & $
+  ;imt = alog10(imt) & $
+  ;imt = bytscl(imt) & $
+  ;c = intarr(256,3) & $
+  ;tvlct,c,/get	 & $
+  ;imc = [[[imt]],[[imt]],[[imt]]] & $
+  ;for ci=0,2 do imc[*,*,ci] = c[imt[*,*],ci] & $
+  ;tv,imc,true=3 & $
+  ;wait,1 & $
+  ;name = 'frame_'+string(i)+'.jpeg' & $
+  ;name = strcompress(name,/remove_all) & $
+  ;print,name & $
+  ;write_jpeg,name,imc,quality=100,true=3 & $
+;  $
+;endfor	
+
+col_any_frame,tree=tree,angles=[1,0,0],outM='x'
+
+col_any_frame,tree=tree,angles=[0,0,0],xrange=xr,yrange=yr,zrange=zr,outM='X',target=targ,maxlevel=ml,log=1,target=targ,imgdim=[408,408,408],subsample=1.0
+
+image= column_any(tree,[0.0*!PI/4.0,0.0*!PI/4.0,0.0*!PI/4.0],log=1,subsample=1.0,target=targ,maxlevel=ml,xrange=xr,yrange=yr,zrange=zr,imgdim=[408,408,408])

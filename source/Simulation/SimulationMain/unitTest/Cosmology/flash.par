@@ -1,0 +1,53 @@
+#  Parameter file for the Cosmology unit test.
+#  Based on the flash.par for Zel'dovich Pancake 3d problem
+
+
+#-------------------------------------------------------------------------------
+
+#  Model parameters
+
+run_comment                    =  "Cosmology unit test"
+
+#-------------------------------------------------------------------------------
+
+# Driver
+
+restart                        =  .false.
+
+zInitial                =  50.
+zFinal                  =  0.
+
+dtinit                         =  1.E10
+dtmin                          =  1.E10
+dtmax                          =  1.E17
+
+#-------------------------------------------------------------------------------
+
+#  Cosmology
+
+OmegaMatter                    =  1.
+OmegaBaryon                    =  0.15
+HubbleConstant                 =  1.62038E-18    # h = 0.5
+CosmologicalConstant           =  0.
+MaxScaleChange                 =  0.1
+
+#-------------------------------------------------------------------------------
+
+# Cosmology Unit Test Specific
+
+computeDtCorrect  = 169450294720534.7
+redshiftToTimeCorrect = 1129631001610459.
+massToLengthCorrect   = 4959457362.186973
+solveFriedmannCorrect = 1.9608074571151239E-002
+
+utScaleFactor = 1.9608074569174569E-002
+utOldScaleFactor = 1.9607958853385455E-002
+utSimTime = 1129641001610459.
+utDt = 1.0E10
+
+
+#-------------------------------------------------------------------------------
+
+
+
+#  Done.

@@ -1,0 +1,357 @@
+!!****if* source/physics/sourceTerms/Heatexchange/HeatexchangeMain/Constant/Heatexchange
+!!
+!! NAME
+!!
+!!  Heatexchange
+!!
+!!
+!! SYNOPSIS
+!!
+!!   call Heatexchange ( integer(IN) :: blockCount, 
+!!                       integer(IN) :: blockList(blockCount), 
+!!                       real(IN)    ::  dt  )    
+!!
+!! DESCRIPTION
+!!
+!!  Apply thermal head exchange among temperature components
+!!  to all blocks in specified list.
+!!
+!! ARGUMENTS
+!!
+!!   blockCount -- dimension of blockList
+!!   blockList -- array of blocks where componenets should exchange
+!!                heat
+!!   dt  --       passed to the internal hx_burner module  
+!!
+!! PARAMETERS
+!!
+!!  useHeatexchange -- Boolean, True.  Turns on Heatexchange unit
+!!
+!!
+!!***
+
+
+subroutine Heatexchange ( blockCount, blockList, dt )
+  
+  use Grid_interface, ONLY  : Grid_getBlkIndexLimits, Grid_getBlkPtr, &
+       Grid_releaseBlkPtr
+  use Eos_interface, ONLY   : Eos_wrapped
+  use Timers_interface, ONLY : Timers_start, Timers_stop
+  
+  use Heatexchange_data,ONLY: hx_useHeatexchange, hx_c12, hx_c13, hx_c23, &
+       hx_myPE, hx_restart
+
+  implicit none
+
+#include "constants.h"
+#include "Flash.h"
+#include "Eos.h"
+
+  !args
+  integer, INTENT(in)                        :: blockCount
+  integer, INTENT(in), DIMENSION(blockCount)  :: blockList
+  real,    INTENT(in)                        :: dt
+
+  ! locals
+  integer                    :: i, j, k
+  integer                    :: blockID, thisBlock, myPE
+  real                       :: temp, dens, eint, pres
+  real                       :: temp1,temp2,temp3, eint1,eint2,eint3
+  real                       :: t12diff, t13diff, t23diff
+  real                       :: bsEint1,bsEint2,bsEint3
+  real                       :: sumyi, ye
+  real                       :: flame
+  real                       :: qdot, q1dot, q2dot, q3dot, qbar
+  logical                    :: changedZone
+
+  integer, dimension(2,MDIM) :: blkLimits, blkLimitsGC
+  logical,save :: firstTime = .true.
+  logical :: firstOrSimple
+  real, pointer, dimension(:,:,:,:)    :: solnData
+  ! "predicted componenet temperature increments:"
+  real, allocatable, dimension(:,:,:,:)  :: tempIncPred
+#ifndef EINT_VAR
+  real :: energyKinetic
+#endif
+
+
+
+
+  ! CHECK BURN FLAG
+  if (.not. hx_useHeatexchange) return
+  myPE = hx_myPE
+
+  ! START TIMERS
+  call Timers_start("heatXchg")
+
+#ifdef FLASH_HX_SIMPLEHEUN
+  firstOrSimple = .TRUE.
+#else
+  firstOrSimple = (firstTime .AND. .NOT. hx_restart)
+#endif
+
+#ifndef Q1DT_VAR
+#define Q1DT_VAR -1
+#endif
+#ifndef Q2DT_VAR
+#define Q2DT_VAR -1
+#endif
+#ifndef Q3DT_VAR
+#define Q3DT_VAR -1
+#endif
+
+
+
+  ! BEGIN LOOP OVER BLOCKS PASSED IN
+  do thisBlock = 1, blockCount
+     
+     blockID = blockList(thisBlock)
+     changedZone = .FALSE.
+     
+     !GET DIMENSION AND COORD POSITIONS
+     call Grid_getBlkIndexLimits(blockID,blkLimits,blkLimitsGC)
+     
+     !GET POINTER TO SOLUTION DATA
+     call Grid_getBlkPtr(blockID,solnData)
+
+     if (firstOrSimple) then
+
+        allocate(tempIncPred(3, blkLimits(LOW,IAXIS):blkLimits(HIGH,IAXIS),&
+                                blkLimits(LOW,JAXIS):blkLimits(HIGH,JAXIS),&
+                                blkLimits(LOW,KAXIS):blkLimits(HIGH,KAXIS)))
+
+
+        !***FIRST*** LOOP OVER CURRENT BLOCK ZONES
+        do k = blkLimits(LOW,KAXIS), blkLimits(HIGH,KAXIS)
+           do j = blkLimits(LOW,JAXIS), blkLimits(HIGH,JAXIS)
+              do i = blkLimits(LOW,IAXIS), blkLimits(HIGH,IAXIS)
+
+                 dens    = solnData(DENS_VAR,i,j,k)
+                 temp1    = solnData(TION_VAR,i,j,k)
+                 temp2    = solnData(TELE_VAR,i,j,k)
+                 temp3    = solnData(TRAD_VAR,i,j,k)
+                 t12diff  = temp1 - temp2
+                 t13diff  = temp1 - temp3
+                 t23diff  = temp2 - temp3
+
+#ifdef EINT_VAR
+                 eint    = solnData(EINT_VAR,i,j,k)
+#else
+                 energyKinetic = solnData(VELX_VAR,i,j,k)**2
+#if NDIM >= 2
+                 energyKinetic = energyKinetic + solnData(VELY_VAR,i,j,k)**2
+#endif
+#if NDIM > 2
+                 energyKinetic = energyKinetic + solnData(VELZ_VAR,i,j,k)**2
+#endif
+                 eint    = solnData(ENER_VAR,i,j,k) - 0.5*energyKinetic
+#endif
+
+                 eint1   = solnData(EION_VAR,i,j,k)
+                 eint2   = solnData(EELE_VAR,i,j,k)
+                 eint3   = solnData(ERAD_VAR,i,j,k)
+
+                 pres    = solnData(PRES_VAR,i,j,k)
+
+                 q1dot   = 0.e0
+                 q2dot   = 0.e0
+                 q3dot   = 0.e0
+
+                 bsEint1 = 1; bsEint2 = 1; bsEint3 = 1
+                 q3dot =   bsEint1 * hx_c13 * t13diff  +  bsEint2 * hx_c23 * t23diff
+                 q2dot =   bsEint1 * hx_c12 * t12diff  -  bsEint3 * hx_c23 * t23diff
+                 q1dot = -(bsEint2 * hx_c12 * t12diff  +  bsEint3 * hx_c13 * t13diff)
+                 qdot = q1dot + q2dot + q3dot
+
+                 tempIncPred(1,i,j,k) = q1dot
+                 tempIncPred(2,i,j,k) = q2dot
+                 tempIncPred(3,i,j,k) = q3dot
+
+                 changedZone = .TRUE.
+
+                 ! UPDATE SOLUTION DATA
+
+!!$              solnData(ENUC_VAR,i,j,k)     = qdot 
+                 solnData(EION_VAR,i,j,k)     = solnData(EION_VAR,i,j,k) + q1dot*dt
+                 solnData(EELE_VAR,i,j,k)     = solnData(EELE_VAR,i,j,k) + q2dot*dt
+                 solnData(ERAD_VAR,i,j,k)     = solnData(ERAD_VAR,i,j,k) + q3dot*dt
+
+!!$              solnData(ENER_VAR,i,j,k)     = solnData(ENER_VAR,i,j,k) + qdot*dt
+!!$              solnData(EINT_VAR,i,j,k)     = solnData(EINT_VAR,i,j,k) + qdot*dt
+              enddo
+
+           enddo
+        enddo
+     else
+        do k = blkLimits(LOW,KAXIS), blkLimits(HIGH,KAXIS)
+           do j = blkLimits(LOW,JAXIS), blkLimits(HIGH,JAXIS)
+              do i = blkLimits(LOW,IAXIS), blkLimits(HIGH,IAXIS)
+
+                 q3dot = solnData(Q3DT_VAR,i,j,k)
+                 q2dot = solnData(Q2DT_VAR,i,j,k)
+                 q1dot = solnData(Q1DT_VAR,i,j,k)
+
+                 changedZone = .TRUE.
+
+                 ! UPDATE SOLUTION DATA
+
+!!$              solnData(ENUC_VAR,i,j,k)     = qdot 
+                 solnData(EION_VAR,i,j,k)     = solnData(EION_VAR,i,j,k) + q1dot*dt
+                 solnData(EELE_VAR,i,j,k)     = solnData(EELE_VAR,i,j,k) + q2dot*dt
+                 solnData(ERAD_VAR,i,j,k)     = solnData(ERAD_VAR,i,j,k) + q3dot*dt
+
+!!$              solnData(ENER_VAR,i,j,k)     = solnData(ENER_VAR,i,j,k) + qdot*dt
+!!$              solnData(EINT_VAR,i,j,k)     = solnData(EINT_VAR,i,j,k) + qdot*dt
+              enddo
+
+           enddo
+        enddo
+     endif
+
+
+     ! MAKE HYDRO CONSISTENT WITH UPDATED INTERNAL ENERGY
+     if (changedZone) then
+        call Eos_wrapped(MODE_DENS_EI_GATHER,blkLimits,blockID)
+     end if
+
+     !***SECOND LOOP*** OVER CURRENT BLOCK ZONES
+     do k = blkLimits(LOW,KAXIS), blkLimits(HIGH,KAXIS)
+        do j = blkLimits(LOW,JAXIS), blkLimits(HIGH,JAXIS)
+           do i = blkLimits(LOW,IAXIS), blkLimits(HIGH,IAXIS)
+
+              dens    = solnData(DENS_VAR,i,j,k)
+              temp1    = solnData(TION_VAR,i,j,k)
+              temp2    = solnData(TELE_VAR,i,j,k)
+              temp3    = solnData(TRAD_VAR,i,j,k)
+              t12diff  = temp1 - temp2
+              t13diff  = temp1 - temp3
+              t23diff  = temp2 - temp3
+
+#ifdef EINT_VAR
+              eint    = solnData(EINT_VAR,i,j,k)
+#else
+              energyKinetic = solnData(VELX_VAR,i,j,k)**2
+#if NDIM >= 2
+              energyKinetic = energyKinetic + solnData(VELY_VAR,i,j,k)**2
+#endif
+#if NDIM > 2
+              energyKinetic = energyKinetic + solnData(VELZ_VAR,i,j,k)**2
+#endif
+              eint    = solnData(ENER_VAR,i,j,k) - 0.5*energyKinetic
+#endif
+
+              eint1   = solnData(EION_VAR,i,j,k)
+              eint2   = solnData(EELE_VAR,i,j,k)
+              eint3   = solnData(ERAD_VAR,i,j,k)
+
+              pres    = solnData(PRES_VAR,i,j,k)
+
+              q1dot   = 0.e0
+              q2dot   = 0.e0
+              q3dot   = 0.e0
+
+              bsEint1 = 1; bsEint2 = 1; bsEint3 = 1
+              q3dot =   bsEint1 * hx_c13 * t13diff  +  bsEint2 * hx_c23 * t23diff
+              q2dot =   bsEint1 * hx_c12 * t12diff  -  bsEint3 * hx_c23 * t23diff
+              q1dot = -(bsEint2 * hx_c12 * t12diff  +  bsEint3 * hx_c13 * t13diff)
+
+              if (firstOrSimple) then
+                 q3dot = 0.5* ( q3dot - tempIncPred(3,i,j,k) )
+                 q2dot = 0.5* ( q2dot - tempIncPred(2,i,j,k) )
+                 q1dot = 0.5* ( q1dot - tempIncPred(1,i,j,k) )
+              else
+                 q3dot = 0.5* ( q3dot - solnData(Q3DT_VAR,i,j,k) )
+                 q2dot = 0.5* ( q2dot - solnData(Q2DT_VAR,i,j,k) )
+                 q1dot = 0.5* ( q1dot - solnData(Q1DT_VAR,i,j,k) )
+              endif
+
+              qdot = q1dot + q2dot + q3dot
+
+              changedZone = .TRUE.
+
+                 ! UPDATE SOLUTION DATA
+
+!!$              solnData(ENUC_VAR,i,j,k)     = qdot 
+              solnData(EION_VAR,i,j,k)     = solnData(EION_VAR,i,j,k) + q1dot*dt
+              solnData(EELE_VAR,i,j,k)     = solnData(EELE_VAR,i,j,k) + q2dot*dt
+              solnData(ERAD_VAR,i,j,k)     = solnData(ERAD_VAR,i,j,k) + q3dot*dt
+
+!!$              solnData(ENER_VAR,i,j,k)     = solnData(ENER_VAR,i,j,k) + qdot*dt
+!!$              solnData(EINT_VAR,i,j,k)     = solnData(EINT_VAR,i,j,k) + qdot*dt
+           enddo
+           
+        enddo
+     enddo
+
+     ! MAKE HYDRO CONSISTENT WITH UPDATED INTERNAL ENERGY
+     if (changedZone) then
+        call Eos_wrapped(MODE_DENS_EI_GATHER,blkLimits,blockID)
+     end if
+     
+     if (firstOrSimple) then
+        deallocate(tempIncPred)
+     end if
+
+#ifndef FLASH_HX_SIMPLEHEUN
+     !***FIRST*** LOOP FOR ***NEXT*** TIME
+     do k = blkLimits(LOW,KAXIS), blkLimits(HIGH,KAXIS)
+        do j = blkLimits(LOW,JAXIS), blkLimits(HIGH,JAXIS)
+           do i = blkLimits(LOW,IAXIS), blkLimits(HIGH,IAXIS)
+
+              dens    = solnData(DENS_VAR,i,j,k)
+              temp1    = solnData(TION_VAR,i,j,k)
+              temp2    = solnData(TELE_VAR,i,j,k)
+              temp3    = solnData(TRAD_VAR,i,j,k)
+              t12diff  = temp1 - temp2
+              t13diff  = temp1 - temp3
+              t23diff  = temp2 - temp3
+
+#ifdef EINT_VAR
+              eint    = solnData(EINT_VAR,i,j,k)
+#else
+              energyKinetic = solnData(VELX_VAR,i,j,k)**2
+#if NDIM >= 2
+              energyKinetic = energyKinetic + solnData(VELY_VAR,i,j,k)**2
+#endif
+#if NDIM > 2
+              energyKinetic = energyKinetic + solnData(VELZ_VAR,i,j,k)**2
+#endif
+              eint    = solnData(ENER_VAR,i,j,k) - 0.5*energyKinetic
+#endif
+
+              eint1   = solnData(EION_VAR,i,j,k)
+              eint2   = solnData(EELE_VAR,i,j,k)
+              eint3   = solnData(ERAD_VAR,i,j,k)
+
+              pres    = solnData(PRES_VAR,i,j,k)
+
+              q1dot   = 0.e0
+              q2dot   = 0.e0
+              q3dot   = 0.e0
+
+              bsEint1 = 1; bsEint2 = 1; bsEint3 = 1
+              q3dot =   bsEint1 * hx_c13 * t13diff  +  bsEint2 * hx_c23 * t23diff
+              q2dot =   bsEint1 * hx_c12 * t12diff  -  bsEint3 * hx_c23 * t23diff
+              q1dot = -(bsEint2 * hx_c12 * t12diff  +  bsEint3 * hx_c13 * t13diff)
+              qdot = q1dot + q2dot + q3dot
+
+              solnData(Q1DT_VAR,i,j,k) = q1dot
+              solnData(Q2DT_VAR,i,j,k) = q2dot
+              solnData(Q3DT_VAR,i,j,k) = q3dot
+           end do
+        end do
+     end do
+
+#endif
+
+     ! RELEASE MEMORY/POINTERS
+     call Grid_releaseBlkPtr(blockID,solnData)
+  end do
+  
+  call Timers_stop("heatXchg")
+  
+  firstTime = .FALSE.
+
+  return
+  
+end subroutine Heatexchange

@@ -1,0 +1,162 @@
+
+#	Runtime parameters for the ConductionDeltaSaDiff problem.
+#       That is ConductionDelta with standalone diffusion.
+
+#		Density and perturbation information
+
+orientation     = 1
+rho_init	= 1.
+sim_Q           = 1.0E5
+
+sim_maxTol = 0.00562
+
+sim_xctr		= 1.0 #0.5
+sim_yctr		= 1.0 #0.5
+sim_zctr		= 1.0 #0.5
+
+cond_TemperatureExponent = 0
+iniCondTemperatureExponent = -999
+cond_K0 = 2.7434842249657061e+36
+
+smallP = 1.0e-50
+smallE = 1e-22
+
+#		Gas ratio of specific heats
+
+gamma           = 1.4
+
+cond_constantIsochoric = 2.0E9
+useHydro = .FALSE.
+updateHydroFluxes = .FALSE.
+useConductivity = .true.
+useDiffuseVisc = .false.
+useDiffuseSpecies = .false.
+
+#               Artificial viscosity
+
+cvisc           = 0.
+
+#	Computational volume parameters
+
+#		Grid dimensionality and geometry
+
+geometry = cartesian
+
+#		Size of computational volume
+
+xmin		= 0.
+xmax		= 2.
+
+ymin		= 0.
+ymax		= 2.
+
+zmin		= 0.
+zmax		= 2.
+
+#		Boundary conditions
+
+xl_boundary_type = "outflow"
+xr_boundary_type = "outflow"
+
+yl_boundary_type = "outflow"
+yr_boundary_type = "outflow"
+
+zl_boundary_type = "outflow"
+zr_boundary_type = "outflow"
+
+
+#	Simulation (grid, time, I/O) parameters
+
+cfl		= 0.8
+dt_diff_factor  = 0.8 #0.70
+basenm          = "conduction_"
+restart         = .false.
+checkpointFileIntervalTime          = 4e-5   # 0.00197
+checkpointFileIntervalStep          = 20
+nend            = 99999
+
+restart                 = .false.
+checkpointFileNumber    = 0
+plotFileNumber          = 0
+##plotFileIntervalTime    = .0002
+
+
+# initial time offset; see simulation_initBlock.F90 for details
+
+toffset         = .001
+tmax            = .0024
+#tmax            = .20
+
+run_comment = "Linear conduction test problem from delta-shape initial temp."
+log_file        = "conduction.log"
+eintSwitch     = 1.e-4
+
+# AMR refinement parameters
+lrefine_min     = 3
+lrefine_max     = 4 
+refine_var_1    = "temp"
+
+nblockx         = 1
+nblocky         = 1
+nblockz         = 1
+
+# Uniform grid specific parameters
+# see note below for more explanation
+
+iProcs = 1	#number or procs in the i direction	
+jProcs = 1
+kProcs = 1
+
+# These parameter are needed only in non fixed blocksize mode
+iGridSize = 64   # global number of points along IAXIS
+jGridSize = 64
+#kGridSize = 64
+
+plot_var_1 = "temp"
+plot_var_2 = "dens"
+
+## -------------------------------------------------------------##
+##  SWITCHES SPECIFIC TO THE UNSPLIT HYDRO SOLVER               ##
+#	I. INTERPOLATION SCHEME:
+order		= 2      # Interpolation order (first/second/third/fifth order)
+slopeLimiter    = "mc"   # Slope limiters (minmod, mc, vanLeer, hybrid, limited)
+LimitedSlopeBeta= 1.     # Slope parameter for the "limited" slope by Toro
+charLimiting	= .true. # Characteristic limiting vs. Primitive limiting
+
+use_avisc	= .false. # use artificial viscosity (originally for PPM)
+#cvisc		= 0.1     # coefficient for artificial viscosity
+use_flattening	= .false. # use flattening (dissipative) (originally for PPM)
+use_steepening	= .false. # use contact steepening (originally for PPM)
+use_upwindTVD	= .false. # use upwind biased TVD slope for PPM (need nguard=6)
+
+#	II. RIEMANN SOLVERS:
+RiemannSolver	= "Roe"       # Roe, HLL, HLLC, LLF, Marquina
+entropy         = .false.     # Entropy fix for the Roe solver
+
+#	III. STRONG SHOCK HANDELING SCHEME:
+shockDetect	= .false.     # Shock Detect for numerical stability
+## -------------------------------------------------------------##
+
+## ---------------------------------------------------------------##
+##  SWITCHES SPECIFIC TO THE SUPER-TIME-STEPPING (STS) ALGORITHM  ##
+##  NOTE: For details on using STS runtime parameters, please     ##
+##        refer to user's guide (Driver chapter).                 ##
+
+## Use STS for time stepping heat conduction problem using the
+## explicit flux-based method. To use, enable the following
+## runtime parameters.
+
+#useHydro 		 = .true.
+#updateHydroFluxes 	 = .false.
+#dt_diff_factor		 = 0.8 
+#useSTS                  = .true.
+#useSTSforDiffusion      = .true.
+#nstepTotalSTS           = 8
+#nuSTS                   = 0.02
+## ---------------------------------------------------------------##
+
+gr_hypreMaxIter    = 10000
+gr_hyprePCType     = "HYPRE_AMG"
+gr_hypreRelTol     = 1.0e-12
+gr_hypreSolverType = "HYPRE_PCG"
+

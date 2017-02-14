@@ -1,0 +1,11 @@
+# These symbols may not actually be used by any code when
+# compiling with Paramesh2, but they are defined here anyway
+# to parallel the Paramesh3 case.
+
+# Define a symbol to signal that monotonic interpolation
+# routines are compiled in:
+PPDEFINE GRID_WITH_MONOTONIC
+
+# Define a symbol to signal that guardcell layers can
+# only be given in multiples of two:
+PPDEFINE GRID_GC_LAYERS_ALWAYS_EVEN

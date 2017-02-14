@@ -1,0 +1,22 @@
+# Request the Runge Kutta unit.
+#
+#     ./setup unitTest/RungeKutta/2Dellipse -auto
+#
+REQUIRES  numericalTools/Roots
+REQUIRES  numericalTools/RungeKutta
+
+D       sim_errorFraction              The error fraction for the dependent variables
+D       sim_RungeKuttaMethod           The method for the Runge Kutta stepper
+D       sim_x0                         The initial x position of the particle
+D       sim_y0                         The initial y position of the particle
+D       sim_stepSize                   The step size
+D       sim_ellipseAspectRatio         The ellipse aspect ratio (major:minor axis)
+D       sim_numberOfEllipses           The number of ellipses the particle has to sweep
+
+PARAMETER  sim_errorFraction                  REAL       1.0e-8
+PARAMETER  sim_RungeKuttaMethod               STRING     "CashKarp45"
+PARAMETER  sim_x0                             REAL       1.0
+PARAMETER  sim_y0                             REAL       1.0
+PARAMETER  sim_stepSize                       REAL       0.1
+PARAMETER  sim_ellipseAspectRatio             REAL       2.0
+PARAMETER  sim_numberOfEllipses               INTEGER      1

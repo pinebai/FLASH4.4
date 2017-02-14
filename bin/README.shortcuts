@@ -1,0 +1,57 @@
+Using Shortcuts with setup script
+---------------------------------
+
+If you find yourself using the same set of command line options
+with setup, you can save yourself a lot of time and effort by
+defining them once and using them repeatedly. Command line
+options given to the setup script starting with "+" are 
+shortcuts, i.e. they are shortform for a specific sequence
+of setup options.
+
+For e.g. if you define the shortcut "ug" to stand for
+"--with-unit=Grid/common/UG", then you can use +ug anytime
+you want to use the longer version. Shortcuts can be used to
+define other shortcuts. For e.g. you can define "ugio" to stand 
+for "+ug --with-unit=IO/common/hdf5/parallel/UG".
+
+Defining shortcuts
+------------------
+Shortcuts are defined using plain text files in a certain format.
+All lines starting with # and blank lines are ignored. All other lines
+must consist of the shortcut and the sequence it stands for, separated
+by :'s. e.g.
+
+
+short:foo:bar:baz:
+
+declares a shortcut "short" which stands for the sequence "foo bar baz".
+For technical reasons you need separate the individual arguments with ":".
+This helps the setup script distinguish between the option "foo bar" and 
+the pair of options "foo" and "bar"
+
+See the file "bin/setup_shortcuts.txt" for an example file.
+
+The shortcuts file
+------------------
+
+By default all the shortcuts should be declared in the file "setup_shortcuts.txt"
+in the bin directory (which contains setup.py). However, you can set an 
+environment variable "SETUP_SHORTCUTS" to a ":" delimited sequence of filenames.
+Then setup script will scan all the specified files for shortcut declarations.
+Non-existant files will not cause an error. In case of multiple definitions, 
+the last one wins. All filenames must be absolute paths, otherwise setup might
+not locate all your files.
+
+Note
+----
+
+(1) Shortcuts are expanded in place
+(2) Options specified later in the command line override ones specified earlier.
+
+So if you have a shortcut "ug3d" which expands to 
+"--with-unit=Grid/common/UG -3d" then a setup line of
+
+"+ug3d -2d" and "-2d +ug3d" will lead to using UG with 2 and 3 dimensions
+respectively.
+
+

@@ -1,0 +1,3 @@
+#Config file for Grid/GridBoundaryConditions/OneRow/Flash2HSE
+
+REQUIRES Grid/GridBoundaryConditions/Flash2HSE

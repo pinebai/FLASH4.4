@@ -1,0 +1,16 @@
+# The flux-based implementation of Diffuse cannot work standalone,
+# it needs a Hydro im-plementation to drive it.
+REQUIRES physics/Hydro
+
+# The flux-based implementation of Diffuse uses _init, _computeDt, _data
+# from the DiffuseMain subunit.
+REQUIRES physics/Diffuse/DiffuseMain
+
+
+PARAMETER thermal_diff_method INTEGER 1
+PARAMETER geometric_mean_diff BOOLEAN FALSE
+
+D diff_scaleFactThermFlux	Factor applied to the temperature differences
+D & (or internal energy differences)
+D & that are added to flux arrays by the flux-based thermal Diffusion implementation.
+PARAMETER diff_scaleFactThermFlux	REAL	1.0

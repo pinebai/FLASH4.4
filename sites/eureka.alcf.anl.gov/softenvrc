@@ -1,0 +1,47 @@
+#
+# This is your SoftEnv configuration run control file.
+#
+#   It is used to tell SoftEnv how to customize your environment by
+#   setting up variables such as PATH and MANPATH.  To learn more
+#   about this file, do a "man softenv".
+#
+#
+# This softenvrc file will help Min Long to match compile and runtime
+# stacks.  By default he wants his environment setup for visit.
+# 
+# The logic depends on a variable named MY_ENV ["", mx, nomx]
+# which can be set on the login nodes, e.g.
+#
+#   MY_ENV=nomx resoft
+#
+# and also on the compute nodes in a job submission script, e.g.
+#
+#   source /etc/profile.d/00softenv.sh
+#   MY_ENV=nomx resoft
+# 
+# When not explicitly set, MY_ENV is simply the empty string "".
+#
+
+if MY_ENV="" then @visit
+if MY_ENV="" then +hdf5-1.6.7
+
+
+# We want to have different environments available for running FLASH.
+# Generally we want to use the optimized version of MPI for Myrinet (mx).
+
+# The parallel HDF5 installation is built with mpich2-mx-1.0.7..2.
+# > grep "C Compiler" /soft/apps/hdf5-1.8.3-par-mx/lib/libhdf5.settings 
+# C Compiler: /soft/apps/mpich2-mx-1.0.7..2/bin/mpicc (icc-11.0)
+if MY_ENV=mx then +mpich2-mx-1.0.7..2
+if MY_ENV=mx then PATH += /soft/apps/hdf5-1.8.3-par-mx/bin
+if MY_ENV=mx then LD_LIBRARY_PATH += /soft/apps/hdf5-1.8.3-par-mx/lib
+
+# We also want a non Myrinet version of MPI for when there are apparent
+# Myrinet bugs.  This stack is also useful for multithreaded FLASH runs.
+if MY_ENV=nomx then +mpich2-1.3.1-intel
+if MY_ENV=nomx then PATH += /home/cdaley/eureka/software/hdf5/1.8.5-patch1/mpich2-1.3.1-intel/bin
+if MY_ENV=nomx then LD_LIBRARY_PATH += /home/cdaley/eureka/software/hdf5/1.8.5-patch1/mpich2-1.3.1-intel/lib
+
+
++intel-11.0
+@default

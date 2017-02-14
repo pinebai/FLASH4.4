@@ -1,0 +1,4 @@
+        integer SHMEM_REDUCE_SYNC_SIZE
+        integer SHMEM_REDUCE_MIN_WRKDATA_SIZE
+        parameter (SHMEM_REDUCE_SYNC_SIZE=1)
+        parameter (SHMEM_REDUCE_MIN_WRKDATA_SIZE=1)

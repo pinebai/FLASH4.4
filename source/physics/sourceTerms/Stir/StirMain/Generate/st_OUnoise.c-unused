@@ -1,0 +1,73 @@
+#include <stdlib.h>
+#include <math.h>
+#include <stdio.h>
+
+#include "mangle_names.h"
+
+#define PI    3.141592653589793238
+#define TWOPI 6.2831853071795864769
+
+double grn() {
+    static int spare = 0;
+    static double g1, g2;
+    double r1, r2;
+    double val;
+
+    if (spare != 0) {
+        spare = 0;
+        val = g2;
+    } else {
+
+/*
+ * the % RAND_MAX'es are because of SGI's %^&** random().  
+ */
+/*
+        r1 = (double)(random()%RAND_MAX)/(double)RAND_MAX; 
+        r2 = (double)(random()%RAND_MAX)/(double)RAND_MAX; 
+*/
+        r1 = drand48();  r2 = drand48();
+        g1 = sqrt(2. * log(1./r1)) * cos(TWOPI*r2);
+        g2 = sqrt(2. * log(1./r2)) * cos(TWOPI*r1);
+
+        spare = 1;
+        val = g1;
+    }
+
+    return val;
+}
+
+
+void FTOC(ounoiseupdate)(int *n, double *y, double *var, double *dt, double *ts) {
+
+    int i;
+    double damp;
+
+
+    damp = exp(-(*dt)/(*ts));
+
+/* RTF : Following lines have been modified to include a cofficient for
+   the Gaussian random variable term -- evidently this was missing
+   previously. */
+
+    for (i=0; i<(*n); i++) {
+        y[i] = y[i]*damp + sqrt(1. - pow (damp, 2.) )*(*var)*grn();
+    }
+
+    return;
+}
+
+/*
+ * initialize with a gaussian random variable
+ */
+void FTOC(ounoiseinit)(int *n, int *seed, double *var, double *y) {
+
+    int i;
+/*
+    srandom(*seed);
+ */
+    srand48(*seed);
+
+    for (i=0;i<*n;i++) {
+        y[i] = grn()*(*var);
+    }
+}

@@ -1,0 +1,7 @@
+USESETUPVARS Grid
+
+IF Grid in ["","PM4DEV","PM40","PM3","PM2"]
+   REQUIRES Grid/GridMain/paramesh/paramesh4/Incomp
+ENDIF
+
+LINKIF Grid_updateRefinement.F90 Grid/GridMain/paramesh

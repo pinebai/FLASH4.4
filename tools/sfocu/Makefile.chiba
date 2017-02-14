@@ -1,0 +1,22 @@
+CCOMP = mpicc
+CFLAGS = -c -O2 -Wall
+LFLAGS = -o
+
+#Available defines: NO_HDF4, NO_HDF5, NEED_MPI
+
+CDEFINES = -DNO_HDF4
+CFLAGS += -I/soft/apps/packages/hdf5-1.4.4-mpich/include 
+LIBS = -Bstatic -lhdf5 -Bdynamic -lz -ljpeg -lm -L/soft/apps/packages/hdf5-1.4.4-mpich/lib 
+
+EXENAME = sfocu
+OBJS = main.o sfocu.o test_reader.o flash_reader.o namecmp.o flash_reader_hdf5.o flash_reader_chombo.o sameblock.o options.o
+
+.SUFFIXES: .c .o
+.c.o :
+	$(CCOMP) $(CFLAGS) $(CDEFINES) $*.c
+
+default: $(OBJS)
+	$(CCOMP) $(OBJS) $(LIBS) $(LFLAGS) $(EXENAME)
+
+clean:
+	rm $(OBJS) $(EXENAME)

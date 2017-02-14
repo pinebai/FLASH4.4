@@ -1,0 +1,79 @@
+#		Configuration file for a spherical velocity field
+
+REQUIRES physics/Hydro
+REQUIRES physics/Eos
+REQUIRES Driver
+REQUIRES Grid
+
+USESETUPVARS withParticles
+
+# if you want to include particles, add withParticles=TRUE to setup line
+IF withParticles
+   PARTICLETYPE passive INITMETHOD lattice MAPMETHOD quadratic ADVMETHOD rungekutta
+
+   REQUIRES Particles/ParticlesMain
+   REQUESTS Particles/ParticlesMapping/Quadratic
+   REQUESTS Particles/ParticlesInitialization/Lattice
+   REQUESTS IO/IOMain/
+   REQUESTS IO/IOParticles
+ENDIF
+
+#LINKIF Particles_updateAttributes.F90 Particles/ParticlesMain
+
+#! rho_ambient       Ambient density
+#! p_ambient         Ambient pressure
+#! u_ambient         Ambient x-velocity
+#! v_ambient         Ambient y-velocity
+#! vortex_strength   Vortex strength
+#! xctr              Coordinates of the center of the vortex
+#! yctr
+#! nx_subint         number of subintervals for computing cell averages
+#! ny_subint
+
+USESETUPVARS nDim
+IF nDim <> 2
+  SETUPERROR Isentropic Vortex can only be run in 2D.
+ENDIF
+
+
+D rho_ambient       Initial ambient density
+PARAMETER rho_ambient      REAL    1.0
+
+D p_ambient       Initial ambient pressure
+PARAMETER p_ambient        REAL    1.0
+
+D u_ambient       Initial ambient 
+PARAMETER u_ambient        REAL    1.0
+
+D u_ambient       Initial ambient velocity
+PARAMETER v_ambient        REAL    1.0
+
+D vortex_strength 
+PARAMETER vortex_strength  REAL    5.0
+
+D xctr x coordinate of the vortex center
+PARAMETER xctr             REAL    0.0
+
+D yctr y coordinate of the vortex center
+PARAMETER yctr             REAL    0.0
+
+D nx_subint number of subintervals along IAXIS
+PARAMETER nx_subint        INTEGER 10
+
+D ny_subint number of subintervals along JAXIS
+PARAMETER ny_subint        INTEGER 10
+
+PARTICLEPROP pdens		REAL
+PARTICLEMAP TO pdens FROM VARIABLE dens
+#! To enable particle tracking of temperature, enable the
+#! next PARTICLEPROP line and PARTICLEMAP line,
+#! and make sure "pdens" is mentioned in a particle_attribute_N
+#! runtime parameter.
+#! See also comments in Particles_updateAttributes.F90.
+PARTICLEPROP ptemp		REAL
+PARTICLEMAP  TO ptemp  FROM VARIABLE   temp
+
+D particles_attribute_1 specification of which particle_attributes 
+D & to output. The same description is valid for particles_attributes_2...etc
+PARAMETER particle_attribute_1 STRING "pdens"
+PARAMETER particle_attribute_2 STRING "ptemp"

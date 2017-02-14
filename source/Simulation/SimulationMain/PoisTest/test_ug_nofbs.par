@@ -1,0 +1,92 @@
+
+#	Runtime parameters for the Huang & Greengard Poisson test problem.
+#       to be run with the uniform grid in nonfixed blocksize mode
+#       using Pfft for poisson solve
+
+#	Computational volume parameters
+
+#       Grid global index limits and number of processors
+#       iProcs must always be 1, when setup in 2D, kProcs 
+#       and kGridSize must also be 1
+
+iProcs  = 1
+jProcs  = 4
+kProcs  = 1
+
+iGridSize = 256
+jGridSize = 256
+kGridSize = 1
+
+#		Grid dimensionality and geometry
+
+geometry = "cartesian"
+
+
+#		Size of computational volume
+
+xmin		= -2.
+xmax		= 2.
+ymin		= -2.
+ymax		= 2.
+zmin		= -2.
+zmax		= 2.
+
+nblockx = 1
+nblocky = 1
+nblockz = 1
+
+#		Boundary conditions
+
+xl_boundary_type = "periodic"
+xr_boundary_type = "periodic"
+yl_boundary_type = "periodic"
+yr_boundary_type = "periodic"
+zl_boundary_type = "periodic"
+zr_boundary_type = "periodic"
+grav_boundary_type = "periodic"
+
+#	Simulation (grid, time, I/O) parameters
+
+lrefine_max     = 7
+basenm          = "poistest_7lev_"
+restart         = .false.
+
+checkpointFileIntervalTime = 999.    #trstrt          = 999.
+checkpointFileIntervalStep = 999     #nrstrt	      = 999
+plotFileIntervalTime = 999.      #tplot           = 999.
+plotfileIntervalStep = 99
+plotfileNumber = 0
+
+
+nend            = 0
+tmax            = 999.
+refine_var_1	= "dens"
+refine_var_2	= "none"
+igrav           = 1
+
+
+#IO Plotvars
+plot_var_1 = "dens"
+plot_var_2 = "game"
+plot_var_3 = "gamc"
+
+
+run_comment     = "Huang & Greengard Poisson test problem"
+log_file        = "poistest_7lev.log"
+
+sim_smlRho = 1.E-10
+
+mg_maxCorrections = 100     # same?, mgrid_max_vcycles       = 100
+mgrid_max_iter_change   = 1.E-6
+mg_maxResidualNorm = 1.E-6        #mgrid_max_residual_norm = 1.E-6
+mgrid_solve_max_iter    = 5000
+#mgrid_nsmooth           = 8
+#mgrid_smooth_tol        = 1.E-6
+#mgrid_jacobi_weight     = 1.
+mgrid_print_norm        = .true.    #same as F2.
+
+
+refine_cutoff_1   = 0.1
+derefine_cutoff_1 = 0.05
+msgbuffer       = .false.
+eint_switch     = 1.e-4

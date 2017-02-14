@@ -1,0 +1,457 @@
+
+physics/RadTrans
+    useRadTrans [BOOLEAN] [FALSE]
+        flag to indicate whether radiative transfer is in use
+
+physics/RadTrans/RadTransMain
+    rt_dtFactor [REAL] [0.1]
+        Valid Values: 0.0+ to INFTY
+        Coefficient for RadTrans time step
+    useRadTrans [BOOLEAN] [TRUE]
+        flag to indicate whether radiative transfer is in use
+
+physics/RadTrans/RadTransMain/MGD
+    rt_computeDt [BOOLEAN] [FALSE]
+        When true, attempt to compute a time step associated with MGD
+    rt_groupBarrier [BOOLEAN] [FALSE]
+        Option to time group load imbalance
+    rt_mgdBoundEntry [STRING] ["grbd_manual"]
+        Valid Values: "grbd_manual"
+        How the group bounds will be input
+    rt_mgdBounds_1 [REAL] [-1.0]
+        Valid Values: Unconstrained
+        These parameters store the group boundaries for manual entry
+    rt_mgdBounds_10 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_100 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_101 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_11 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_12 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_13 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_14 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_15 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_16 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_17 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_18 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_19 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_2 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_20 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_21 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_22 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_23 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_24 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_25 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_26 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_27 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_28 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_29 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_3 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_30 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_31 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_32 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_33 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_34 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_35 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_36 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_37 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_38 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_39 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_4 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_40 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_41 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_42 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_43 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_44 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_45 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_46 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_47 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_48 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_49 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_5 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_50 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_51 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_52 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_53 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_54 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_55 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_56 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_57 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_58 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_59 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_6 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_60 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_61 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_62 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_63 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_64 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_65 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_66 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_67 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_68 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_69 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_7 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_70 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_71 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_72 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_73 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_74 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_75 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_76 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_77 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_78 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_79 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_8 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_80 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_81 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_82 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_83 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_84 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_85 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_86 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_87 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_88 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_89 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_9 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_90 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_91 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_92 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_93 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_94 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_95 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_96 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_97 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_98 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdBounds_99 [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdFlCoef [REAL] [1.0]
+        Valid Values: Unconstrained
+        MGD flux limiter coefficient
+    rt_mgdFlMode [STRING] ["fl_none"]
+        Valid Values: "fl_none", "fl_harmonic", "fl_minmax", "fl_larsen",
+        "fl_levermorepomraning1981"
+        MGD flux limiter mode
+    rt_mgdNumGroups [INTEGER] [0]
+        Valid Values: Unconstrained
+        Number of groups in the MGD calculation
+    rt_mgdXlBoundaryTemp [REAL] [-1.0]
+        Valid Values: Unconstrained
+        Boundary radiation temperature for MGD, in kelvin
+    rt_mgdXlBoundaryType [STRING] ["reflecting"]
+        Valid Values: "reflecting", "vacuum", "dirichlet", "neumann", "outflow",
+        "outstream"
+        MGD bcTypes.
+    rt_mgdXrBoundaryTemp [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdXrBoundaryType [STRING] ["reflecting"]
+        Valid Values: "reflecting", "vacuum", "dirichlet", "neumann", "outflow",
+        "outstream"
+
+    rt_mgdYlBoundaryTemp [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdYlBoundaryType [STRING] ["reflecting"]
+        Valid Values: "reflecting", "vacuum", "dirichlet", "neumann", "outflow",
+        "outstream"
+
+    rt_mgdYrBoundaryTemp [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdYrBoundaryType [STRING] ["reflecting"]
+        Valid Values: "reflecting", "vacuum", "dirichlet", "neumann", "outflow",
+        "outstream"
+
+    rt_mgdZlBoundaryTemp [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdZlBoundaryType [STRING] ["reflecting"]
+        Valid Values: "reflecting", "vacuum", "dirichlet", "neumann", "outflow",
+        "outstream"
+
+    rt_mgdZrBoundaryTemp [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    rt_mgdZrBoundaryType [STRING] ["reflecting"]
+        Valid Values: "reflecting", "vacuum", "dirichlet", "neumann", "outflow",
+        "outstream"
+
+    rt_mgdthetaImplct [REAL] [1.0]
+        Valid Values: 0.0 to 1.0
+        Implicitness factor of the solver.
+    rt_tempChangeRelTol [REAL] [1.e3]
+        Valid Values: 0.0+ to INFTY
+        Tolerance for maximum relative temperature change in a cell in a time
+        step. Currently only applied to electron temperature by ExpRelax
+        implementation.
+    rt_timeGroups [BOOLEAN] [FALSE]
+        Option to time individual groups (cannot be used with meshCopyCount > 1)
+    rt_useMGD [BOOLEAN] [FALSE]
+        use multigroup radiation diffusion
+
+physics/RadTrans/RadTransMain/MGD/ExpRelax
+    rt_expRelaxMaxIter [INTEGER] [3]
+        Valid Values: 1 to INFTY
+        Maximum number of iterations in ExpRelax outer loop
+
+physics/RadTrans/RadTransMain/MGD/Unified
+    rt_mgdthetaC [REAL] [-1.0]
+        Valid Values: 0.0 to 1.0, -1.0
+        Implicitness factor for the absorption part of the unified solver. Use
+        -1 to indicate that the value of rt_mgdthetaImplct should be used.
+    rt_mgdthetaD [REAL] [0.5]
+        Valid Values: 0.0 to 1.0, -1.0
+        Implicitness factor for the emission part of the unified solver. Use -1
+        to indicate that the value of rt_mgdthetaImplct should be used.
+    rt_tightIonCoupling [BOOLEAN] [FALSE]
+        Should the RadTrans implementation assume tight thermal coupling between
+        electrons and ions? The implementation may uses this parameter to decide
+        whether to use cv or cv_ele to linearize the relation beetween electron
+        temperature and energy internal energy.
+
+physics/RadTrans/RadTransMain/NeutrinoLeakage
+    leak_doHeat [BOOLEAN] [TRUE]
+        Switch whether or not to include neutrino heating in calculation
+    leak_dx [REAL] [1.]
+        Valid Values: Unconstrained
+        Minimum radial spacing of the rays, used up to leak_radLog
+    leak_heatFac [REAL] [1.]
+        Valid Values: Unconstrained
+        Multiplicative factor in heating equation, f_heat.
+    leak_numPhi [INTEGER] [1]
+        Valid Values: Unconstrained
+        Number of longitudinal points in the leakage rays
+    leak_numRad [INTEGER] [0]
+        Valid Values: Unconstrained
+        Number of radial points in the leakage rays
+    leak_numTht [INTEGER] [1]
+        Valid Values: Unconstrained
+        Number of latitudinal points in the leakage rays
+    leak_phiMax [REAL] [0.0]
+        Valid Values: Unconstrained
+        Maximum longitudinal angle of the leakage rays, measured from the +x
+        axis (only 3D), in radians/pi
+    leak_radLog [REAL] [0.]
+        Valid Values: Unconstrained
+        Radius at which the radial spacing of the rays begins to increase
+        logarithmically
+    leak_radMax [REAL] [0.0]
+        Valid Values: Unconstrained
+        Maximum radius of the leakage rays
+    leak_reducedSteps [INTEGER] [1]
+        Valid Values: Unconstrained
+        Number of minimum time steps in between leakage calculation after
+        leak_reducedTime
+    leak_reducedTime [REAL] [1.e20]
+        Valid Values: Unconstrained
+        Time, in seconds, at which the frequency of leakage computation is
+        reduced
+    leak_subCommSize [INTEGER] [-1]
+        Valid Values: Unconstrained
+        Size of the MPI subcommunicator for leakage communication (-1 uses
+        meshNumProcs)
+    leak_thtMax [REAL] [0.0]
+        Valid Values: Unconstrained
+        Maximum latitudinal angle of the leakage rays, measured from the +y
+        axis, in radians/pi
+    threadLeakBlockList [BOOLEAN] [TRUE]
+
+    threadLeakWithinBlock [BOOLEAN] [TRUE]
+

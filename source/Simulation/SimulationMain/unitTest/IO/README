@@ -1,0 +1,60 @@
+This is a simple IO unit test which "tests" the IO throughput of
+either hdf5 or parallel netcdf.  It takes the place of the io_benchmark in 
+FLASH2
+
+The unitTest is setup like any other FLASH3 simulation.  It can be run
+with any IO implementation as long as the correct Grid implementation
+is included.  This unitTest writes a checkpoint file, a plotfile and
+if particles are included, a particle file.  (ParticlesIO can be
+tested simply by including particles in the simulation.  Variable needed
+for particles should be uncommented in the Config file.
+
+
+Example setups:
+
+#setup for Paramesh Grid and serial hdf5 io
+./setup unitTest/IO -auto
+
+#setup for Paramesh Grid with parallel hdf5 io (see shortcuts docs for explanation)
+./setup unitTest/IO -auto +parallelIO     (same as)
+./setup unitTest/IO -auto -unit=IO/IOMain/hdf5/parallel/PM
+
+#setup for Uniform Grid with serial hdf5 io, 3d problem, increasing default number of zones
+./setup unitTest/IO -3d -auto +ug -nxb=16 -nyb=16 -nzb=16  (same as)
+./setup unitTest/IO -3d -auto -unit=Grid/GridMain/UG -nxb=16 -nyb=16 -nzb=16  
+
+
+#setup for PM3 and parallel netcdf, with particles
+./setup unitTest/IO -auto -unit=Particles +pnetcdf
+
+
+#setup for UG and parallel netcdf
+./setup unitTest/IO -auto +pnetcdf +ug
+
+
+Run the test like any other FLASH simulation:
+mpirun -np numProcs flash3
+
+
+*The Config file in unitTest/IO declares some dummy grid scope
+variables which are stored in the unk array.  If the user wants a more
+intensive IO test, more variables can be added.  Variables are
+initialized to dummy values in Driver_evolveFlash
+
+*Variables will only be output to the plotfile if they are declared in
+the flash.par (see sample flash.par)
+
+*The only units besides the simulation unit included in this
+simulation are Grid, IO, Driver, Timers, Logfile, RuntimeParameters
+and PhysicalConstants.
+
+*If the Paramesh Grid implementation is being used, it is important to
+note that the grid will not refine on its own.  The user should set
+lrefine_min to a value > 1 to create more blocks.  The user could also
+set the runtime parameters nblockx, nblocky, nblockz to make a bigger
+problem.
+
+*Just like any other simulation the user can change the number of
+zones in a simulation using -nxb=numZones on the setup line.
+
+

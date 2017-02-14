@@ -1,0 +1,4 @@
+# Config file for the Opacity/OpacityMain/method/LowTemp unit
+
+D control parameter indicating if the Klein-Nishina opacity is to be ignored
+PARAMETER opacity_ignoreKleinNishina BOOLEAN FALSE

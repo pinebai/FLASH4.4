@@ -1,0 +1,16 @@
+REQUIRES Grid/GridSolvers/Pfft/ImplicitDiffusionSolver  # Need the pfft routines.
+VARIABLE COND                  # Conductivity in Cell (i)
+
+D BC Types.
+PARAMETER diff_XlBoundaryType STRING "outflow"
+PARAMETER diff_XrBoundaryType STRING "outflow"
+PARAMETER diff_YlBoundaryType STRING "outflow"
+PARAMETER diff_YrBoundaryType STRING "outflow"
+PARAMETER diff_ZlBoundaryType STRING "outflow"
+PARAMETER diff_ZrBoundaryType STRING "outflow"
+
+D Implictiness parameter
+PARAMETER diff_thetaImplct REAL 0.5 [0.0 ... 1.0]
+
+
+

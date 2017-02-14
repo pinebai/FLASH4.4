@@ -1,0 +1,8 @@
+# Config file for ProtonEmission unit
+DEFAULT ProtonEmissionMain
+
+D 	useProtonEmission flag indicating whether to use the ProtonEmission unit
+PARAMETER useProtonEmission BOOLEAN CONSTANT FALSE
+
+# localAPI 
+CHILDORDER localAPI

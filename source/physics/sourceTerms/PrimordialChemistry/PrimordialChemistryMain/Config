@@ -1,0 +1,26 @@
+#   This is the Config file for PrimordialChemistry
+#   Basically here for defining the species I will be using
+#This is copied from Cool's Config. Assuming this needs to be here
+
+D pchem_fracHydrogen
+D pchem_fracHelium
+D pchem_fracDeuterium
+
+PARAMETER pchem_fracHydrogen     REAL  0.760
+PARAMETER pchem_fracHelium	   REAL  0.240
+PARAMETER pchem_fracDeuterium    REAL  0.0
+PARAMETER pchem_j21		   REAL  0.0
+PARAMETER pchem_fshh2		   REAL	 1.0
+PARAMETER pchem_fshhd		   REAL  1.0
+
+D pchem_algebra
+PARAMETER pchem_algebra INTEGER 2
+D pchem_odeStepper
+PARAMETER pchem_odeStepper INTEGER 1
+
+D Do you want to cool? (default 1=yes)
+PARAMETER pchem_doCool INTEGER 1
+D Do you want to metal cool? (default 1=yes)
+PARAMETER pchem_mCool INTEGER 1
+D Which Case (A or B)? (default 1=Case B)
+PARAMETER pchem_ccCase INTEGER 1

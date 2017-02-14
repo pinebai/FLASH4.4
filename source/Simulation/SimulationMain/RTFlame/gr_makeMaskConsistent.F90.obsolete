@@ -1,0 +1,243 @@
+!!****if* source/Simulation/SimulationMain/RTFlame/gr_makeMaskConsistent
+!!
+!! NAME
+!!
+!!  gr_makeMaskConsistent
+!!
+!! SYNOPSIS
+!!
+!!  call gr_makeMaskConsistent(integer,intent(IN)  :: gridDataStruct,
+!!                             integer,intent(IN)  :: eosMode,
+!!                             logical,intent(OUT)  :: needEos)
+!!
+!! DESCRIPTION
+!!
+!!  For the solvers native to FLASH, this routine provides the service of 
+!!  ensuring that none of essential variables are masked out. For example 
+!!  if mask value is true for a variable that is determined
+!!  through application of Eos, then it will be made sure that the inputs to 
+!!  Eos also get their values filled. The output parameter "needEos" indicates 
+!!  to the calling routine that the calculated guardcells may not be 
+!!  thermodynamically consistent, and the calling routine should apply Eos. 
+!!
+!!
+!! ARGUMENTS
+!!
+!!   gridDataStruct : indicates a variable that the caller needs, as an index into unk
+!!
+!!   eosMode : the eosMode which the calling routine is using.
+!!
+!!   needEos :  indicates whether Eos should be called after
+!!                 guard cell filling.
+!!
+!! NOTES
+!!
+!!  This is only a very minor modification of
+!!     source/Grid/GridMain/paramesh/paramesh4/gr_makeMaskConsistent.F90
+!!  in order to add some dependencies specific to the HSE boundary condition
+!!  Dean Townsley 2009
+!!
+!!***
+
+
+subroutine gr_makeMaskConsistent(gridDataStruct,eosMode,needEos)
+
+  use Eos_interface, ONLY : Eos_getParameters
+  use Driver_interface, ONLY : Driver_abortFlash
+  use Grid_data, ONLY : gr_vartypes, gr_convertToConsvdForMeshCalls,gr_convertToConsvdInMeshInterp
+
+
+  use physicaldata, ONLY : gcell_on_cc
+  implicit none
+
+#include "constants.h"
+#include "Flash.h"
+
+  integer,intent(IN) :: gridDataStruct
+  integer,intent(IN) :: eosMode
+  logical,intent(INOUT) :: needEos
+
+
+  integer :: iref
+
+  logical :: EosOutput, RelevantGammaC, EnergyVar
+  logical,save :: inputsAreUnchangedByEos,inputTempIsGuessForEos,constantGammaC,&
+       inputMassFracNeededByEos
+  real,save :: smallE = 0.0     !! used sort-of like a 'first_time' flag here; 
+                                !! a valid smallE should be .ne. 0.
+
+
+  logical :: dens=.true.
+
+
+  !! The next sections processes the defined variables in the current simulation
+  !! to determine the situations that need to be examined to make the mask 
+  !! consistent. The defined constants that provide indices into the grid
+  !! data structures have to carefully handled otherwise the simulations that
+  !! haven't included the corresponding variables will fail at compile time.
+  !! Doing them separately in a section makes sure that the part of code that 
+  !! is examining the conditions is not interspersed with a number of ifdefs,
+  !! or even too many conditional, making it cumbersome to read. This is 
+  !! especially true of the HAVE_UNK_.... It eliminates the need to check for
+  !! the existence of each individual EOS related variable before using it in
+  !! the code.
+
+
+  !! Density, pressure, temperature and energy must be defined in order to
+  !! use the equation of state. If any of them in undefined, Eos cannot be used
+
+#define HAVE_UNK_VARS_FOR_EOS
+#ifndef TEMP_VAR
+#undef HAVE_UNK_VARS_FOR_EOS
+#endif
+#ifndef PRES_VAR
+#undef HAVE_UNK_VARS_FOR_EOS
+#endif
+#ifndef ENER_VAR
+#undef HAVE_UNK_VARS_FOR_EOS
+#endif
+#ifndef DENS_VAR
+#undef HAVE_UNK_VARS_FOR_EOS
+#define DENS_VAR 1
+  dens=.false.
+#endif
+
+  !! If all the EOS variables are defined, that is the simulation is likely to
+  !! be using EOS, certain other important EOS related variables must be
+  !! handled. The undefined variables are given the index of a defined variable
+  !! that will have the same value in the mask. For example if mask(VELX_VAR)
+  !! is true, the mask(VELY_VAR) and mask(VELZ_VAR) must be true too. If they
+  !! don't exist, they are made to point to VELX_VAR
+
+#ifdef HAVE_UNK_VARS_FOR_EOS
+
+#ifndef EINT_VAR
+#define EINT_VAR ENER_VAR
+#endif
+
+#ifndef VELY_VAR
+#define VELY_VAR VELX_VAR
+#endif
+
+#ifndef VELZ_VAR
+#define VELZVAR VELX_VAR
+#endif
+
+#ifdef USE_EOS_YE
+#ifndef YE_MSCALAR
+  call Driver_abortFlash("Grid_updateRefinement compiled in USE_EOS_YE mode, but no YE_MSCALAR is defined")
+#endif
+
+#endif
+     !! endif for HAVE_UNK...
+#endif  
+
+
+
+  if((gridDataStruct/=CENTER).and.(gridDataStruct/=CENTER_FACES)) return
+  
+  !! First find out if there are variables that are output from an Eos call.
+  needEos=.false.
+
+#ifdef HAVE_UNK_VARS_FOR_EOS
+  if (smallE .EQ. 0.0) then
+     call Eos_getParameters(inputsAreUnchanged=inputsAreUnchangedByEos,&
+          inputTempIsGuess=inputTempIsGuessForEos,&
+          constantGammaC=constantGammaC,&
+          inputMassFracNeeded=inputMassFracNeededByEos,&
+          smalle=smallE)
+  end if
+  
+  !! If the one of the output variables in the current eosMode is set to true
+  !! then Eos call is needed
+  needEos = (.not.(eosMode==MODE_DENS_TEMP)).and.(gcell_on_cc(TEMP_VAR))
+  needEos = (.not.(eosMode==MODE_DENS_PRES)).and.(gcell_on_cc(PRES_VAR)).or.needEos
+  
+  !! If any energy variable is set to true then eos call is needed DEV:: why ?
+  needEos= gcell_on_cc(ENER_VAR).or.gcell_on_cc(EINT_VAR).or.needEos 
+  
+  !! If any of the two gammas are true then eos call is needed
+  needEos= (gcell_on_cc(GAMC_VAR) .AND. .NOT. constantGammaC).or.&
+       gcell_on_cc(GAME_VAR).or.needEos
+  
+  if(needEos) then
+     
+     !! if eos call is needed, density is always input, so must be true
+     gcell_on_cc(DENS_VAR)=.true. 
+     
+     !! temp is true if either it is input to eos or is used as initial guess
+     gcell_on_cc(TEMP_VAR)=gcell_on_cc(TEMP_VAR).or.inputTempIsGuessForEos.or.&
+          (eosMode==MODE_DENS_TEMP)
+     
+     !! pressure is true if input to eos
+     gcell_on_cc(PRES_VAR)=gcell_on_cc(PRES_VAR).or.(eosMode==MODE_DENS_PRES)
+     
+     !! Generic true for any kind of Eos
+     gcell_on_cc(EINT_VAR) = .TRUE.
+     gcell_on_cc(ENER_VAR) = .TRUE.
+     gcell_on_cc(VELX_VAR) = .TRUE.
+     gcell_on_cc(VELY_VAR) = .TRUE.
+     gcell_on_cc(VELZ_VAR) = .TRUE.
+     
+     !! Relevant only when using helmholtz eos in either form
+#ifdef USE_EOS_YE
+     !! cal says abar=1/sumy
+     !! cal says zbar=ye / sumy and he claims sumy are never zero
+     gcell_on_cc(SUMY_MSCALAR) = .TRUE.
+     gcell_on_cc(YE_MSCALAR) = .TRUE.
+#else  
+     !! if USE_EOS_YE not defined
+     !! mass fractions are needed because they are needed to get the density right
+     if (inputMassFracNeededByEos) gcell_on_cc(SPECIES_BEGIN:SPECIES_END) = .TRUE.
+#endif
+  end if  !! finish the handling of Eos needs in applying mask
+  
+#endif  
+  
+  
+
+  !! now handle other situations that may arise when density is included 
+  !! in the simulation
+  if(dens) then
+     if(.not.gcell_on_cc(DENS_VAR)) then
+        if (gr_convertToConsvdForMeshCalls .OR. gr_convertToConsvdInMeshInterp) then
+           do iref=1,NUNK_VARS
+              !! For mass-specific variable u, interpolation may be done on the 
+              !! product u*rho, so density is needed, too.
+              gcell_on_cc(DENS_VAR)=gcell_on_cc(DENS_VAR).or.&
+                   (gcell_on_cc(iref).and.(gr_vartypes(iref)==VARTYPE_PER_MASS))
+           end do
+        end if
+     end if
+  endif
+  
+
+#ifdef GRID_WITH_MONOTONIC
+
+  if (SPECIES_BEGIN .LT. SPECIES_END) then
+     if (gr_convertToConsvdForMeshCalls .OR. gr_convertToConsvdInMeshInterp) then
+        if (dens) then
+           if(gcell_on_cc(DENS_VAR)) gcell_on_cc(SPECIES_BEGIN:SPECIES_END) = .TRUE.
+        end if
+     else
+        if( any(gcell_on_cc(SPECIES_BEGIN:SPECIES_END)))&
+             gcell_on_cc(SPECIES_BEGIN:SPECIES_END) = .TRUE.
+     end if
+  end if
+
+#endif
+
+  !!  additional logic necessary due to the hydrostatic boundary conditions
+  ! for constant isothermal BC we need temperature and material info (ye, sumy) in interior
+  ! this temperature setting does not trigger the "needEos" flag.
+  if ( gcell_on_cc(DENS_VAR) .or. gcell_on_cc(EINT_VAR) .or. gcell_on_cc(TEMP_VAR) &
+       .or. gcell_on_cc(PRES_VAR) .or. gcell_on_cc(ENER_VAR) &
+       .or. gcell_on_cc(GAMC_VAR) .or. gcell_on_cc(GAME_VAR) ) then
+     gcell_on_cc(DENS_VAR) = .true.
+     gcell_on_cc(TEMP_VAR) = .true.
+     ! material information (ye, yi) stored in flame variable
+     gcell_on_cc(FLAM_MSCALAR) = .true.
+  endif
+
+
+end subroutine gr_makeMaskConsistent

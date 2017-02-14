@@ -1,0 +1,151 @@
+
+physics/Diffuse
+    useDiffuse [BOOLEAN] CONSTANT [FALSE]
+        flags whether the Diffuse unit is being used at all
+    useDiffuseComputeDtSpecies [BOOLEAN] [FALSE]
+        flags whether Diffuse_computeDt considers species mass diffusion
+    useDiffuseComputeDtTherm [BOOLEAN] [FALSE]
+        flags whether Diffuse_computeDt considers thermal conduction
+    useDiffuseComputeDtVisc [BOOLEAN] [FALSE]
+        flags whether Diffuse_computeDt considers viscosity
+    useDiffuseComputeDtmagnetic [BOOLEAN] [FALSE]
+
+
+physics/Diffuse/DiffuseFluxBased
+    diff_scaleFactThermFlux [REAL] [1.0]
+        Valid Values: Unconstrained
+        Factor applied to the temperature differences (or internal energy
+        differences) that are added to flux arrays by the flux-based thermal
+        Diffusion implementation.
+    geometric_mean_diff [BOOLEAN] [FALSE]
+
+    thermal_diff_method [INTEGER] [1]
+        Valid Values: Unconstrained
+
+
+physics/Diffuse/DiffuseMain
+    diff_eleFlCoef [REAL] [1.0]
+        Valid Values: Unconstrained
+        Electron conduction flux limiter coefficient
+    diff_eleFlMode [STRING] ["fl_none"]
+        Valid Values: "fl_none", "fl_harmonic", "fl_minmax", "fl_larsen",
+        "fl_levermorepomraning1981"
+        Electron conduction flux limiter mode
+    diff_eleXlBoundaryType [STRING] ["outflow"]
+        Valid Values: Unconstrained
+        Electron conduction bcTypes.
+    diff_eleXrBoundaryType [STRING] ["outflow"]
+        Valid Values: Unconstrained
+
+    diff_eleYlBoundaryType [STRING] ["outflow"]
+        Valid Values: Unconstrained
+
+    diff_eleYrBoundaryType [STRING] ["outflow"]
+        Valid Values: Unconstrained
+
+    diff_eleZlBoundaryType [STRING] ["outflow"]
+        Valid Values: Unconstrained
+
+    diff_eleZrBoundaryType [STRING] ["outflow"]
+        Valid Values: Unconstrained
+
+    diff_ionFlCoef [REAL] [1.0]
+        Valid Values: Unconstrained
+        Ion conduction flux limiter coefficient
+    diff_ionFlMode [STRING] ["fl_none"]
+        Valid Values: "fl_none", "fl_harmonic", "fl_minmax", "fl_larsen"
+        Ion conduction flux limiter mode
+    diff_ionXlBoundaryType [STRING] ["outflow"]
+        Valid Values: Unconstrained
+        Ion conduction bcTypes.
+    diff_ionXrBoundaryType [STRING] ["outflow"]
+        Valid Values: Unconstrained
+
+    diff_ionYlBoundaryType [STRING] ["outflow"]
+        Valid Values: Unconstrained
+
+    diff_ionYrBoundaryType [STRING] ["outflow"]
+        Valid Values: Unconstrained
+
+    diff_ionZlBoundaryType [STRING] ["outflow"]
+        Valid Values: Unconstrained
+
+    diff_ionZrBoundaryType [STRING] ["outflow"]
+        Valid Values: Unconstrained
+
+    diff_scaleFactThermSaTempDiff [REAL] [1.0]
+        Valid Values: Unconstrained
+        Factor applied to the temperature difference (or internal energy
+        difference) that is computed by the standalone thermal Diffusion
+        implementation.
+    diff_scaleFactThermSaTime [REAL] [1.0]
+        Valid Values: Unconstrained
+        Factor applied to the time step for which the standalone thermal
+        Diffusion implementation computes the temperature (or internal energy)
+        increase or decrease.
+    diff_useEleCond [BOOLEAN] [FALSE]
+
+    diff_useIonCond [BOOLEAN] [FALSE]
+
+    diffusion_cutoff_density [REAL] [1.e-30]
+        Valid Values: Unconstrained
+        density below which we no longer diffuse
+    dt_diff_factor [REAL] [0.8]
+        Valid Values: Unconstrained
+        factor that scales the timestep returned by Diffuse_computeDt
+    useDiffuse [BOOLEAN] [TRUE]
+        whether any method of the Diffuse unit should contribute to fluxes
+    useDiffuseComputeDtSpecies [BOOLEAN] [TRUE]
+        flags whether Diffuse_computeDt considers species mass diffusion
+    useDiffuseComputeDtTherm [BOOLEAN] [TRUE]
+        flags whether Diffuse_computeDt considers thermal conduction
+    useDiffuseComputeDtVisc [BOOLEAN] [TRUE]
+        flags whether Diffuse_computeDt considers viscosity
+    useDiffuseComputeDtmagnetic [BOOLEAN] [TRUE]
+
+    useDiffuseSpecies [BOOLEAN] [TRUE]
+        whether Diffuse_species [TO BE IMPLEMENTED] should contribute to fluxes
+    useDiffuseTherm [BOOLEAN] [TRUE]
+        whether Diffuse_therm should contribute to fluxes
+    useDiffuseVisc [BOOLEAN] [TRUE]
+        whether Diffuse_visc should contribute to fluxes
+
+physics/Diffuse/DiffuseMain/CG
+    diff_thetaImplct [REAL] [0.5]
+        Valid Values: 0.0 to 1.0
+
+    diff_updEint [BOOLEAN] [FALSE]
+
+
+physics/Diffuse/DiffuseMain/Split
+    diff_XlBoundaryType [STRING] ["outflow"]
+        Valid Values: Unconstrained
+
+    diff_XrBoundaryType [STRING] ["outflow"]
+        Valid Values: Unconstrained
+
+    diff_YlBoundaryType [STRING] ["outflow"]
+        Valid Values: Unconstrained
+
+    diff_YrBoundaryType [STRING] ["outflow"]
+        Valid Values: Unconstrained
+
+    diff_ZlBoundaryType [STRING] ["outflow"]
+        Valid Values: Unconstrained
+
+    diff_ZrBoundaryType [STRING] ["outflow"]
+        Valid Values: Unconstrained
+
+    diff_thetaImplct [REAL] [0.5]
+        Valid Values: 0.0 to 1.0
+
+
+physics/Diffuse/DiffuseMain/Unsplit
+    diff_ionThetaImplct [REAL] [0.5]
+        Valid Values: 0.0 to 1.0
+
+    diff_thetaImplct [REAL] [0.5]
+        Valid Values: 0.0 to 1.0
+
+    diff_updEint [BOOLEAN] [FALSE]
+

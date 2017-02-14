@@ -1,0 +1,10 @@
+#Config file for Grid/GridBoundaryConditions/Flash3HSE
+
+# We use the runmtime parameters "gconst" and "gdirec" defined
+# in the GravityMain/Constant Config file.  We currently don't
+# use any of the actual code of that Gravity implementation,
+# so in principle a simulation can choose to define these runtime
+# parameters in its own Config file and would then not need to
+# include GravityMain/Constant. That is the reason why we use
+# REQUESTS but not REQUIRES here.
+REQUESTS physics/Gravity/GravityMain/Constant

@@ -1,0 +1,37 @@
+#Nightly tests run on lenovolaptop
+#Launch using ./flashTest.py -v -f jobs/mainBatch
+#The file at jobs/mainBatch is this file.
+
+#Unit tests
+#Maclaurin-spheroid - 3d, Outflow BCs, Multipole
+UnitTest/Gravity/Poisson3/Chombo/UG/3d
+UnitTest/Gravity/Poisson3/Chombo/AMR/3d
+
+#Eos - Single processor
+UnitTest/Eos/Multigamma/Chombo/AMR/3d
+UnitTest/Eos/Multigamma/Chombo/UG/3d
+
+#PFFT - 3d, UG, Periodic BCs.
+UnitTest/PFFT_PoissonFD/Chombo/UG/3d
+
+#Comparison Tests
+#Sedov - 2d, UG and AMR, Outflow BCs.
+Comparison/Sedov/Chombo/AMR/2d
+Comparison/Sedov/Chombo/UG/2d
+
+#Sod - 2d, UG and AMR, Outflow BCs, Split and Unsplit
+Comparison/Sod/Chombo/AMR/2d/split
+Comparison/Sod/Chombo/AMR/2d/unsplit
+
+#Blast2 - 1d, AMR, Reflecting BCs
+# DEV CD Aborts when using 4 processors with the message
+# DEV CD MayDay: TreeIntVectSet.cpp:1995: Assertion `bxNumPts != 0' failed. !!!
+Comparison/Blast2/Chombo/AMR/1d
+
+#Isentropic Vortex - 2d, AMR, Periodic BCs
+# DEV CD Aborts when using > 2 processors with this message
+# DEV CD MayDay: TreeIntVectSet.cpp:1995: Assertion `bxNumPts != 0' failed. !!!
+Comparison/IsentropicVortex/Chombo/AMR/2d
+
+#StirTurb - 3d, AMR, Periodic BCs, usage of SCRATCH array
+Comparison/StirTurb/Chombo/AMR/3d

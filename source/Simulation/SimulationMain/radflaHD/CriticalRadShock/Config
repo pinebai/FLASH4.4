@@ -1,0 +1,64 @@
+# Coniguration file for the radiative sub- and supercritical shock tests 
+#
+# Setup call:
+#   ./setup CriticalRadShock_FLASH4.2 -auto -1d -maxblocks=500 mgd_meshgroups=1
+#REQUIRES Driver
+#REQUESTS physics/Diffuse/DiffuseMain/Unsplit
+#REQUESTS physics/Eos/EosMain/multiTemp/Gamma
+#REQUESTS physics/materialProperties/Opacity/OpacityMain/Constant
+#REQUESTS physics/RadTrans/RadTransMain/MGD
+#REQUESTS physics/sourceTerms/Heatexchange/HeatexchangeMain/Spitzer
+
+#   ./setup radflaHD/CriticalRadShock -auto -1d -maxblocks=500 mgd_meshgroups=1 -objdir CritRadShock_new species=h1 ManualSpeciesDirectives=True +parallelio +uhd3tr -site=macbro.uchicago.edu -debug
+
+REQUIRES Driver
+REQUIRES Grid
+
+# If setting up with IgnoreSpecies=Yes, species will be ignored and a "Gamma"
+# variant of Eos will be used. Otherwise, a "Multigamma" variant of Eos is used.
+USESETUPVARS IgnoreSpecies
+
+REQUIRES physics/Hydro/HydroMain/unsplit_rad/Hydro_Unsplit
+REQUIRES physics/Hydro/HydroMain/unsplit_rad/multiTemp
+IF IgnoreSpecies
+ REQUIRES physics/Eos/EosMain/multiTemp/MatRad3/Gamma
+ELSE
+ REQUIRES physics/Eos/EosMain/multiTemp/MatRad3/Multigamma
+ENDIF
+REQUESTS physics/Diffuse/DiffuseMain/Unsplit
+REQUESTS physics/materialProperties/Opacity/OpacityMain/Constant
+REQUESTS physics/RadTrans/RadTransMain/MGD
+IF not IgnoreSpecies
+   REQUIRES Multispecies
+ENDIF
+
+LINKIF Simulation_initSpecies.F90 Multispecies/MultispeciesMain
+
+##########################
+#                        #
+#   RUNTIME PARAMETERS   #
+#                        #
+##########################
+D sim_rho reference density
+PARAMETER sim_rho   REAL 1.0
+
+D sim_tgas gas temperature
+PARAMETER sim_tgas REAL 1.0
+
+D sim_trad radiation temperature
+PARAMETER sim_trad REAL 1.0
+
+D sim_velx speed of gas
+PARAMETER sim_velx REAL 1.0
+
+D sim_M0 shock mach number
+PARAMETER sim_M0  REAL 1.0
+
+D sim_P0 ratio of radiation pressure to material pressure
+PARAMETER sim_P0  REAL 1.0
+
+IF not IgnoreSpecies
+
+SPECIES    H1	 # Properties A=1.  Z=1.  Eb=0.
+
+ENDIF

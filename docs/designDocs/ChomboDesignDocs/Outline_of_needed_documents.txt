@@ -1,0 +1,23 @@
+SVN repository at Flash Center
+  build process for integrating the two libraries
+  the list of steps for getting Grid_chombo going
+
+Changes needed for building process.
+     Chombo -- Makefile
+            -- source
+     FLASH  -- Makefiles
+            -- source
+            -- 
+        link problems likely to occur (interoperability of languages)
+
+    FLASH API changes --- pointer problems
+                      --- chombo PPM
+
+Prioritization of 4 things on the board
+   1.  ANAG unsplit PPM
+   2.  AMR Poisson
+   3.  CT MHD Solver
+   4.  Particles (design document for what is going to go into Chombo for 
+                  the particles framework)
+
+Design document for Grid_chombo, Hydro_chombo.

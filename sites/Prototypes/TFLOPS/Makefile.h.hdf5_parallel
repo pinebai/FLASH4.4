@@ -1,0 +1,94 @@
+#	FLASH makefile definitions for ASCI Red machine (Intel)
+#
+#	2/28/99
+#----------------------------------------------------------------------------
+
+HDF4_PATH  = 
+HDF5_PATH  = 
+
+HDFPATH    = /usr/community/hdf5/hdf5-1_2_1
+ROMIOPATH  = /usr/community/mpi-io/romio/romio_1.0
+
+ZLIB_PATH  =
+
+PAPI_PATH  =
+PAPI_FLAGS =
+
+NCMPI_PATH =
+MPE_PATH   =
+
+#----------------------------------------------------------------------------
+# Compiler and linker commands
+#----------------------------------------------------------------------------
+
+FCOMP   = mpif90
+CCOMP   = mpicc
+CPPCOMP = mpiCC
+LINK    = mpif90
+
+
+# pre-processor flag
+
+PP      = -D
+
+#-----------------------------------------------------------------------------
+# Compilation flags
+#
+#  Three sets of compilation/linking flags are defined: one for optimized code
+#  code ("-opt"), one for debugging ("-debug"), and one for testing ("-test").
+#  Passing these flags to the setup script will cause the value associated with
+#  the corresponding keys (i.e. those ending in "_OPT", "_DEBUG", or "_TEST") to
+#  be incorporated into the final Makefile. For example, passing "-opt" to the
+#  setup script will cause the flags following "FFLAGS_OPT" to be assigned to
+#  "FFLAGS" in the final Makefile. If none of these flags are passed, the default
+#  behavior will match that of the "-opt" flag.
+#  In general, "-opt" is meant to optimize compilation and linking. "-debug"
+#  should enable runtime bounds checking, debugger symbols, and other compiler-
+#  specific debugging options. "-test" is useful for testing different
+#  combinations of compiler flags particular to your individual system.
+#----------------------------------------------------------------------------
+
+FFLAGS  = -byteswapio -O2 -r8 -c
+CFLAGS  = -c -I $(HDFPATH)/include -I $(ROMIOPATH)/include
+
+#----------------------------------------------------------------------------
+#	Linker flags
+#----------------------------------------------------------------------------
+
+LFLAGS  = -lnoop_stubs -o
+
+#----------------------------------------------------------------------------
+#	Libraries to include
+#----------------------------------------------------------------------------
+
+LIB        = -lc -L $(HDFPATH)/lib -lhdf5 -lnoop_stubs
+
+HDF4_PATH  = 
+HDF5_PATH  =
+
+ZLIB_PATH  =
+
+NCMPI_PATH =
+MPE_PATH   =
+
+#----------------------------------------------------------------------------
+#	Additional machine-dependent object files
+#----------------------------------------------------------------------------
+
+MACHOBJ = 
+
+#----------------------------------------------------------------------------
+#	Additional commands
+#----------------------------------------------------------------------------
+
+MV   = mv -f
+AR   = ar -r
+RM   = rm -f
+CD   = cd
+RL   = ranlib
+ECHO = echo
+
+
+
+
+

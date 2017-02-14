@@ -1,0 +1,25 @@
+# Coniguration file for MGD Infinite Medium Test
+REQUIRES Driver
+REQUESTS physics/Diffuse/DiffuseMain/Unsplit
+REQUESTS physics/Eos/EosMain/multiTemp/Gamma
+REQUESTS physics/materialProperties/Opacity/OpacityMain/Constant
+REQUESTS physics/RadTrans
+REQUESTS physics/sourceTerms/Heatexchange/HeatexchangeMain/Spitzer
+
+##########################
+#                        #
+#   RUNTIME PARAMETERS   #
+#                        #
+##########################
+D sim_rho referene density
+PARAMETER sim_rho   REAL 1.0
+
+D sim_temp reference temperature
+PARAMETER sim_temp  REAL 1.0
+
+D sim_M0 shock mach number
+PARAMETER sim_M0  REAL 1.0
+
+D sim_P0 ratio of radiation pressure to material pressure
+PARAMETER sim_P0  REAL 1.0
+

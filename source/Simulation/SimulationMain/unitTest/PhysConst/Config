@@ -1,0 +1,4 @@
+# Configuration file for physical constants unit
+# should NOT use io or the simulation will crash
+
+REQUIRES PhysicalConstants/PhysicalConstantsMain/unitTest

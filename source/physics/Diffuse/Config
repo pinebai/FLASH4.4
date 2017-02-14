@@ -1,0 +1,17 @@
+#       Config file for Diffuse unit
+DEFAULT DiffuseMain
+
+D	  useDiffuse flags whether the Diffuse unit is being used at all
+PARAMETER useDiffuse BOOLEAN CONSTANT FALSE
+
+D	  useDiffuseComputeDtTherm    flags whether Diffuse_computeDt considers thermal conduction
+D	  useDiffuseComputeDtVisc     flags whether Diffuse_computeDt considers viscosity
+D	  useDiffuseComputeDtSpecies  flags whether Diffuse_computeDt considers species mass diffusion
+D	  useDiffuseComputeDtMagnetic flags whether Diffuse_computeDt considers magnetic resistivity
+PARAMETER useDiffuseComputeDtTherm    BOOLEAN FALSE
+PARAMETER useDiffuseComputeDtVisc     BOOLEAN FALSE
+PARAMETER useDiffuseComputeDtSpecies  BOOLEAN FALSE
+PARAMETER useDiffuseComputeDtmagnetic BOOLEAN FALSE
+
+# localAPI comes earlier while linking so can be overriden easily
+CHILDORDER localAPI

@@ -1,0 +1,40 @@
+# The setup that tests the Pipeline unit.
+#
+# Sample setup line:
+#
+#   ./setup unitTest/Pipeline
+#
+#             -auto
+#             -1d                            (dimension not important -> take 1d for lowest memory usage)
+#             -geometry=cartesian
+#             -parfile=flash.par
+#             -maxblocks=1                   (take lowest -> lowest memory usage)
+#             +pipeline
+#             -without-unit=physics/Hydro    (get rid of Hydro -> get rid of a ton of UNK variables using memory)
+#             -without-unit=physics/Eos      (is also not needed here)
+#             -objdir=objectPipeline
+#             -nxb=8
+#             -nyb=8
+#             -nzb=8
+#             +noio                          (no IO -> avoid writing huge plot and checkpoint files)
+#
+# The +pipeline shortcut activates the inclusion of the Pipeline unit.
+#
+
+REQUIRES multiprocessorTools/Pipeline/PipelineMain
+REQUIRES Simulation/SimulationMain/unitTest/Pipeline/Cubic
+#REQUIRES Simulation/SimulationMain/unitTest/Pipeline/Linear
+#REQUIRES Simulation/SimulationMain/unitTest/Pipeline/PascalTriangle2D
+#
+# Parameters
+#
+
+D       sim_channelSize                The pipeline channel size to be used
+D       sim_itemSize                   The number of elements in each item
+D       sim_lowestNumItemsOnProc       The lowest number of items to reach a processor
+D       sim_maxItemsPipeline           The maximum number of items that the pipeline can handle
+
+PARAMETER  sim_channelSize             INTEGER   50
+PARAMETER  sim_itemSize                INTEGER   10
+PARAMETER  sim_lowestNumItemsOnProc    INTEGER   100
+PARAMETER  sim_maxItemsPipeline        INTEGER   100

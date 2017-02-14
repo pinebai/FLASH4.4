@@ -1,0 +1,13 @@
+# Config file for the burn module
+# [/source/physics/sourceTerms/Burn]
+
+# includes the following subdirectories
+#  BurnMain -- holds the routines of the main subunit for Burn
+#  BurnIntegrate -- nuclear network integration routines
+
+DEFAULT BurnMain
+
+D useBurn        shall I burn?  
+PARAMETER useBurn       BOOLEAN FALSE  #placed here so that if any other unit wants to switch some code based upon this unit, it can do so.
+
+

@@ -1,0 +1,36 @@
+# Configuration file for the unit test of periodic boundaries with the Tree Poisson Solver
+
+REQUIRES Driver
+REQUIRES physics/Hydro
+REQUIRES physics/Eos/EosMain/Gamma
+REQUIRES physics/Gravity/GravityMain/Poisson/BHTree
+
+
+PARAMETER sim_rho0            REAL    1.6605387e-24
+PARAMETER sim_T0              REAL    1.0e4
+PARAMETER sim_delta           REAL    0.1
+PARAMETER sim_hx              REAL    3.0
+PARAMETER sim_hy              REAL    0.0
+PARAMETER sim_hz              REAL    0.0
+
+# abar - A of mol hydrogen in multifluid database
+PARAMETER abar_1              REAL    1.0
+PARAMETER gamma_1             REAL    1.0001
+
+D sim_solutionErrorTolerance1 the maximum relative deviation of the
+D & computed from the analytical potential for which the test shall
+D & be considered a success. This tolerance is applied immediately after
+D & the potential is computed numerically for the first time.
+D sim_solutionErrorTolerance2 the maximum relative deviation of the
+D & computed from the analytical potential for which the test shall
+D & be considered a success. This tolerance is applied after each
+D & time evolution step (if the test is configured to do time
+D & steps, by choice of the 'nend' runtime parameter etc.).
+PARAMETER sim_solutionErrorTolerance1 REAL 1.e-3 [0 ... ]
+PARAMETER sim_solutionErrorTolerance2 REAL 1.e-3 [0 ... ]
+
+
+
+VARIABLE PANL
+VARIABLE PERR
+

@@ -1,0 +1,10 @@
+.reset
+.run rho1dlast.pro
+rho1d
+.reset
+.run p1dlast.pro
+p1d
+.reset
+.run u1dlast.pro
+u1d
+exit

@@ -1,0 +1,16 @@
+# Config file for the Opacity/OpacityMain/method/Integrate unit
+
+D control parameter indicating the number of roots for quadrature
+PARAMETER opacity_maxQuadratureRoots INTEGER 50
+
+D control parameter indicating if the quadrature data should be printed
+PARAMETER opacity_printQuadratureData BOOLEAN TRUE
+
+D control parameter indicating if quadrature should be used
+PARAMETER opacity_useQuadrature BOOLEAN FALSE
+
+D control parameter indicating if Romberg integration should be used
+PARAMETER opacity_useRomberg BOOLEAN TRUE
+
+D control parameter indicating the target Romberg integral accuracy
+PARAMETER opacity_RombergAccuracy REAL 1.E-6

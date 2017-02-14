@@ -1,0 +1,134 @@
+REQUIRES Grid/GridSolvers/BHTree
+
+PPDEFINE GRAVITY
+
+# Note: Use "bhtreeAcc=1" on the setup command line to switch on direct
+# calculation of gravity forces instead of potential. This will add field
+# variables gacx, gacy, gacz, gaox, gaoy and gaoz.
+USESETUPVARS bhtreeAcc
+IF bhtreeAcc
+PPDEFINE GRAV_TREE_ACC
+ENDIF
+
+# Note: Use "bhtreeEwaldV42=1" on the setup command line to use the now obsolete
+# implementation of the Ewald field from Flash4.2
+USESETUPVARS bhtreeEwaldV42
+IF bhtreeEwaldV42
+PPDEFINE GRAV_TREE_EWALD_V42
+ENDIF
+
+# Note: Use "useFortran2008=1" on the setup command line to avoid building and
+# using a library of SPECFUN routines. If such library is not used, the compiler
+# should support erf(), erfc(), erfc_scaled(), bessel_j0(), and bessel_j1() as
+# intrinsic functions.
+USESETUPVARS useFortran2008
+IF useFortran2008
+ELSE
+   LIBRARY   specfun
+   PPDEFINE  FLASH_USE_SPECFUN
+ENDIF
+
+
+D grv_bhNewton Value for Newton's constant. Specify -1.0 to use the value
+D & from the PhysicalConstants code unit.
+D grv_bhMAC Type of the Multipole Acceptace Criterion (MAC) used during the tree
+D & walk.
+D grv_bhMPDegree Degree of multipole expansion used to estimate the error of a
+D & single node contribution if the "ApproxPartErro" MAC is used. Recently, only
+D & value 2 makes sense, because quadrupole and higher order moments are not
+D & stored in tree nodes.
+D grv_bhUseRelAccErr If set to TRUE, parameter grv_bhAccErr has meaning of the
+D & relative error in acceleration. Otherwise, it is an absolute error.
+D grv_bhAccErr Maximum allowed error (either relative or absolute depending on
+D & value of grv_bhUseRelAccErr) for the MAC.
+PARAMETER grv_bhNewton            REAL        -1.0 [ ... ]
+PARAMETER grv_bhMAC               STRING      "ApproxPartialErr"  [ "ApproxPartialErr", "MaxPartialErr", "SumSquare" ]
+PARAMETER grv_bhMPDegree          INTEGER     2	[ 2, 3, 4 ]
+PARAMETER grv_bhUseRelAccErr      BOOLEAN     FALSE
+PARAMETER grv_bhAccErr            REAL        0.1  [ 0 ... ]
+
+# for compatibility with other Poisson solvers
+# available options are: isolated, periodic and mixed
+PARAMETER   grav_boundary_type      STRING      "mixed" ["isolated","periodic","mixed"]
+
+# if grav_boundary_type == "mixed", boundaries can be set
+# independently for each direction; available options are:
+# isolated and periodic
+D   grav_boundary_type_x Gravity boundary type for the X direction, used if grav_boundary_type == "mixed"
+D   grav_boundary_type_y Gravity boundary type for the Y direction, used if grav_boundary_type == "mixed"
+D   grav_boundary_type_z Gravity boundary type for the Z direction, used if grav_boundary_type == "mixed"
+PARAMETER   grav_boundary_type_x      STRING      "isolated" ["isolated","periodic"]
+PARAMETER   grav_boundary_type_y      STRING      "isolated" ["isolated","periodic"]
+PARAMETER   grav_boundary_type_z      STRING      "isolated" ["isolated","periodic"]
+D grv_bhEwaldSeriesN Number of terms used in expansion to calculate the Ewald field.
+D grv_bhEwaldAlwaysGenerate If set TRUE the Ewald field will be always
+D & re-generated even if the file with it exists.
+PARAMETER   grv_bhEwaldSeriesN        INTEGER     10
+PARAMETER   grv_bhEwaldAlwaysGenerate BOOLEAN     TRUE
+
+
+D grv_bhEwaldFieldNxV42 Number of points of the Ewald field in the x-direction.
+D grv_bhEwaldFieldNyV42 Number of points of the Ewald field in the x-direction.
+D grv_bhEwaldFieldNzV42 Number of points of the Ewald field in the x-direction.
+D grv_bhEwaldNRefV42 Number of refinement levels of the Ewald field. If
+D & negative, it is calculated automatically from the minimum cell size.
+D grv_bhLinearInterpolOnlyV42 If set TRUE, only the linear interpolation in the
+D & Ewald field is used. Otherwise, more expensive and accurate quadratic
+D & interpolation is used in some cases.
+D grv_bhEwaldFNameAccV42 File to store the Ewald field for the acceleration.
+D grv_bhEwaldFNamePotV42 File to store the Ewald field for the potential.
+PARAMETER   grv_bhEwaldFieldNxV42        INTEGER     32	[ 1 ... ]
+PARAMETER   grv_bhEwaldFieldNyV42        INTEGER     32	[ 1 ... ]
+PARAMETER   grv_bhEwaldFieldNzV42        INTEGER     32	[ 1 ... ]
+PARAMETER   grv_bhEwaldNRefV42           INTEGER     -1
+PARAMETER   grv_bhLinearInterpolOnlyV42  BOOLEAN    TRUE
+PARAMETER   grv_bhEwaldFNameAccV42       STRING      "ewald_field_acc"
+PARAMETER   grv_bhEwaldFNamePotV42       STRING      "ewald_field_pot"
+
+D grv_bhEwaldNPer corresponds to th number of points+1 of the Taylor expansion in
+D & (one of) periodic direction(s)
+D grv_bhEwaldFName File with coefficients of the Ewald field Taylor series expansion.
+PARAMETER   grv_bhEwaldNPer              INTEGER  32
+PARAMETER   grv_bhEwaldFName             STRING      "ewald_coeffs"
+
+# External gravitational field read from file
+D grv_bhExternalPotential Specifies whether the external background potential 
+D & read from file is used.
+D grv_bhPoissonPotential Specifies whether potential of the gas obtained by tree
+D & walk is used.
+D grv_bhExtrnPotFile File including the external background potential.
+D grv_bhExtrnPotType Type of the external potential (spherical or plane-parallel).
+D grv_bhExtrnPotCenterX X-coordinate of the center of the external potention.
+D grv_bhExtrnPotCenterY Y-coordinate of the center of the external potention.
+D grv_bhExtrnPotCenterZ Z-coordinate of the center of the external potention.
+PARAMETER  grv_useExternalPotential   BOOLEAN   FALSE
+PARAMETER  grv_usePoissonPotential    BOOLEAN   TRUE
+PARAMETER  grv_bhExtrnPotFile         STRING    "external_potential.dat"
+PARAMETER  grv_bhExtrnPotType         STRING    "planez" [ "spherical", "planez" ]
+PARAMETER  grv_bhExtrnPotCenterX      REAL      0.0
+PARAMETER  grv_bhExtrnPotCenterY      REAL      0.0
+PARAMETER  grv_bhExtrnPotCenterZ      REAL      0.0
+
+# acceleration error inverted; used by some multipole acceptance criteria to determine the maximum
+# allowed error of the node contribution
+D acei_variable	acceleration error inverted; used by some MACs to determine the maximum
+D & allowed error of the node contribution
+VARIABLE acei
+
+D gacx_variable Acctual value of the acceleration in the x-direction.
+D gacy_variable Acctual value of the acceleration in the y-direction.
+D gacz_variable Acctual value of the acceleration in the z-direction.
+D gaox_variable Acceleration from the previous time-step in the x-direction.
+D gaoy_variable Acceleration from the previous time-step in the y-direction.
+D gaoz_variable Acceleration from the previous time-step in the z-direction.
+
+IF bhtreeAcc
+VARIABLE gacx
+VARIABLE gacy
+VARIABLE gacz
+VARIABLE gaox
+VARIABLE gaoy
+VARIABLE gaoz
+ENDIF
+
+

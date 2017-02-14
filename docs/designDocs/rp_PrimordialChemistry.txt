@@ -1,0 +1,97 @@
+
+physics/sourceTerms/PrimordialChemistry
+    usePrimordialChemistry [BOOLEAN] [FALSE]
+
+
+physics/sourceTerms/PrimordialChemistry/PrimordialChemistryMain
+    pchem_algebra [INTEGER] [2]
+        Valid Values: Unconstrained
+
+    pchem_ccCase [INTEGER] [1]
+        Valid Values: Unconstrained
+
+    pchem_doCool [INTEGER] [1]
+        Valid Values: Unconstrained
+
+    pchem_fracDeuterium [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    pchem_fracHelium [REAL] [0.240]
+        Valid Values: Unconstrained
+
+    pchem_fracHydrogen [REAL] [0.760]
+        Valid Values: Unconstrained
+
+    pchem_fshh2 [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    pchem_fshhd [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    pchem_j21 [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    pchem_mCool [INTEGER] [1]
+        Valid Values: Unconstrained
+
+    pchem_odeStepper [INTEGER] [1]
+        Valid Values: Unconstrained
+
+
+physics/sourceTerms/PrimordialChemistry/PrimordialChemistryMain/GA08
+    pchem_algebra [INTEGER] [2]
+        Valid Values: Unconstrained
+
+    pchem_ccCase [INTEGER] [1]
+        Valid Values: Unconstrained
+
+    pchem_doCool [INTEGER] [1]
+        Valid Values: Unconstrained
+
+    pchem_dradmax [REAL] [1.0e-10]
+        Valid Values: Unconstrained
+
+    pchem_dradmin [REAL] [1.0e-30]
+        Valid Values: Unconstrained
+
+    pchem_fracDeuterium [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    pchem_fracHelium [REAL] [0.240]
+        Valid Values: Unconstrained
+
+    pchem_fracHydrogen [REAL] [0.760]
+        Valid Values: Unconstrained
+
+    pchem_fshh2 [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    pchem_fshhd [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    pchem_j21 [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    pchem_mCool [INTEGER] [1]
+        Valid Values: Unconstrained
+
+    pchem_massFracH [REAL] [0.76]
+        Valid Values: Unconstrained
+
+    pchem_noCool [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    pchem_odeStepper [INTEGER] [1]
+        Valid Values: Unconstrained
+
+    pchem_rcCase [INTEGER] [1]
+        Valid Values: Unconstrained
+
+    pchem_tradmax [REAL] [1.0e9]
+        Valid Values: Unconstrained
+
+    pchem_tradmin [REAL] [50.0]
+        Valid Values: Unconstrained
+
+    usePrimordialChemistry [BOOLEAN] [TRUE]
+

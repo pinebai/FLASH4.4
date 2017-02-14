@@ -1,0 +1,26 @@
+# Config file for Core Collapse SN setup.  This version uses leakage.
+
+REQUIRES Driver
+REQUIRES Grid
+REQUIRES physics/Hydro/HydroMain 
+REQUIRES physics/Eos/EosNuclear
+REQUESTS physics/sourceTerms/Deleptonize
+REQUESTS physics/Gravity/GravityMain/Poisson/Multipole
+REQUIRES physics/RadTrans/RadTransMain/NeutrinoLeakage
+
+
+# params for 1D initialization
+D model_file 	Name of input file with 1D model
+PARAMETER model_file	STRING "file.dat"
+D nsub	  number of sub-sampling points for mapping of 1D model
+PARAMETER nsub		INTEGER 4
+D vel_mult	multiplier on initial 1D radial velocity
+PARAMETER vel_mult	REAL 1.0
+
+# Extra variables
+VARIABLE SHCK
+VARIABLE DELE
+VARIABLE DYE
+VARIABLE YP
+VARIABLE YN
+

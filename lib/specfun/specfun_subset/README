@@ -1,0 +1,22 @@
+Selected files from the SPECFUN collection.
+Retrieved January 2014 rom the Netlib repository, see 
+<URL: http://www.netlib.org/specfun>.
+
+These are from "The original, true, correct (FORTRAN77) version of SPECFUN",
+extracted for double precision, not the FORTRAN90 version.
+
+
+Excerpt from <URL: http://www.netlib.org/specfun/readme>:
+
+ ====== readme for specfun ======
+
+ SPECFUN 2.5 is a collection of transportable Fortran programs for
+ special functions and accompanying test programs similar in
+ concept to those in ELEFUNT.  Both single- and double-precision
+ versions can be extracted from the supplied source code with simple
+ editing changes.  NOTE: at least one version MUST be extracted
+ before the source will compile.
+
+ ....
+ 
+ W. J. Cody, Argonne National Laboratory

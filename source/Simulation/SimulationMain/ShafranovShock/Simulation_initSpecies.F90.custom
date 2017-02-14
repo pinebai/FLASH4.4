@@ -1,0 +1,54 @@
+!!****if* source/Simulation/SimulationMain/RadShock/RadShock1d/Simulation_initSpecies
+!!
+!! NAME
+!!
+!!  Simulation_initSpecies
+!!
+!!
+!! SYNOPSIS
+!!  Simulation_initSpecies()
+!!
+!! DESCRIPTION
+!!
+!!  This routine will initialize the species and species values needed for
+!!  the TwoGamma setup, which advects two fluids with different Gamma values
+!!
+!!***
+
+subroutine Simulation_initSpecies()
+  use RuntimeParameters_interface, ONLY : RuntimeParameters_get
+  use Multispecies_interface, ONLY : Multispecies_setProperty
+  use Simulation_data, ONLY : sim_abar, sim_zbar
+
+  implicit none
+#include "Flash.h"
+#include "Multispecies.h"
+#include "Eos.h"
+
+  call RuntimeParameters_get('sim_abar', sim_abar)
+  call RuntimeParameters_get('sim_zbar', sim_zbar)
+
+#ifdef A_SPEC
+  call Multispecies_setProperty(A_SPEC, A, sim_abar)
+  call Multispecies_setProperty(A_SPEC, Z, sim_zbar)
+!  call Multispecies_setProperty(A_SPEC, MS_ZMIN, sim_zbar)
+  call Multispecies_setProperty(A_SPEC, MS_ZMIN, 0.0)
+  call Multispecies_setProperty(A_SPEC, GAMMA, 1.6666666666666666667e0)
+  call Multispecies_setProperty(A_SPEC, MS_EOSTYPE, EOS_TAB)
+  call Multispecies_setProperty(A_SPEC, MS_EOSZFREEFILE, 'see EOS_sources.txt')
+  call Multispecies_setProperty(A_SPEC, MS_EOSENERFILE, 'see EOS_sources.txt')
+  call Multispecies_setProperty(A_SPEC, MS_EOSPRESFILE, 'see EOS_sources.txt')
+#endif
+
+#ifdef B_SPEC
+  call Multispecies_setProperty(B_SPEC, A, sim_abar)
+  call Multispecies_setProperty(B_SPEC, Z, sim_zbar)
+!  call Multispecies_setProperty(B_SPEC, MS_ZMIN, sim_zbar)
+  call Multispecies_setProperty(B_SPEC, MS_ZMIN, 0.0)
+  call Multispecies_setProperty(B_SPEC, GAMMA, 1.6666666666666666667e0)
+  call Multispecies_setProperty(B_SPEC, MS_EOSTYPE, EOS_TAB)
+  call Multispecies_setProperty(B_SPEC, MS_EOSIONFILE, 'see EOS_sources.txt')
+#endif
+
+end subroutine Simulation_initSpecies
+

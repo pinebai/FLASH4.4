@@ -1,0 +1,14 @@
+CONFLICTS Grid/GridMain/UG
+
+PPDEFINE IO_HDF5_PARALLEL_PM
+
+D chkGuardCellsOutput if true guardcells are written the checkpoint file.
+D & Default is false where only interior cells are written.
+D & Currently only implemented with hdf5 parallel paramesh IO implementation.
+D chkGuardCellsInput if true guardcells are read from the checkpoint file.
+D & Default is false where only interior cells are read.
+D & Currently only implemented with hdf5 parallel paramesh IO implementation.
+# Hack alert hack alert - the "false" default value must not be capitalized,
+# otherwise setup will not cancel the COONSTANT flag from the IOMain level Config...
+PARAMETER chkGuardCellsInput BOOLEAN false
+PARAMETER chkGuardCellsOutput BOOLEAN false

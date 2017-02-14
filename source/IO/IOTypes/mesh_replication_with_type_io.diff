@@ -1,0 +1,583 @@
+Index: source/IO/IOTypes/hdf5/io_h5_xfer_packed_mesh_dataset.c
+===================================================================
+--- source/IO/IOTypes/hdf5/io_h5_xfer_packed_mesh_dataset.c	(revision 14538)
++++ source/IO/IOTypes/hdf5/io_h5_xfer_packed_mesh_dataset.c	(working copy)
+@@ -92,10 +92,13 @@
+ 
+   tmpBufSize = 1;
+   for (i=0; i<numDataDims; ++i) {
++    assert(localSubSize[i] >= 0);
+     tmpBufSize *= localSubSize[i];
+   }
+-  pTmpDbleBuf = malloc (tmpBufSize * sizeof(*pTmpDbleBuf));
+-  assert(NULL != pTmpDbleBuf);
++  if (tmpBufSize > 0) {
++    pTmpDbleBuf = malloc (tmpBufSize * sizeof(*pTmpDbleBuf));
++    assert(NULL != pTmpDbleBuf);
++  }
+ 
+ 
+   /* The code here ensures that the primitive memory type matches the
+@@ -115,8 +118,10 @@
+     }
+ 
+     /* Need an extra buffer to perform a Double -> Float conversion */
+-    pTmpFltBuf = malloc (tmpBufSize * sizeof(*pTmpFltBuf));
+-    assert(NULL != pTmpFltBuf);
++    if (tmpBufSize > 0) {
++      pTmpFltBuf = malloc (tmpBufSize * sizeof(*pTmpFltBuf));
++      assert(NULL != pTmpFltBuf);
++    }
+     pHdf5Buf = pTmpFltBuf;
+   }
+   else {
+@@ -124,19 +129,22 @@
+   }
+ 
+ 
+-  if (xferType == IO_WRITE_XFER) {
+-    /* Repack grid data into contiguous double precision data buffer */
+-    err = io_repack_data(pData, localSubSize[0], *pMPI_DataType,
+-			 pTmpDbleBuf, tmpBufSize, MPI_DOUBLE);
+-    if (flashDiskType == IO_FLASH_FLOAT) {
+-      for (is=0; is<tmpBufSize; ++is) {
+-	pTmpFltBuf[is] = (float) pTmpDbleBuf[is];
++  if (tmpBufSize > 0) {
++    if (xferType == IO_WRITE_XFER) {
++      /* Repack grid data into contiguous double precision data buffer */
++      err = io_repack_data(pData, localSubSize[0], *pMPI_DataType,
++			   pTmpDbleBuf, tmpBufSize, MPI_DOUBLE);
++      if (flashDiskType == IO_FLASH_FLOAT) {
++	for (is=0; is<tmpBufSize; ++is) {
++	  pTmpFltBuf[is] = (float) pTmpDbleBuf[is];
++	}
+       }
+     }
+   }
+ 
+ 
+-  /* pHdf5Buf points to pTmpDbleBuf or pTmpFltBuf */
++  /* pHdf5Buf points to pTmpDbleBuf or pTmpFltBuf
++     All MPI processes must call io_h5_xfer_wrapper */
+   io_h5_xfer_wrapper(myPE, hFileID, xferType,
+ 		     typeMatchedXfer,
+ 		     datasetName, flashDiskType,
+@@ -145,15 +153,17 @@
+ 		     numDataDims, pHdf5Buf);
+ 
+ 
+-  if (xferType == IO_READ_XFER) {
+-    if (flashDiskType == IO_FLASH_FLOAT) {
+-      for (is=0; is<tmpBufSize; ++is) {
+-	pTmpDbleBuf[is] = (double) pTmpFltBuf[is];
++  if (tmpBufSize > 0) {
++    if (xferType == IO_READ_XFER) {
++      if (flashDiskType == IO_FLASH_FLOAT) {
++	for (is=0; is<tmpBufSize; ++is) {
++	  pTmpDbleBuf[is] = (double) pTmpFltBuf[is];
++	}
+       }
++      /* Repack grid data into mesh data structure */
++      err = io_repack_data(pTmpDbleBuf, tmpBufSize, MPI_DOUBLE,
++			   pData, localSubSize[0], *pMPI_DataType);
+     }
+-    /* Repack grid data into mesh data structure */
+-    err = io_repack_data(pTmpDbleBuf, tmpBufSize, MPI_DOUBLE,
+-			 pData, localSubSize[0], *pMPI_DataType);
+   }
+ 
+ 
+Index: source/IO/IOTypes/hdf5/io_h5_xfer_mesh_dataset.c
+===================================================================
+--- source/IO/IOTypes/hdf5/io_h5_xfer_mesh_dataset.c	(revision 14538)
++++ source/IO/IOTypes/hdf5/io_h5_xfer_mesh_dataset.c	(working copy)
+@@ -20,12 +20,12 @@
+   herr_t (*old_func)(void*) = NULL;
+   void *old_client_data = NULL;
+   hsize_t memStart[IO_MESH_DIMS], diskStart[IO_MESH_DIMS],
+-    memDimens[IO_MESH_DIMS], memStride[IO_MESH_DIMS],
++    memDimens[IO_MESH_DIMS],
+     memCount[IO_MESH_DIMS], diskCount[IO_MESH_DIMS];
+   hsize_t memDummyDimens[IO_MESH_DIMS] = {1,1,1,1,1};
+   hid_t hXferList, dataSpace, memSpace, dataSet;
+   herr_t err;
+-  int i, j, singleHyperslab, ierr;
++  int i, j, singleHyperslab, ierr, isNullSelection;
+   char *fileTypeText = NULL, *xferTypeText = NULL;
+ #ifdef DEBUG_IO
+   const int debugIO = 1;
+@@ -81,9 +81,13 @@
+     dataSpace = H5Dget_space(dataSet);
+     assert(dataSpace >= 0);
+ 
++    isNullSelection = 0;
++    for (i=0; i<IO_MESH_DIMS; ++i) {
++      isNullSelection = isNullSelection || (localSubSize[i] == 0);
++    }
+ 
+-    if (localSubSize[0] == 0) {
+-      /* There are zero blocks so we make null selections */
++    if (isNullSelection) {
++      /* There are zero blocks or zero variables so we make a null selection */
+       memSpace = H5Screate_simple(IO_MESH_DIMS, memDummyDimens, NULL);
+       assert(memSpace >= 0);
+       err = H5Sselect_none(memSpace);
+@@ -97,7 +101,6 @@
+       for (i=0; i<IO_MESH_DIMS; ++i) {
+ 	memDimens[i] = localSize[i];
+ 	memStart[i] = localOffset[i]; /* Local offset in memory */
+-	memStride[i] = 1;
+ 	memCount[i] = localSubSize[i];
+       }
+ 
+@@ -125,12 +128,11 @@
+ 	     we wish to output, and so memStart is 0 and not
+ 	     localOffset[IO_MESH_DIMS-1] */
+ 	  memStart[IO_MESH_DIMS-1] = 0;
+-	  memStride[IO_MESH_DIMS-1] = numGridVar;
+-	  memCount[IO_MESH_DIMS-1] = 1;
++	  memCount[IO_MESH_DIMS-1] = 1;  /* 1 mesh variable */
+ 	}
+ 
+ 	err = H5Sselect_hyperslab(memSpace, H5S_SELECT_SET,
+-				  memStart, memStride, memCount, NULL);
++				  memStart, NULL, memCount, NULL);
+ 	assert(err >= 0);
+ 
+       } else {
+Index: source/IO/IOTypes/io_getZeroBasedVarInfo.F90
+===================================================================
+--- source/IO/IOTypes/io_getZeroBasedVarInfo.F90	(revision 14538)
++++ source/IO/IOTypes/io_getZeroBasedVarInfo.F90	(working copy)
+@@ -23,16 +23,24 @@
+ !!
+ !!  fileType: The file type, either checkpoint file or plot file.
+ !!  gridDataStruct: The grid data structure, e.g. UNK, FACEX
+-!!  numGridVars: The total number of mesh variables in gridDataStruct, 
+-!!               i.e. this size of the memory space.
++!!  numGridVars: The total number of mesh variables in gridDataStruct.
+ !!  numOutputGridVars: The total number of mesh variables in gridDataStruct
+ !!                     that will be written to file (depends on whether the
+ !!                     file type is checkpoint file or plot file).
+-!!  gridVarOffsets: The memory offset of each variable that will be
++!!  gridVarOffsets: The virtual offset of each variable that will be
+ !!                  written to file.  The offsets are specified in memory
+-!!                  increasing order.
++!!                  increasing order.  Each offset + 1 corresponds to the
++!!                  global index position of each variable.
+ !!  gridVarLabels: The name of each variable that will be written to file.
+ !!
++!! NOTES
++!!
++!! Given a file type and grid data struture this routine provides global
++!! information about the corresponding mesh variables.  Note the word global!
++!! This routine knows nothing about mesh replication.  It is the responsibility
++!! of other subroutines to determine the local memory offset for the
++!! global variables that belong to this process.
++!!
+ !!***
+ 
+ #include "constants.h"
+@@ -45,7 +53,7 @@
+   use Driver_interface, ONLY : Driver_abortFlash
+   use IO_data, ONLY : io_unkLabels, io_faceXVarLabels, io_faceYVarLabels, &
+        io_faceZVarLabels, io_scratchGridVarlabels, io_nPlotVars, &
+-       io_nPlotGridVars, io_plotVar, io_plotGridVar
++       io_nPlotGridVars, io_plotVar, io_plotGridVar, io_unkLabelsGlobal, io_plotVarStr
+   use ut_qsortInterface, ONLY : ut_qsort
+ 
+   implicit none
+@@ -54,7 +62,7 @@
+   integer, dimension(MAX_MESH_VAR), intent(OUT) :: gridVarOffsets
+   character (len=MAX_STRING_LENGTH), dimension(MAX_MESH_VAR), intent(OUT) :: &
+        gridVarLabels
+-  integer :: s
++  integer :: s, i
+ 
+ 
+   !Redundant pieces of code are excluded using the preprocessor.  The logic does 
+@@ -73,12 +81,12 @@
+ 
+ 
+      case (CENTER)
+-        numGridVars = NUNK_VARS
++        numGridVars = ubound(io_unkLabelsGlobal,1)
+         numOutputGridVars = numGridVars
+ #if NUNK_VARS > 0
+         do s = 1, numOutputGridVars
+            gridVarOffsets(s) = s - 1
+-           gridVarLabels(s) = trim(io_unkLabels(s))
++           gridVarLabels(s) = trim(io_unkLabelsGlobal(s))
+         end do
+ #endif
+ 
+@@ -160,17 +168,22 @@
+ 
+ 
+      case (CENTER)
+-        numGridVars = NUNK_VARS
++        numGridVars = ubound(io_unkLabelsGlobal,1)
+         numOutputGridVars = io_nPlotVars
+ #if NUNK_VARS > 0
+         if (numOutputGridVars > 0) then
+-           gridVarOffsets(1:numOutputGridVars) = &
+-                io_plotVar(1:numOutputGridVars) - 1
++           i = 1
++           do s = 1, numGridVars
++              if (any(io_unklabelsGlobal(s) == io_plotVarStr(1:io_nPlotVars))) then
++                 gridVarOffsets(i) = s - 1
++                 i = i + 1
++              end if        
++           end do
+ 
+            call ut_qsort(gridVarOffsets, numOutputGridVars, ascOrderArg=.true.)
+            do s = 1, numOutputGridVars
+               gridVarLabels(s) = &
+-                   trim(io_unkLabels(gridVarOffsets(s) + 1))
++                   trim(io_unkLabelsGlobal(gridVarOffsets(s) + 1))
+            end do
+         end if
+ #endif
+Index: source/IO/IOTypes/io_typeInit.F90
+===================================================================
+--- source/IO/IOTypes/io_typeInit.F90	(revision 14538)
++++ source/IO/IOTypes/io_typeInit.F90	(working copy)
+@@ -33,6 +33,7 @@
+   use io_c_type_interface, ONLY : io_ncmpi_nonblocking_init
+ #endif
+ #endif
++  use IO_data, ONLY : io_unklabelsGlobal, io_fileFormatVersion
+   use io_typeData
+ 
+   implicit none
+@@ -47,7 +48,19 @@
+   integer :: i, numGridVars, numPlotVars, gridDataStruct
+   character (len=MAX_STRING_LENGTH), dimension(MAX_MESH_VAR) :: plotVarLabels
+ 
++  if (ubound(io_unklabelsGlobal,1) > MAX_MESH_VAR) then
++     !This check is needed to prevent overflowing many statically size arrays.
++     call Driver_abortFlash("Mesh replication support with type based I/O "//&
++          "is currently limited.  The I/O code has statically sized arrays "//&
++          "that will overflow.  You can make these arrays bigger and get "//&
++          "past this abort by increasing MAX_MESH_VAR in io_flash.h")
++  end if
+ 
++  if (io_fileFormatVersion == 10 .and. NONREP_COUNT > 0) then
++     call Driver_abortFlash("Mesh replication not supported for fileFmt=10")
++  end if
++
++
+   !NEW file format
+   !*****************************************************************************
+   !*****************************************************************************
+@@ -63,6 +76,7 @@
+      call io_getZeroBasedVarInfo(PLOTFILE, gridDataStruct, numGridVars, &
+           numPlotVars, plotVarOffsets, plotVarLabels)
+ 
++     !The fileFmt=10 types are invalid when there is mesh replication.
+      call io_init_grid_mpi_types(myPE, gridDataStruct, blockOuterSize, &
+           blockInnerSize, blockInnerOffset, numGridVars, &
+           plotVarOffsets, numPlotVars)
+Index: source/IO/IOTypes/io_xfer_mesh_data.F90
+===================================================================
+--- source/IO/IOTypes/io_xfer_mesh_data.F90	(revision 14538)
++++ source/IO/IOTypes/io_xfer_mesh_data.F90	(working copy)
+@@ -68,6 +68,8 @@
+   use Grid_interface, ONLY : Grid_getBlkCornerID
+   use Driver_interface, ONLY : Driver_abortFlash
+   use Timers_interface, ONLY : Timers_start, Timers_stop
++  use Simulation_interface, ONLY : Simulation_mapStrToInt
++  use IO_data, ONLY : io_acrossMe, io_unkNonRep, io_globalMe, io_unklabelsGlobal
+ 
+   implicit none
+   integer, intent(IN) :: myPE, numProcs, fileID, fileFmt, fileType, libType, &
+@@ -82,12 +84,12 @@
+   real, dimension(MAX_MESH_VAR), target :: globalVarMinSubset, &
+        globalVarMaxSubset !target required for c_loc.
+ 
+-  integer, dimension(MAX_MESH_VAR) :: memVarOffsets
++  integer, dimension(MAX_MESH_VAR) :: globalVarOffsets, localVarOffsets
+   integer, dimension(MDIM) :: blockInnerSize, blockOuterSize, blockInnerOffset, &
+        globalIndexLimits
+   integer, dimension(IO_MAX_DIMS) :: array_of_sizes, array_of_subsizes, &
+-       array_of_starts, globalOffsetArray
+-  integer :: memNumVar, memNumXferVar, d, i, j
++       array_of_subsizes_arg, array_of_starts, globalOffsetArray
++  integer :: memNumVar, memNumXferVar, d, i, j, varIndex
+ 
+   integer, parameter, dimension(5) :: gridDataStructs = &
+        (/CENTER, SCRATCH, FACEX, FACEY, FACEZ/)
+@@ -107,12 +109,20 @@
+   character(kind=c_char,len=7) :: min_att_str = "minimum"
+   character(kind=c_char,len=7) :: max_att_str = "maximum"
+   integer :: nonBlocking, diskNumXfer, diskVarLen, prePackData, numDataDims
+-  integer :: cornerID(MDIM), stride(MDIM)
++  integer :: cornerID(MDIM), stride(MDIM), dowrite
++  logical :: doXfer
+ #ifdef DEBUG_IO
+   logical, parameter :: debugIO = .true.
+ #else
+   logical, parameter :: debugIO = .false.
+ #endif
++  interface
++     subroutine io_do_xfer(gridStruct, dataset, doXfer)
++       integer, intent(IN) :: gridStruct
++       character(len=*), intent(IN) :: dataset
++       logical, intent(OUT) :: doXfer
++     end subroutine io_do_xfer
++  end interface
+ 
+   if (xferType == IO_WRITE_XFER) then
+      xfer_str = "write mesh data"
+@@ -190,9 +200,30 @@
+ 
+ 
+      call io_getZeroBasedVarInfo(fileType, gridDataStructs(d), memNumVar, &
+-          memNumXferVar, memVarOffsets, memVarLabels)
++          memNumXferVar, globalVarOffsets, memVarLabels)
+ 
++     !Now that we support mesh replication (CENTER only) the global offsets
++     !may not be the same as the local offsets.
++     if (gridDataStructs(d) == CENTER) then
++        do i = 1, memNumXferVar
++           call Simulation_mapStrToInt(trim(memVarLabels(i)),varIndex,MAPBLOCK_UNK)
++           if (varIndex /= NONEXISTENT) then
++              localVarOffsets(i) = varIndex - 1
++           else
++              localVarOffsets(i) = NONEXISTENT
++           end if
++        end do
++     else
++        localVarOffsets = globalVarOffsets
++     end if
+ 
++     !This is a bit dirty now: Element 5 of array_of_sizes, array_of_subsizes
++     !and array_of_starts are only used in io_xfer_mesh_dataset for fileFmt=10.
++     !If there were mesh replication then these values would be incorrect.
++     !Since we do not support mesh replication with fileFmt=10 (and should
++     !have already aborted in io_typeInit) I do not mind passing these
++     !misleading values.  This code definitely needs to be refactored!
++
+      CheckForFileXfer: if (memNumXferVar > 0) then
+         if (debugIO) then
+            if (myPE == MASTER_PE) then
+@@ -205,7 +236,7 @@
+       
+               do i = 1, memNumXferVar
+                  print *, "[io_xfer_mesh_data]: Will transfer variable ", &
+-                      trim(memVarLabels(i)), " at memory offset", memVarOffsets(i)
++                      trim(memVarLabels(i)), " at memory offset", globalVarOffsets(i)
+               end do
+            end if
+         end if
+@@ -271,12 +302,14 @@
+         !Get the max and minimum values (NOTE: Modify this routine so we don't 
+         !generate values for grid variables that are not output).
+         if (xferType == IO_WRITE_XFER) then
+-           call io_getVarExtrema(memNumVar, globalVarMinAll, globalVarMaxAll, &
+-                gridDataStructs(d))
+-           do i = 1, memNumXferVar
+-              globalVarMinSubset(i) = globalVarMinAll(memVarOffsets(i) + 1)
+-              globalVarMaxSubset(i) = globalVarMaxAll(memVarOffsets(i) + 1)
+-           end do
++           if (memNumXferVar > 0) then
++              call io_getVarExtrema(memNumVar, globalVarMinAll, globalVarMaxAll, &
++                   gridDataStructs(d))
++              do i = 1, memNumXferVar
++                 globalVarMinSubset(i) = globalVarMinAll(globalVarOffsets(i) + 1)
++                 globalVarMaxSubset(i) = globalVarMaxAll(globalVarOffsets(i) + 1)
++              end do
++           end if
+         end if
+ 
+ 
+@@ -296,27 +329,44 @@
+         end if
+ 
+ 
+-
+         do i = 1, diskNumXfer
+-           !WARNING, WARNING, WARNING!
+-           !We currently assume that the same variables exist in memory
+-           !and file.  This could be a problem during restarts if variables
+-           !have changed.
+-           !WARNING, WARNING, WARNING!
+-           j = memVarOffsets(i) + 1
+-           if (j < lbound(gridData,1) .or. j > ubound(gridData,1)) then
+-              call Driver_abortFlash &
+-                   ("[io_xfer_mesh_data]: Unexpected index")
+-           end if
+ 
+            if (fileFmt == 9) then
++              call io_do_xfer(gridDataStructs(d), memVarLabels(i), doXfer)
+               dset_str = trim(memVarLabels(i))
++
++              if (doXfer) then
++                 dowrite = 1
++                 j = localVarOffsets(i) + 1 !gridData element (unit-based).
++                 array_of_subsizes_arg = array_of_subsizes
++                 if (j < lbound(gridData,1) .or. j > ubound(gridData,1)) then
++                    call Driver_abortFlash("Local index out of bounds")
++                 end if
++                 if (debugIO) then
++                    if (myPE == MASTER_PE) then
++                       write(6,'(a,i4,a,a,a,i4)')"Processor ", io_globalMe, &
++                            " will write ", trim(dset_str), " from index ", j
++                    end if
++                 end if
++              else
++                 dowrite = 0
++                 j = 1  !Must pass a valid gridData element (not used).
++                 !Setting the subsizes to zero prevents my C code from writing data.
++                 array_of_subsizes_arg = 0
++              end if
++
++
+            else if (fileFmt == 10) then
++              !Mesh replication does not work with fileFmt=10.  There is no
++              !error checking here because we should have already aborted
++              !in io_typeInit.  WARNING!
+               dset_str = trim(mesh_str_tbl(d))
++              j = 1
+            end if
+ 
++           !memNumXferVar for HDF5 fileFmt=9
+            call io_xfer_mesh_dataset(&
+-                myPE, &
++                io_globalMe, &
+                 fileID, &
+                 libType, &
+                 xferType, &
+@@ -329,13 +379,14 @@
+                 prePackData, &
+                 globalOffsetArray, &
+                 array_of_sizes, &
+-                array_of_subsizes, &
++                array_of_subsizes_arg, &
+                 array_of_starts, &
+-                memVarOffsets, &
++                localVarOffsets, &
+                 dset_str, &
+                 len_trim(dset_str), &
+                 c_loc(gridData(j,1,1,1,1)))
+ 
++
+            if (xferType == IO_WRITE_XFER) then
+ 
+ #if defined(FLASH_IO_PNETCDF)
+@@ -371,3 +422,35 @@
+ 
+   IO_TIMERS_STOP(xfer_str)
+ end subroutine io_xfer_mesh_data
++
++
++!The dataset string passed as argument can be any mesh variable dataset
++!in the HDF5 file, e.g. dens, pres, temp.  All processes have access to
++!the global view of all datasets in the HDF5 file.  When using
++!mesh replication the processes can have different subsets
++!of all datasets and so we must consider the local view of datasets.
++!If a dataset is in the global view but not in the local view then
++!this subroutine will return doXfer = .false.
++subroutine io_do_xfer(gridStruct, dataset, doXfer)
++  use Simulation_interface, ONLY : Simulation_mapStrToInt
++  use IO_data, ONLY : io_acrossMe, io_unkNonRep
++  implicit none
++  integer, intent(IN) :: gridStruct
++  character(len=*), intent(IN) :: dataset
++  logical, intent(OUT) :: doXfer
++  integer :: varIndex
++
++  doXfer = .true.
++  if (gridStruct == CENTER) then
++     !Mesh replication can only happen for UNK.
++     doXfer = .false.
++     !Check if local view contains a NONEXISTENT mesh variable.
++     call Simulation_mapStrToInt(trim(dataset), varIndex, MAPBLOCK_UNK)
++     if (varIndex /= NONEXISTENT) then
++        ! only write mesh replicated data from mesh 0
++        if (io_acrossMe .eq. 0 .or. io_unkNonRep(varIndex) > 0) then
++           doXfer = .true.
++        end if
++     end if
++  end if
++end subroutine io_do_xfer
+Index: source/IO/IOMain/IO_init.F90
+===================================================================
+--- source/IO/IOMain/IO_init.F90	(revision 14538)
++++ source/IO/IOMain/IO_init.F90	(working copy)
+@@ -189,11 +189,12 @@
+   end do
+   if(j-1 .ne. ubound(io_unklabelsGlobal,1)) call Driver_abortFlash('BUG AT: ' // FILE_AT_LINE)
+ 
+-#if defined(IO_HDF5_PARALLEL_NOFBS) || defined(IO_HDF5_PARALLEL_UG) || defined(IO_HDF5_PARALLEL_PM)
++#if defined(IO_HDF5_PARALLEL) || (defined(FLASH_IO_PNETCDF) && defined(FLASH_IO_EXPERIMENTAL))
+ #else
+   if(io_acrossNumProcs > 1) then
+      call Driver_abortFlash('[' // FILE_AT_LINE // '] ERROR: ' // &
+-        'mesh replication is only supported for the PM, UG, and NOFBS units of IO/hdf5/parallel.')
++        'mesh replication is only supported by parallel HDF5 ' //&
++        'and derived datatype pnetCDF I/O units.')
+   end if
+   if(any(io_unkToGlobal == 0)) then
+ 
+Index: source/IO/IOMain/io_flash.h
+===================================================================
+--- source/IO/IOMain/io_flash.h	(revision 14538)
++++ source/IO/IOMain/io_flash.h	(working copy)
+@@ -35,29 +35,38 @@
+ 
+ 
+ #ifdef __FLASH_HEADER_FILE__
+-
+-#if (NUNK_VARS > NFACE_VARS)
+-
+-#if (NUNK_VARS > NSCRATCH_GRID_VARS)
+-#define MAX_MESH_VAR (NUNK_VARS)
++# if (NUNK_VARS > NFACE_VARS)
++#  if (NUNK_VARS > NSCRATCH_GRID_VARS)
++#   define MAX_VAL (NUNK_VARS)
++#  else
++#   define MAX_VAL (NSCRATCH_GRID_VARS)
++#  endif
++# else
++#  if (NFACE_VARS > NSCRATCH_GRID_VARS)
++#   define MAX_VAL (NFACE_VARS)
++#  else
++#   define MAX_VAL (NSCRATCH_GRID_VARS)
++#  endif
++# endif
+ #else
+-#define MAX_MESH_VAR (NSCRATCH_GRID_VARS)
++# define MAX_VAL 100
+ #endif
+ 
+-#else
+-
+-#if (NFACE_VARS > NSCRATCH_GRID_VARS)
+-#define MAX_MESH_VAR (NFACE_VARS)
+-#else
+-#define MAX_MESH_VAR (NSCRATCH_GRID_VARS)
++#if 0
++The code below is just to make type based I/O compatible with
++mesh replication.  Many arrays are sized statically in type based
++I/O because I assumed that we would always know the number of
++variables in a simulation at compile time.  This stopped being
++the case when mesh replication was introduced.  The hack below
++gives us more space to play with when using simulations with
++mesh replication (we check for possible overflow in io_typeInit).
++Type based I/O needs to be refactored in more ways than making
++a few arrays dynamic.
+ #endif
+-
+-#endif
+-
++#if NONREP_COUNT > 0
++#define MAX_MESH_VAR (MAX_VAL * 3)
+ #else
+-
+-#define MAX_MESH_VAR 100
+-
++#define MAX_MESH_VAR (MAX_VAL)
+ #endif
+ 
+ 

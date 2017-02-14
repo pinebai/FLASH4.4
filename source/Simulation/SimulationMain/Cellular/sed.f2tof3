@@ -1,0 +1,41 @@
+# This file details the changes in the runtime parameters names from Flash2 to Flash3 
+# for the cellular detonation problem (Cellular) [/source/Simulation/SimulationMain/Cellular/]
+# use it like this:
+# prompt> sed -f sed.f2tof3 flash.par > flash.par.new
+# prompt> mv flash.par.new flash.par
+# syntax shows old name next to new name
+#s/f2/f3/
+
+s/cpnumber/checkpointFileNumber/
+s/ptnumber/plotFileNumber/
+s/dtini /dtinit /
+s/trstrt/checkpointFileIntervalTime/
+s/tplot/plotFileIntervalTime/
+
+
+s/iburn/useBurn/
+s/igrav/useGravity/
+s/tnucmin/nuclearTempMin/
+s/tnucmax/nuclearTempMax/
+s/dnucmin/nuclearDensMin/
+s/dnucmax/nuclearDensMax/
+s/ni56max/nuclearNI56Max/
+s/enuc_factor/enucDtFactor/
+  
+s/ode_steper/odeStepper/
+s/algebra/algebra/
+s/use_table/useBurnTable/
+
+s/rho_ambient/rhoAmbient/
+s/t_ambient/tempAmbient/
+s/v_ambient/velxAmbient/
+s/rho_perturb/rhoPerturb/
+s/t_perturb/tempPerturb/
+s/v_perturb/velxPerturb/
+s/r_init/radiusPerturb/
+s/xctr/xCenterPerturb/
+s/yctr/yCenterPerturb/
+s/zctr/zCenterPerturb/
+s/pseudo_1d/usePseudo1d/
+s/noise_ampl/noiseAmplitude/
+s/noise_dist/noiseDistance/

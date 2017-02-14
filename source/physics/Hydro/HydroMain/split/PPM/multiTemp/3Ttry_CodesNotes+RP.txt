@@ -1,0 +1,54 @@
+Decisions about advancing internal energies
+
+
+A - How to advect [COMPONENT] internal energy
+  A1 like any old mass scalar               hy_3Ttry_Arelated=(FALSE) ppmEintCompFluxConstructionMeth=1,5
+  A1b eint times dens like any mass scalar  hy_3Ttry_Arelated=(FALSE) ppmEintCompFluxConstructionMeth=2,6
+  A1c eint/eint like any mass scalar        hy_3Ttry_Arelated=(FALSE) ppmEintCompFluxConstructionMeth=3,7
+  A2 based on (partial) pressure            hy_3Ttry_Arelated=TRUE    ppmEintCompFluxConstructionMeth=0,4
+B - How to deal with "work" term
+  B0 Do not implement                       hy_3Ttry_B=0
+  B1 Implement FD discretization for P du   hy_3Ttry_B=1
+  B2 Implement FD discretization for u dP   hy_3Ttry_B=2
+  B3 Trace energies, as per Zalesak         hy_3Ttry_B=3
+C - How to advect [COMPONENT] "P/rho" (if B2)
+  C1 like any old mass scalar               ppmEintCompFluxConstructionMeth=5,6,7
+  C2 based on (partial) pressure            ppmEintCompFluxConstructionMeth=0,1,2,3,4
+D - How to consolidate energies
+  D0 Do not consolidate                     hy_3Ttry_D=0.0
+  D1 Trust Eele (and Erad), discard Eion    hy_3Ttry_D=1.0
+  D1a Trust Eion (and Erad), discard Eele   hy_3Ttry_D=1.5
+  D1b Trust Eele and combined Eint          hy_3Ttry_D=1.75
+  D1c Trust Eion and combined Eint          hy_3Ttry_D=1.875
+  D2 Trust combined Eint, recalibrate all components           hy_3Ttry_D=2.0
+  D2h Try D1 if it looks resonable, else D2                    hy_3Ttry_D=1.25
+  D3 Trust combined Eint and Erad, recalibrate Eion and Eele   hy_3Ttry_D=3.0
+E - How to recalibrate (if D2 or D3)
+  E1 based on pressure ratio               hy_3Ttry_E=1
+  E2 based on energy ratio                 hy_3Ttry_E=2
+F - What to consolidate/recalibrate [(IF E2)]
+  F1 adjust contributions to energy deltas            ??  (unimplemented)
+  F2 adjust energy deltas before applying them        hy_3Ttry_F=2
+  F3 adjust updated energies after applying deltas    hy_3Ttry_F=3
+
+G - What to use for component P (if B1, see B1 above)                        
+  G0 Use pre-Hydro value in same cell, i.e., "P^n"    hy_3Ttry_G=0           (simplified)
+  G1 Average interface values obtained by multiplying Riemann combined pressure at interface
+     with advected pressure ratio                     hy_3Ttry_G=1           (original)
+
+
+N - Advect [COMBINED] internal or int+kin energy?
+  N1 internal
+  N2 internal+kinetic
+
+O - Whether to advect internal energy or entropy
+  O1 electron internal energy   hy_eosModeAfter = "dens_ie_gather"
+  O2 electron entropy           hy_eosModeAfter = "dens_ie_sele_gather"
+
+P - Try to implement preferential shock heating of ions when updating solution?
+  P0 don't
+  P1 Do  (unimpl.)
+
+Q - Try to implement preferential shock heating of ions in Riemann solver?
+  Q0 don't                                 hy_3Ttry_Q=0
+  Q1 Do  (experimental)                    hy_3Ttry_Q=1

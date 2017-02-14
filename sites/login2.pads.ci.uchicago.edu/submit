@@ -1,0 +1,9 @@
+#!/bin/tcsh
+#PBS -l nodes=4:ppn=8
+#PBS -l walltime=00:10:00
+#PBS -N flash3-test
+#PBS -j oe
+#PBS -A CI-AST000010
+# Change to directory you launch the script from
+cd $PBS_O_WORKDIR
+mpirun -np 32 -machinefile $PBS_NODEFILE /gpfs/pads/flash/sneedham/runs/pads/flash3

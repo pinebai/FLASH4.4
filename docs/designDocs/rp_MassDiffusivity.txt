@@ -1,0 +1,5 @@
+
+physics/materialProperties/MassDiffusivity
+    useMassDiffusivity [BOOLEAN] CONSTANT [FALSE]
+        -- allows the mass diffusivity to be turned off at runtime, even if the
+        unit is included in the simulation

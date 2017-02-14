@@ -1,0 +1,100 @@
+!!****if* source/Simulation/SimulationMain/TwoGamma/Simulation_initSpecies
+!!
+!! NAME
+!!
+!!  Simulation_initSpecies
+!!
+!!
+!! SYNOPSIS
+!!  Simulation_initSpecies()
+!!
+!! DESCRIPTION
+!!
+!!  This routine will initialize the species and species values needed for
+!!  the TwoGamma setup, which advects two fluids with different Gamma values
+!!
+!!***
+
+subroutine Simulation_initSpecies()
+  use Multispecies_interface, ONLY : Multispecies_setProperty
+  use Simulation_data
+
+  implicit none
+#include "Flash.h"
+#include "Multispecies.h"
+#include "constants.h"
+
+  real :: aelems(MS_MAXELEMS)
+  real :: fractions(MS_MAXELEMS)
+  integer :: zelems(MS_MAXELEMS)
+  real :: ntot
+
+  ! Do not do anything here if 'species=' was used on the setup command line.
+#ifndef SPECIES_SETUPVAR
+
+#ifdef XE_SPEC
+  call Multispecies_setProperty(XE_SPEC, A, 131.0)
+  call Multispecies_setProperty(XE_SPEC, Z, 54.0)
+  call Multispecies_setProperty(XE_SPEC, GAMMA, 5.0/3.0)
+  call Multispecies_setProperty(XE_SPEC, MS_NUMELEMS, 1)
+
+  aelems(1) = 131.0
+  call Multispecies_setProperty(XE_SPEC, MS_AELEMS, aelems)
+
+  fractions(1) = 1.0
+  call Multispecies_setProperty(XE_SPEC, MS_FRACTIONS, fractions)
+
+  zelems(1) = 54
+  call Multispecies_setProperty(XE_SPEC, MS_ZELEMS, zelems)  
+#endif
+
+#ifdef BE_SPEC
+  call Multispecies_setProperty(BE_SPEC, A, 9.0)
+  call Multispecies_setProperty(BE_SPEC, Z, 4.0)
+  call Multispecies_setProperty(BE_SPEC, GAMMA, 5.0/3.0)
+  call Multispecies_setProperty(BE_SPEC, MS_NUMELEMS, 1)
+  
+  aelems(1) = 9.0
+  call Multispecies_setProperty(BE_SPEC, MS_AELEMS, aelems)
+
+  fractions(1) = 1.0
+  call Multispecies_setProperty(BE_SPEC, MS_FRACTIONS, fractions)
+
+  zelems(1) = 4
+  call Multispecies_setProperty(BE_SPEC, MS_ZELEMS, zelems)  
+#endif
+
+
+#ifdef POLI_SPEC
+  ! Define Polyimide - C22 H10 O5 N2  
+  ntot = real(22 + 10 + 5 + 2)
+  fractions(1) = 22.0/ntot
+  fractions(2) = 10.0/ntot
+  fractions(3) =  5.0/ntot
+  fractions(4) =  2.0/ntot
+  call Multispecies_setProperty(POLI_SPEC, MS_FRACTIONS, fractions)
+
+  aelems(1) = 12.0
+  aelems(2) =  1.0
+  aelems(3) = 16.0
+  aelems(4) = 14.0
+  call Multispecies_setProperty(POLI_SPEC, MS_AELEMS, aelems)
+
+  zelems(1) = 6
+  zelems(2) = 1
+  zelems(3) = 8
+  zelems(4) = 7
+  call Multispecies_setProperty(POLI_SPEC, MS_ZELEMS, zelems)  
+
+  call Multispecies_setProperty(POLI_SPEC, A, &
+       (12.0*22.0 + 1.0*10.0 + 16.0*5.0 + 14.0*2.0)/ntot)
+  call Multispecies_setProperty(POLI_SPEC, Z, &
+       (6.0*22.0 + 1.0*10.0 + 8.0*5.0 + 7.0*2.0)/ntot)
+  call Multispecies_setProperty(POLI_SPEC, GAMMA, 5.0/3.0)
+  call Multispecies_setProperty(POLI_SPEC, MS_NUMELEMS, 4)
+#endif
+
+#endif
+
+end subroutine Simulation_initSpecies
+

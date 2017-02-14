@@ -1,0 +1,10 @@
+# Config routine for BiPCGStab HG Multigrid preconditioner.
+
+USESETUPVARS PfftSolver
+IF PfftSolver=="none"
+  REQUIRES Grid/GridSolvers/MultigridMC/poisson
+ELSE
+  REQUIRES Grid/GridSolvers/MultigridMC/poisson/PfftTopLevelSolve
+ENDIF
+
+

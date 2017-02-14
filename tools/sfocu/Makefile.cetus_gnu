@@ -1,0 +1,32 @@
+#/opt/bin/make -f Makefile.cetus_gnu
+CCOMP = mpicc
+CFLAGS = -c -g -O2
+LFLAGS = -g -o
+LIBS =
+#Available defines: NO_HDF4, NO_HDF5, NEED_MPI NO_NCDF
+#Comment this out if your hdf5 doesn't need mpi. Sfocu should run as a single
+#processor job in any case.
+
+CDEFINES = -DNEED_MPI -DNO_HDF4 -DH5_USE_16_API
+HDF5_PATH = /opt/hdf5-1.8.3_srcbuild
+NCMPI_PATH = /opt/parallel-netcdf-1.0.3
+MPICH_PATH = /opt/openmpi-1.3
+
+CFLAGS += -I$(MPICH_PATH)/include -I$(HDF5_PATH)/include -I$(NCMPI_PATH)/include 
+LIBS += -L$(HDF5_PATH)/lib -lhdf5
+LIBS += -L$(NCMPI_PATH)/lib -lpnetcdf
+LIBS += -L$(MPICH_PATH)/lib
+
+EXENAME = sfocu
+OBJS = main.o sfocu.o test_reader.o flash_reader.o namecmp.o flash_reader_ncdf.o \
+	flash_reader_hdf5.o flash_reader_chombo.o sameblock.o options.o
+
+.SUFFIXES: .c .o
+.c.o :
+	$(CCOMP) $(CFLAGS) $(CDEFINES) $*.c
+
+default: $(OBJS)
+	$(CCOMP) $(OBJS) $(LIBS) $(LFLAGS) $(EXENAME)
+
+clean:
+	rm $(OBJS) $(EXENAME)

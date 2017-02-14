@@ -1,0 +1,68 @@
+# Configuration file for the unit test of the BHTree Poisson Solver
+
+REQUIRES Driver
+REQUIRES physics/Hydro
+REQUIRES Multispecies
+REQUIRES physics/Eos/EosMain/Multigamma
+REQUIRES physics/Gravity/GravityMain/Poisson/BHTree
+
+# file from which radial profiles of grid quantities are read
+PARAMETER sim_radprof_file  STRING  "be1sm+1+4-xi10"
+
+# centre of the BE sphere
+PARAMETER sim_xCenter       REAL    0.0
+PARAMETER sim_yCenter       REAL    0.0
+PARAMETER sim_zCenter       REAL    0.0
+
+# velocity of the BE sphere
+PARAMETER sim_vx            REAL    0.0
+PARAMETER sim_vy            REAL    0.0
+PARAMETER sim_vz            REAL    0.0
+
+# perturbations; sim_pertType = 1 ... white noise, 2 ... spherical harmonics
+# pertamp - relative pert of sigma, velamp - absolute (cm/s) perturbation amplitude of velocity
+PARAMETER sim_pertType      INTEGER 0
+PARAMETER sim_pertamp       REAL    0.0
+PARAMETER sim_velamp        REAL    0.0
+PARAMETER sim_spharm_l1     INTEGER 0
+PARAMETER sim_spharm_m1     INTEGER 0
+
+# for radial profile mapping on the grid
+PARAMETER sim_nSubZones     INTEGER 2
+
+# abar - A of mol hydrogen in multifluid database
+PARAMETER abar_1              REAL    2.0
+PARAMETER abar_2              REAL    0.5
+PARAMETER gamma_1             REAL    1.0001
+PARAMETER gamma_2             REAL    1.0001
+
+# Jeans refinement and derefinement criteria
+# gives number of cells accross the Jeans length to refine/derefine
+D jeans_ref             Jeans refinement criterion.
+D & Gives number of cells accross the Jeans length to refine.
+D jeans_deref           Jeans derefinement criterion.
+D & Gives number of cells accross the Jeans length to derefine.
+PARAMETER jeans_ref             REAL    32.0
+PARAMETER jeans_deref           REAL    64.0
+
+D sim_solutionErrorTolerance1 the maximum relative deviation of the
+D & computed from the analytical potential for which the test shall
+D & be considered a success. This tolerance is applied immediately after
+D & the potential is computed numerically for the first time.
+D sim_solutionErrorTolerance2 the maximum relative deviation of the
+D & computed from the analytical potential for which the test shall
+D & be considered a success. This tolerance is applied after each
+D & time evolution step (if the test is configured to do time
+D & steps, by choice of the 'nend' runtime parameter etc.).
+PARAMETER sim_solutionErrorTolerance1 REAL 5.e-3 [0 ... ]
+PARAMETER sim_solutionErrorTolerance2 REAL 5.e-3 [0 ... ]
+
+
+VARIABLE PANL
+VARIABLE PERR
+
+
+SPECIES FLD1
+SPECIES FLD2
+
+DATAFILES be1sm*

@@ -1,0 +1,131 @@
+#	Runtime parameters for the Woodward-Colella interacting blast problem.
+
+#	Parameters for initial model
+
+#		Density, pressure, and velocity in each section of the grid
+
+sim_rhoLeft        =    1.e2
+sim_rhoMid         =    1.e2
+sim_rhoRight       =    1.e2
+sim_pLeft          =    500.e16
+sim_pMid           =    0.01e19
+sim_pRight         =    50.e16
+sim_uLeft          =    0.
+sim_uMid           =    0.
+sim_uRight         =    0.
+
+#		Angle and position of interfaces relative to x and y axes
+
+sim_xangle		=    0.
+sim_yangle		=    90.
+sim_posnL           =    0.1e9
+sim_posnR           =    0.9e9
+
+#		Gas ratio of specific heats
+
+gamma           = 1.6667
+
+
+#		Size of computational volume
+
+xmin		= 0.
+xmax		= 1.e9
+pt_initialXMax = 1.e9
+
+smallt = 1.e4
+#		Boundary conditions
+
+xl_boundary_type = "reflect"
+xr_boundary_type = "reflect"
+
+#	Simulation (grid, time, I/O) parameters
+
+cfl		= 0.8
+lrefine_max     = 5
+refine_var_1    = "dens"
+refine_var_2    = "pres"
+basenm          = "2blast_2_"
+log_file	= "2blast_2.log"
+##restart         = .true.
+##checkpointFileNumber = 200
+checkpointFileIntervalTime          = 0.010e0
+checkpointFileIntervalStep          = 500
+alwaysrestrictcheckpoint = .FALSE.
+#nend            = 999999
+#nend            = 50000
+nend            = 200
+#tmax            = 0.038e0
+#tmax            = 10.000e0
+tmax            = 2.000e0
+
+plotFileIntervalTime = 1.e0
+particleFileIntervalTime = 1.e0
+
+# These parameters are used only for the uniform grid
+
+
+iGridSize = 256   #defined as nxb * iprocs
+#jGridSize = 8
+#kGridSize = 1
+iProcs = 1	#number or procs in the i direction	
+jProcs = 1
+kProcs = 1
+
+# When using UG, iProcs, jProcs and kProcs must be specified.
+# These are the processors along each of the dimensions
+#FIXEDBLOCKSIZE mode ::
+# When using fixed blocksize, iGridSize etc are redundant in
+# runtime parameters. These quantities are calculated as 
+# iGridSize = NXB*iprocs
+# jGridSize = NYB*jprocs
+# kGridSize = NZB*kprocs
+#NONFIXEDBLOCKSIZE mode ::
+# iGridSize etc must be specified. They constitute the global
+# number of grid points in the physical domain without taking 
+# the guard cell into account. The local blocksize is calculated
+# as iGridSize/iprocs  etc.
+ 
+run_comment	= "Woodward-Colella blast wave (to t=0.038)"
+
+#       Misc parameters
+
+ppmEintFluxConstructionMeth = 2
+ppmEintCompFluxConstructionMeth = 3
+ppmEnerFluxConstructionMeth = 2
+ppmEnerCompFluxConstructionMeth = 3
+#rieman_tol = 1.0e-8
+#ppm_modifystates = .true.
+#cvisc = 0.0
+#use_steepening = .FALSE.
+## eint1Switch     = 1.0e-1 #1000.0
+## #eint2Switch     = 0
+## #eintSwitch     = 1.0e-1
+
+#eintSwitch     = 0.
+
+
+convertToConsvdInMeshInterp   = .true.
+
+
+enablemaskedgcfill = .FALSE.
+
+#eos_coulombMult		= 0.e0
+eosMode                        = "dens_ie_gather"
+eosModeInit                    = "dens_ie_scatter"
+
+#hx_couplingConst12 = 12.0e7
+hx_couplingConst12 = 200.0e7
+hx_couplingConst13 = 1.0e-10
+hx_couplingConst23 = 20.0e7
+hx_dtFactor = 0.25
+tstep_change_factor = 1.2
+dtmax = 0.002
+
+#cond_constantisochoric = 1.0e22
+#cond_constantisochoric = 1.0e23
+#dt_diff_factor = 0.2
+
+# Particle stuff
+useParticles = .true.
+pt_numX = 128
+pt_maxPerProc = 128

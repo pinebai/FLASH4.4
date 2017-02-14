@@ -1,0 +1,39 @@
+#!/usr/bin/env python
+import os
+import sys
+sys.path = ['.', os.path.join(os.path.split(__file__)[0], 'tools')] + sys.path
+
+from setup import make_metadata
+
+class NS(object):
+    pass
+
+def main():
+    mdpath = os.path.join(os.path.split(__file__)[0], 'tools', 'python', 'metadata.json')
+    make_metadata(mdpath)
+
+    args = sys.argv[1:]
+    ns = NS()
+    ns.options = args
+
+    from python.flmake import setup
+    from python.flmake.setup_globals import gvars
+
+    oda = [a for a in args if a.startswith('-objdir')]
+    gvars.project_setup_dir = 'object' if 0 == len(oda) else oda[-1].partition('=')[2]
+    try:
+        setup.script_main(ns, {})
+    finally:
+        if os.path.exists(mdpath):
+            os.remove(mdpath)
+
+        if os.path.exists('flash.log'):
+            os.remove('flash.log')
+
+    success_file = os.path.join(gvars.project_setup_dir, ".success")
+    with open(success_file, 'w') as f:
+        f.write("SUCCESS\n")
+
+
+if __name__ == '__main__':
+    main()

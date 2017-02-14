@@ -1,0 +1,18 @@
+#  Configuration file for Eos test for Helmholtz implementation
+#  Simulation/SimultationMain/unitTest/Eos/Helmholtz
+#  Receives the Simulation_init from SimulationComposition
+
+REQUIRES physics/Eos/EosMain/Helmholtz
+REQUIRES physics/Eos/unitTest/Helmholtz  # Helmholtz version has additional derivative tests
+REQUIRES Simulation/SimulationComposition
+REQUIRES Multispecies
+
+# number of species (ionmax)
+SPECIES HE4
+SPECIES NI56
+
+# add a few scratch space variables for visualization output
+SCRATCHCENTERVAR drv1
+SCRATCHCENTERVAR drv2
+
+

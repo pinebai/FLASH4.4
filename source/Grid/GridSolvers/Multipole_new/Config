@@ -1,0 +1,118 @@
+# Configuration file for the multipole Poisson solver
+
+REQUIRES flashUtilities/general
+
+#  Set up a name to use if ifdef/ifndef within the fortran code
+#  Note this name cannot be used in Config files, only .F90
+PPDEFINE FLASH_MPOLE
+
+# We must tell the code, if we want to run in multithreaded mode
+USESETUPVARS threadBlockList
+USESETUPVARS threadWithinBlock
+
+# Parameters:
+
+D         mpole_MultiThreading          If set .true., the code will run in multithreaded mode  
+D         mpole_Lmax                    Maximum multipole moment to use  
+D         mpole_2DSymmetryPlane         In 2D coordinates, assume a plane of symmetry
+D         &                             at the grid bottom. Can be used for symmetrical
+D         &                             problems to reduce computational domain.
+D         mpole_3DAxisymmetry           Assumes rotational invariance around the main (z)
+D         &                             axis in 3D cartesian geometry domains, even if this
+D         &                             holds only approximately. In effect it uses only M=0
+D         &                             multipole moments.
+D         mpole_DumpMoments             Should the Moment array be dumped at each timestep?
+D         &                             Use this option only with care, as the moments will
+D         &                             be printed for each radial bin.
+D         mpole_PrintRadialInfo         Should the Multipole solver print out detailed
+D         &                             radial bin information at each timestep?
+D         mpole_IgnoreInnerZone         If this is set .true., the inner zone will not
+D         &                             be recognized and all inner zone radii will be
+D         &                             treated statistically. This can be used only
+D         &                             if Lmax is sufficiently low.
+D         mpole_InnerZoneSize           The size (radius) defining the inner zone in
+D         &                             terms of the inner zone atomic radius. This
+D         &                             value needs to be an integer, as it will be
+D         &                             used to define dimensions of certain arrays.
+D         mpole_InnerZoneResolution     The resolution spacing for the inner zone in units
+D         &                             of the inner zone atomic radius. Two inner
+D         &                             zone radii will be considered different if they
+D         &                             are more than the resolution spacing apart. A very
+D         &                             tiny number will result in a complete separation
+D         &                             of all inner zone radii into separate bins.
+D         &                             However, the resolution cannot be set to exactly
+D         &                             zero, because its inverse value needs to be
+D         &                             calculated at some point in the code.
+D         mpole_MaxRadialZones          The maximum number of radial zones to be used
+D         mpole_ZoneRadiusFraction_1    The fraction of the maximum radius defining the
+D         &                             1st radial zone limit. The total number of fractions
+D         &                             given must match the maximum number of radial
+D         &                             zones specified and the fractions must be in
+D         &                             increasing order and less than 1. as we move
+D         &                             from the 1st zone upwards. The last zone must
+D         &                             always have a fraction of exactly 1. If not,
+D         &                             the code will enforce it.
+D         mpole_ZoneScalar_1            The scalar value 's' in the radial equation
+D         &                             r(Q) = s * dr * Q^t or the radial equation
+D         &                             r(Q) = s * dr * (e^(Qt)-1)/(e^t-1),
+D         &                             defining the maximum radius of the Q-th radial
+D         &                             bin for the 1st zone.
+D         mpole_ZoneExponent_1          The exponent value 't' in the radial equation
+D         &                             r(Q) = s * dr * Q^t or the radial equation
+D         &                             r(Q) = s * dr * (e^(Qt)-1)/(e^t-1),
+D         &                             defining the maximum radius of the Q-th radial
+D         &                             bin for the 1st zone.
+D         mpole_ZoneType_1              String value containing the zone type for the
+D         &                             1st zone. If set to 'exponential' then the
+D         &                             radial equation r(Q) = s * dr * Q^t is used.
+D         &                             If set to 'logarithmic' the radial equation
+D         &                             r(Q) = s * dr * (e^(Qt)-1)/(e^t-1) is used.
+D         mpole_ZoneRadiusFraction_2    Idem for the 2nd radial zone.
+D         mpole_ZoneScalar_2            Idem for the 2nd radial zone.
+D         mpole_ZoneExponent_2          Idem for the 2nd radial zone.
+D         mpole_ZoneType_2              Idem for the 2nd radial zone.
+D         mpole_ZoneRadiusFraction_3    Idem for the 3rd radial zone.
+D         mpole_ZoneScalar_3            Idem for the 3rd radial zone.
+D         mpole_ZoneExponent_3          Idem for the 3rd radial zone.
+D         mpole_ZoneType_3              Idem for the 3rd radial zone.
+D         mpole_ZoneRadiusFraction_4    Idem for the 4th radial zone.
+D         mpole_ZoneScalar_4            Idem for the 4th radial zone.
+D         mpole_ZoneExponent_4          Idem for the 4th radial zone.
+D         mpole_ZoneType_4              Idem for the 4th radial zone.
+
+IF threadBlockList or threadWithinBlock
+   PARAMETER mpole_MultiThreading BOOLEAN true
+ELSE
+   PARAMETER mpole_MultiThreading BOOLEAN false
+ENDIF
+
+PARAMETER mpole_Lmax                    INTEGER    0             [   0 ...     ]
+PARAMETER mpole_2DSymmetryPlane         BOOLEAN    false
+PARAMETER mpole_3DAxisymmetry           BOOLEAN    false
+PARAMETER mpole_DumpMoments             BOOLEAN    false
+PARAMETER mpole_PrintRadialInfo         BOOLEAN    false
+PARAMETER mpole_IgnoreInnerZone         BOOLEAN    false
+
+PARAMETER mpole_InnerZoneSize           INTEGER    16            [   1 ...     ]
+PARAMETER mpole_InnerZoneResolution     REAL       0.1           [ 0.0 ...     ]
+PARAMETER mpole_MaxRadialZones          INTEGER    1             [   1 ...     ]
+
+PARAMETER mpole_ZoneRadiusFraction_1    REAL       1.0           [ 0.0 ... 1.0 ]
+PARAMETER mpole_ZoneScalar_1            REAL       1.0           [ 0.0 ...     ]
+PARAMETER mpole_ZoneExponent_1          REAL       1.0           [     ...     ]
+PARAMETER mpole_ZoneType_1              STRING     "exponential"
+
+PARAMETER mpole_ZoneRadiusFraction_2    REAL       1.0           [ 0.0 ... 1.0 ]
+PARAMETER mpole_ZoneScalar_2            REAL       1.0           [ 0.0 ...     ]
+PARAMETER mpole_ZoneExponent_2          REAL       1.0           [     ...     ]
+PARAMETER mpole_ZoneType_2              STRING     "exponential"
+
+PARAMETER mpole_ZoneRadiusFraction_3    REAL       1.0           [ 0.0 ... 1.0 ]
+PARAMETER mpole_ZoneScalar_3            REAL       1.0           [ 0.0 ...     ]
+PARAMETER mpole_ZoneExponent_3          REAL       1.0           [     ...     ]
+PARAMETER mpole_ZoneType_3              STRING     "exponential"
+
+PARAMETER mpole_ZoneRadiusFraction_4    REAL       1.0           [ 0.0 ... 1.0 ]
+PARAMETER mpole_ZoneScalar_4            REAL       1.0           [ 0.0 ...     ]
+PARAMETER mpole_ZoneExponent_4          REAL       1.0           [     ...     ]
+PARAMETER mpole_ZoneType_4              STRING     "logarithmic"

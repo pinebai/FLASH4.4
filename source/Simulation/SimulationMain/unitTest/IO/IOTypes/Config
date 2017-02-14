@@ -1,0 +1,16 @@
+REQUIRES Grid/GridMain
+
+#The simulation uses utility functions only available to IOTypes implementation
+#so we cannot use standard FLASH PM I/O implementations.
+CONFLICTS IO/IOMain/hdf5/parallel/PM
+CONFLICTS IO/IOMain/hdf5/parallel/UG
+CONFLICTS IO/IOMain/hdf5/parallel/NoFbs
+CONFLICTS IO/IOMain/hdf5/serial/PM
+CONFLICTS IO/IOMain/hdf5/serial/UG
+CONFLICTS IO/IOMain/pnetcdf/PM
+CONFLICTS IO/IOMain/pnetcdf/UG
+
+#The only setup lines accepted require an additional
+#-unit=IO/IOMain/hdf5/parallel/PM_argonne
+#or
+#-unit=IO/IOMain/pnetcdf/PM_argonne

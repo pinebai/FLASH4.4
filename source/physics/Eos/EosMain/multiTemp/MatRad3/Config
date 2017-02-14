@@ -1,0 +1,8 @@
+DEFAULT Gamma
+
+# For debugging - some Eos routines put diagnostic info into these
+# variables if they are defined.
+D trte_variable Eos_putData saves ratio of radiation temperature to electron temperature here.
+D prpe_variable Eos_putData saves ratio of radiation pressure to electron pressure here.
+VARIABLE TRTE  # Temp. radiations / temp. electrons
+VARIABLE PRPE  # Pres. radiations / pres. electrons

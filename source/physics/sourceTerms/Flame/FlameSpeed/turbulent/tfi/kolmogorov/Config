@@ -1,0 +1,2 @@
+PARAMETER fl_fsTFIBeta            REAL     5.0
+PARAMETER fl_fsTFIViscosity       REAL     1.0e-2

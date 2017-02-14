@@ -1,0 +1,33 @@
+USESETUPVARS threadRayTrace, useGridParticles
+
+REQUIRES flashUtilities/UTCounter
+REQUIRES flashUtilities/UTPipeline
+
+#TODO: I need to understand how laser I/O chooses the rays it outputs.
+CONFLICTS physics/sourceTerms/EnergyDeposition/EnergyDepositionMain/Laser/LaserIO
+
+#The FLASH UG is very primitive in that it does not know the corner
+#block neighbors (which my algorithm needs).  In future we need to
+#replace the FLASH UG, which only maintains left and right neighbors
+#in each of the NDIM directions, with an NDIM cartesian communicator.
+#Once we have a cartesian communicator it is trivial to find the
+#corner neighbors.
+CONFLICTS Grid/GridMain/UG
+
+IF useGridParticles
+   #The only thing that we use in GridParticles is Grid_sortParticles.
+   REQUIRES Grid/GridParticles/GridParticlesMove/Sieve
+   PPDEFINE USE_GRID_PARTICLES
+
+   #I prefer not to use GridParticles because there are the following
+   #large memory allocations.
+   #allocate(gr_ptDestBuf(propCount,gr_ptMaxPerProc))
+   #allocate(gr_ptSourceBuf(propCount,gr_ptMaxPerProc))
+ENDIF
+
+
+PARAMETER ed_commDebug BOOLEAN TRUE
+PARAMETER ed_commLog BOOLEAN FALSE
+PARAMETER ed_commChannelSize INTEGER 100 [1 ...]
+
+PARAMETER ed_commRaysBetweenMsgTest INTEGER 50 [1 ...]

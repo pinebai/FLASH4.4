@@ -1,0 +1,285 @@
+
+FLASH Libraries HOWTO
+
+Murali Ganapathy Sep-7-05
+Lynn Reid Oct-24-06 updated Internal, no dependencies section
+
+This document describes how FLASH libraries work and how to add a new 
+one to FLASH.  For the steps to follow, see the section "FOLLOW THESE STEPS"
+below.  The sections before that are introductions but may not be crucial
+for the simple cases.
+
+Requires FLASH 3.0 or later.
+
+What is a library?
+------------------
+
+A library is a self contained piece of code which is independent of FLASH, e.g. 
+mpi, hdf5, pfft. We distinguish between external and internal libraries. Most
+libraries have a corresponding "lib/name" directory inside FLASH repository
+which contains a Config file which describes the library and its dependencies.
+Libraries without such a directory are assumed (by the setup script) to be
+external libraries without any dependencies.
+
+External Libraries
+------------------
+
+External libraries (like mpi, hdf5) are libraries which are not included with
+FLASH source code and hence must be installed by the user. The user then adds
+the following macros to the site specific Makefile.h
+
+  {CFLAGS,FFLAGS,LIB}_<LIBNAME>
+
+The CFLAGS_<LIBNAME> typically contains compiler options to add directories to
+search for processing #include directives in the C source code as well as any
+additional compile time flags. Similarly for FFLAGS_<LIBNAME> e.g.
+"-I/usr/mpich/include". The LIB_<LIBNAME> macro typically contains the
+directory containing the compiled library and the name of the library e.g.
+"-L/usr/mpich/lib -lmpich"
+
+If you need to distinguish between optimised, regular, and debugging versions
+of the libraries, you may define the following macros:
+
+  {CFLAGS,FFLAGS,LIB}_<LIBNAME>_{OPT,DEBUG,TEST}
+
+If your external library has dependencies on other libraries, do not hard code
+the dependencies in your Makefile.h macros, i.e. do not do:
+
+  LIB_NAME = -Lpath/to/lib -lname -lpng -lz
+
+Instead create a lib/name directory and declare the dependency using
+the Config file (syntax explained later) and have:
+
+  LIB_NAME = -Lpath/to/lib -lname
+  LIB_PNG  = -lpng -lz
+
+Of course, it is possible to go overboard with this and declare the dependency
+of PNG on libz. A rule of thumb: If the dependency is on a standard library and
+no other library will depend on it, hard code the dependency in your own
+LIB_NAME macro. Otherwise, create the directory and declare the dependency. As
+always, when in doubt, explicity declare the dependency.
+
+Internal Libraries
+------------------
+
+Internal libraries (like dummyMPI, pfft) are libraries whose source code is
+included with FLASH and may need to recompiled. The directory "lib/name/" must
+contain a Config file indicating that this is an internal library and declaring
+its dependencies on other libraries (external or internal). In addition it must
+contain a "build.csh" or "build.py" which builds the required libraries.
+Optionally, you can also have a "libinfo.py" which can interact with the setup
+script (More about that later). If a "libinfo.py" is not present, the following
+are assumed:
+
+  CFLAGS_NAME = -Ilib/name/include
+  FFLAGS_NAME = -Ilib/name/include
+  LIB_NAME = -Llib/object -lname
+
+Hence the build script must create a "lib/object/libname.a" file.
+
+In case there is a libinfo.py, it is assumed that the build script builds all
+the variants of the library which may be requested by libinfo.py. More on this
+later.
+
+Makefile
+--------
+Usually, internal libraries will have their own Makefile and will be referenced
+by the build script. Anytime the build script is called, the site-specific
+Makefile.h can be accessed at "lib/name/Makefile.h". This among other 
+things can be used to pass information to the build script (which compiler is 
+to be used, does FORTRAN add two underscores or one,...). The following macros 
+are already defined in the Makefile.h
+
+  CCOMP -> Which C/C++ compiler to use
+  FCOMP -> Which F77/F90 compiler to use
+  LINK  -> Linker invocation (usually Fortran compiler with different flags)
+
+So use them in your Makefile, e.g.
+
+  ---- Sample Makefile in lib/name/source/ ----
+  # import site specific information
+  include  ../Makefile.h
+
+  MKLIB = ar -r
+
+  default: ../object/libname.a
+
+  ../object/libname.a: file.o
+	  $(MKLIB) ../object/libname.a file.o
+
+  file.o: file.c ../include/file.h
+	  $(CCOMP) -c file.c
+  ---- End of sample Makefile -----
+
+Config file
+-----------
+A Config file for a library declares the type of the library as well as its
+dependencies. Currently only two keywords are recognized: TYPE and LIBRARY.
+The TYPE keyword declares the type of LIBRARY, i.e. EXTERNAL or INTERNAL.
+If your library can be both external as well as internal (we shall see an
+example later), choose INTERNAL.
+
+The LIBRARY keyword is followed by the name of the library it depends on the
+various arguments to be given to the library. For example, there may be several
+implementations of a given library. In this case, we choose the variant we are
+interested by passing arguments. For example, the "mpi" library in FLASH has two
+variants. The default variant is the regular mpich library and the other variant
+is the "dummyMPI" which implements all the MPI calls but assumes there is only
+one processor.
+
+If your library requires a specific variant you can add the additional arguments
+in the LIBRARY keyword after the name of the library. In most cases you will not
+need to pass any arguments to the library. For example, a certain simulation may
+require that the pfft library it uses must use the fftw scientific library. It
+specifies this with:
+
+  LIBRARY pfft fiskpak
+
+in its Config file (this is a Unit Config file, but the LIBRARY keyword there
+has the same syntax).
+
+Variants of a library
+---------------------
+In many cases, one may have multiple variations of the same library. In this
+case the arguments passed to the library will determine which variant setup uses
+to compile the flash executable. Libraries which have multiple variants, must
+also include a libinfo.py in the "lib/name" directory which contains a function
+called "libinfo" with the following declaration:
+
+def libinfo(relLibDir="",absLibDir="",buildFlag="",args="",macros=[]):
+
+relLibDir: contains the relative path to the "lib/name" directory 
+from the "object" directory. Use this in your Makefile. 
+
+absLibDir: contains the absolute path to the "lib/name" directory. Use 
+this to perform tests (check existence of file etc.). 
+
+buildFlag: one of "OPT","DEBUG","TEST" and is the flag with which 
+the library is to be linked in.
+
+args: string containing the arguments to this library. Use this
+to select which variant of the library you want
+
+macros: list of strings. Names of macros which are defined in the 
+Makefile.h (site specific)
+
+This function should return a dictionary. The following keys
+are recognized:
+"CFLAGS","FFLAGS","LIB","REBUILD","EXTERNAL","INTERNAL"
+
+The REBUILD is a flag (set it to 0/1, default 0) which, if set, instructs 
+setup to rebuild the library (by calling build script). 
+
+The CFLAGS, FFLAGS and LIB go into the Makefile directly. 
+
+If the EXTERNAL/INTERNAL key is given then the CFLAGS, FFLAGS and LIB
+are ignored and the default ones for the corresponding library (whose 
+name is the value of the key) is taken. 
+
+e.g. if the returned dictionary has EXTERNAL as "mpi", then the FLAGS
+are taken from the make file macros CFLAGS_MPI, FFLAGS_MPI and LIB_MPI
+respectively. 
+
+e.g. if the dictionary returned by libinfo of "lib/name" contains 
+INTERNAL as "xyz" then
+CFLAGS=FFLAGS="-Ipath-to-lib/name/xyz/include" 
+LIB="-Lpath-to-lib/name/xyz/object -lxyz"
+Also in this case, if lib/name/xyz/object/libxyz.a does not
+exist it is rebuilt.
+
+Return an empty dictionary to signify an error. 
+
+The libinfo for the mpi library is given below.
+
+  --- libinfo.py for mpi ------
+  import re
+
+  # Algo: 
+  #  if args=="dummy" 
+  #     we want the dummy MPI (in dmpi folder) 
+  # else regular one
+
+  def libinfo(relLibDir="",absLibDir="",buildFlag="",args="",macros=[]):
+      ans = {}
+      if not args: # we want regular mpi
+         return {"EXTERNAL":"mpi"}
+      elif re.match("dummy", args):
+         return {"INTERNAL":"dmpi"}
+      else: #unknown option 
+         print >>sys.stderr, 'Unknown MPI Variant "%s"' % args
+         return {}
+  --- end of libinfo.py ----
+
+
+Another Variant Example (pfft)
+------------------------------
+
+The use of the argument is specific to the libinfo.py code. For example,
+lets say we have pfft library. This in turn requires some underlying
+scientific library. The argument in this case can specify which 
+underlying scientific library to use. In thie case, the pseudo code
+for the libinfo will go like this:
+
+* find out the scientific libraries which may be present on this platform
+  (use python to find platform/OS specific information)
+* inspect the macros list and find list of scientific libraries 
+  installed 
+* If user has a preference and this preference is feasible 
+  + use this variant
+  + check to see if it needs rebuilding, if so set the REBUILD flag
+  + return
+* Now no preference is available
+  + See if any feasible variant is already built, it so use that variant
+    and return
+  + If no feasible variant is already built, pick one and ask setup to 
+    rebuild and return
+
+
+************FOLLOW THESE STEPS**************************************
+
+
+Adding External Libraries (single variant)
+------------------------------------------
+
+* your library has no dependency (not even mpi) 
+  - just add {CFLAGS,FFLAGS,LIB}_NAME* macros to site specific Makefile.h 
+* has dependencies 
+  - add the macros mentioned above and create a lib/name/Config file 
+    which contains
+
+  -----
+  TYPE     EXTERNAL
+  LIBRARY  LIB1
+  LIBRARY  LIB2
+  LIBRARY  LIB3
+  -----
+
+Adding Internal Libraries (single variant)
+------------------------------------------
+
+* create lib/name/Config, and add "TYPE INTERNAL" and declare dependencies 
+* create lib/name/build.{csh,py} script to build the library
+  - the build.csh should probably be executable
+  - remember to use the Makefile.h at lib/name/Makefile.h (which will exist when 
+    build script is called) for choice of compilers and other stuff
+* create lib/name{source,object,include} and put your files in appropriate place
+* create a Makefile in the source/ directory.  Ensure that your Makefile generates 
+   the libname.a in the lib/name/object/ directory
+* add the line "LIBRARY name" to the Simulation or Unit Config that requires the
+   library.
+
+Adding Libraries (multiple variants)
+------------------------------------
+
+* create lib/name/Config, set type to INTERNAL (even if all variants are 
+  external) and declare dependencies
+* create an internal structure (as you wish) to house all the variants (each 
+  its own directory or together in one directory, your choice)
+* Ensure Makefile called with appropriate targets (or multiple Makefiles) 
+  can be used to build all the variants
+* Create a lib/name/build.csh to build all the variants (if only some variants 
+  make sense on specific platform include that logic in build script and 
+  build only useable variants)
+* Create a lib/name/libinfo.py which inspects its arguments, macros,... and 
+  returns the right set of flags for given variant (or empty dictionary for 
+  error). Dont forget to set the REBUILD flag if reqd

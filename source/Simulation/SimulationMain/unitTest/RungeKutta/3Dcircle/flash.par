@@ -1,0 +1,31 @@
+basenm = "RungeKuttaUnitTest_"
+
+############################
+#                          #
+#   UNIT TEST PARAMETERS   #
+#                          #
+############################
+
+sim_rx0 = 0.70710678118654752440084436
+sim_ry0 = 0.70710678118654752440084436
+sim_rz0 = 0.0
+
+sim_speed = 1.0
+
+sim_errorFraction           = 1.0e-8
+sim_numberOfCircles         = 1
+sim_numberOfRungeKuttaSteps = 100
+
+#sim_RungeKuttaMethod        = "EulerHeu12"
+#sim_RungeKuttaMethod        = "BogShamp23"
+#sim_RungeKuttaMethod        = "Fehlberg34"
+#sim_RungeKuttaMethod        = "Fehlberg45"
+sim_RungeKuttaMethod        = "CashKarp45"
+
+sim_stepSize                = 0.01
+
+############################
+#                          #
+#  RUNGE KUTTA PARAMETERS  #
+#                          #
+############################

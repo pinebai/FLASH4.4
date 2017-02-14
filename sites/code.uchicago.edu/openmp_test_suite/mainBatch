@@ -1,0 +1,43 @@
+#OpenMP test suite
+#Launch using ./flashTest.py -v -f jobs/mainBatch
+#The file at jobs/mainBatch is this file.
+
+UnitTest/Multipole/AMR/2d/Cylindrical/tbl
+UnitTest/Multipole/AMR/2d/Cylindrical/twb
+UnitTest/Multipole/AMR/3d/Cartesian/tbl
+UnitTest/Multipole/AMR/3d/Cartesian/twb
+
+UnitTest/Gravity/Poisson3/3d/AMR/tbl
+UnitTest/Gravity/Poisson3/3d/AMR/twb
+UnitTest/Gravity/Poisson3/3d/UG/twb
+UnitTest/Gravity/Poisson3/3d/nofbs/twb
+
+UnitTest/Eos/Helmholtz/3d/UG/twb
+UnitTest/Eos/Helmholtz/3d/nofbs/twb
+UnitTest/Eos/Helmholtz_tuned_1/3d/UG/twb
+UnitTest/Eos/Helmholtz_tuned_1/3d/nofbs/twb
+UnitTest/Eos/Helmholtz_tuned_2/3d/UG/twb
+UnitTest/Eos/Helmholtz_tuned_2/3d/nofbs/twb
+
+Comparison/Sedov/AMR/2d/split/tbl
+Comparison/Sedov/AMR/2d/split/twb
+Comparison/Sedov/AMR/2d/unsplit/tbl
+Comparison/Sedov/AMR/2d/unsplit/twb
+
+Comparison/RTFlame/nofbs/2d/split/twb
+Comparison/RTFlame/AMR/2d/split/tbl
+Comparison/RTFlame/AMR/2d/split/twb
+Comparison/RTFlame/nofbs/2d/unsplit/twb
+Comparison/RTFlame/AMR/2d/unsplit/tbl
+Comparison/RTFlame/AMR/2d/unsplit/twb
+Comparison/RTFlame/AMR/2d/unsplit_tuned_1/tbl
+Comparison/RTFlame/AMR/2d/unsplit_tuned_1/twb
+Comparison/RTFlame/AMR/2d/unsplit_tuned_2/tbl
+Comparison/RTFlame/AMR/2d/unsplit_tuned_2/twb
+
+Comparison/WD_def_exp/AMR/3d/split/tbl
+Comparison/WD_def_exp/AMR/3d/split/twb
+Comparison/WD_def_exp/AMR/3d/unsplit/tbl
+Comparison/WD_def_exp/AMR/3d/unsplit/twb
+Comparison/WD_def_exp/AMR/3d/unsplit_tuned_1/tbl
+Comparison/WD_def_exp/AMR/3d/unsplit_tuned_1/twb

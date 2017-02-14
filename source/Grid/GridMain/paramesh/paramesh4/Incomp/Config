@@ -1,0 +1,7 @@
+USESETUPVARS Grid
+
+IF Grid in ["PM40","PM3"]
+  REQUIRES Grid/GridMain/paramesh/paramesh4/Paramesh4.0
+ELSE
+  REQUIRES Grid/GridMain/paramesh/paramesh4/Paramesh4dev OR Grid/GridMain/paramesh/paramesh4/Paramesh4.0
+ENDIF

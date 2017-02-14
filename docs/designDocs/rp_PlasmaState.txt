@@ -1,0 +1,8 @@
+
+physics/utilities/PlasmaState
+    usePlasmaState [BOOLEAN] CONSTANT [FALSE]
+        flags whether the PlasmaState unit is being used at all
+
+physics/utilities/PlasmaState/PlasmaStateMain
+    usePlasmaState [BOOLEAN] [TRUE]
+        flags whether the PlasmaState unit is being used at all

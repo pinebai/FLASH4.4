@@ -1,0 +1,88 @@
+##python:genLines
+
+def genLines(setupvars):
+    # Config file for RadTrans/RadTransMain/MGD unit implementation directory
+
+    yield """
+
+REQUESTS physics/Diffuse
+REQUESTS Grid/GridAllocatableScratches
+
+# Create a variable to store the absorption coefficient
+D absr_variable radiation absorption coefficient
+VARIABLE ABSR
+
+# Create a variable to store the emissivity
+D emis_variable specific emitted radiation energy
+VARIABLE EMIS
+
+D mgdc_variable for multigroup diffusion
+VARIABLE MGDC
+
+D rt_useMGD use multigroup radiation diffusion
+PARAMETER rt_useMGD BOOLEAN FALSE
+
+D rt_mgdFlMode MGD flux limiter mode
+PARAMETER rt_mgdFlMode STRING "fl_none" ["fl_none", "fl_harmonic", "fl_minmax", "fl_larsen", "fl_levermorepomraning1981"]
+
+D rt_mgdFlCoef MGD flux limiter coefficient
+PARAMETER rt_mgdFlCoef REAL 1.0
+
+D rt_mgdNumGroups Number of groups in the MGD calculation
+PARAMETER rt_mgdNumGroups INTEGER 0
+
+D rt_mgdXlBoundaryType MGD bcTypes.
+PARAMETER rt_mgdXlBoundaryType STRING "reflecting" ["reflecting", "vacuum", "dirichlet", "neumann", "outflow", "outstream"]
+PARAMETER rt_mgdXrBoundaryType STRING "reflecting" ["reflecting", "vacuum", "dirichlet", "neumann", "outflow", "outstream"]
+PARAMETER rt_mgdYlBoundaryType STRING "reflecting" ["reflecting", "vacuum", "dirichlet", "neumann", "outflow", "outstream"]
+PARAMETER rt_mgdYrBoundaryType STRING "reflecting" ["reflecting", "vacuum", "dirichlet", "neumann", "outflow", "outstream"]
+PARAMETER rt_mgdZlBoundaryType STRING "reflecting" ["reflecting", "vacuum", "dirichlet", "neumann", "outflow", "outstream"]
+PARAMETER rt_mgdZrBoundaryType STRING "reflecting" ["reflecting", "vacuum", "dirichlet", "neumann", "outflow", "outstream"]
+
+D rt_mgdXlBoundaryTemp Boundary radiation temperature for MGD, in kelvin
+PARAMETER rt_mgdXlBoundaryTemp REAL -1.0
+PARAMETER rt_mgdXrBoundaryTemp REAL -1.0
+PARAMETER rt_mgdYlBoundaryTemp REAL -1.0
+PARAMETER rt_mgdYrBoundaryTemp REAL -1.0
+PARAMETER rt_mgdZlBoundaryTemp REAL -1.0
+PARAMETER rt_mgdZrBoundaryTemp REAL -1.0
+
+D rt_mgdBoundEntry How the group bounds will be input
+PARAMETER rt_mgdBoundEntry STRING "grbd_manual" ["grbd_manual"]
+
+D rt_mgdthetaImplct Implicitness factor of the solver.
+PARAMETER rt_mgdthetaImplct REAL 1.0 [0.0 ... 1.0]
+
+D rt_timeGroups Option to time individual groups (cannot be used with meshCopyCount > 1)
+PARAMETER rt_timeGroups BOOLEAN FALSE
+
+D rt_groupBarrier Option to time group load imbalance
+PARAMETER rt_groupBarrier BOOLEAN FALSE
+
+D rt_computeDt When true, attempt to compute a time step associated with MGD
+PARAMETER rt_computeDt BOOLEAN FALSE
+
+D rt_tempChangeRelTol Tolerance for maximum relative temperature change in a cell
+D & in a time step. Currently only applied to electron temperature by ExpRelax implementation.
+PARAMETER rt_tempChangeRelTol  REAL	1.e3	[0.0+ ...]
+
+"""
+
+    # Create storage for UNK variables for multigroup diffusion
+    if "mgd_meshgroups" in setupvars:
+        mgd_meshgroups = int(setupvars['mgd_meshgroups'])
+        yield 'NONREP MASS_SCALAR MGDR %d rt_mgdNumGroups R???' % mgd_meshgroups
+    else:
+        yield 'SETUPERROR Must specify mgd_meshgroups to use multigroup diffusion'
+
+    # read the number of mgd bounds from the setup variables
+    mgd_maxgroups = 100
+    if "mgd_maxgroups" in setupvars:
+        mgd_maxgroups = int(setupvars['mgd_maxgroups'])
+    yield 'PPDEFINE MGD_MAXGROUPS %d' % (mgd_maxgroups + 1)
+    
+    yield 'D rt_mgdBounds_1 These parameters store the group boundaries for manual entry'
+    
+    # generate the parameters in a loop
+    for b in xrange(mgd_maxgroups+1):
+        yield 'PARAMETER rt_mgdBounds_%d REAL -1.0' % (b+1)

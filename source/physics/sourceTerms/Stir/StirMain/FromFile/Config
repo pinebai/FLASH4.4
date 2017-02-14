@@ -1,0 +1,21 @@
+# Configuration file for turbulent stirring from file: StirFromFile
+#
+# For example applications see Federrath et al. 2008, ApJ 688, L79,
+# Federrath et al. (2010, A&A 512, A81)
+#
+# The st_infilename points to a file containing the stirring time sequence,
+# which must be prepared in advance with the external Fortran tool in
+# source/Simulation/SimulationMain/StirFromFile/forcing_generator/
+#
+# Parameters
+#
+D         st_infilename  file containing the stirring time sequence
+PARAMETER st_infilename  STRING "forcingfile.dat"
+
+D         st_computeDt   whether to restrict time step based on stirring
+PARAMETER st_computeDt   BOOLEAN   FALSE
+
+# Slots to store turbulent driving acceleration field
+VARIABLE accx
+VARIABLE accy
+VARIABLE accz

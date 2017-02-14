@@ -1,0 +1,38 @@
+The Flash Center for Computational Science is pleased to announce the
+availability of a repository of compact/mini applicatons. The
+repository is available for download from the flash web pages.  The
+applications are already configured and contain all required source
+files. The only customization is needed in the Makefile.h file for
+specific target machines. Documentation for the use of compact/mini
+applications in the repository is also included.
+
+Users desirous of downloading the repository should sign a licensing
+agreement available from http://flash.uchicago.edu/Code-request. The
+same licensing agreement also holds for the download of the FLASH
+code. Users can opt for code alone, compact/mini apps alone, or both. 
+
+The compact/mini applications included in the current release are :
+  GuardCell - unit test
+  I/O - unit test
+  Eos - unit test
+  Hydrodynamics - Sedov blast wave
+  Gravity - Poisson solve using multipole and multigrid methods
+  PFFT - Parallel multi-dimension FFT 
+  Diffusion - ConductionDelta (heat conduction)
+            - MGDStep (multigroup diffusion)
+
+Development of the FLASH Code was funded by the DOE-supported
+ASC/Alliance Center for Astrophysical Thermonuclear Flashes,
+and continues to be funded by DOE NNSA and OASCR.  We
+acknowledge support received from Lawrence Livermore National
+Laboratory and the University of Chicago.
+
+All publications resulting from the use of the FLASH Code must
+acknowledge the Flash Center for Computational Science.
+  Addition of the following text to the paper acknowledgments
+will be sufficient. 
+
+         "The software used in this work was in part developed by the
+         DOE-supported Flash Center for Computational Science
+         at the University of Chicago."
+

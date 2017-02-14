@@ -1,0 +1,133 @@
+# Parameters for the setup
+igrav = 1
+
+ppm_modifystates = .true.
+use_Gravity = .true.
+
+smallp                      = 1.0000000000000E-30
+smlrho                      = 1.0000000000000E-40
+smallu                      = 1.0000000000000E-10
+smallt                      = 1.0000000000000E-10
+
+
+#	checkpoint file output parameters
+checkpointFileIntervalTime = 1.0e12
+checkpointFileIntervalStep = 0
+checkpointFileNumber = 0
+
+#	plotfile output parameters
+plotfileIntervalTime = 0.
+plotfileIntervalStep = 0
+plotfileNumber = 0
+plot_var_1      = "temp"
+
+
+# go for nend steps or tmax seconds, whichever comes first
+nend            = 100000
+tmax		= 1.0e16
+dtmax		= 5.0e11
+
+# for starting a new run
+restart         = .false.
+cpnumber        = 0
+ptnumber        = 0 
+
+# initial, and minimum timesteps
+dtini           = 31556926
+dtmin           = 3155692.6
+
+# Grid geometry
+geometry = "cartesian"
+
+# Size of computational volume
+xmin		= -5.0e+18
+xmax		=  5.0e+18
+ymin		= -5.0e+18
+ymax		=  5.0e+18
+zmin		= -5.0e+18
+zmax		=  5.0e+18
+
+# Cluster centre coordinates, in cm !
+sim_xctr = 0. 
+sim_yctr = 0.
+sim_zctr = 0. 
+
+# Boundary conditions
+xl_boundary_type = "outflow" 
+xr_boundary_type = "outflow"
+yl_boundary_type = "outflow"
+yr_boundary_type = "outflow"
+zl_boundary_type = "outflow"
+zr_boundary_type = "outflow"
+grav_boundary_type = "isolated"
+
+# Variables for refinement test
+refine_var_1    = "dens"
+refine_var_2    = "pres"
+refine_var_3    = "velx"
+refine_var_4    = "vely"
+
+# additional refinement criteria
+#radius_ref = 60.e3
+#nref_center = 4 
+
+# Refinement levels
+lrefine_max     = 1
+lrefine_min     = 1 
+
+radius_refine       =    3e28
+# Number of lowest-level blocks
+sim_nblockx         = 1.0
+sim_nblocky         = 1.0 
+sim_nblockz         = 1.0
+
+# Hydrodynamics parameters
+cfl	        = 0.4
+
+# Simulation-specific parameters
+basenm          = "Chem_"
+run_number      = "001"
+run_comment     = "hydrostatic spherical cluster"
+log_file        = "cluster.log"
+
+#Parameters for the Chemistry
+sim_xH	        =   	0.0	
+sim_xHP	        =	0.75185 
+sim_xHM	        =	0.0     
+sim_xD 	        = 	0.0     
+sim_xDP	        =	0.0000390962 
+sim_xDM 	=	0.0     
+sim_xHe	        =	0.0     
+sim_xHePP	=	0.0     
+sim_xHeP	=	0.248111 
+sim_xH2P	=	0.0     
+sim_xH2	        =	0.0     
+sim_xHDP	=	0.0     
+sim_xHD         =	0.0     
+sim_xD2		= 	0.0
+sim_xD2P	=	0.0
+sim_xELEC	=	0.0     
+
+odeStepper = 2
+algebra = 2
+
+useChem = .true.
+useShockBurn = .false.
+
+# Test 
+sim_c_temp = 100.0
+sim_c_den  = 1.0e-26
+
+# Chem time Constant
+sim_chem_time = 0.1
+sim_cool_time = 0.1
+
+sim_meta	     = 0.0
+sim_spin	     = 0.0
+sim_ang		     = 0.0
+j21		     = 0.0
+
+doCool = 0
+mCool  = 0
+ccCase = 1
+rcCase = 1

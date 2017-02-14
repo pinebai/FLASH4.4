@@ -1,0 +1,9 @@
+REQUIRES IO/IOMain/hdf5/parallel
+
+D      ed_laserIOMaxNumberOfPositions    Maximum number of positions to store for each IO ray
+D      ed_laserIOMaxNumberOfRays         Maximum number of IO rays to write out accross each process
+D      ed_useLaserIO                     This flag controls whether Laser IO is active
+
+PARAMETER  ed_laserIOMaxNumberOfPositions   INTEGER    -1
+PARAMETER  ed_laserIOMaxNumberOfRays        INTEGER    -1
+PARAMETER  ed_useLaserIO                    BOOLEAN    false

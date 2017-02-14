@@ -1,0 +1,13 @@
+REQUIRES IO/IOTypes/pnetcdf
+
+D asyncMeshPlotWritePnet If true, this uses non blocking I/O writes
+D for the mesh data (unk, facex, ....)
+PARAMETER asyncMeshPlotWritePnet BOOLEAN false
+
+D As asyncMeshPlotWritePnet except for writes to checkpoint files.
+PARAMETER asyncMeshChkWritePnet BOOLEAN false
+
+D As asyncMeshPlotWritePnet except for reads from checkpoint files.
+PARAMETER asyncMeshChkReadPnet BOOLEAN false
+
+PPDEFINE FLASH_IO_EXPERIMENTAL

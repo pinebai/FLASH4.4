@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+# change to directory containing setup.py and 
+# give control to it
+DNAME=`dirname $0`
+cd $DNAME/bin
+if [ -x ./setup.py ]; then
+   exec ./setup.py "$@";
+else
+   echo "$DNAME/bin/setup.py not found";
+fi
+
+

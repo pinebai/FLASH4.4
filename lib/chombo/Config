@@ -1,0 +1,20 @@
+# Library configuration file
+#
+# I expect the chombo library to be built for all required dimensionalities
+# before even invoking the FLASH setup script.  I do no automated build
+# from the setup script.
+#
+# I label chombo as EXTERNAL (even though the source is available) to avoid 
+# the setup script making assumptions about the library name.  Chombo 
+# uses a combination of system, precision, compiler name and 
+# dimensionality to construct library names.  These are constructed in several 
+# chombo Makefiles and I can't see an easy way to get at these strings.
+# With EXTERNAL I can just rely on the user specifying CFLAGS_CHOMBO 
+# and LIB_CHOMBO to pass required pre-processor definitions and library names.
+#
+# The chombo library (as built for FLASH) depends on mpi.  It can also 
+# depend on hdf5.
+
+TYPE EXTERNAL
+LIBRARY mpi
+LIBRARY hdf5

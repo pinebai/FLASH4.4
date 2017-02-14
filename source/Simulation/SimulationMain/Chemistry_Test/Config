@@ -1,0 +1,51 @@
+REQUIRES Driver 
+REQUIRES physics/Hydro
+REQUIRES physics/Eos/EosMain/Multigamma
+REQUIRES Grid/GridBoundaryConditions/OneRow
+REQUIRES physics/sourceTerms/PrimordialChemistry/PrimordialChemistryMain/GA08
+REQUIRES physics/sourceTerms/PrimordialChemistry/PrimordialChemistryIntegrate
+REQUIRES Multispecies
+REQUIRES Simulation/SimulationComposition/PrimordialChemistryGA
+
+
+
+PARAMETER sim_c_temp           REAL    1000.0
+PARAMETER sim_c_den	       REAL    1.0e-21
+PARAMETER sim_pchem_time	       REAL    0.1
+PARAMETER sim_cool_time        REAL    0.1
+
+PARAMETER sim_contrast         REAL    0.1
+
+MASS_SCALAR METL
+
+PARAMETER sim_nblockx              REAL    1.0
+PARAMETER sim_nblocky		   REAL	   1.0
+PARAMETER sim_nblockz	  	   REAL    1.0
+
+
+PARAMETER sim_fracHydrogen             REAL    0.760
+PARAMETER sim_fracHelium	       REAL    0.240
+PARAMETER sim_fracDeuterium	       REAL    0.0
+
+#Define the mass fractions for all the species above!
+PARAMETER sim_xH	REAL	0.760
+PARAMETER sim_xHP	REAL	0.0
+PARAMETER sim_xHM	REAL	0.0
+PARAMETER sim_xD	REAL	0.0
+PARAMETER sim_xDP	REAL	0.0
+PARAMETER sim_xDM       REAL    0.0
+PARAMETER sim_xHe	REAL	0.240
+PARAMETER sim_xHePP	REAL	0.0
+PARAMETER sim_xHeP	REAL	0.0
+PARAMETER sim_xH2P	REAL	0.0
+PARAMETER sim_xH2	REAL	0.0
+PARAMETER sim_xHDP	REAL	0.0
+PARAMETER sim_xHD	REAL	0.0
+PARAMETER sim_xD2	REAL    0.0
+PARAMETER sim_xD2P	REAL    0.0
+PARAMETER sim_xELEC	REAL	0.0
+
+PARAMETER sim_meta	REAL	0.0
+
+VARIABLE CHDT
+VARIABLE JTDT

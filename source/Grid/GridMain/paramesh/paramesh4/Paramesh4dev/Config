@@ -1,0 +1,223 @@
+#Config file for the PARAMESH version 4 adaptive mesh-refinement library, 
+#development version (the default Grid implementation in FLASH release 4.0).
+
+USESETUPVARS Grid, ParameshLibraryMode, FlashAvoidOrrery, Bittree
+
+IF Grid not in ["","PM4DEV"]
+   SETUPERROR Setup Variable 'Grid' is set to something other than 'PM4DEV'
+ENDIF
+
+REQUIRES ./PM4_package/headers
+REQUIRES ./PM4_package/source
+REQUIRES ./PM4_package/mpi_source
+REQUESTS ./PM4_package/utilities/multigrid
+
+# preprocessor definition
+PPDEFINE FLASH_GRID_PARAMESH4DEV
+PPDEFINE FLASH_GRID_PARAMESH3OR4
+
+# Compile Paramesh in LIBRARY mode if requested.
+# Note that ParameshLibraryMode should always be true
+# if this directory, paramesh4/Paramesh4dev, is
+# included in a simulation!
+IF ParameshLibraryMode
+	PPDEFINE LIBRARY
+ENDIF
+
+IF FlashAvoidOrrery
+  REQUIRES ./flash_avoid_orrery
+  CHILDORDER PM4_package flash_avoid_orrery
+ENDIF
+
+IF Bittree
+  REQUIRES ./PM4_package/bittree
+  LIBRARY STDCXX
+  PPDEFINE BITTREE
+ENDIF
+
+## gr_pmrp* Runtime Parameters start here.
+## The letters pmrp stand for Paramesh Runtime Parameter.
+
+D gr_pmrpMaxblocks sets value for PARAMESH runtime parameter maxblocks.
+D & -1 means: let FLASH determine the value based on how it has been set up.
+PARAMETER gr_pmrpMaxblocks INTEGER -1 [-1, 0 ... ]
+
+USESETUPVARS nDim, npg
+
+D gr_pmrpNdim        sets value for PARAMESH runtime parameter ndim.
+D gr_pmrpNboundaries sets value for PARAMESH runtime parameter nboundaries
+D gr_pmrpL2p5d       sets value for PARAMESH runtime parameter l2p5d.
+D &                  -1 means: let FLASH determine the value based on how it has been set up.
+IF nDim==1
+PARAMETER gr_pmrpNdim        INTEGER CONSTANT  1
+PARAMETER gr_pmrpNboundaries INTEGER 	       2 [2 ... ]
+PARAMETER gr_pmrpL2p5d       INTEGER 	       0 [-1,0,1]
+ELSEIF nDim==3
+PARAMETER gr_pmrpNdim        INTEGER CONSTANT  3
+PARAMETER gr_pmrpNboundaries INTEGER 	       6 [4 ... ] 
+PARAMETER gr_pmrpL2p5d 	     INTEGER 	       0 [-1,0,1] 
+ELSE
+PARAMETER gr_pmrpNdim        INTEGER CONSTANT  2
+PARAMETER gr_pmrpNboundaries INTEGER 	       4 [4 ... ] 
+PARAMETER gr_pmrpL2p5d	     INTEGER	      -1 [-1,0,1]
+ENDIF
+
+
+D gr_pmrpNxb sets value for PARAMESH runtime parameter nxb.
+D & -1 means: let FLASH determine the value based on how it has been set up.
+PARAMETER gr_pmrpNxb INTEGER -1 [-1, 2,4,6,8,10,12,14,16 ... ] 
+
+IF nDim==1
+D gr_pmrpNyb sets value for PARAMESH runtime parameter nyb.
+D & -1 means: let FLASH determine the value based on how it has been set up.
+PARAMETER gr_pmrpNyb INTEGER 1 [-1, 1,2,4,6,8,10,12,14,16 ... ] 
+ELSE
+D gr_pmrpNyb sets value for PARAMESH runtime parameter nyb.
+D & -1 means: let FLASH determine the value based on how it has been set up.
+PARAMETER gr_pmrpNyb INTEGER -1 [-1, 2,4,6,8,10,12,14,16 ... ] 
+ENDIF
+
+IF nDim==3
+D gr_pmrpNzb sets value for PARAMESH runtime parameter nzb.
+D & -1 means: let FLASH determine the value based on how it has been set up.
+PARAMETER gr_pmrpNzb INTEGER -1 [-1, 2,4,6,8,10,12,14,16 ... ] 
+ELSE
+D gr_pmrpNzb sets value for PARAMESH runtime parameter nzb.
+D & -1 means: let FLASH determine the value based on how it has been set up.
+PARAMETER gr_pmrpNzb INTEGER 1 [-1, 1,2,4,6,8,10,12,14,16 ... ] 
+ENDIF
+
+D gr_pmrpNvar sets value for PARAMESH runtime parameter nvar.
+D & -1 means: let FLASH determine the value based on how it has been set up.
+PARAMETER gr_pmrpNvar INTEGER -1 [-1, 0 ... ] 
+
+D gr_pmrpNfacevar sets value for PARAMESH runtime parameter nfacevar
+PARAMETER gr_pmrpNfacevar INTEGER -1 [-1, 0 ... ] 
+
+D gr_pmrpNvaredge sets value for PARAMESH runtime parameter nvaredge
+PARAMETER gr_pmrpNvaredge INTEGER 0 [0 ... ] 
+
+D gr_pmrpNvarcorn sets value for PARAMESH runtime parameter nvarcorn
+PARAMETER gr_pmrpNvarcorn INTEGER 0 [0 ... ] 
+
+D gr_pmrpNvarWork sets value for PARAMESH runtime parameter nvar_work
+PARAMETER gr_pmrpNvarWork INTEGER 1 [0 ... ] 
+
+D gr_pmrpNguard sets value for PARAMESH runtime parameter nguard.
+D & -1 means: let FLASH determine the value based on how it has been set up.
+PARAMETER gr_pmrpNguard INTEGER -1 [-1, 0 ... ] 
+
+D gr_pmrpNguardWork sets value for PARAMESH runtime parameter nguard_work.
+D & -1 means: let FLASH determine the value based on how it has been set up.
+PARAMETER gr_pmrpNguardWork INTEGER -1 [-1, 0 ... ] 
+
+D gr_pmrpNfluxvar sets value for PARAMESH runtime parameter nfluxvar.
+D & -1 means: let FLASH determine the value based on how it has been set up.
+PARAMETER gr_pmrpNfluxvar INTEGER -1 [-1, 0 ... ] 
+
+D gr_pmrpNedgevar1 sets value for PARAMESH runtime parameter nedgevar1.
+D & -1 means: let FLASH determine the value based on how it has been set up.
+PARAMETER gr_pmrpNedgevar1 INTEGER -1 [-1, 0 ... ] 
+
+D gr_pmrpIfaceOff sets value for PARAMESH runtime parameter iface_off
+PARAMETER gr_pmrpIfaceOff INTEGER 0 [0 ... ] 
+
+D gr_pmrpMflags sets value for PARAMESH runtime parameter mflags
+PARAMETER gr_pmrpMflags INTEGER 1
+
+D gr_pmrpNfieldDivf sets value for PARAMESH runtime parameter nfield_divf.
+D & -1 means: let FLASH determine the value based on how it has been set up.
+PARAMETER gr_pmrpNfieldDivf INTEGER -1 [-1, 0 ... ]
+
+
+D gr_pmrpDiagonals sets value for PARAMESH runtime parameter diagonals
+PARAMETER gr_pmrpDiagonals BOOLEAN TRUE 
+
+D gr_pmrpAmrErrorChecking sets value for PARAMESH runtime parameter amr_error_checking
+PARAMETER gr_pmrpAmrErrorChecking BOOLEAN FALSE 
+
+D gr_pmrpNoPermanentGuardcells sets value for PARAMESH runtime parameter no_permanent_guardcells
+IF npg
+PARAMETER gr_pmrpNoPermanentGuardcells BOOLEAN TRUE
+ELSE
+PARAMETER gr_pmrpNoPermanentGuardcells BOOLEAN FALSE 
+ENDIF
+
+D gr_pmrpAdvanceAllLevels sets value for PARAMESH runtime parameter advance_all_levels
+PARAMETER gr_pmrpAdvanceAllLevels BOOLEAN FALSE 
+
+D gr_pmrpForceConsistency sets value for PARAMESH runtime parameter force_consistency
+PARAMETER gr_pmrpForceConsistency BOOLEAN TRUE
+
+D gr_pmrpConsvFluxes sets value for PARAMESH runtime parameter consv_fluxes
+D & This will be adjusted by FLASH at runtime if necessary, so don't worry much.
+PARAMETER gr_pmrpConsvFluxes BOOLEAN FALSE
+
+D gr_pmrpConsvFluxDensities sets value for PARAMESH runtime parameter consv_flux_densities
+D & This will be adjusted by FLASH at runtime if necessary, so don't worry much.
+PARAMETER gr_pmrpConsvFluxDensities BOOLEAN TRUE
+
+D gr_pmrpEdgeValue sets value for PARAMESH runtime parameter edge_value
+D & This will be adjusted by FLASH at runtime if necessary, so don't worry much.
+PARAMETER gr_pmrpEdgeValue BOOLEAN TRUE
+
+D gr_pmrpEdgeValueInteg sets value for PARAMESH runtime parameter edge_value_integ
+D & This will be adjusted by FLASH at runtime if necessary, so don't worry much.
+PARAMETER gr_pmrpEdgeValueInteg BOOLEAN FALSE
+
+D gr_pmrpVarDt sets value for PARAMESH runtime parameter var_dt
+PARAMETER gr_pmrpVarDt BOOLEAN FALSE
+
+D gr_pmrpPredCorr sets value for PARAMESH runtime parameter pred_corr
+PARAMETER gr_pmrpPredCorr BOOLEAN FALSE 
+
+D gr_pmrpEmptyCells sets value for PARAMESH runtime parameter empty_cells
+PARAMETER gr_pmrpEmptyCells BOOLEAN FALSE 
+
+D gr_pmrpConserve sets value for PARAMESH runtime parameter conserve
+PARAMETER gr_pmrpConserve BOOLEAN FALSE 
+
+D gr_pmrpDivergenceFree sets value for PARAMESH runtime parameter divergence_free.
+D & 0 means FALSE, 1 means TRUE.
+D & -1 means: let FLASH determine the value based on how it has been set up;
+D & currently that means to check whether a preprocessor symbol DIVERGENCE_FREE
+D & is defined.
+PARAMETER gr_pmrpDivergenceFree INTEGER 1 [-1,0,1]
+
+D gr_pmrpCurvilinear sets value for PARAMESH runtime parameter curvilinear.
+D & This will be adjusted by FLASH at runtime if necessary, so don't worry much.
+PARAMETER gr_pmrpCurvilinear BOOLEAN FALSE
+
+D gr_pmrpCurvilinearConserve sets value for PARAMESH runtime parameter curvilinear_conserve.
+D & This will be adjusted by FLASH at runtime if necessary, so don't worry much.
+D & However, if you manually set gr_pmrpCurvilinear to TRUE, you probably should also
+D & set gr_pmrpCurvilinearConserve TRUE.
+PARAMETER gr_pmrpCurvilinearConserve BOOLEAN FALSE
+
+D gr_pmrpCartesianPm sets value for PARAMESH runtime parameter cartesian_pm
+D & This will be adjusted by FLASH at runtime if necessary, so don't worry much.
+PARAMETER gr_pmrpCartesianPm BOOLEAN FALSE
+
+D gr_pmrpCylindricalPm sets value for PARAMESH runtime parameter cylindrical_pm
+D & This will be adjusted by FLASH at runtime if necessary, so don't worry much.
+PARAMETER gr_pmrpCylindricalPm BOOLEAN FALSE
+
+D gr_pmrpSphericalPm sets value for PARAMESH runtime parameter spherical_pm
+D & This will be adjusted by FLASH at runtime if necessary, so don't worry much.
+PARAMETER gr_pmrpSphericalPm BOOLEAN FALSE
+
+D gr_pmrpPolarPm sets value for PARAMESH runtime parameter polar_pm
+D & This will be adjusted by FLASH at runtime if necessary, so don't worry much.
+PARAMETER gr_pmrpPolarPm BOOLEAN FALSE
+
+D gr_pmrpLsingularLine sets value for PARAMESH runtime parameter lsingular_line
+PARAMETER gr_pmrpLsingularLine BOOLEAN FALSE
+
+D gr_pmrpTimingMpi sets value for PARAMESH runtime parameter timing_mpi
+PARAMETER gr_pmrpTimingMpi BOOLEAN FALSE
+
+D gr_pmrpTimingMpix sets value for PARAMESH runtime parameter timing_mpix
+PARAMETER gr_pmrpTimingMpix BOOLEAN FALSE
+
+D gr_pmrpTimingMpix sets value for PARAMESH runtime parameter timing_mpix
+PARAMETER gr_pmrpOutputDir STRING "./"

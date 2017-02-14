@@ -1,0 +1,24 @@
+# This parfile is for the 3D version of the test problem.
+# ./setup unitTest/Grid/GCell -auto -3d +ug -parfile=test_3d.par
+# ./setup unitTest/Grid/GCell -auto -3d +nofbs -parfile=test_3d.par
+# ./setup unitTest/Grid/GCell -auto -3d +pm4dev -parfile=test_3d.par
+
+# The 3 parameters below are for ug and nofbs ug only.
+iprocs = 2
+jprocs = 2
+kprocs = 2
+
+# The 3 parameters below are for nofbs ug only.
+igridsize = 64
+jgridsize = 64
+kgridsize = 64
+
+# The 2 parameters below are for Paramesh only.
+lrefine_min = 1
+lrefine_max = 4
+
+# The 2 parameters below are for suppressing Paramesh
+# warnings about negative data.  The quality of the
+# guardcell fill is always bad.
+convertToConsvdInMeshInterp = .false.
+convertToConsvdForMeshCalls = .false.

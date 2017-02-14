@@ -1,0 +1,1 @@
+#define TIMERS_INVALID -22

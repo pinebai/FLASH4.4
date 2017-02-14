@@ -1,0 +1,33 @@
+# Config file for a simple test of the sink particle algorithim
+
+REQUIRES Particles/ParticlesMain/active/Sink
+REQUIRES physics/sourceTerms/Polytrope/PolytropeMain
+REQUIRES physics/Gravity/GravityMain/Poisson/Multigrid
+
+GUARDCELLS 4
+
+PARAMETER refine_var_thresh      STRING   "none"
+
+PARAMETER sim_xcenter            REAL     0.0
+PARAMETER sim_ycenter            REAL     0.0
+PARAMETER sim_zcenter            REAL     0.0
+PARAMETER sim_vx                 REAL     0.0
+PARAMETER sim_vy                 REAL     0.0
+PARAMETER sim_vz                 REAL     0.0
+PARAMETER sim_radius             REAL     1.0
+PARAMETER sim_dens               REAL     1.0
+PARAMETER sim_cs                 REAL     1.0
+
+PARAMETER sim_sink_x             REAL     0.0
+PARAMETER sim_sink_y             REAL     0.0
+PARAMETER sim_sink_z             REAL     0.0
+PARAMETER sim_sink_vx            REAL     0.0
+PARAMETER sim_sink_vy            REAL     0.0
+PARAMETER sim_sink_vz            REAL     0.0
+PARAMETER sim_sink_mass          REAL     0.0
+
+# For the unitTest, the following tolerances are used as criteria for success.
+PARAMETER sim_massTol          REAL     1.e20
+PARAMETER sim_momXTol          REAL     1.e32
+PARAMETER sim_momYTol          REAL     1.e32
+PARAMETER sim_momZTol          REAL     1.e32

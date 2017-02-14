@@ -1,0 +1,96 @@
+#	FLASH makefile definitions 
+#
+#	Modified from 2/25/99 on 12/10/00 KMR
+#	Makefile.h.in the prototype for configure
+#
+# ATTN:	Changes to applicatins/libraries/etc should be made in configure.in
+#
+#----------------------------------------------------------------------------
+HDF4_PATH  = 
+HDF5_PATH  = 
+
+ZLIB_PATH  =
+
+PAPI_PATH  =
+PAPI_FLAGS =
+
+NCMPI_PATH =
+MPE_PATH   =
+
+#----------------------------------------------------------------------------
+#	Compiler and linker commands
+#----------------------------------------------------------------------------
+FCOMP   = @F77@
+CCOMP   = @CC@
+CPPCOMP = @CXX@
+LINK    = @LINK@
+
+# pre-processor flad
+PP     = -D
+
+#-----------------------------------------------------------------------------
+# Compilation flags
+#
+#  Three sets of compilation/linking flags are defined: one for optimized code
+#  code ("-opt"), one for debugging ("-debug"), and one for testing ("-test").
+#  Passing these flags to the setup script will cause the value associated with
+#  the corresponding keys (i.e. those ending in "_OPT", "_DEBUG", or "_TEST") to
+#  be incorporated into the final Makefile. For example, passing "-opt" to the
+#  setup script will cause the flags following "FFLAGS_OPT" to be assigned to
+#  "FFLAGS" in the final Makefile. If none of these flags are passed, the default
+#  behavior will match that of the "-opt" flag.
+#  In general, "-opt" is meant to optimize compilation and linking. "-debug"
+#  should enable runtime bounds checking, debugger symbols, and other compiler-
+#  specific debugging options. "-test" is useful for testing different
+#  combinations of compiler flags particular to your individual system.
+#----------------------------------------------------------------------------
+
+FFLAGS_OPT    = @FFLAGS@ @CPPFLAGS@
+FFLAGS_DEBUG  = @FFLAGS_DEBUG@
+FFLAGS_TEST   =
+
+F90FLAGS      = @F90FLAGS@
+
+CFLAGS_OPT    = @CFLAGS@ @CPPFLAGS@
+CFLAGS_DEBUG  = @CFLAGS_DEBUG@
+CFLAGS_TEST   =
+
+#----------------------------------------------------------------------------
+#	Linker flags
+#----------------------------------------------------------------------------
+LFLAGS_OPT = @LDFLAGS@
+LFLAGS_DEBUG = @LDFLAGS_DEBUG@
+LFLAGS_TEST  =
+
+#----------------------------------------------------------------------------
+#	Libraries to include
+#----------------------------------------------------------------------------
+LIB_OPT   =
+LIB_DEBUG =
+LIB_TEST  =
+
+LIB_HDF4  =
+LIB_HDF5  =
+
+LIB_NCMPI =
+LIB_MPE   =
+
+LIB = @LIBS@
+
+#----------------------------------------------------------------------------
+#	Additional machine-dependent object files
+#----------------------------------------------------------------------------
+
+MACHOBJ = 
+
+#----------------------------------------------------------------------------
+#	Additional commands
+#----------------------------------------------------------------------------
+MV   = @MV@ -f
+AR   = @AR@ -r
+RM   = @RM@ -f
+CD   = @CD@
+RL   = @RANLIB@
+ECHO = @ECHO@
+
+

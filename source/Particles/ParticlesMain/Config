@@ -1,0 +1,99 @@
+#  Configuration file for the time integration main portion of the Particles unit
+
+# Set up a name to use in ifdef/ifndef lines
+PPDEFINE FLASH_PARTICLES
+
+REQUIRES Driver
+REQUESTS monitors/Logfile
+REQUIRES RuntimeParameters
+REQUESTS Particles/ParticlesMapping 
+REQUESTS Particles/ParticlesInitialization 
+REQUIRES Grid/GridParticles
+REQUIRES Grid/GridParticles/GridParticlesMapFromMesh
+
+#  Contains these submodules:
+#    active          Active particle submodule.  Particles contribute to the
+#                    dynamics (e.g. through long-range forces) and in turn
+#                    respond to forces.
+#  Has the following passive time integrators
+#    RungeKutta2 -- second order R-K, aka Heun, aka improved Euler
+#    EstiMidpoint -- estimated midpoint, second order if time steps are constant
+#    EstiMidpoint2 -- estimated midpoint with correction, second order
+#    Midpoint -- second order, two-step
+#    EulerPassive -- first order
+#    PredictorCorrectorOld -- name for old estimated midpoint
+#  HISTORICAL - these two have been removed, use EstiMidpoint or EstiMidpoint2
+#               or RungeKutta2 instead:
+#    PredictorCorrector -- old name for estimated midpoint
+#    PredCorrFLASH2 -- same as predictor corrector version in FLASH2
+#  Has the following active time integrators
+#        EulerActive       Should be merged to the passive Euler in the future
+#        Leapfrog
+#        LeapfrogCosmo     Leapfrog Cosmological
+
+DEFAULT passive
+
+
+
+
+D   pt_maxPerProc      Maximum number of particles per processor -- too small will cause a crash at reallocation
+D   useParticles       Whether to advance particles [TRUE] or not [FALSE]
+D   pt_small           If velocities are greater than this, then time stepping may be limited
+D   pt_dtFactor        Factor multiplying dx/|v| in setting particle timestep limit 
+D   pt_dtChangeTolerance   EstiMidpoint does predictor step if time step change is less than this percentage.
+D &                       Set to 0 to always do Euler, set to huge number to always use estim. midpoints
+D pt_numAtOnce   To be used when reading the particles from some file
+
+PARAMETER pt_maxPerProc  INTEGER 1000
+PARAMETER useParticles    BOOLEAN TRUE
+PARAMETER pt_small       REAL    1.0E-10
+PARAMETER pt_dtFactor       REAL    0.5
+PARAMETER pt_dtChangeTolerance  REAL  0.4 [0.0 to ] # controls Euler vs. estim. midpoint step
+PARAMETER pt_numAtOnce INTEGER 1
+
+D pt_logLevel controls the level of logging for some conditions.
+D & See Particles.h for relevant PT_LOGLEVEL_* definitions.
+PARAMETER pt_logLevel INTEGER 700 [0 to ]
+
+#  Particle properties/attributes
+
+D posx   x coordinate of particle
+D posy   y coordinate of particle
+D posz   z coordinate of particle
+D velx   x velocity of particle
+D vely   y velocity of particle
+D velz   z velocity of particle
+
+
+PARTICLEPROP posx     REAL
+PARTICLEPROP posy     REAL
+PARTICLEPROP posz     REAL
+PARTICLEPROP velx     REAL
+PARTICLEPROP vely     REAL
+PARTICLEPROP velz     REAL
+PARTICLEPROP tag      REAL
+PARTICLEPROP blk      REAL
+PARTICLEPROP proc     REAL
+# Following lines modified/added KW 2012-05-25
+USESETUPVARS SupportVirtualParticles
+IF SupportVirtualParticles
+   PPDEFINE     PART_VIRTUAL
+   PARTICLEPROP virt    REAL
+ENDIF
+
+# Note PARTICLEPROP mass is defined in the active/massive/* implementations
+
+D particle_attribute_# Allows users to specify the properties of 
+D & particles they want to track at runtime
+
+PARAMETER particle_attribute_1 STRING "none"
+PARAMETER particle_attribute_2 STRING "none"
+PARAMETER particle_attribute_3 STRING "none"
+PARAMETER particle_attribute_4 STRING "none"
+PARAMETER particle_attribute_5 STRING "none"
+PARAMETER particle_attribute_6 STRING "none"
+PARAMETER particle_attribute_7 STRING "none"
+PARAMETER particle_attribute_8 STRING "none"
+PARAMETER particle_attribute_9 STRING "none"
+PARAMETER particle_attribute_10 STRING "none"
+

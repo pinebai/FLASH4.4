@@ -1,0 +1,22 @@
+In this unit test we create a 2d distributed uniform grid that is
+decomposed along the IAXIS across 4 processors.  We have periodic
+boundary conditions and 1 block per processor that contains 2
+variables (components).  Each processor initializes the local grid
+points for each variable to a unique value.  After a guard cell
+exchange we compare the values in the local grid points against known
+values and check for correctness.
+
+The Makefile will create soft links to some FLASH subroutines and
+chombo wrapper functions in the main source tree before building the
+source files.  This allows us to test many key subroutines and
+functions independently of large FLASH applications.
+
+Build and run the test by typing
+$ make all
+
+All of the heavy lifting including:
+  1) storing grid data
+  2) providing information about the size of the local grid on each
+  processor
+  3) filling guard cells
+is done by Chombo library.

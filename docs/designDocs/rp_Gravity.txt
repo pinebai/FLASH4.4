@@ -1,0 +1,175 @@
+
+physics/Gravity
+    grav_boundary_type [STRING] ["isolated"]
+        Valid Values: Unconstrained
+        Type of gravitational boundary condition if a Poisson solve is used for
+        Gravity; string-valued version of grav_boundary. Accepts: "isolated",
+        "periodic", "dirichlet", and maybe others, depending on the Poisson
+        solver used. This is declared in the stub level of the Gravity unit to
+        allow the Grid unit to refer to this runtime parameter even when no
+        Gravity implementation is included.
+    useGravity [BOOLEAN] [FALSE]
+        Whether gravity calculations should be performed.
+
+physics/Gravity/GravityMain
+    useGravity [BOOLEAN] [TRUE]
+        Should the gravity calculations be performed?
+
+physics/Gravity/GravityMain/Constant
+    gconst [REAL] [-981.]
+        Valid Values: Unconstrained
+        Gravitational acceleration constant
+    gdirec [STRING] ["x"]
+        Valid Values: Unconstrained
+        Direction of acceleration ("x", "y", "z")
+
+physics/Gravity/GravityMain/PlanePar
+    gravsoft [REAL] [.0001]
+        Valid Values: Unconstrained
+        softening length
+    ptdirn [INTEGER] [1]
+        Valid Values: Unconstrained
+        x = 1, y = 2, z = 3
+    ptmass [REAL] [10000.]
+        Valid Values: Unconstrained
+        mass of the point
+    ptxpos [REAL] [1.]
+        Valid Values: Unconstrained
+        location of the point mass, in the ptdirn direction
+
+physics/Gravity/GravityMain/PointMass
+    gravsoft [REAL] [0.001]
+        Valid Values: Unconstrained
+
+    ptmass [REAL] [10000.]
+        Valid Values: Unconstrained
+
+    ptxpos [REAL] [1.]
+        Valid Values: Unconstrained
+
+    ptypos [REAL] [-10.]
+        Valid Values: Unconstrained
+
+    ptzpos [REAL] [0.]
+        Valid Values: Unconstrained
+
+
+physics/Gravity/GravityMain/Poisson
+    grav_temporal_extrp [BOOLEAN] [FALSE]
+        extrapolate or otherwise rescale
+    grav_unjunkPden [BOOLEAN] [TRUE]
+        controls whether Gravity_potentialListOfBlocks attempts to restore the
+        part of the "pden" ("particle density") UNK variable that is due to
+        particles, or leaves "pden" as it is, after a Poisson equation solve.
+        This only applies meaningfully when a "pden" variable is declared and
+        the gravitational potential is calculated by solving a Poisson equation
+        whose right-hand side includes a mass distribution to which both
+        hydrodynamic fluid density and massive particles contribute. The "pden"
+        variable will have been set to the sum of the fluid density ("dens"
+        variable) and the density resulting from mapping massive particles to
+        the mesh, so that is what remains in "pden" when grav_unjunkPden is set
+        to FALSE. Otherwise, "dens" will be subtraced from "pden" before
+        Gravity_potentialListOfBlocks returns, and "pden" will be left
+        containing only the mass density that is due to particles.
+    point_mass [REAL] [0.e0]
+        Valid Values: Unconstrained
+        mass of the central point-like object
+    point_mass_rsoft [REAL] [0.e0]
+        Valid Values: Unconstrained
+        softening radius for the point-like mass (in units of number of the
+        finest level cells)
+    updateGravity [BOOLEAN] [TRUE]
+        allow gravity value to be updated
+
+physics/Gravity/GravityMain/Poisson/BHTree
+    grav_boundary_type [STRING] ["mixed"]
+        Valid Values: "isolated", "periodic", "mixed"
+
+    grav_boundary_type_x [STRING] ["isolated"]
+        Valid Values: "isolated", "periodic"
+        Gravity boundary type for the X direction, used if grav_boundary_type ==
+        "mixed"
+    grav_boundary_type_y [STRING] ["isolated"]
+        Valid Values: "isolated", "periodic"
+        Gravity boundary type for the Y direction, used if grav_boundary_type ==
+        "mixed"
+    grav_boundary_type_z [STRING] ["isolated"]
+        Valid Values: "isolated", "periodic"
+        Gravity boundary type for the Z direction, used if grav_boundary_type ==
+        "mixed"
+    grv_bhAccErr [REAL] [0.1]
+        Valid Values: 0 to INFTY
+        Maximum allowed error (either relative or absolute depending on value of
+        grv_bhUseRelAccErr) for the MAC.
+    grv_bhEwaldAlwaysGenerate [BOOLEAN] [TRUE]
+        If set TRUE the Ewald field will be always re-generated even if the file
+        with it exists.
+    grv_bhEwaldFName [STRING] ["ewald_coeffs"]
+        Valid Values: Unconstrained
+        File with coefficients of the Ewald field Taylor series expansion.
+    grv_bhEwaldFNameAccV42 [STRING] ["ewald_field_acc"]
+        Valid Values: Unconstrained
+        File to store the Ewald field for the acceleration.
+    grv_bhEwaldFNamePotV42 [STRING] ["ewald_field_pot"]
+        Valid Values: Unconstrained
+        File to store the Ewald field for the potential.
+    grv_bhEwaldFieldNxV42 [INTEGER] [32]
+        Valid Values: 1 to INFTY
+        Number of points of the Ewald field in the x-direction.
+    grv_bhEwaldFieldNyV42 [INTEGER] [32]
+        Valid Values: 1 to INFTY
+        Number of points of the Ewald field in the x-direction.
+    grv_bhEwaldFieldNzV42 [INTEGER] [32]
+        Valid Values: 1 to INFTY
+        Number of points of the Ewald field in the x-direction.
+    grv_bhEwaldNPer [INTEGER] [32]
+        Valid Values: Unconstrained
+        corresponds to th number of points+1 of the Taylor expansion in (one of)
+        periodic direction(s)
+    grv_bhEwaldNRefV42 [INTEGER] [-1]
+        Valid Values: Unconstrained
+        Number of refinement levels of the Ewald field. If negative, it is
+        calculated automatically from the minimum cell size.
+    grv_bhEwaldSeriesN [INTEGER] [10]
+        Valid Values: Unconstrained
+        Number of terms used in expansion to calculate the Ewald field.
+    grv_bhExtrnPotCenterX [REAL] [0.0]
+        Valid Values: Unconstrained
+        X-coordinate of the center of the external potention.
+    grv_bhExtrnPotCenterY [REAL] [0.0]
+        Valid Values: Unconstrained
+        Y-coordinate of the center of the external potention.
+    grv_bhExtrnPotCenterZ [REAL] [0.0]
+        Valid Values: Unconstrained
+        Z-coordinate of the center of the external potention.
+    grv_bhExtrnPotFile [STRING] ["external_potential.dat"]
+        Valid Values: Unconstrained
+        File including the external background potential.
+    grv_bhExtrnPotType [STRING] ["planez"]
+        Valid Values: "spherical", "planez"
+        Type of the external potential (spherical or plane-parallel).
+    grv_bhLinearInterpolOnlyV42 [BOOLEAN] [TRUE]
+        If set TRUE, only the linear interpolation in the Ewald field is used.
+        Otherwise, more expensive and accurate quadratic interpolation is used
+        in some cases.
+    grv_bhMAC [STRING] ["ApproxPartialErr"]
+        Valid Values: "ApproxPartialErr", "MaxPartialErr", "SumSquare"
+        Type of the Multipole Acceptace Criterion (MAC) used during the tree
+        walk.
+    grv_bhMPDegree [INTEGER] [2]
+        Valid Values: 2, 3, 4
+        Degree of multipole expansion used to estimate the error of a single
+        node contribution if the "ApproxPartErro" MAC is used. Recently, only
+        value 2 makes sense, because quadrupole and higher order moments are not
+        stored in tree nodes.
+    grv_bhNewton [REAL] [-1.0]
+        Valid Values: -INFTY to INFTY
+        Value for Newton's constant. Specify -1.0 to use the value from the
+        PhysicalConstants code unit.
+    grv_bhUseRelAccErr [BOOLEAN] [FALSE]
+        If set to TRUE, parameter grv_bhAccErr has meaning of the relative error
+        in acceleration. Otherwise, it is an absolute error.
+    grv_useExternalPotential [BOOLEAN] [FALSE]
+
+    grv_usePoissonPotential [BOOLEAN] [TRUE]
+

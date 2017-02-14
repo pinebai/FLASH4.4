@@ -1,0 +1,211 @@
+run_comment = "3D Scaling Simulation"
+log_file    = "lasslab.log"
+basenm      = "lasslab_"
+
+# This parfile creates a 2D weak scaling test for the laser ray
+# tracing. For the scaling, increase nblockx and ed_numRays_1 so that
+# the ratio: ed_numRays_1 / (nblockx) is a constant.
+#
+# To control the ratio of ray creation time to ray movement time, use
+# the nblocky parameter. This will make the rays move through more
+# blocks and will increase the movement time, while the creation time
+# will stay the same.
+#
+# The setup line for the scaling test is:
+#
+# ./setup -auto LaserSlab -noc -2d +pm4dev +hdf5typeio -nxb=16 -nyb=16 +laser +uhd3t 
+#         -with-unit=physics/Eos/EosMain/multiTemp/Gamma -without-unit=physics/Diffuse/DiffuseMain/Unsplit 
+#         -without-unit=physics/materialProperties/Conductivity/ConductivityMain/SpitzerHighZ 
+#         -without-unit=physics/sourceTerms/Heatexchange/HeatexchangeMain/Spitzer 
+
+#########################
+#   OUTPUT PARAMETERS   #
+#########################
+
+### Checkpoint Options  ###
+checkpointFileIntervalTime = 1.0
+checkpointFileIntervalStep = 10
+
+### Plot Options ###
+plotFileNumber       = 0
+plotFileIntervalStep = 1
+plot_var_1           = "dens"
+plot_var_2           = "depo"
+plot_var_3           = "tele"
+plot_var_4           = "tion"
+plot_var_5           = "ye  "
+plot_var_6           = "sumy"
+
+### Restart Options ###
+restart              = .false.
+checkpointFileNumber = 0
+
+
+############################
+#                          #
+#     LASER PARAMETERS     #
+#                          #
+############################
+
+useEnergyDeposition = .true.
+ed_maxRayCount      = 100000
+ed_gradOrder        = 2
+
+### LASER IO OPTIONS ###
+ed_useLaserIO             = .true.
+ed_laserIOMaxNumPositions = 10000
+ed_laserIONumRays         = 128
+
+### SETUP LASER PULSES ###
+ed_numPulses = 3
+
+# Define Pulse 1:
+ed_numSections_1 = 2
+ed_time_1_1  = 0.0
+ed_time_1_2  = 3.0e-09
+ed_power_1_1 = 1.3e+07
+ed_power_1_2 = 1.3e+07
+
+# Define Pulse 2:
+ed_numSections_2 = 5
+ed_time_2_1  = 0.0
+ed_time_2_2  = 1.6e-09
+ed_time_2_3  = 1.65e-09
+ed_time_2_4  = 1.7e-09
+ed_time_2_5  = 3.0e-09
+
+ed_power_2_1 = 1.3e+07
+ed_power_2_2 = 1.3e+07
+ed_power_2_3 = 3.13e+08
+ed_power_2_4 = 1.3e+07
+ed_power_2_5 = 1.3e+07
+
+# Define Pulse 3:
+ed_numSections_3 = 5
+ed_time_3_1  = 0.0
+ed_time_3_2  = 1.6e-09
+ed_time_3_3  = 1.65e-09
+ed_time_3_4  = 1.7e-09
+ed_time_3_5  = 3.0e-09
+
+ed_power_3_1 = 2.333333e+07
+ed_power_3_2 = 2.333333e+07
+ed_power_3_3 = 6.233333e+08
+ed_power_3_4 = 2.333333e+07
+ed_power_3_5 = 2.333333e+07
+
+
+### SETUP LASER BEAM ###
+ed_numBeams = 1
+
+# Setup Gaussian Beam:
+ed_lensX_1            =  0.0e-03
+ed_lensY_1            = -0.1
+ed_targetX_1          =  0.0e-03
+ed_targetY_1          =  20.0e-04
+ed_semiaxis1_1        =  4.0e-03
+ed_pulseNumber_1      =  3        
+ed_wavelength_1       =  1.053
+ed_crossSectionID_1   =  3         
+ed_decayExponent_1    =  1.0
+ed_decayRadius1_1     =  1.201122e-03
+ed_lensEqualsTarget_1 =  .true.     
+ed_numRays_1          =  32768
+
+
+##########################
+#                        #
+#     EOS PARAMETERS     #
+#                        #
+##########################
+eosModeInit      = "dens_temp_gather"
+eosMode          = "dens_ie_recal_gather"
+smallt           = 1.0
+smallx           = 1.0e-99
+
+eos_singleSpeciesZ = 2.0
+eos_singleSpeciesA = 4.0
+
+
+############################
+#                          #
+#     HYDRO PARAMETERS     #
+#                          #
+############################
+
+# Turn off hydro for the scaling test:
+useHydro = .false. 
+
+# Currently, the laser uses the hydro boundary conditions, so these
+# are still needed:
+
+# Hydro boundary conditions:
+xl_boundary_type = "outflow"
+xr_boundary_type = "outflow"
+yl_boundary_type = "outflow"
+yr_boundary_type = "outflow"
+zl_boundary_type = "outflow"
+zr_boundary_type = "outflow"
+
+
+##########################
+#   INITIAL CONDITIONS   #
+##########################
+
+sim_targetRadius = 40.0e-04
+sim_targetHeight = 40.0e-04
+
+# By making the vacuum height really big, we move the slab off of the
+# domain, so it will not appear in the simulation:
+sim_vacuumHeight = 1.0
+
+# Target material defaults set for Aluminum at room temperature:
+sim_rhoTarg  = 2.7
+sim_teleTarg = 290.11375
+sim_tionTarg = 290.11375
+sim_tradTarg = 290.11375
+
+# Chamber material defaults set for Helium at pressure 1.6 mbar:
+sim_rhoCham  = 1.0e-05
+sim_teleCham = 290.11375
+sim_tionCham = 290.11375
+sim_tradCham = 290.11375
+
+
+#######################
+#   TIME PARAMETERS   #
+#######################
+tstep_change_factor = 1.10
+cfl            = 0.4
+dt_diff_factor = 1.0e+100 # Disable diffusion dt
+rt_dtFactor    = 0.02
+hx_dtFactor    = 1.0e+100
+tmax           = 3.0e-09
+dtmin          = 1.0e-16
+dtinit         = 1.0e-15
+dtmax          = 3.0e-09
+nend           = 1
+
+
+#######################
+#   MESH PARAMETERS   #
+#######################
+
+geometry = "cartesian"
+
+# Domain size:
+xmin = -40.0e-04
+xmax = 40.0e-04
+ymin = 0.0e-04
+ymax = 80.0e-04
+
+# Total number of blocks:
+nblockx = 4
+nblocky = 16
+nblockz = 4
+
+lrefine_max = 1
+lrefine_min = 1
+refine_var_1 = "dens"
+refine_var_2 = "tele"
+

@@ -1,0 +1,95 @@
+# $ ./setup Plasma -auto +ug -2d -nxb=64 -nyb=64 -unit=flashUtilities/rng/mt_rng -site=pic
+basenm			= "flash_"
+run_comment = "2D resonant ion beam simulation"
+log_file    = "flash.log"
+
+restart	= .false.
+useGravity = .false.
+
+pt_picPname_1 = "H+ core"
+pt_picPname_2 = "H+ beam"
+
+pt_picPdensity_1 = 7e6      # [#/m^3]
+pt_picPvelx_1 = -9.93e3     # [m/s]
+pt_picPtemp_1 = 2.96e5      # [K]
+pt_picPpc_1 = 64       # meta particles per cell
+
+pt_picPdensity_2 = 0.105e6  # [#/m^3]
+pt_picPvelx_2 = 497e3       # [m/s]
+pt_picPtemp_2 = 2.96e5      # [K]
+pt_picPpc_2 = 64       # meta particles per cell
+
+sim_bx =  6e-9            # [T]
+sim_by =  0e-9
+sim_bz =  0e-9
+pt_picGam  = 1.66666666666666667
+
+#pt_picTe = 2.96e5   # [K]
+pt_picResistivity = 0.0
+pt_picResistivityHyper = 0.0
+pt_picCdensMin = 0.0 
+
+# Size of the computational volume [m]
+xmin =  0e3
+xmax =  22016e3
+ymin =  0e3
+ymax =	22016e3
+#zmin =  0e3
+#zmax =	1e3
+
+# Boundary conditions 
+xl_boundary_type = "periodic"
+xr_boundary_type = "periodic"
+yl_boundary_type = "periodic"
+yr_boundary_type = "periodic"
+zl_boundary_type = "periodic"
+zr_boundary_type = "periodic"
+
+# Time step limits [s]
+dtinit   = 0.04325
+dtmin    = 0.04325
+dtmax    = 0.04325
+
+pt_picNsub = 9   # Number of sub-cycles in B-field update (CL)
+
+# End of simulation
+tmax  = 173   # Maximum simulation time [s]
+nend = 100000 # Maximum number of time steps
+
+# Time between checkpoint and plot files [s]
+checkpointFileIntervalTime = 8.65
+checkpointFileIntervalStep = 0
+checkpointFileNumber = 0
+
+plotfileIntervalTime = 1e99
+plotfileIntervalStep = 0
+plotfileNumber = 0
+
+particleFileIntervalTime = 1e99
+
+geometry = "cartesian"
+
+# Plot variables
+plot_var_1      = "pden"
+plot_var_2      = "cden"
+plot_var_3      = "grbx"
+plot_var_4      = "grby"
+plot_var_5      = "grbz"
+plot_var_6      = "grex"
+plot_var_7      = "grey"
+plot_var_8      = "grez"
+plot_var_9      = "gjix"
+plot_var_10     = "gjiy"
+plot_var_11     = "gjiz"
+plot_var_12     = "grjx"
+plot_var_13     = "grjy"
+plot_var_14     = "grjz"
+
+# Particle parameters
+useParticles = .true.
+pt_maxPerProc = 1000000
+
+# Uniform Grid specific parameters 
+iProcs = 2	#num procs in i direction
+jProcs = 2
+#kProcs = 1

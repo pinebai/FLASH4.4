@@ -1,0 +1,5 @@
+# Config file for
+# [Grid/GridParticles/GridParticlesMapToMesh/Paramesh]
+
+DEFAULT MoveSieve
+EXCLUSIVE MoveSieve PttoPt

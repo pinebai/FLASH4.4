@@ -1,0 +1,80 @@
+#	Configuration file for the Shafranov shock problem
+
+REQUIRES Driver
+REQUIRES physics/Hydro
+REQUIRES physics/Eos/EosMain/multiTemp/Gamma
+REQUESTS physics/Diffuse/DiffuseMain/Unsplit
+REQUIRES physics/sourceTerms/Heatexchange/HeatexchangeMain/ConstCoulomb
+REQUESTS physics/materialProperties/Conductivity/ConductivityMain/PowerLaw
+
+USESETUPVARS Mtmmmt
+
+IF Mtmmmt
+   REQUESTS physics/Eos/EosMain/multiTemp/Multitype
+   REQUESTS physics/Eos/EosMain/Tabulated
+ENDIF
+
+USESETUPVARS withParticles
+
+IF withParticles
+   PARTICLETYPE passive INITMETHOD lattice MAPMETHOD quadratic ADVMETHOD rungekutta
+   REQUIRES Particles/ParticlesMain
+   REQUESTS Particles/ParticlesMapping/Quadratic
+   REQUESTS Particles/ParticlesInitialization/Lattice
+   REQUESTS IO/IOMain/
+   REQUESTS IO/IOParticles
+ENDIF
+
+LINKIF Simulation_initSpecies.F90.custom Multispecies
+
+D diff_scaleFactThermFlux	Factor applied to the temperature differences
+D & (or internal energy differences)
+D & that are added to flux arrays by the flux-based thermal Diffusion implementation.
+# Override default value here, since we normally want to test with a standalone Diffuse
+# implementation instead of the flux-based implementation. - KW
+PARAMETER diff_scaleFactThermFlux	REAL	0.0
+
+D gamma       Ratio of specific heats for gas - for initialization
+PARAMETER gamma         REAL    1.6667 [0.0 to ]
+
+IF Mtmmmt
+   D sim_abar Fluid atomic number
+   PARAMETER sim_abar  REAL 1.0
+
+   D sim_zbar Fluid average ionization
+   PARAMETER sim_zbar  REAL 1.0
+ENDIF
+
+D sim_DataPoints Number of data points in sim_InitData file
+PARAMETER sim_DataPoints INTEGER 448
+
+D sim_InitData Name of the file containing input data
+PARAMETER sim_InitData STRING "plasma_shock.out"
+
+D sim_ShockSpeed Shock Speed
+PARAMETER sim_ShockSpeed REAL 1.048805969E+06
+ 
+MASS_SCALAR sele EOSMAP: SELE
+
+VARIABLE shok
+
+IF Mtmmmt
+   VARIABLE zbar
+   SPECIES A
+   SPECIES B
+ENDIF
+VARIABLE shks
+
+#SPECIES LEFT
+#SPECIES RIGH
+
+VARIABLE RHOA
+VARIABLE DIFF
+
+DATAFILES plasma_shock.out
+DATAFILES plasma_shock_Z2.out
+DATAFILES plasma_shock_Z54.out
+
+D sim_maxTol Max allowed error ( < 2% error)
+PARAMETER sim_maxTol REAL 2.0E-2
+

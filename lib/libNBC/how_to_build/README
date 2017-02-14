@@ -1,0 +1,73 @@
+The Non Blocking Collectives (NBC) library
+(http://htor.inf.ethz.ch/research/nbcoll/libnbc/) provides
+implementations of MPI-3 functions.  It is useful on Intrepid BG/P
+because it allows us to use MPI-3 functions even though there is only
+an MPI-2 implementation.
+
+I patch the library in the following ways.
+
+
+libNBC-undef_schedule.patch
+---------------------------
+
+Undefine NBC_CACHE_SCHEDULE for two reasons.
+
+1. The source code comments make me feel uneasy:
+
+"/* enable schedule caching - undef NBC_CACHE_SCHEDULE to deactivate it */
+ /* TODO: this whole schedule cache stuff does not work with the tmbuf
+ * :-( - first, the tmpbuf must not be freed if a schedule using it is
+ * still in the cache and second, the tmpbuf used by the schedule must
+ * be attached to the handle that uses this schedule !!!! 
+ * I.E., THIS IS EXPERIMENTAL AND MIGHT NOT WORK */"
+
+2. I found the commit
+https://bitbucket.org/ompiteam/ompi-svn-mirror/commits/c68d10acf31393ff95bc435869f330a4846efea7
+with the message "Fix memory leak in nbc init".  The libNBC code has
+been incorporated into Open-MPI.
+
+
+libNBC-function_args.patch
+--------------------------
+
+Fix compilation errors when the macro HAVE_SYS_WEAK_ALIAS_PRAGMA is
+defined.
+
+
+libNBC-ANSI_C.patch
+-------------------
+
+A tiny change so that the library can be compiled with a C compiler
+rather than a C++ compiler.  A C++ compiler is only needed if the
+library is configured with a progress thread.  I do not want a
+progress thread.
+
+This means an application which links against libNBC no longer needs
+to link against libstdc++ to satisfy unnecessary C++ dependencies.
+
+
+libNBC-printf.patch
+-------------------
+
+Fix a printf warning.
+
+
+libNBC-dcmf_missing_datatype.patch
+----------------------------------
+
+Fix a compilation error by removing a stub function which is not
+needed.  This fix is necessary when libNBC makes use of DCMF (as
+happens on BG/P).
+
+
+libNBC-disable_dcmf.patch
+-------------------------
+
+There is no way to remove DCMF on the command line and so I remove
+DCMF options from the configure script.  I do this so that I can use
+the standard MPI version on Intrepid BG/P.  I have more faith in the
+MPI version because I have been testing it on various platforms.  Also
+the code comments mention that the DCMF version only works with the
+MPI_COMM_WORLD communicator.  The asynchronous laser communication
+code applies MPI-3 functions over the ed_meshComm communicator - this
+is not equal to MPI_COMM_WORLD when using mesh replication.

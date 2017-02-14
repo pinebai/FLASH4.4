@@ -1,0 +1,5 @@
+The interpolation routines in this directory have problems, and their
+use is discouraged.
+
+Use of the routines in the "monotonic" subdirectory
+is recommended for curvilinear coordinates.

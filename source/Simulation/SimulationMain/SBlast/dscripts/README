@@ -1,0 +1,26 @@
+Installation:
+-------------
+
+The contents of the dscripts subdirectory must be placed in the dumps subdirectory of your
+object directory. The scripts in the oscripts subdirectory must be placed in your object
+directory. Running those scripts is necessary before using the scripts contained here.
+
+Contents:
+---------
+
+lsqr.m               - Octave function to compute linear least-squares fit (1D)
+plot_rates.pl        - Perl script to plot convergence rates given by running the crun.pl script (1D)
+plot_terr.pl         - Perl script to plot scaled L1 error as a function of time given by the arun.pl script (1D)
+rates.m              - Octave function to compute scaled L1 error convergence rates (1D)
+sedov.c              - C source file for the Sedov analytic solver 
+makefile             - Makefile for the Sedov analytic solver
+sedov.param          - Sample parameter file for the Sedov analytic solver
+polar.pl             - Make polar plots using visit lineouts (2D)
+visit_polar_dens.py  - Visit lineout for density, all angles, particular time steps (2D)
+visit_polar_pres.py  - Visit lineout for pressure, all angles, particular time steps (2D)
+visit_polar_velx.py  - Visit lineout for x velocity, all angles, particular time steps (2D)
+visit_polar_vely.py  - Visit lineout for y velocity, all angles, particular time steps (2D)
+visit_subset_dens.py - Visit lineout for density, all angles, all time steps (2D)
+visit_subset_pres.py - Visit lineout for pressure, particular angles, all time steps (2D)
+visit_subset_velx.py - Visit lineout for x velocity, particular angles, all time steps (2D)
+visit_subset_vely.py - Visit lineout for y velocity, particular angles, all time steps (2D)

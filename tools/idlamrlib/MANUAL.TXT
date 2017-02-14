@@ -1,0 +1,283 @@
+From:
+Robert Fisher <rfisher@piggy.asci.uchicago.edu>
+Date:
+Tue, 13 Sep 2005 14:31:30 -0500
+To:
+lynnreid@flash.uchicago.edu
+
+A Quick Introduction to IDLAmrLib
+
+This manual covers the basics of using IDLAmrLib. In most cases
+routines have many more options than are mentioned here. These are
+generally documented in the header for the routine itself. Just look
+at the comments at the beginning of the source file. In this document,
+I'll only discuss the most commonly-used options. I've organized
+things by type of task.
+
+
+1. Reading in Data
+
+The first thing to do in using IDLAmrLib is to read in a data
+file. The command to do this is get_amrcomponent. The syntax is
+
+amrObject = get_amrcomponent(pltName, compName),
+
+where pltName is a string specifying the name of the plot file
+(e.g. 'plt0005') and compName is a string giving the name of the
+component to be read (e.g. 'density'). When the routine is called,
+that component will be returned as an IDL structure. In the example
+above, the structure will be called amrObject.
+
+
+2. Basic Information
+
+Much of the basic information about the data is stored in the!
+  various
+fields of the IDL structure. To access these, you can just print them
+by doing
+
+print, amrObject.field,
+
+where field is the name of the field you want to access. Some of the
+more common ones you might look at are time (the time in the run that
+this component occurs at), maxlevel (maximum level), gridspacing (an
+array of (number of levels) x (number of dimensions) elements that
+gives the grid spacing in each direction on each level), boxmin and
+boxmax (min and max of problem domain in physical units in each
+direction), and idxlo and idxhi (min and max of problem domain in
+index units, for each level in each direction). For a full list, do
+
+help, amrObject, /structures.
+
+
+3. One-Dimensional Plots
+
+You can extract or plot 1D lines through the data in ordinal
+directions at arbitrary coordinates. The syntax is
+
+plot_amr, amrObject, dir, yval, zval,
+
+where dir = 0, 1, or 2 is the ordinal direction of the plot line, and
+yval and zval specify the coordinates of the interse!
+ ction of the line
+and the plane to which it is perpendicular. !
+ For exam
+ple, dir = 1, yval 
+= 3, and zval = -1 would specify that the plot should be along a line
+in the y direction which is at the coordinates (x,z) = (3,-1). The
+plot_amr command accepts all the standard keywords that IDL plot
+accepts. Some useful keywords are allowed, either individually or in
+combination. The syntax with the keywords is
+
+plot_amr, amrObject, dir, yval, zval, minlevel=minlevel,
+maxlevel=maslevel, xvec=xvec, yvec=yvec, noplot=noplot.
+
+The keywords maxlevel and minlevel specify the maximum and minimum amr 
+levels to be used in making the plot. Data on levels above the max or
+below the min will be ignoted. The keywords xvec and yvec return the
+x and y coordinates of the plotted data points. These are useful, for
+example, for extracting the values in every cell along a particular
+line. When the call is completed, the variable assigned to xvec will
+contain the x (or y or z) position of every cell along the line, and
+the variable assigned to yvec will contain the valu!
+ e of the amr object 
+at each of those cells. The keyword noplot suppresses actually drawing
+the plot. This can be used together with xvec and yvec to turn
+plot_amr into a routine that just extracts the data and does nothing
+else.
+
+
+4. Two-Dimensional Plots
+
+You can plot either slices or columns along any ordinal direction. The 
+routine raster_amr makes grayscale / color plots of slices. Its syntax
+is
+
+raster_amr, amrObject, plane, slice.
+
+Here plane specifies the direction perpendicular to the plane being
+plotted (0 = plot the yz plane, 1 = plot the xz plane, 2 = plot the xy 
+plane), and slice specifies the coodinate position of the slice
+(i.e. plane = 1, slice = 5 means plot the data in the xz plane at y =
+5). By default the color scale ranges from the minimum to the maximum
+values present in amrObject, and the scale is linear. This behavior
+can be overridden by keywords. Setting the keyword log to a non-zero
+value makes the scale logarithmic. Setting the keyword localrang!
+ e to a 
+non-zero value specifies that the minimum and maximum !
+ of the s
+cale
+should be the minimum and maximum present in the slice being displayed 
+(rather than over the entire data cube). Setting zrange=[min, max]
+allows the user to manually specify the min and max values for the
+color range. There are numerous keywords to control the appearance,
+location, and labelling of the colorbar -- see the routine header. The
+routine also accepts most of the standard IDL plotting
+keywords. Finally, the routine also accepts the minlevel and maxlevel
+keywords.
+
+One particular subtlety regarding min and maxlevel applies if
+you're calling raster_amr while the plot device is set to something
+that has scalable pixels (for example you're making a postscript file
+to print). If a device has scalable pixels, the routine defaults to
+attempting to draw the entire image at the highest resolution present
+in amrObject. This can produce absurdly large images, and may even
+make the routine run out of memory. For example, in a run on a 1283
+base grid going to level 10 b!
+ y refinement factors of 2, the resulting
+image would contain 131,072 x 131,072 pixels. This is of course far
+beyond the resolution of any printer, and will probably make the
+routine crash from lack of memory. To avoid this problem, set maxlevel 
+to something reasonable (in this case, perhaps 2 or 3).
+
+Making column plot is very similar to making raster plots. The routine 
+is
+
+column_amr, amrObject, plane,
+
+where plane is the same as for raster_amr. The default is to compute
+the column all the way through amrObject. Right now taking the column
+over a restricted range isn't implemented, but it would be easy to do
+-- let me know if you need that functionality. The default range of
+the color scale is the minimum to the maximum column present in the
+plot being made -- equivalent to what you get with raster_amr if you
+use the localrange keyword. The keywords are very similar to
+raster_amr, with the exception that localrange doesn't exist, and to
+manually specify the color range y!
+ ou use the keyword scalerange rather 
+than zrange.
+
+The routin!
+ e
+
+drawb
+oxes_amr, amr, plane, slice,
+
+draws the grid boundaries for an amr object. The maxlevel and minlevel 
+keywords apply as usual. In addition, you can give the keyword
+overplot to make the routine draw over an existing plot (e.g. a raster 
+plot) rather than replacing it.
+
+The routine
+
+velovect_amr, amrVx, amrVy, plane, slice
+
+draws a field of vectors, with the x and y components of the vector
+field specified by amrVx and amrVy. It also draws a scale arrow next
+to the plot. Plane and slice are the same as for raster_amr. The
+length keyword specifies the length of the vectors. The default value
+(1.0) makes the longest vector equal to the  length of one cell. The
+keyword scaleval allows you to manually specify the value for the
+scale arrow (default is equal to the longest vector int the
+plot). There are numerous other keywords to control position,
+labelling, and other details of the scale arrow. Maxlevel and minlevel 
+are also supported.
+
+
+5. Printing Plots
+
+This isn't strictly an!
+  IDLAmrLib issue, but I'll cover it here
+briefly. All the plotting routins work just fine if the device is set
+to postscript, so you can make postscript output for printing easily
+enough. I recommend you use the psopen and psclose routines, which are 
+included in the distribution. Just do
+
+psopen, filename,
+
+for black and white, or
+
+psopen, filename, /color
+
+for color output. Then make your plots using raster_amr, plot_amr, or
+column_amr, and finally do
+
+psclose.
+
+
+6. Arithmetic on AMR Objects
+
+You can do various arithmethic operations on amr objects. All these
+routines are functions that return a value. The available routines
+are:
+
+Routines that return scalars:
+min_amr(amrObject)	-- returns minimum value in the object
+max_amr(amrObject)	-- returns maximum value in the object
+amr_sum(amrObject)	-- returns the volume-integrated sum of an amr 
+				object (e.g. amr_sum(density) gives
+				the total mass)
+amr_mean(amrObject)	-- returns the volume-weighted mean of an amr
+				obje!
+ ct
+
+Routines that return amr objects:
+amr_add(amr1, amr2)	-- r!
+ eturns t
+he 
+cellwise addition of two amr
+				objects
+amr_add(amr1, const)	-- returns the cellwise sum of the amr object
+				and the specified constant
+amr_subtract, amr_multiply, amr_divide, 
+amr_lt, amr_gt, amr_le, amr_ge, amr_and,
+amr_eq, amr_ne		-- these routines do cellwise arithmetic and
+				logical operations on amr objects,
+				using the same syntax (and same
+				options to use two amr objects or an
+				amr object and a constant) as amr_add
+amr_pow(amr1, ex)	-- returns the result of raising every cell of 
+				the amr object to power ex
+amr_exp(amr1), amr_log(amr1)	-- returns e^x or log(x), where x is
+					the value of the amr object
+amr_vecmag(amr1, amr2, amr3)	-- returns the cellwise result of
+					sqrt(amr12 + amr22 + amr32)
+
+An important caveat is that routines that take two amr objects as
+arguments require that the amr objects have the same underlying amr
+structure. If they do not, use mergestructures_amr, described below.
+
+
+7. Miscellaneous and Utility Routines
+
+This is t!
+ he catchall for other useful routines.
+
+amr_free, amrObject	-- deallocates memory for an amr object
+
+make_rad_amr, amrObject	-- returns an amr object with the value in
+every cell equal to the radial coordinate of that cell. Setting the
+keyword comp = 0, 1, or 2 gives the x, y, or z coordinate of the cell
+instead. Setting the keyword pos = [x,y,z] gives the coordinates
+relative to the specified [x,y,z] position rather than the origin.
+
+coord_to_fab, coord, amrObject -- finds all the cells in an amr object 
+that that cover the position coord (specified as [x,y,z]). If you give 
+the keyword data, it will return the value of the amr object at the
+finest cell that covers position coord.
+
+mergestructures_amr, amr1, amr2, outamr1, outamr2 -- given two amr
+objects amr1 and amr2 that cover the same physical domain, this
+routine constructs new objects with the property that at every point
+in space the new objects cover that point with resolution equal to the 
+coarser of the two resol!
+ utions of amr1 and amr2 at that point. The
+data in the output !
+ objects 
+outamr1 and outamr2 is equal to that in
+amr1 and amr2, coarsened to the new structure. This routine is useful
+for performing arithmetic operations on two amr objects that don't
+have the same structure.
+
+amr_flatten, amrObject, level -- flattens an amr object into an
+ordinary, non-adaptive IDL array. The data is coarsened / refined onto 
+the specified level. The keywords idxmin and idxmax allow the user the 
+specify a limited range of indices on that level to be extracted
+(default is the entire problem domain). The keyword sample specifies
+that data from coarse levels is to be sampled (i.e. piecewise-constant 
+interpolation) onto fine levels -- default is linear interpolation.
+
+get_j_amr, px, py, pz, jx, jy, jz == returns the x, y, and z
+components of angular momentum, given momentum components px, py, and
+pz. Specify the keyword pos=[x,y,z] to compute the angular momentum
+about an arbitrary [x,y,z] position rather than the origin

@@ -1,0 +1,48 @@
+Using LAPACK and BLAS on Scarf
+
+I. Via the Intel Math Kernel Library (MKL)
+
+Get access to the MKL via "module load intel/mkl/10.3.6.233"
+
+This sets the shell variable MKLROOT:
+
+MKLROOT=/apps/intel/2011.6.233/composer_xe_2011_sp1.6.233/mkl
+
+Include files in ${MKLROOT}/include
+Fortran-95 modules in ${MKLROOT}/include/intel64/lp64
+Libraries in ${MKLROOT}/lib/intel64/ 
+Extra libraries to be linked:
+  Gnu: -lmkl_gf_lp64 -lmkl_sequential -lmkl_core
+  PGI: -lmkl_intel_lp64 -lmkl_sequential -lmkl_core
+
+When used with Intel compilers, just compile and link with the flag "-mkl".
+When used with other compilers, compile with:
+  "-I${MKLROOT}/include -I${MKLROOT}/include/intel64/lp64"
+and link with (e.g. for Gnu):
+  "-L${MKLROOT}/lib/intel64/ -lmkl_gf_lp64 -lmkl_sequential -lmkl_core"
+
+See also:
+http://software.intel.com/en-us/articles/intel-mkl-link-line-advisor/
+
+
+II. Via ATLAS
+
+The ATLAS libraries are installed in /apps/libs/ATLAS/gnu/3.8.4 or
+/apps/libs/ATLAS/pgi/3.8.4. Choose the one that is right for your compiler.
+Include files in <base-dir>/include, libraries in <base-dir>/lib. The Intel
+compilers might work with the Gnu version.
+
+III. BLACS and ScaLAPACK
+
+BLACS and ScaLAPACK are installed in /apps/libs/BLACS and /apps/libs/SCALAPACK,
+for Gnu, Intel and PGI. E.g. for Intel: /apps/libs/BLACS/intel/1.1/ and
+/apps/libs/ScaLAPACK/intel/1.8.0/. No header files or Fortran-90 module files
+appear to be available, libraries in <base-dir>/lib.
+
+IV. GotoBLAS
+
+This is rather old, and it is unclear whether it is still working. But it can
+be found in e.g. /apps/libs/GotoBLAS/gnu/2.1.13/, and similar locations for
+Intel and PGI compilers. Include files in <base-dir>/include, libraries in
+<base-dir>/lib.
+

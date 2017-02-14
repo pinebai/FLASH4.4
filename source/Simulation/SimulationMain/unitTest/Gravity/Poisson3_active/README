@@ -1,0 +1,46 @@
+This is an extension of the Poisson3 unit test which we use to test
+active particles.
+
+The extra steps have no physical meaning, and are just there so we can
+check mass is conserved when particles are mapped to the mesh.
+
+---------------------------------------------------------------------
+Extra steps:
+
+1.  Use the DENS_VAR density profile in the mesh to initialise N
+particles.  A particle is created whenever the density in the mesh
+element exceeds a tolerance value.  When a particle is created it is
+given the excess mass from the mesh element.
+
+(The value of N depends on the refinement level of the simulation and
+the tolerance value.  There are checks in place to abort if the value
+of N exceeds the size of the allocated particle array.)
+
+The particle is given a random position within the mesh element.  This
+is done to provide a more challenging test for the particle mapping
+routines.  It is more challenging because it is likely to create some
+particles whose mass must be smeared over several cells that may exist
+on different blocks.
+
+2.  Use a customised version of Gravity_potentialListOfBlocks.F90 to
+monitor whether mass is transferred back from the particles to the
+mesh elements correctly.  Failure to conserve mass beyond a tolerance
+value results in an abort.
+
+---------------------------------------------------------------------
+
+This leaves us with the original density profile (approximately) that
+we had before step 1.
+
+We then perform the same Poisson solve as the original Poisson3 unit
+test.  Results will vary slightly from the original test because:
+
+  a). The particles are not given a position in the middle of the
+cell.
+
+(However, the shift in position is small relative to the overall size
+of the grid.  Also, there are a large number of particles and we are
+using a random number generator to specify the particle position.)
+
+  b). Rounding error when we return mass from the particles to the
+mesh.

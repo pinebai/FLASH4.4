@@ -1,0 +1,135 @@
+#	Runtime parameters for an arbitrary setup given by the 1D radial profile.
+
+
+
+# centre of the radial profile, radprof file
+sim_xCenter       =    0.0
+sim_yCenter       =    0.0
+sim_zCenter       =    0.0
+sim_nSubZones     = 2
+sim_radprof_file  = "be1sm+1+4-xi06-mf10"
+
+# perturbations
+sim_pertType      =    2
+sim_pertamp       =    0.0
+sim_velamp        =    0.0
+sim_spharm_l1     =    12
+sim_spharm_m1     =    6
+
+# properties of gases
+gamma_1           = 1.0001
+abar_1            = 2.0
+gamma_2           = 1.0001
+abar_2            = 2.0
+
+
+#		Grid dimensionality and geometry
+
+geometry = "cartesian"
+
+#		Size of computational volume
+xmin        = -3.0856776e+17 # 0.1 pc
+xmax        =  3.0856776e+17 # 0.1 pc
+ymin        = -3.0856776e+17 # 0.1 pc
+ymax        =  3.0856776e+17 # 0.1 pc
+zmin        = -3.0856776e+17 # 0.1 pc
+zmax        =  3.0856776e+17 # 0.1 pc
+
+nblockx     = 1
+nblocky     = 1
+nblockz     = 1
+
+#  Adaptive Grid refinement parameters
+lrefine_max  = 5
+lrefine_min  = 1
+refine_var_1 = "none"
+refine_var_2 = "none"
+jeans_ref    = 16.0
+jeans_deref  = 32.0
+
+# field lower limits
+smlrho          = 2.4e-28 #2.40544e-30
+smallp          = 1e-30 #1e-30
+smalle          = 1e-99 #1.0 # 6.236e8 # ~ 10 K
+smallt          = 9.99
+smallu          = 1e-99 #1e-5
+
+#		Boundary conditions
+xl_boundary_type = "reflect"
+xr_boundary_type = "reflect"
+yl_boundary_type = "reflect"
+yr_boundary_type = "reflect"
+zl_boundary_type = "reflect"
+zr_boundary_type = "reflect"
+
+#	Simulation time, I/O  parameters
+nriem   = 1000
+cfl		= 0.8
+basenm          = "be_"
+restart         = .false.
+
+
+#	checkpoint file output parameters
+checkpointFileIntervalTime = 7.8892315e+13 # 2.5 Myr
+checkpointFileIntervalStep = 0
+checkpointFileNumber = 0
+
+#	plotfile output parameters
+plotfileIntervalTime = 1.5778463e+11 # 5.0 kyr 
+plotfileIntervalStep = 0
+plotfileNumber = 0
+
+nend            = 1
+tmax            = 3.1556926e+13 # 7.8892315e+13 # 2.5 Myr
+dtinit          = 3.1556926e+7
+dtmax           = 1.5778463e+12 # 50.0 kyr
+dtmin           = 3.1556926e+5  # 0.00001 Myr
+
+log_file        = "be.log"
+eintSwitch      = 0 # 1.e-4
+run_comment     = "BE sphere"
+
+plot_var_1 = "dens"
+plot_var_2 = "pres"
+plot_var_3 = "temp"
+plot_var_4 = "velx"
+plot_var_5 = "vely"
+plot_var_6 = "velz"
+plot_var_7 = "gpot"
+plot_var_8 = "fldc"
+plot_var_9 = "flda"
+plot_var_10 = "panl"
+plot_var_11 = "perr"
+
+
+# tree solver
+useGravity          = .true.
+updateGravity       = .true.
+gr_bhPhysMACTW           = .false.
+gr_bhPhysMACComm         = .false.
+gr_bhTreeLimAngle        = 0.5
+gr_bhTreeSafeBox         = 1.2
+gr_bhUseUnifiedTW        = .false.
+gr_bhTWMaxQueueSize      = 10000
+
+# gravity
+grv_bhNewton              = -1.0
+grv_bhMAC               = "ApproxPartialErr"
+grv_bhMPDegree          = 2
+grv_bhUseRelAccErr      = .false.
+grv_bhAccErr            = 0.1
+
+grav_boundary_type      = "isolated"
+grav_boundary_type_x    = "isolated"
+grav_boundary_type_y    = "isolated"
+grav_boundary_type_z    = "isolated"
+
+grv_bhEwaldFieldNx        = 64
+grv_bhEwaldFieldNy        = 64
+grv_bhEwaldFieldNz        = 64
+grv_bhEwaldSeriesN        = 10
+grv_bhEwaldAlwaysGenerate = .true.
+grv_bhEwaldFName          = "ewald_field"
+grv_bhEwaldNRef           = -1
+grv_bhLinearInterpolOnly  = .true.
+

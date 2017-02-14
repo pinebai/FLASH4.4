@@ -1,0 +1,68 @@
+#	Runtime parameters for the Woodward-Colella interacting blast problem.
+
+#	Parameters for initial model
+
+#		Density, pressure, and velocity in each section of the grid
+
+sim_rhoLeft        =    1.
+sim_rhoMid         =    1.
+sim_rhoRight       =    1.
+sim_pLeft          =    1000.
+sim_pMid           =    0.01
+sim_pRight         =    100.
+sim_uLeft          =    0.
+sim_uMid           =    0.
+sim_uRight         =    0.
+
+#		Angle and position of interfaces relative to x and y axes
+
+sim_xangle		=    0.
+sim_yangle		=    90.
+sim_posnL           =    0.1
+sim_posnR           =    0.9
+
+#		Gas ratio of specific heats
+
+gamma           = 1.4
+
+
+#		Size of computational volume
+
+xmin		= 0.
+xmax		= 1.
+
+#		Boundary conditions
+
+xl_boundary_type = "reflect"
+xr_boundary_type = "reflect"
+
+#	Simulation (grid, time, I/O) parameters
+
+cfl		= 0.8
+basenm          = "2blast_1d_0lev_400pts_"
+restart         = .false.
+checkpointFileIntervalTime          = 0.002
+nend            = 999999
+tmax            = 0.038
+plotFileIntervalTime           = 0.00038
+
+run_comment	= "Woodward-Colella blast wave (to t=0.038)"
+log_file	= "2blast_1d_0lev_400pts.log"
+
+#       Misc parameters
+
+eintSwitch     = 0.
+
+gridImax = 408   #defined as nxb + 2*ng
+gridJmax = 1
+gridKmax = 1
+iGridSize = 400   #defined as nxb * iprocs
+jGridSize = 1
+kGridSize = 1
+iProcs = 1
+jProcs = 1
+kProcs = 1
+
+#Lines below appended by flash_test (override above definitions)
+basenm          = "2blast_ug_parallel_hdf5_1d_400pts_"
+log_file        = "2blast_ug_parallel_hdf5_1d_400pts.log"

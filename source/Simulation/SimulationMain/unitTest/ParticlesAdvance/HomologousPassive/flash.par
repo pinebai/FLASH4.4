@@ -1,0 +1,58 @@
+useParticles= .true.
+
+sim_analyticParticlePositions = .FALSE.
+sim_fakeMapMeshToParticles = .TRUE.
+
+pt_initialXMax = 2
+pt_numX = 10
+
+pt_maxPerProc=100
+
+sim_a0 = 0.1
+sim_a1 = 0.08
+
+sim_vx_amb = 1.0
+sim_seed = 1.0
+sim_vz_pert=1.0
+sim_vy_pert=1.0
+sim_vx_pert=1.0
+
+
+dtinit = 1.0e-8
+dtmin = 1.0e-10
+dtmax = 1.0e-3
+#tmax = 50.0
+tmax = 1.2
+
+nend = 70000
+
+
+checkpointFileIntervalStep = 50
+
+xmin		= 0.
+xmax		= 10.
+#ymin		= 0.
+#ymax		= 1.
+#zmin		= 0.
+#zmax		= 1.
+
+#		Boundary conditions
+
+xl_boundary_type = "outflow"
+xr_boundary_type = "outflow"
+
+yl_boundary_type = "outflow"
+yr_boundary_type = "outflow"
+
+zl_boundary_type = "outflow"
+zr_boundary_type = "outflow"
+
+basenm		= "partUnitTest_"
+
+
+#iGridSize = 8   #defined as nxb * iprocs
+#jGridSize = 8
+#kGridSize = 1
+iProcs = 1	#number or procs in the i direction	
+jProcs = 1
+kProcs = 1

@@ -1,0 +1,29 @@
+#	Configuration file for the Shu-Osher problem
+#	Ref: Shu, C.-W. and Osher, S., J Comp Phys 83:32-78 (1989)
+
+REQUIRES Driver
+REQUIRES physics/Hydro
+REQUIRES physics/Eos
+
+
+D  sim_rhoLeft		Density in left part of grid
+D  sim_rhoRight		Density in right part of grid
+D  sim_pLeft		Pressure in left part of grid
+D  sim_pRight		Pressure in right part of grid
+D  sim_uLeft		Fluid velocity in right part of grid
+D  sim_uRight		Fluid velocity in right part of grid
+D  sim_aRho             Amplitude of the density perturbation
+D  sim_fRho             Frequency of the density perturbation
+D  sim_posn	        Point of intersection between the shock plane and the x-axis
+D  sim_nsubint          Number of subintervals to average over to get cell-averages.
+ 
+PARAMETER sim_rhoLeft	REAL    3.857143
+PARAMETER sim_rhoRight	REAL    1.0
+PARAMETER sim_pLeft	REAL    10.33333
+PARAMETER sim_pRight	REAL    1.0
+PARAMETER sim_uLeft	REAL    2.629369
+PARAMETER sim_uRight	REAL    0.
+PARAMETER sim_aRho	REAL	0.2	
+PARAMETER sim_fRho	REAL	5.0	
+PARAMETER sim_posn	REAL	-4.0
+PARAMETER sim_nsubint	INTEGER	100

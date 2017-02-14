@@ -1,0 +1,9 @@
+D visc_whichCoefficientIsConst which kind of coefficient to keep constant in Constant Viscosity implementation;
+D & set to 1 for constant dynamic viscosity (the value of diff_visc_mu is used);
+D & set to 2 for constant kinematic viscosity (the value of diff_visc_nu is used).
+PARAMETER visc_whichCoefficientIsConst	INTEGER	2	[1,2]
+
+D diff_visc_mu  constant dynamic viscosity (used in Constant Viscosity if visc_whichCoefficientIsConst is 1)
+D diff_visc_nu  constant kinematic viscosity (used in Constant Viscosity if visc_whichCoefficientIsConst is 2)
+PARAMETER diff_visc_mu    REAL    .1
+PARAMETER diff_visc_nu    REAL    .1

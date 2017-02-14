@@ -1,0 +1,12 @@
+D eos_testPresMode        The Eos mode for getting other variables from
+D & density and a pressure.
+PARAMETER eos_testPresMode  STRING "dens_pres"
+
+D eos_testEintMode        The Eos mode for getting other variables from
+D & density and a specific internal energy.
+PARAMETER eos_testEintMode  STRING "dens_ie"
+
+D eos_testTempMode        The Eos mode for getting other variables from
+D & density and a temperature.
+PARAMETER eos_testTempMode  STRING "dens_temp"
+

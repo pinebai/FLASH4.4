@@ -1,0 +1,7 @@
+# Config file for the Viscosity Unit
+
+DEFAULT ViscosityMain
+
+D	  useViscosity flags whether the viscosity material property is being used
+PARAMETER useViscosity 		BOOLEAN CONSTANT FALSE
+

@@ -1,0 +1,206 @@
+# source/physics/Hydro/HydroMain/unsplit
+
+# Config file for the Unsplit Hydro & MHD solvers
+# Note: It requires an unsplit driver which is different from 
+#       the FLASH default split scheme.
+
+REQUIRES Driver/DriverMain/Unsplit
+REQUIRES physics/Eos
+
+DEFAULT MHD_StaggeredMesh
+
+EXCLUSIVE MHD_StaggeredMesh Hydro_Unsplit
+
+#Signal that the Hydro implementation is an unsplit implementation 
+# (used for flux handlings in paramesh_preprocessor.fh)
+PPDEFINE FLASH_HYDRO_UNSPLIT
+
+USESETUPVARS threadWithinBlock
+IF threadWithinBlock
+   REQUIRES physics/Hydro/HydroMain/unsplit_rad/threadWithinBlock
+ENDIF
+
+USESETUPVARS ThreeT
+USESETUPVARS RadFlahThreeT
+
+IF ThreeT or RadFlahThreeT
+   REQUIRES physics/Hydro/HydroMain/unsplit_rad/multiTemp
+ENDIF
+
+# Driver Parameters
+D small             Cutoff value
+D smlrho            Cutoff value for density
+D smallp            Cutoff value for pressure
+D smalle            Cutoff value for energy
+D smallt            Cutoff value for temperature
+D smallu            Cutoff value for velocity
+D smallx            Cutoff value for abundances
+
+PARAMETER small         REAL    1.E-10
+PARAMETER smlrho        REAL    1.E-10
+PARAMETER smallp        REAL    1.E-10
+PARAMETER smalle        REAL    1.E-10
+PARAMETER smallt        REAL    1.E-10
+PARAMETER smallu        REAL    1.E-10
+PARAMETER smallx        REAL    1.E-10
+
+
+
+# Variables required by the unsplit solvers
+VARIABLE dens TYPE: PER_VOLUME 	EOSMAP:  DENS # density
+VARIABLE velx TYPE: PER_MASS   	EOSMAPIN:VELX # x-velocity
+VARIABLE vely TYPE: PER_MASS   	EOSMAPIN:VELY # y-velocity
+VARIABLE velz TYPE: PER_MASS   	EOSMAPIN:VELZ # z-velocity
+VARIABLE pres                  	EOSMAP:  PRES # pressure
+VARIABLE ener TYPE: PER_MASS   	EOSMAP:  ENER # specific total energy (T+U)
+VARIABLE gamc                  	EOSMAP:  GAMC # sound-speed gamma
+VARIABLE game               	EOSMAP:  GAME # internal energy gamma
+VARIABLE temp                  	EOSMAP:  TEMP # temperature
+VARIABLE eint TYPE: PER_MASS   	EOSMAP:  EINT # specific internal energy (U)
+VARIABLE shok # flag variable for shock detection
+#VARIABLE gpro # GP tags
+
+
+VARIABLE eddi
+
+USESETUPVARS ExtraGravVars
+IF ExtraGravVars
+  D gpoh_variable   intermediate gravitational potential (after Hydro call)
+  VARIABLE gpoh
+ENDIF
+
+# Runtime parameters for the Unsplit Hydro solver:
+D order			1st order Godunov scheme, 2nd MUSCL-Hancock scheme, or 3rd PPM, 5th WENO
+D hy_3Torder		Reconstruction order for eint, eele, eion, erad in HEDP simulations
+D use_hybridOrder	Apply RH jump condition to check monotonicity of reconstructed values
+D hybridOrderKappa	A constant value to determine shock strengths for hybrid order
+D transOrder		order of approximating transeverse flux derivative in data reconstruction
+D slopeLimiter		mc, vanLeer, minmod, hybrid, limited
+D charLimiting		Apply limiting for characteristic variable
+D LimitedSlopeBeta	Any real value specific for the Limited Slope limiter
+D use_steepening	Switch for steepening contact discontinuities for 3rd order PPM
+D use_flattening	Switch for PPM flattening
+D use_cvisc		Turn on/off artificial viscosity
+D use_upwindTVD         Turn on/off upwinding TVD slopes
+D hy_fPresInMomFlux     Percentage of the pressure gradient (values range from 0 to 1) that is treated as part of momentum fluxes
+D use_auxEintEqn        Turn on/off solving the auxilary internal energy equation
+D EOSforRiemann         Turn on/off calls to Eos for thermo of reconstructed face states (MODE_DENS_PRES)
+
+D use_3dFullCTU		Turn on/off the full CTU scheme that gives CFL <= 1 for 3D
+
+D RiemannSolver		Roe, HLL, HLLC, Marquina, MarquinaModified, Hybrid or local Lax-Friedrichs, plus HLLD for MHD
+D entropy		Entropy Fix routine for the Roe Riemann solver
+D entropyFixMethod      Entropy fix method for the Roe Riemann solver: Harten or HartenHyman
+D shockDetect           Switch to use a strong compressive shock detection
+D shockLowerCFL		Lower the simulation CFL if shocks are detected
+D hy_fallbackLowerCFL	Lower the simulation CFL if fallin back to a lower reconstruction order in problematic cells
+D hy_cflFallbackFactor  factor for scaling CFL factor when it is lowered because of fallback in problematic cells
+
+D use_gravHalfUpdate    Include gravitational accelerations to hydro coupling at n+1/2
+
+D hydroComputeDtOption  An option where to compute hydro dt. Choices are integer values [-1, 0, 1] as follows:
+D &                     -1: Hydro_computeDt.F90,  the old standard way that has most extensive supports and well-tested;
+D &                      0: hy_uhd_energyFix.F90, a light weighted version without calling a global loop Hydro_computeDt;
+D &                      1: hy_getFaceFlux.F90,   another light weighted dt call during flux calculations.
+
+D irenorm		Renormalize abundances
+D tiny			A threshold value for an arbitrarily small number
+D conserveAngMom        Conservative formulation for cylindrical coordinates regarding the toroidal momentum
+
+
+# Runtime Parameters
+# (1) Interpolation, reconstruction, slope limiter:
+PARAMETER order		       INTEGER  2     [1,2,3,5,6]  # Order of scheme: 1st/2nd/3rd/5th/GP(6) order
+PARAMETER wenoMethod           STRING   "WENO5"            # Two choices for WENO are WENO5 and WENOZ; This only works when order=5
+PARAMETER hy_3Torder	       INTEGER  -1    [-1,1,2,3,5] # Default 3T reconstruction order is same as order
+PARAMETER use_hybridOrder      BOOLEAN  FALSE		   # Apply RH jump condition to check monotonicity of reconstructed values
+PARAMETER hybridOrderKappa     REAL	0.		   # A constant value to determine shock strengths for hybrid order
+PARAMETER transOrder	       INTEGER  1     [0,1,2,3,4]  # Order of transverse flux: 1st order. 3rd order is experimental.
+PARAMETER slopeLimiter         STRING  "vanLeer"           # Slope limiter for Riemann state
+PARAMETER charLimiting	       BOOLEAN  TRUE    	   # Turn on/off characteristic/primitive limiting
+PARAMETER LimitedSlopeBeta     REAL     1.0      	   # Any real value specific for the Limited Slope 
+					         	   # limiter (e.g., 1.0 for minmod, 2.0 for superbee)
+PARAMETER use_steepening       BOOLEAN  FALSE              # Turn on/off PPM contact steepening
+PARAMETER use_flattening       BOOLEAN  FALSE   	   # Turn on/off flattening
+PARAMETER use_avisc            BOOLEAN  FALSE   	   # Turn on/off artificial viscosity
+PARAMETER cvisc                REAL     0.1      	   # artificial viscosity constant
+PARAMETER use_upwindTVD        BOOLEAN  FALSE   	   # Turn on/off upwinding TVD slopes
+PARAMETER hy_fPresInMomFlux    REAL     1.0   [0.0...1.0]  # Percentage of pressure gradient for the momentum equation that is handled in momentum fluxes
+PARAMETER conserveAngMom       BOOLEAN  FALSE              # Turn on/off alternate formulation for toroidal momentum
+PARAMETER use_auxEintEqn       BOOLEAN  TRUE   	           # Turn on/off solving the auxilary internal energy equation
+PARAMETER EOSforRiemann        BOOLEAN  FALSE		   # Turn on/off calling Eos for thermo of reconstructed face states (MODE_DENS_PRES)
+
+# (2) For 3D CTU
+PARAMETER use_3dFullCTU	       BOOLEAN  TRUE		# FALSE will give the simpler CTU without corner upwind coupling
+	  		       				# and will only provide CFL < 1/2
+# (3) Riemann solvers 
+PARAMETER RiemannSolver	       STRING  "HLLC"    	# Approximate Riemann solver: 
+						      	# Roe, HLL, HLLC (default), Marquina, MarquinaMod, Hybrid
+							# or local Lax-Friedrichs, plus HLLD for MHD
+PARAMETER entropy              BOOLEAN  FALSE  		# Turn on/off an entropy fix routine
+PARAMETER entropyFixMethod     STRING  "HARTENHYMAN"  	# Entropy fix method for the Roe Riemann solver: 
+						      	# Harten or HartenHyman
+PARAMETER shockDetect          BOOLEAN  FALSE   	# Turn on/off a shock detecting switch
+PARAMETER shockLowerCFL	       BOOLEAN	FALSE		# Turn on/off lowering CFL if shocks present
+PARAMETER hy_fallbackLowerCFL  BOOLEAN	FALSE		# Turn on/off lowering CFL if falling back to lower order
+PARAMETER hy_cflFallbackFactor REAL	0.9		# factor for scaling CFL factor when it is lowered for fallback
+
+D hy_fullSpecMsFluxHandling Are species and mass scalars updated with fluxes that have undergone
+D & the full treatment applied to other fluxes, including fine-coarse-boundary flux correction if
+D & that is done to fluxes of other conserved variables?
+PARAMETER hy_fullSpecMsFluxHandling BOOLEAN TRUE        # Full flux handling for species and mass scalars?
+
+IF not ThreeT
+PARAMETER addThermalFlux       BOOLEAN  TRUE            # Add/don't add thermal fluxes to hydro fluxes
+ELSE
+PARAMETER addThermalFlux       BOOLEAN  CONSTANT FALSE  # Unsplit hydro/MHD thermal conduction does not work in 
+ENDIF                                                   # 3T mode.
+
+# (4) Gravity updates
+PARAMETER use_gravHalfUpdate   BOOLEAN  TRUE    	# Include gravitational accelerations to hydro coupling at n+1/2
+
+# (5) Abundances
+PARAMETER irenorm	       INTEGER  0        	# Renormalize abundances
+PARAMETER tiny		       REAL     1.e-16   	# An arbitrarily small number
+
+# (6) Hydro compute dt
+PARAMETER hydroComputeDtOption INTEGER  -1 [-1,0,1]      # see the comments above
+
+
+D hy_eosModeGc Eos mode that the Hydro unit should apply to guard cells
+D & before the first major loop, i.e., before computing Riemann input
+D & states by reconstruction etc.
+D & The special value "see eosMode" can be used to indicate the mode
+D & set by the runtime parameter "eosMode".
+D & Other values are as for "eosMode".
+
+IF ThreeT
+# This if-statement just checks whether the +3t setup shortcut has been used. 
+# If it has, then the allowed values are changed.
+PARAMETER hy_eosModeGc STRING "see eosMode"["see eosMode","eos_nop","dens_ie_gather","dens_ie_recal_gather","dens_ie_scatter","dens_ie_all","dens_ie_sele_gather","dens_temp_equi","dens_temp_all","dens_temp_gather"]
+ELSE
+PARAMETER hy_eosModeGc STRING "see eosMode"["see eosMode","eos_nop","dens_ie","dens_pres","dens_temp"]
+ENDIF
+
+# Use SCRATCHVAR for tmporary storages
+USESETUPVARS nDim
+USESETUPVARS Grid
+
+
+# DO NOT Use SCRATCHVAR array for interface states and fluxes
+# - We now use scratch buffers privately allocated from hy_uhd_unsplit instead.
+#SCRATCHCENTERVAR VAR1
+#SCRATCHCENTERVAR VAR2
+
+
+# Number of guard cells at each boundary
+USESETUPVARS SupportPpmUpwind
+IF SupportPpmUpwind
+   GUARDCELLS 6 # the Unsplit Hydro/MHD solver requires 6 guard cells to support PPM Upwind!
+ELSE
+   GUARDCELLS 4 # the Unsplit Hydro/MHD solver requires 4 guard cell layers!
+ENDIF
+
+# GP interpolation - UNSUPPORTED
+PARAMETER radiusGP               REAL  2.
+PARAMETER sigmaGP                REAL  3.

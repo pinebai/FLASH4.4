@@ -1,0 +1,10 @@
+Setup for a flame propagating through a slab of material.
+The problem is similar to other flame problems. In this
+case it is designed to work with a one-stage version of the
+ADR flame. 
+
+This used to have additional diagnostics for noise measurement.
+Should be recovered at some point.
+
+
+

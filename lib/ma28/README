@@ -1,0 +1,12 @@
+The file build.csh has been removed.  This is because I now
+automatically generate build.csh when libinfo.py is called.  I add
+this level of indirection because I need to pass the FFLAGS [DEBUG |
+OPT | TEST] compilation options to the Makefile when we create the
+library.
+
+This is done because the FFLAGS [DEBUG | OPT | TEST] variable contains
+the crucial promote reals to 8 bytes flag.  It also ensures that
+consistent compilation flags are used for this library and all of the
+source files in the FLASH object directory.  Primarily though, this
+will prevent errors where an 8 byte real in FLASH is passed to the
+ma28 library.

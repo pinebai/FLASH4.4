@@ -1,0 +1,36 @@
+Planck Absorption
+Planck Emission
+Rosseland
+0.000000E+00
+0.000000E+00
+0.000000E+00
+IONMIX
+xe-005grp-lte.imx
+-------------------------------
+Planck Absorption
+Planck Emission
+Rosseland
+0.000000E+00
+0.000000E+00
+0.000000E+00
+IONMIX
+xe-005grp-lte.imx
+-------------------------------
+Planck Absorption
+Planck Emission
+Rosseland
+0.000000E+00
+0.000000E+00
+0.000000E+00
+IONMIX
+xe-005grp-lte.imx
+-------------------------------
+Planck Absorption
+Planck Emission
+Rosseland
+0.000000E+00
+0.000000E+00
+0.000000E+00
+IONMIX
+xe-005grp-lte.imx
+-------------------------------

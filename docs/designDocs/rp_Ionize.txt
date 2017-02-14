@@ -1,0 +1,20 @@
+
+physics/sourceTerms/Ionize
+    useIonize [BOOLEAN] [FALSE]
+        Whether Ionize calculations should be performed.
+
+physics/sourceTerms/Ionize/IonizeMain
+    dneimax [REAL] [1.0E12]
+        Valid Values: Unconstrained
+        Max NEI density
+    dneimin [REAL] [1.0E0]
+        Valid Values: Unconstrained
+        Min NEI density
+    tneimax [REAL] [1.0E7]
+        Valid Values: Unconstrained
+        Max NEI temperature
+    tneimin [REAL] [1.0E4]
+        Valid Values: Unconstrained
+        Min NEI temperature
+    useIonize [BOOLEAN] [TRUE]
+        Whether Ionize calculations should be performed.

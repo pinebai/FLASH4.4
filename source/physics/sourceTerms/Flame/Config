@@ -1,0 +1,7 @@
+DEFAULT FlameMain
+
+CHILDORDER localAPI
+
+D useFlame  Whether the flame should be advanced.
+# Value is meant to be overridden if IonizeMain gets included.
+PARAMETER useFlame   BOOLEAN CONSTANT FALSE

@@ -1,0 +1,12 @@
+#  Configuration file for the long range gravitational particle-mesh method.
+# [/source/Particles/ParticlesForces/longRange/gravity/ParticleMesh]
+
+REQUIRES physics/Gravity
+
+D grac_variable       Gravitational acceleration
+D gpot_variable       Gravitational potential
+
+
+VARIABLE grac               
+VARIABLE gpot               
+

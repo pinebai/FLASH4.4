@@ -1,0 +1,62 @@
+#       Configuration file for the Zel'dovich pancake problem
+
+REQUIRES Grid
+REQUIRES physics/Cosmology
+REQUIRES physics/Gravity
+
+REQUIRES Particles/ParticlesMain/active/massive/LeapfrogCosmo
+
+REQUESTS Particles/ParticlesForces/longRange/gravity/ParticleMesh
+REQUESTS physics/Gravity/GravityMain/Poisson/Multigrid
+REQUESTS IO
+REQUESTS IO/IOParticles
+
+
+#The Pancake problem uses active particles.
+#Describe the active particle intialisation method and mapping method.
+#----------------------------------------------------------------
+PARTICLETYPE active INITMETHOD custom MAPMETHOD weighted ADVMETHOD leapfrog_cosmo
+
+#NOTE: This expands to ACTIVE_PART_TYPE in Flash.h, and places the pre-processor
+#definitions "CUSTOM" and "WEIGHTED" (from Particles.h) in our particles
+#data structure.  The INITMETHOD is provided in the
+#simulation directory, but we need to specify the path to MAPMETHOD.  
+#We set MAPMETHOD to WEIGHTED which is in the meshWeighting directory.
+
+REQUIRES Particles/ParticlesMain/active/massive
+REQUESTS Particles/ParticlesMapping/meshWeighting/CIC
+REQUESTS Particles/ParticlesMapping/meshWeighting/MapToMesh
+
+
+#Give the user the opportunity to also include passive tracer particles.
+#(Add withTracerParticles=True to the setup line)
+#----------------------------------------------------------------
+USESETUPVARS withTracerParticles
+
+IF withTracerParticles == True
+
+PARTICLETYPE passive INITMETHOD lattice MAPMETHOD quadratic ADVMETHOD rungekutta
+#NOTE: This expands to PASSIVE_PART_PROP in Flash.h, and places the pre-processor
+#definitions "LATTICE" and "QUADRATIC" (from Particles.h) in our particles
+#data structure.  
+
+REQUIRES Particles/ParticlesMain/passive
+REQUESTS Particles/ParticlesInitialization/Lattice
+REQUESTS Particles/ParticlesMapping/Quadratic
+
+END IF
+
+
+PARAMETER lambda               REAL    3.0857E24
+PARAMETER zcaustic             REAL    1.0
+PARAMETER Tfiducial            REAL    100.0
+PARAMETER zfiducial            REAL    100.0
+PARAMETER xangle               REAL    0.0
+PARAMETER yangle               REAL    90.0
+PARAMETER pt_numX              INTEGER 1
+PARAMETER pt_numY              INTEGER 1
+PARAMETER pt_numZ              INTEGER 1
+PARAMETER MaxParticlePerZone   INTEGER 10
+
+# H and He with primordial abundances
+# NUMSPECIES 2

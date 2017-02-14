@@ -1,0 +1,24 @@
+#Config file for GridSolver sub unit
+DEFAULT Multipole
+REQUIRES Grid/GridMain
+EXCLUSIVE Multigrid Multigrid_experimental Multigrid_forDiffuseAdvanceByHgFFT Multigrid_forDiffuseAdvanceByHgADI BHTree
+EXCLUSIVE Multipole Multipole_new BHTree
+
+# NOTE: The ordering here may need to be changed, when several GridSolver implementations
+#       are configured in and are supposed to cooperate.  In general, the last directory
+#       here "wins" when setup decides which instance of a source file, like Grid_solvePoisson.F90,
+#       to link into the object directory. And listed dirctories win over those not mentioned.
+#       There are multiple implementations in particular of Grid_solvePoisson.F90, and the
+#       miot important consideration here is usually to pick the right one of those.
+#       Examples:
+#       1) To use PFFT for some non-Poisson-solving purpose, combined with BHTree for self-gravity,
+#       BHTree should appear in the list AFTER Pfft:
+#            CHILDORDER ... Pfft ... BHTree ...          
+#       2) To use HYPRE for some non-Poisson-solving purpose (as usually for duffusion), combined with
+#       Multigrid for self-gravity, Multigrid should appear in the list AFTER HYPRE:
+#            CHILDORDER ... HYPRE ... Multigrid ...          
+
+# Multigrid after Pfft so that we use Multigrid version of Grid_solvePoisson when we run with PFFT extensions.
+# BiPCGStab after Multigrid, MultigridMC, HYPRE to use the version of Grid_solvePoisson from BiPCGStab.
+# DEV: HYPRE should likely come earlier by default.
+CHILDORDER Pfft Multigrid Multigrid_experimental Multigrid_forDiffuseAdvanceByHgFFT Multigrid_forDiffuseAdvanceByHgADI MultigridMC HYPRE HYPRE_KPD BiPCGStab

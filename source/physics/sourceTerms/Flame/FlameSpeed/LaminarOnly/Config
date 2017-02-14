@@ -1,0 +1,7 @@
+REQUIRES ../laminar
+REQUIRES ../turbulent
+
+PARAMETER fl_fsUseConstFlameSpeed   BOOLEAN      false
+PARAMETER fl_fsConstFlameSpeed      REAL         1.e0
+PARAMETER fl_fsConstFlameWidth      REAL         1.e0
+PARAMETER fl_fsUseTFI               BOOLEAN      false

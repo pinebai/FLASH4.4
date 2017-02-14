@@ -1,0 +1,48 @@
+1.  
+
+Add support for analysis of face and scratch variables: Not
+straightforward because there is only a "unknown names" dataset and not
+"face names" or "scratch names" datasets in regular FLASH output
+files.  This means we must use self-discovery of 4D datasets (as is
+done in sfocu for HDF5) to determine all available datasets.  Need to
+code this in pnetcdf for the first time.  Something like this should
+work:
+
+int ncmpi_inq_nvars(int ncid, int* nvars)
+for (i=0; i<*nvars; ++i) {
+  int ncmpi_inq_varndims(int ncid, i, int* ndims);
+  if (*ndims == 4) {
+    int ncmpi_inq_vardimid(int ncid, i, int dimids[]);
+    for (j=0; j<*ndims; ++j) {
+      ncmpi_inq_dimlen(int ncid, j, size_t* len);
+      dimlen[j] = len;
+    }
+    /* Add data struct name and size dimensions to a stl map:
+       map <string, vector<size_t> > */
+  }
+}
+
+
+
+2. 
+
+When plot file contains no data need to exit cleanly.  Switch off 
+HDF5 error reporting:
+
+HDF5 - turn off error reporting:
+H5E_auto_t error_func;
+void *error_data;
+H5Eget_auto(&error_func, &error_data);
+H5Eset_auto(NULL, NULL); /* Disable error reporting */
+H5Eset_auto(error_func, error_data); /* Restore previous error handler */
+
+
+
+3. 
+
+Extend object model to reduce code duplication:
+
+FlashFile -> pnet -> allvar
+	     	  -> singlevar
+	  -> hdf5 -> allvar
+	     	  -> singlevar

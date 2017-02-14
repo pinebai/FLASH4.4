@@ -1,0 +1,9 @@
+# Config file for the RungeKutta/RungeKuttaMain implementation
+
+REQUIRES  numericalTools/RungeKutta/localAPI
+
+D       rk_stepSizeConfinementFactor      Reduction factor for step size reduction for confined RK runs
+D       rk_stepSizeSafetyFactor           The build in safety factor for new step size estimate
+
+PARAMETER  rk_stepSizeConfinementFactor     REAL       0.5      [0.5...1.0]
+PARAMETER  rk_stepSizeSafetyFactor          REAL       0.9      [0.5...1.0]

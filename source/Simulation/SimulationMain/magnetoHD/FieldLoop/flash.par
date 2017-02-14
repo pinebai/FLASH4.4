@@ -1,0 +1,159 @@
+# 	Runtime parameters for the MHD FieldLoop problem.
+#	Please also look at default.par for more runtime parameters in the object directory
+
+#	Specific heats ratio
+gamma           = 1.66666666666666667
+
+
+#       Grid dimensionality and geometry
+geometry       = "cartesian"
+
+
+#       Size of computational volume for 2D test
+xmin            = 0.
+xmax            = 2.
+ymin            = 0.
+ymax            = 1.
+xCtr		= 1.
+yCtr		= 0.5
+
+#	Size of computational volume for 3D test
+#xmin           =-0.5
+#xmax           = 0.5
+#ymin           =-0.5
+#ymax           = 0.5
+#zmin		=-1.0
+#zmax		= 1.0
+
+#	Field loop advection angle
+#	angle = atan(rx/ry)
+rx		= 1.
+ry		= 2.
+
+
+#	Initial strength of the velocity fields for 2D : advection or steady
+U_initial	= 2.23606797749979 # = sqrt(5), for an advection run for 2D
+# U_initial	= 0. # for a steady run for 2D
+velz_initial	= 0. # for Bz growing test for 2D
+
+#	Initial strength of the velocity fields for 3D
+#U_initial	= 1.0 # for an advection run for 3D
+#velz_initial	= 2.0 # for an advection run for 3D
+
+
+#	Initial strength of the magnetic vector potential
+Az_initial	= 0.001
+
+
+#	Radius of the field loop
+R_fieldLoop	= 0.3
+
+
+#       Boundary conditions (code -22 is periodic)
+xl_boundary_type = "periodic"
+xr_boundary_type = "periodic"
+yl_boundary_type = "periodic"
+yr_boundary_type = "periodic"
+zl_boundary_type = "periodic"
+zr_boundary_type = "periodic"
+
+#       Simulation (grid, time, I/O) parameters
+run_comment     = "2D Field Loop MHD problem"
+log_file        = "fieldLoop_mhd_2d.log"
+basenm          = "fieldLoop_mhd_2d_"
+restart         = .false.
+#checkPointFileNumber=1
+#plotFileNumber  = 1
+nend            = 1000000
+tmax            = 2.0
+cfl             = 0.8
+plot_var_1	= "magx"
+plot_var_2	= "magy"
+plot_var_3	= "magp"
+
+convertToConsvdInMeshInterp = .true.
+checkpointFileIntervalTime = 0.1
+#checkpointFileIntervalStep = 10
+
+
+#	AMR parameters
+#nblockx	= 1
+#nblocky	= 1
+lrefine_min	= 1
+lrefine_max     = 6 
+nrefs           = 2
+refine_var_1	= "magx"
+refine_var_2	= "magy"
+eintSwitch	= 1.e-6
+
+
+#	DivB control switch
+killdivb	= .true.
+
+
+#	Flux Conservation for AMR
+flux_correct    = .true.
+
+## -------------------------------------------------------------##
+##  SWITCHES SPECIFIC TO THE UNSPLIT STAGGERED MESH MHD SOLVER  ##
+#	I. INTERPOLATION SCHEME:
+order		= 2      # Interpolation order (first/second/third/fifth order)
+slopeLimiter    = "mc"   # Slope limiters (minmod, mc, vanLeer, hybrid, limited)
+LimitedSlopeBeta= 1.     # Slope parameter for the "limited" slope by Toro
+charLimiting	= .true. # Characteristic limiting vs. Primitive limiting
+
+
+use_avisc	= .false. # use artificial viscosity (originally for PPM)
+cvisc		= 0.1     # coefficient for artificial viscosity
+use_flattening	= .false. # use flattening (dissipative) (originally for PPM)
+use_steepening	= .false. # use contact steepening (originally for PPM)
+use_upwindTVD	= .false. # use upwind biased TVD slope for PPM (need nguard=6)
+
+
+#	II. MAGNETIC(B) AND ELECTRIC(E) FIELDS:
+E_modification	= .true.           # High order algorithm for E-field construction
+energyFix	= .true.           # Update magnetic energy using staggered B-fields
+ForceHydroLimit	= .false.          # Pure Hydro Limit (B=0)
+prolMethod      = "injection_prol" # Prolongation method (injecton_prol, balsara_prol)
+
+
+#	III. RIEMANN SOLVERS:
+RiemannSolver	= "Roe"       # Roe, HLL, HLLC, HLLD, LLF, Marquina
+entropy         = .false.     # Entropy fix for the Roe solver
+
+
+#	IV. STRONG SHOCK HANDELING SCHEME:
+shockDetect	= .false.     # Shock Detect for numerical stability
+## -------------------------------------------------------------##
+
+## ---------------------------------------------------------------##
+##  SWITCHES SPECIFIC TO THE SUPER-TIME-STEPPING (STS) ALGORITHM  ##
+##  NOTE: For details on using STS runtime parameters, please     ##
+##        refer to user's guide (Driver chapter).                 ##
+useSTS                  = .false.
+nstepTotalSTS           = 5
+nuSTS                   = 0.2
+## ---------------------------------------------------------------##
+
+
+#	The parameters below are only necessary for the Uniform Grid
+#iGridSize	= 32	#defined as nxb * iprocs
+#jGridSize	= 32     #defined as nyb * jprocs
+#kGridSize	= 64	#defined as nzb * kprocs
+iProcs		= 1	#number or procs in the i direction
+jProcs		= 2	#number or procs in the j direction
+kProcs		= 2	#number or procs in the k direction
+
+# When using UG, iProcs, jProcs and kProcs must be specified.
+# These are the processors along each of the dimensions
+# FIXEDBLOCKSIZE mode ::
+#	When using fixed blocksize, iGridSize etc are redundant in
+#	runtime parameters. These quantities are calculated as 
+#	iGridSize = NXB*iprocs
+#	jGridSize = NYB*jprocs
+#	kGridSize = NZB*kprocs
+# NONFIXEDBLOCKSIZE mode ::
+#	iGridSize etc must be specified. They constitute the global
+#	number of grid points in the physical domain without taking 
+#	the guard cell into account. The local blocksize is calculated
+#	as iGridSize/iprocs  etc.

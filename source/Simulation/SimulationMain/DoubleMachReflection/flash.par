@@ -1,0 +1,120 @@
+#	Runtime parameters for the Woodward-Colella Double Mach Reflection problem.
+
+#		Parameters for initial model
+#		Density, pressure, and velocity on either side of interface
+sim_rhoLeft		= 8.0
+sim_pLeft		= 116.5
+sim_uLeft		= 7.1447096
+sim_vLeft		= -4.125
+
+sim_rhoRight		= 1.4
+sim_pRight		= 1.0
+sim_uRight		= 0.0
+sim_vRight              = 0.0
+
+
+#		Angle and position of interface relative to x axis
+# 		These settings for testing 2-d problem only.
+sim_xangle		= 60.
+sim_posn		= 0.166666667  # (=1./6.)
+
+
+#		Gas ratio of specific heats
+gamma           = 1.4
+
+
+#		Computational volume parameters
+#		Grid dimensionality and geometry
+geometry = cartesian
+
+
+#		Size of computational volume
+xmin		= 0.
+xmax		= 4.
+ymin		= 0.
+ymax		= 1.0
+
+
+#		Boundary conditions
+xl_boundary_type = "user"
+xr_boundary_type = "outflow"
+yl_boundary_type = "user"
+yr_boundary_type = "user"
+
+
+#	Simulation (grid, time, I/O) parameters
+cfl		= 0.8
+basenm          = "dmr_"
+restart         = .false.
+
+
+#	checkpoint file output parameters
+checkpointFileIntervalTime = 0.025
+checkpointFileIntervalStep = 0 
+checkpointFileNumber = 0
+
+
+#	plotfile output parameters
+plotfileIntervalTime = 0.
+plotfileIntervalStep = 0
+plotfileNumber = 0
+
+nend            = 10000
+tmax            = .25
+run_comment     = "Double Mach Reflection problem, diagonal direction"
+log_file        = "DMR.log"
+eintSwitch     	= 1.e-4
+
+plot_var_1 = "dens"
+plot_var_2 = "pres"
+plot_var_3 = "temp"
+
+
+#    AMR refinement parameters  
+lrefine_max     = 6
+refine_var_1    = "dens"
+refine_var_2    = "pres"
+nblockx = 4
+nblocky = 1
+
+# These parameters are used only for the uniform grid
+iGridSize = 400   #defined as nxb * iprocs
+jGridSize = 100
+#kGridSize = 1
+iProcs = 4	#number or procs in the i direction	
+jProcs = 1
+kProcs = 1
+
+# When using UG, iProcs, jProcs and kProcs must be specified.
+# These are the processors along each of the dimensions
+#FIXEDBLOCKSIZE mode ::
+# When using fixed blocksize, iGridSize etc are redundant in
+# runtime parameters. These quantities are calculated as 
+# iGridSize = NXB*iprocs
+# jGridSize = NYB*jprocs
+# kGridSize = NZB*kprocs
+#NONFIXEDBLOCKSIZE mode ::
+# iGridSize etc must be specified. They constitute the global
+# number of grid points in the physical domain without taking 
+# the guard cell into account. The local blocksize is calculated
+# as iGridSize/iprocs  etc.
+ 
+ 
+## -------------------------------------------------------------##
+##  SWITCHES SPECIFIC TO THE UNSPLIT HYDRO SOLVER               ##
+#	I. INTERPOLATION SCHEME:
+order = 2      # Interpolation order (First/Second/Third/Fifth order)
+use_steepening = .false. # Contact steepening for the third order PPM
+slopeLimiter    = "mc"   # Slope limiters (minmod, mc, vanLeer, hybrid, limited)
+LimitedSlopeBeta= 1.     # Slope parameter for the "limited" slope by Toro
+charLimiting	= .true. # Characteristic limiting vs. Primitive limiting
+
+
+#	II. RIEMANN SOLVERS:
+RiemannSolver	= "hllc"      # Roe, HLL, HLLC, LF
+shockInstabilityFix = .false. # Carbuncle instability fix for the Roe solver
+
+
+#	III. STRONG SHOCK HANDELING SCHEME:
+shockDetect	= .false.     # Shock Detect for numerical stability
+## -------------------------------------------------------------##

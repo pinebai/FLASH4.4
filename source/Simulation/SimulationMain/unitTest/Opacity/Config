@@ -1,0 +1,41 @@
+# A really simple setup that tests several features of the Opacity unit.
+#
+# Sample setup line:
+#
+#   ./setup -auto unitTest/Opacity +ug -1d -maxblocks=1 -nxb=10 mgd_meshgroups=5 ManualSpeciesDirectives=True species=SP1
+#
+# Options : +ug          (use uniform Grid)
+#           -1d          (one-dimensional setup)
+#           -maxblocks=1 (only one block is needed)
+#           -nxb=10      (10 inner cells in the block)
+#           mgd_meshgroups=5  (5 energy groups, must match what is in the table data file)
+#
+# are passed for simplification of the executable.
+#
+REQUESTS physics/RadTrans/RadTransMain/MGD
+REQUIRES physics/materialProperties/Opacity/OpacityMain/Multispecies/method
+REQUIRES physics/materialProperties/Opacity/OpacityMain/unitTest
+REQUIRES Multispecies/MultispeciesMain
+
+# Define unk variables to be used by opacity unit
+VARIABLE dens
+VARIABLE tele
+
+# Define extra unk variables to be used by radtrans unit
+VARIABLE erad
+VARIABLE cond
+#VARIABLE DFCF
+#VARIABLE FLLM
+VARIABLE eele
+
+# Define number of energy groups (a hack to avoid inclusion of RadTrans unit)
+#PARAMETER rt_mgdNumGroups INTEGER 0
+
+# Setup the species
+SPECIES SP1
+#SPECIES SP2
+#SPECIES SP3
+#SPECIES SP4
+
+# Copy the needed datafiles
+DATAFILES xe-005grp-lte.imx

@@ -1,0 +1,33 @@
+
+physics/materialProperties/Viscosity
+    useViscosity [BOOLEAN] CONSTANT [FALSE]
+        flags whether the viscosity material property is being used
+
+physics/materialProperties/Viscosity/ViscosityMain
+    useViscosity [BOOLEAN] [TRUE]
+        flags whether the viscosity material property is being used
+    viscSuppressFactor [REAL] [1.0]
+        Valid Values: Unconstrained
+        -- allows the viscosity to be suppressed
+    viscTempHigh [REAL] [1.5e8]
+        Valid Values: Unconstrained
+        -- turn off viscosity for temps higher than this
+    viscTempLow [REAL] [3.0e5]
+        Valid Values: Unconstrained
+        -- turn off viscosity for temps lower than this
+
+physics/materialProperties/Viscosity/ViscosityMain/Constant
+    diff_visc_mu [REAL] [.1]
+        Valid Values: Unconstrained
+        constant dynamic viscosity (used in Constant Viscosity if
+        visc_whichCoefficientIsConst is 1)
+    diff_visc_nu [REAL] [.1]
+        Valid Values: Unconstrained
+        constant kinematic viscosity (used in Constant Viscosity if
+        visc_whichCoefficientIsConst is 2)
+    visc_whichCoefficientIsConst [INTEGER] [2]
+        Valid Values: 1, 2
+        which kind of coefficient to keep constant in Constant Viscosity
+        implementation; set to 1 for constant dynamic viscosity (the value of
+        diff_visc_mu is used); set to 2 for constant kinematic viscosity (the
+        value of diff_visc_nu is used).

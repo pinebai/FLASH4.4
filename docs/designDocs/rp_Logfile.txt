@@ -1,0 +1,11 @@
+
+monitors/Logfile/LogfileMain
+    log_file [STRING] ["flash.log"]
+        Valid Values: Unconstrained
+        Name of log file to create
+    run_comment [STRING] ["FLASH 3 run"]
+        Valid Values: Unconstrained
+        Comment for run
+    run_number [STRING] ["1"]
+        Valid Values: Unconstrained
+        Identification number for run

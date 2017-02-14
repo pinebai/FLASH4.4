@@ -1,0 +1,35 @@
+#Configuration file for Non-equilibrium ionization problem
+
+
+#Units
+REQUIRES Driver
+REQUIRES Grid
+REQUESTS IO
+REQUIRES physics/sourceTerms/Ionize
+REQUIRES physics/Hydro
+REQUIRES physics/Eos/EosMain/Multigamma
+REQUIRES Simulation/SimulationComposition/Ionize
+
+LINKIF hy_uhd_unsplitUpdate.F90.noener physics/Hydro/HydroMain/unsplit
+
+#Runtime Parameters
+
+PARAMETER rho_ambient  REAL 2.e-16
+PARAMETER vel_init     REAL 3.e5
+PARAMETER t_ambient    REAL 1.e4
+PARAMETER t_perturb    REAL 0.2
+PARAMETER radius       REAL 0.2
+PARAMETER xstep        REAL 1.5e7
+
+SPECIES he TO 2
+SPECIES c TO 6
+SPECIES n TO 7
+SPECIES o TO 8
+SPECIES ne TO 10
+SPECIES mg TO 12
+SPECIES si TO 14
+SPECIES s TO 16
+SPECIES ar TO 18
+SPECIES ca TO 20
+SPECIES fe TO 26
+SPECIES ni TO 28

@@ -1,0 +1,127 @@
+# 	Runtime parameters for the MHD Cylindrical Noh problem.
+
+#	Specific heats ratio
+gamma           = 1.66666666666666667
+
+
+#       Grid dimensionality and geometry
+geometry       = "cylindrical"
+
+
+#       Size of computational volume for 2D test
+xmin            = 0.0
+xmax            =  3.
+ymin            = 0.0
+ymax            =  3.
+
+#       Boundary conditions (code -22 is periodic)
+xl_boundary_type = "axisymmetric" 
+xr_boundary_type = "outflow"
+yl_boundary_type = "outflow"
+yr_boundary_type = "outflow"
+zl_boundary_type = "outflow"
+zr_boundary_type = "outflow"
+
+#       Simulation (grid, time, I/O) parameters
+run_comment     = "2D Noh MHD problem"
+log_file        = "noh_mhd_2d.log"
+basenm          = "noh_mhd_2d_"
+restart         = .false.
+#checkPointFileNumber=1
+#plotFileNumber  = 1
+nend            = 1000000
+tmax            = 30.e-2
+cfl             = 0.8
+
+#convertToConsvdInMeshInterp = .true.
+checkpointFileIntervalTime = 0.01
+#checkpointFileIntervalStep = 10
+
+
+#	DivB control switch
+killdivb	= .true.
+
+
+#	Flux Conservation for AMR
+flux_correct    = .true.
+
+## -------------------------------------------------------------##
+##  SWITCHES SPECIFIC TO THE UNSPLIT STAGGERED MESH MHD SOLVER  ##
+#	I. INTERPOLATION SCHEME:
+order		= 2      # Interpolation order (first/second/third/fifth order)
+slopeLimiter    = "vanLeer"   # Slope limiters (minmod, mc, vanLeer, hybrid, limited)
+LimitedSlopeBeta= 1.     # Slope parameter for the "limited" slope by Toro
+charLimiting	= .true. # Characteristic limiting vs. Primitive limiting
+
+
+use_avisc	= .false. # use artificial viscosity (originally for PPM)
+cvisc		= 0.1     # coefficient for artificial viscosity
+use_flattening	= .false. # use flattening (dissipative) (originally for PPM)
+use_steepening	= .false. # use contact steepening (originally for PPM)
+use_upwindTVD	= .false. # use upwind biased TVD slope for PPM (need nguard=6)
+
+
+#	II. MAGNETIC(B) AND ELECTRIC(E) FIELDS:
+E_modification	= .true.           # High order algorithm for E-field construction
+energyFix	= .true.           # Update magnetic energy using staggered B-fields
+ForceHydroLimit	= .false.          # Pure Hydro Limit (B=0)
+prolMethod      = "injection_prol" # Prolongation method (injecton_prol, balsara_prol)
+
+
+#	III. RIEMANN SOLVERS:
+RiemannSolver	= "HLLD"       # Roe, HLL, HLLC, HLLD, LLF, Marquina
+entropy         = .false.     # Entropy fix for the Roe solver
+
+
+#	IV. STRONG SHOCK HANDELING SCHEME:
+shockDetect	= .false.     # Shock Detect for numerical stability
+## -------------------------------------------------------------##
+
+## ---------------------------------------------------------------##
+##  SWITCHES SPECIFIC TO THE SUPER-TIME-STEPPING (STS) ALGORITHM  ##
+##  NOTE: For details on using STS runtime parameters, please     ##
+##        refer to user's guide (Driver chapter).                 ##
+useSTS                  = .false.
+nstepTotalSTS           = 5
+nuSTS                   = 0.2
+## ---------------------------------------------------------------##
+
+
+nblockx = 256
+nblocky = 256
+
+
+#	The parameters below are only necessary for the Uniform Grid
+iGridSize	= 256	#defined as nxb * iprocs
+jGridSize	= 256    #defined as nyb * jprocs
+kGridSize	= 1	#defined as nzb * kprocs
+iProcs		= 2	#number or procs in the i direction
+jProcs		= 2	#number or procs in the j direction
+kProcs		= 1	#number or procs in the k direction
+meshCopyCount   = 1
+
+# When using UG, iProcs, jProcs and kProcs must be specified.
+# These are the processors along each of the dimensions
+# FIXEDBLOCKSIZE mode ::
+#	When using fixed blocksize, iGridSize etc are redundant in
+#	runtime parameters. These quantities are calculated as 
+#	iGridSize = NXB*iprocs
+#	jGridSize = NYB*jprocs
+#	kGridSize = NZB*kprocs
+# NONFIXEDBLOCKSIZE mode ::
+#	iGridSize etc must be specified. They constitute the global
+#	number of grid points in the physical domain without taking 
+#	the guard cell into account. The local blocksize is calculated
+#	as iGridSize/iprocs  etc.
+
+
+# 3T RAGE-like options:
+hy_eosModeAfter = "dens_ie_sele_gather"
+eosModeInit = "dens_ie_gather"
+eosMode = "dens_ie_recal_gather"
+
+# For entropy advection Tele << Tion, so for hydrodynamic equivalence
+# to the 1T simulation (see flash.par), A should be set to 1. This is
+# different than the RAGE-like solution
+eos_singleSpeciesA = 1
+eos_singleSpeciesZ = 1

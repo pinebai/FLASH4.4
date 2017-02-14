@@ -1,0 +1,94 @@
+#if 0
+!Include this file in a list module after including the standard 
+!ut_listMethods.includeF90.  This file provides a higher order 
+!function that applies a passed function to all nodes in the list 
+!until the passed function returns a match.  When it finds 
+!a match it returns the matching node.
+!
+!dataArg can be of primitive type or compound type.
+!If we wish to pass a lot of data into the callback function we 
+!use a type created inside another module, e.g.
+!define CPP_DATA_ARG type(data_arg_t), intent(IN) :: dataArg
+!NOTE: The type should be created in the node module.  It cannot be 
+!created in the list module because a module procedure cannot "use"
+!module data in its module.  This means CPP_NODE_DEFINITION
+!definition must be extended to include data_arg_t.
+!
+!Undefine CPP_DATA_ARG if we do not want to pass any extra 
+!data to the callback function.
+!
+!This file may be included multiple times in the same module provided 
+!each inclusion specifies a unique named function.  Use 
+!CPP_FIND_FN_NAME to specify a unique name if we need multiple 
+!implementations of the higher-order function.
+#endif
+
+#ifndef CPP_NODE_NAME
+#define CPP_NODE_NAME node
+#endif
+
+#ifndef CPP_LIST_NAME
+#define CPP_LIST_NAME list
+#endif
+
+#ifndef CPP_FIND_FN_NAME
+#define CPP_FIND_FN_NAME find_matching_node
+#endif
+
+#ifdef CPP_DATA_ARG
+  subroutine CPP_FIND_FN_NAME (fnToFindNode, dataArg, L, R)
+#else
+  subroutine CPP_FIND_FN_NAME (fnToFindNode, L, R)
+#endif
+
+    implicit none
+
+
+    !First we must define the passed function.
+    !-------------------------------------------------------------------
+    interface
+#ifdef CPP_DATA_ARG
+       logical function fnToFindNode(item, dataArg)
+#else
+       logical function fnToFindNode(item)
+#endif
+         CPP_NODE_DEFINITION
+         implicit none
+         type(CPP_NODE_NAME), pointer  :: item
+#ifdef CPP_DATA_ARG
+	 CPP_DATA_ARG
+#endif
+       end function fnToFindNode
+    end interface
+
+
+    !Next we must define the data arguments.
+    !-------------------------------------------------------------------
+#ifdef CPP_DATA_ARG
+    CPP_DATA_ARG
+#endif
+    type(CPP_LIST_NAME), pointer :: L
+    type(CPP_NODE_NAME), pointer :: R
+
+
+    !Local variables.
+    !-------------------------------------------------------------------
+    type(CPP_NODE_NAME), pointer :: X  !Temporary node
+
+    nullify(R)  !So that we return null if no matching node found.
+
+    X => L % H
+    do while (associated(X))
+#ifdef CPP_DATA_ARG
+       if (fnToFindNode(X, dataArg) .eqv. .true.) then
+#else
+       if (fnToFindNode(X) .eqv. .true.) then
+#endif
+          R => X  !Set return node to the target node of X.
+          exit
+       end if
+
+       X => X % next
+    end do
+
+  end subroutine CPP_FIND_FN_NAME

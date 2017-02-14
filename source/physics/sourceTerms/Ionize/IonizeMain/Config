@@ -1,0 +1,39 @@
+#
+D algebra        ma28
+D ode_steper     bader-deuflhard variable order
+#
+D tneimin        Min NEI temperature
+D tneimax        Max NEI temperature
+D dneimin        Min NEI density
+D dneimax        Max NEI density
+#
+D useIonize	 Use ionization module
+#
+#
+####################################################################
+
+
+# will be needed for initialization
+REQUIRES Multispecies
+REQUESTS Simulation/SimulationComposition/Ionize
+
+# We use the MA28 solver
+LIBRARY MA28
+
+DEFAULT Nei
+EXCLUSIVE Nei Eqi
+
+PARAMETER tneimin       REAL      1.0E4   # Min nei temperature
+PARAMETER tneimax       REAL      1.0E7   # Max nei temperature
+PARAMETER dneimin       REAL      1.0E0   # Min nei elect. number density
+PARAMETER dneimax       REAL      1.0E12  # Max nei elect. number density
+
+D   useIonize       Whether Ionize calculations should be performed.
+PARAMETER useIonize    BOOLEAN  TRUE
+
+VARIABLE enuc # nuclear energy gen. rate
+
+# copy/link these files into the object directory
+DATAFILES *.rates
+
+

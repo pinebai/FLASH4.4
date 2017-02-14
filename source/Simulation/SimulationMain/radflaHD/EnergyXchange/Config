@@ -1,0 +1,55 @@
+# Coniguration file for MGD Infinite Medium Test
+#
+#   ./setup radflaHD/EnergyXchange -auto -1d -maxblocks=500 mgd_meshgroups=1 -objdir energyxch_obj species=h1 ManualSpeciesDirectives=True +uhd3tr -debug
+#
+#   ./setup radflaHD/EnergyXchange -auto -1d -maxblocks=500 mgd_meshgroups=1 -objdir energyxch_obj IgnoreSpecies=True +uhd3tr -debug
+
+REQUIRES Driver
+REQUIRES Grid
+
+# If setting up with IgnoreSpecies=Yes, species will be ignored and a "Gamma"
+# variant of Eos will be used. Otherwise, a "Multigamma" variant of Eos is used.
+
+USESETUPVARS IgnoreSpecies
+
+REQUIRES physics/Hydro/HydroMain/unsplit_rad/Hydro_Unsplit
+REQUIRES physics/Hydro/HydroMain/unsplit_rad/multiTemp
+IF IgnoreSpecies
+ REQUIRES physics/Eos/EosMain/multiTemp/MatRad3/Gamma
+ELSE
+ REQUIRES physics/Eos/EosMain/multiTemp/MatRad3/Multigamma
+ENDIF
+REQUESTS physics/Diffuse/DiffuseMain/Unsplit
+REQUESTS physics/materialProperties/Opacity/OpacityMain/Constant
+REQUESTS physics/RadTrans/RadTransMain/MGD
+IF not IgnoreSpecies
+   REQUIRES Multispecies
+ENDIF
+
+LINKIF Simulation_initSpecies.F90 Multispecies/MultispeciesMain
+
+##########################
+#                        #
+#   RUNTIME PARAMETERS   #
+#                        #
+##########################
+D sim_rho Initial density
+PARAMETER sim_rho   REAL 1.0
+
+D sim_rho Initial electron temperature
+PARAMETER sim_tele  REAL 1.0
+
+D sim_rho Initial ion temperature
+PARAMETER sim_tion  REAL 1.0
+
+D sim_rho Initial radiation temperature
+PARAMETER sim_trad  REAL 1.0
+
+VARIABLE CVEL
+VARIABLE CVIO
+
+IF not IgnoreSpecies
+
+SPECIES    H1	 # Properties A=1.  Z=1.  Eb=0.
+
+ENDIF

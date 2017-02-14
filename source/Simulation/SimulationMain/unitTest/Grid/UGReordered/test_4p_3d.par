@@ -1,0 +1,9 @@
+iProcs = 2
+jProcs = 2
+kProcs = 1
+
+xl_boundary_type = "outflow"
+xr_boundary_type = "outflow"
+zl_boundary_type = "reflect"
+zr_bounary_type = "reflect"
+

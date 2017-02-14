@@ -1,0 +1,46 @@
+#	Configuration file for the multigrid Poisson solver
+
+#	Parameters:
+
+D         mgrid_max_residual_norm Maximum ratio of the norm of the residual to
+D          &                         that of the right-hand side
+D         mgrid_max_iter_change   Maximum change in the norm of the residual
+D          &                         from one iteration to the next
+D         mgrid_max_vcycles       Maximum number of V-cycles to take
+#
+D	  COMMENT                  The above three parameters are used to limit
+D          &                         the number of V-cycles taken.
+#
+D         mgrid_smoother          Type of smoother, either RBGS=1 or ZEBRA=2.
+D         mgrid_nsmooth           Number of smoothing iterations to perform
+D          &                         on each level
+D         mgrid_smooth_tol        Convergence criterion for the smoother
+D         mgrid_solve_max_iter    Maximum number of iterations for solution on
+D         mgrid_print_norm        If .true., print residual norm to stdout
+D          &                        after each V-cycle
+D         quadrant                In 2d cylindrical coords, assume symmetry
+D          &                        about the y=0 axis to evolve a quadrant
+
+
+PARAMETER mgrid_max_residual_norm REAL    1.E-6
+PARAMETER mgrid_max_iter_change   REAL    1.E-3
+PARAMETER mgrid_max_vcycles       INTEGER 100
+PARAMETER mgrid_smoother          INTEGER 1 [1,2]
+PARAMETER mgrid_npresmooth        INTEGER 2
+PARAMETER mgrid_npossmooth        INTEGER 8
+PARAMETER mgrid_smooth_tol        REAL    1.E-10
+PARAMETER mgrid_solve_max_iter    INTEGER 5000
+PARAMETER mgrid_print_norm        BOOLEAN FALSE
+PARAMETER quadrant                BOOLEAN FALSE
+
+#       Work variables needed by multigrid solver
+VARIABLE mgw1 
+VARIABLE mgw2
+VARIABLE mgw3
+VARIABLE mgw4 
+VARIABLE mgw5 
+VARIABLE mgw6
+VARIABLE mgw7 
+
+#       Fluxes required by Multigrid
+FLUX flxmc

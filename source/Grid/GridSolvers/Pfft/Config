@@ -1,0 +1,26 @@
+#Config file for Pfft implementation in the GridSolver subunit
+EXCLUSIVE DirectSolver SimplePeriodicSolver SimpleDirichletSolver HomBcTrigSolver
+DEFAULT DirectSolver
+
+REQUIRES Grid/GridSolvers/Pfft/ProcessGrid
+REQUIRES Grid/GridSolvers/Pfft/MeshReconfiguration
+REQUIRES Grid/GridMain
+REQUIRES flashUtilities/contiguousConversion
+
+D pfft_setupOnce This parameter tells Pfft whether it should retain trig tables
+D & and other mapping information for the entire simulation or not
+
+USESETUPVARS Grid
+IF Grid=='UG'
+  PARAMETER pfft_setupOnce BOOLEAN TRUE
+ELSE
+  PARAMETER pfft_setupOnce BOOLEAN FALSE
+ENDIF
+
+D gr_pfftDiffOpDiscretize specifies the approach for discretizing the
+D & Laplacian differential operator: 2 for second-order finite
+D & difference approximation, 1 for spectral.  This choice is ignored
+D & by solver implementations that have one approach hardwired.
+D & Currently the HomBcTrigSolver and SimplePeriodicSolver
+D & implementations honor this runtime parameter.
+PARAMETER gr_pfftDiffOpDiscretize INTEGER 1 [1,2]

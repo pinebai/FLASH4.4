@@ -1,0 +1,39 @@
+Setup lines
+./setup_compact_app.sh unitTest/Eos/Multigamma -auto +nofbs -3d -portable
+./setup_compact_app.sh unitTest/Eos/Helmholtz -auto +nofbs -3d -portable
+./setup_compact_app.sh unitTest/Gravity/Poisson3 -auto -3d +nofbs -parfile=flash.par.ug +newMpole -portable
+./setup_compact_app.sh unitTest/Gravity/Poisson3 -auto -3d +pm4dev -maxblocks=600 -unit=Grid/GridSolvers/Multigrid/PfftTopLevelSolve PfftSolver=HomBcTrigSolver -portable
+./setup_compact_app.sh unitTest/PFFT_PoissonFD -auto -3d +nofbs -parfile=test_UG_4p_3d_128cube.par -portable
+./setup_compact_app.sh unitTest/IO -auto -3d +nofbs withParticles=True +parallelio -portable
+./setup_compact_app.sh unitTest/IO -auto -3d +pm4dev withParticles=True +parallelio -portable
+./setup_compact_app.sh unitTest/IO/IOTypes -auto -3d -nofbs +ug -unit=source/IO/IOMain/hdf5/parallel/PM_argonne withParticles=True parallelIO=True -portable
+./setup_compact_app.sh unitTest/IO/IOTypes -auto -3d +pm4dev -unit=source/IO/IOMain/hdf5/parallel/PM_argonne withParticles=True parallelIO=True -portable
+./setup_compact_app.sh unitTest/Grid/GCell -auto -3d +nofbs -parfile=test_3d.par -portable
+./setup_compact_app.sh unitTest/Grid/GCell -auto -3d +pm4dev -parfile=test_3d.par -portable
+./setup_compact_app.sh Sedov -auto -2d +nofbs +parallelio -parfile=test_UG_nofbs_2d.par -portable
+./setup_compact_app.sh Sedov -auto -2d +nofbs +parallelio +unsplitHydro -parfile=test_UG_nofbs_2d.par -portable
+./setup_compact_app.sh Sedov -auto -2d +pm4dev +parallelio -parfile=coldstart_pm.par -portable
+./setup_compact_app.sh Sedov -auto -2d +pm4dev +parallelio +unsplitHydro -parfile=coldstart_pm.par -portable
+
+Test                  Files       Source lines   
+Multigamma            227 (672)   14,737 (30,103)
+Helmholtz             227 (690)   16,395 (32,412)
+Poisson3+mpole        296 (706)   26,008 (40,914)
+Poisson3+mgrid+pm4dev 613 (1023)  82,973 (97,912)
+PFFT_PoissonFD        238 (709)   23,478 (39,676)
+IO                    373 (705)   24,461 (32,163)
+IO+pm4dev             620 (939)   69,400 (77,225)
+IOTypes               403 (733)   26,335 (33,901)
+IOTypes+pm4dev        650 (967)   71,200 (78,957)
+GCell                 177 (654)   12,101 (28,093)
+GCell+pm4dev          411 (885)   55,802 (73,159)
+Sedov+split           445 (707)   31,738 (35,553)
+Sedov+unsplit         450 (714)   32,684 (36,960)
+Sedov+split+pm4dev    677 (936)   75,986 (80,202)
+Sedov+unsplit+pm4dev  682 (943)   76,932 (81,609)
+
+The number of source lines are obtained using sloccount
+(http://www.dwheeler.com/sloccount)
+
+The stripping process removes stub subroutines and uncalled
+subroutines.  The number in brackets is the pre-stripped count.

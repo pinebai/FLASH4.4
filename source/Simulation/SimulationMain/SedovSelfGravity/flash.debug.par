@@ -1,0 +1,71 @@
+#	Runtime parameters for the Sedov explosion problem.
+
+run_comment     = "1-D spherical Sedov with self-gravity"
+
+#	Parameters for initial model
+
+#		Ambient pressure and density, explosion energy, initial
+#		radius of perturbation, and location of explosion center
+
+p_ambient	= 1.e-10
+rho_ambient	= 1.123039e6
+exp_energy	= 1.0e6
+r_init		= 0.02
+
+#		Gas ratio of specific heats
+
+gamma           = 1.4
+
+# Gravity parameters.  Subsampling can be important in one-dimensional
+# problems with a density gradient.
+useGravity = .true.
+mpole_subSample = 2    
+
+#	Computational volume parameters
+
+#		Grid dimensionality and geometry
+
+geometry	= "spherical"
+
+#		Size of computational volume
+
+xmin		= 0.
+xmax		= 2.
+
+#		Boundary conditions
+
+xl_boundary_type = "reflect"
+xr_boundary_type = "outflow"
+
+grav_boundary_type = "isolated"
+
+#	Simulation (grid, time, I/O) parameters
+
+basenm          = "sedov_sg_"
+restart         = .false.
+
+cfl		= 0.8
+lrefine_min     = 1
+lrefine_max     = 1
+nblockx		= 48
+
+nend            = 2
+#	checkpoint file output parameters
+checkpointFileIntervalTime = 0.05
+checkpointFileIntervalStep = 0
+checkpointFileNumber = 0
+
+#	plotfile output parameters
+plotfileIntervalTime = 0.
+plotfileIntervalStep = 0
+plotfileNumber = 0
+
+tmax            = 1.0
+
+eint_switch     = 0.
+
+small		= 1.e-50
+smalle		= 1.e-50
+smallp		= 1.e-50
+smallt		= 1.e-50
+smlrho		= 1.e-50

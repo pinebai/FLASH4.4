@@ -1,0 +1,3183 @@
+
+Simulation/SimulationMain
+    basenm [STRING] ["flash_"]
+        Valid Values: Unconstrained
+        Base name for output files
+
+Simulation/SimulationMain/Blast2
+    gamma [REAL] [1.6667]
+        Valid Values: 0.0 to INFTY
+        Ratio of specific heats for gas - for initialization
+    refine_var_1 [STRING] ["pres"]
+        Valid Values: Unconstrained
+        first variable on which to refine
+    refine_var_2 [STRING] ["dens"]
+        Valid Values: Unconstrained
+        second variable on which to refine
+    sim_pLeft [REAL] [1000.]
+        Valid Values: Unconstrained
+        Pressure  in the left part of the grid
+    sim_pMid [REAL] [0.01]
+        Valid Values: Unconstrained
+        Pressure  in the middle of the grid
+    sim_pRight [REAL] [100.]
+        Valid Values: Unconstrained
+        Pressure  in the righ part of the grid
+    sim_posnL [REAL] [0.1]
+        Valid Values: Unconstrained
+        Point of intersection between the left shock plane and x-axis
+    sim_posnR [REAL] [0.9]
+        Valid Values: Unconstrained
+        Point of intersection between the right shock plane and the x-axis
+    sim_rhoLeft [REAL] [1.]
+        Valid Values: Unconstrained
+        Density in the left part of the grid
+    sim_rhoMid [REAL] [1.]
+        Valid Values: Unconstrained
+        Density in the middle of the grid
+    sim_rhoRight [REAL] [1.]
+        Valid Values: Unconstrained
+        Density in the right part of the grid
+    sim_uLeft [REAL] [0.]
+        Valid Values: Unconstrained
+        fluid velocity in the left part of the grid
+    sim_uMid [REAL] [0.]
+        Valid Values: Unconstrained
+        fluid velocity in the middle of the grid
+    sim_uRight [REAL] [0.]
+        Valid Values: Unconstrained
+        fluid velocity in the right part of the grid
+    sim_xangle [REAL] [0.]
+        Valid Values: Unconstrained
+        Angle made by diaphragm normal w/x-axis (deg)
+    sim_yangle [REAL] [90.]
+        Valid Values: Unconstrained
+        Angle made by diaphragm normal w/y-axis (deg)
+
+Simulation/SimulationMain/CCSN
+    model_file [STRING] ["file.dat"]
+        Valid Values: Unconstrained
+        Name of input file with 1D model
+    nsub [INTEGER] [4]
+        Valid Values: Unconstrained
+        number of sub-sampling points for mapping of 1D model
+    vel_mult [REAL] [1.0]
+        Valid Values: Unconstrained
+        multiplier on initial 1D radial velocity
+
+Simulation/SimulationMain/CSM_RAD
+    ExpEner [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    bombRad [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    bombRadIn [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    coremass [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    ener_exp [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    gconst [REAL] [0.0]
+        Valid Values: Unconstrained
+        Gravitational constant, should be G*M(rmin)/rmin**2
+    gdirec [STRING] ["x"]
+        Valid Values: Unconstrained
+
+    hole_radius [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    mass_loss [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    model_file [STRING] ["file.dat"]
+        Valid Values: Unconstrained
+        Name of input file with 1D model
+    nsub [INTEGER] [4]
+        Valid Values: Unconstrained
+
+    paircond [BOOLEAN] [TRUE]
+
+    point_mass [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    r_exp_max [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    r_exp_min [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    rinner [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    router [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    shellcond [BOOLEAN] [TRUE]
+
+    shelldens [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    shelltempfac [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    sim_tele [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    sim_tion [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    sim_trad [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    staticGpot [BOOLEAN] [FALSE]
+        Flag for whether or not to fix the gpot in time
+    use_PnotT [BOOLEAN] [FALSE]
+
+    vel_mult [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    vel_wind [REAL] [0.0]
+        Valid Values: Unconstrained
+
+
+Simulation/SimulationMain/Cellular
+    noiseAmplitude [REAL] [1.0e-2]
+        Valid Values: Unconstrained
+        amplitude of the white noise added to the perturbation
+    noiseDistance [REAL] [5.0]
+        Valid Values: Unconstrained
+        distances above and below r_init get noise added
+    radiusPerturb [REAL] [25.6]
+        Valid Values: Unconstrained
+        distance below which the perturbation is applied
+    rhoAmbient [REAL] [1.0e7]
+        Valid Values: 0 to INFTY
+        density of the cold upstream material
+    rhoPerturb [REAL] [4.236e7]
+        Valid Values: Unconstrained
+        density of the post shock material
+    tempAmbient [REAL] [2.0e8]
+        Valid Values: 0 to INFTY
+        temperature of the cold upstream material
+    tempPerturb [REAL] [4.423e9]
+        Valid Values: Unconstrained
+        temperature of the post shock material
+    usePseudo1d [BOOLEAN] [FALSE]
+        .true. for a 1d initial configuration, with the copied along the y and z
+        directions .false. for a spherical configuration
+    velxAmbient [REAL] [0.0]
+        Valid Values: Unconstrained
+        x-velocity of the cold upstream material
+    velxPerturb [REAL] [2.876E+08]
+        Valid Values: Unconstrained
+        x-velocity of the post shock material
+    xCenterPerturb [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    xc12 [REAL] [1.0]
+        Valid Values: 0.0 to 1.0
+        mass fraction of c12
+    xhe4 [REAL] [0.0]
+        Valid Values: 0.0 to 1.0
+        mass fraction of he4
+    xo16 [REAL] [0.0]
+        Valid Values: 0.0 to 1.0
+        mass fraction of o16
+    yCenterPerturb [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    zCenterPerturb [REAL] [0.0]
+        Valid Values: Unconstrained
+
+
+Simulation/SimulationMain/Chemistry_Test
+    sim_c_den [REAL] [1.0e-21]
+        Valid Values: Unconstrained
+
+    sim_c_temp [REAL] [1000.0]
+        Valid Values: Unconstrained
+
+    sim_contrast [REAL] [0.1]
+        Valid Values: Unconstrained
+
+    sim_cool_time [REAL] [0.1]
+        Valid Values: Unconstrained
+
+    sim_fracDeuterium [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    sim_fracHelium [REAL] [0.240]
+        Valid Values: Unconstrained
+
+    sim_fracHydrogen [REAL] [0.760]
+        Valid Values: Unconstrained
+
+    sim_meta [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    sim_nblockx [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    sim_nblocky [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    sim_nblockz [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    sim_pchem_time [REAL] [0.1]
+        Valid Values: Unconstrained
+
+    sim_xD [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    sim_xD2 [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    sim_xD2P [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    sim_xDM [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    sim_xDP [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    sim_xELEC [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    sim_xH [REAL] [0.760]
+        Valid Values: Unconstrained
+
+    sim_xH2 [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    sim_xH2P [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    sim_xHD [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    sim_xHDP [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    sim_xHM [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    sim_xHP [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    sim_xHe [REAL] [0.240]
+        Valid Values: Unconstrained
+
+    sim_xHeP [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    sim_xHePP [REAL] [0.0]
+        Valid Values: Unconstrained
+
+
+Simulation/SimulationMain/ConductionDelta
+    cond_K0 [REAL] [1.0]
+        Valid Values: Unconstrained
+        coefficient K0 for conductivity K = rho c_v K0 T^n , where n is given by
+        cond_TemperatureExponent.
+    cond_TemperatureExponent [REAL] [1.0]
+        Valid Values: Unconstrained
+        Temperature exponent n. For n=0 you get constant conductivity. See D.
+        Mihalas & B. W. Mihalas 1984 p 551. For n=6, e.g., you get nonlinear
+        conduction as in Fig 103.1(b) there.
+    iniCondTemperatureExponent [REAL] [-999.0]
+        Valid Values: Unconstrained
+        exponent for computing the temperature curve used as initial condition.
+        Set to 0 to get a Gaussian. Set to -999.0 to get the value of
+        cond_TemperatureExponent.
+    orientation [INTEGER] [1]
+        Valid Values: 0, 1, 2, 3
+        1/2/3 -- planar source is oriented along x/y/z axis, 0     --
+        three-dimensional point source
+    rho_init [REAL] [1.]
+        Valid Values: Unconstrained
+        background density
+    sim_Q [REAL] [1.0]
+        Valid Values: Unconstrained
+        factor used for scaling the initial temperature distribution
+    sim_tempBackground [REAL] [0.0]
+        Valid Values: Unconstrained
+        constant temperature background, the Gaussian peak gets added to this
+    sim_xctr [REAL] [0.5]
+        Valid Values: Unconstrained
+        Temperature peak center X-coordinate
+    sim_yctr [REAL] [0.5]
+        Valid Values: Unconstrained
+        Temperature peak center Y-coordinate
+    sim_zctr [REAL] [0.5]
+        Valid Values: Unconstrained
+        Temperature peak center Z-coordinate
+    toffset [REAL] [.001]
+        Valid Values: Unconstrained
+        time offset for initial condition
+    updateHydroFluxes [BOOLEAN] [FALSE]
+
+
+Simulation/SimulationMain/ConductionDeltaSaDiff
+    cond_K0 [REAL] [1.0]
+        Valid Values: Unconstrained
+        coefficient K0 for conductivity K = rho c_v K0 T^n , where n is given by
+        cond_TemperatureExponent.
+    cond_TemperatureExponent [REAL] [1.0]
+        Valid Values: Unconstrained
+        Temperature exponent n. For n=0 you get constant conductivity. See D.
+        Mihalas & B. W. Mihalas 1984 p 551. For n=6, e.g., you get nonlinear
+        conduction as in Fig 103.1(b) there.
+    iniCondTemperatureExponent [REAL] [-999.0]
+        Valid Values: Unconstrained
+        exponent for computing the temperature curve used as initial condition.
+        Set to 0 to get a Gaussian. Set to -999.0 to get the value of
+        cond_TemperatureExponent.
+    iniRadDiffExp [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    orientation [INTEGER] [1]
+        Valid Values: 0, 1, 2, 3
+        1/2/3 -- planar source is oriented along x/y/z axis, 0     --
+        three-dimensional point source
+    rho_init [REAL] [1.]
+        Valid Values: Unconstrained
+        background density
+    sim_Q [REAL] [1.0]
+        Valid Values: Unconstrained
+        factor used for scaling the initial temperature distribution
+    sim_maxTol [REAL] [1.0E-3]
+        Valid Values: Unconstrained
+        Max allowed error
+    sim_tempBackground [REAL] [0.0]
+        Valid Values: Unconstrained
+        constant temperature background, the Gaussian peak gets added to this
+    sim_xctr [REAL] [0.5]
+        Valid Values: Unconstrained
+        Temperature peak center X-coordinate
+    sim_yctr [REAL] [0.5]
+        Valid Values: Unconstrained
+        Temperature peak center Y-coordinate
+    sim_zctr [REAL] [0.5]
+        Valid Values: Unconstrained
+        Temperature peak center Z-coordinate
+    toffset [REAL] [.001]
+        Valid Values: Unconstrained
+        time offset for initial condition
+    updateHydroFluxes [BOOLEAN] [FALSE]
+
+
+Simulation/SimulationMain/Cool_Test
+    sim_c_den [REAL] [1.0e-21]
+        Valid Values: Unconstrained
+
+    sim_c_temp [REAL] [1000.0]
+        Valid Values: Unconstrained
+
+    sim_chem_time [REAL] [0.1]
+        Valid Values: Unconstrained
+
+    sim_contrast [REAL] [0.1]
+        Valid Values: Unconstrained
+
+    sim_cool_time [REAL] [0.1]
+        Valid Values: Unconstrained
+
+    sim_fracDeuterium [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    sim_fracHelium [REAL] [0.240]
+        Valid Values: Unconstrained
+
+    sim_fracHydrogen [REAL] [0.760]
+        Valid Values: Unconstrained
+
+    sim_meta [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    sim_nblockx [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    sim_nblocky [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    sim_nblockz [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    sim_xD [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    sim_xD2 [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    sim_xD2P [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    sim_xDM [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    sim_xDP [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    sim_xELEC [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    sim_xH [REAL] [0.760]
+        Valid Values: Unconstrained
+
+    sim_xH2 [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    sim_xH2P [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    sim_xHD [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    sim_xHDP [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    sim_xHM [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    sim_xHP [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    sim_xHe [REAL] [0.240]
+        Valid Values: Unconstrained
+
+    sim_xHeP [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    sim_xHePP [REAL] [0.0]
+        Valid Values: Unconstrained
+
+
+Simulation/SimulationMain/DoubleMachReflection
+    sim_pLeft [REAL] [1.0]
+        Valid Values: Unconstrained
+        Pressure in left part of grid
+    sim_pRight [REAL] [116.5]
+        Valid Values: Unconstrained
+        Pressure in right part of grid
+    sim_posn [REAL] [0.1666666666]
+        Valid Values: Unconstrained
+        Point of intersection between the shock plane and the x-axis
+    sim_rhoLeft [REAL] [1.4]
+        Valid Values: Unconstrained
+        Density in left part of grid
+    sim_rhoRight [REAL] [8.0]
+        Valid Values: Unconstrained
+        Density in right part of grid
+    sim_uLeft [REAL] [0.0]
+        Valid Values: Unconstrained
+        Fluid velocity in right part of grid
+    sim_uRight [REAL] [7.1447096]
+        Valid Values: Unconstrained
+        Fluid velocity in right part of grid
+    sim_vLeft [REAL] [0.0]
+        Valid Values: Unconstrained
+        Fluid velocity in right part of grid
+    sim_vRight [REAL] [-4.125]
+        Valid Values: Unconstrained
+        Fluid velocity in right part of grid
+    sim_xangle [REAL] [60.]
+        Valid Values: Unconstrained
+        Angle made by diaphragm normal w/x-axis (deg)
+
+Simulation/SimulationMain/DustCollapse
+    sim_ictr [REAL] [0.5]
+        Valid Values: Unconstrained
+
+    sim_initDens [REAL] [1.]
+        Valid Values: Unconstrained
+
+    sim_initRad [REAL] [0.05]
+        Valid Values: Unconstrained
+
+    sim_jctr [REAL] [0.5]
+        Valid Values: Unconstrained
+
+    sim_kctr [REAL] [0.5]
+        Valid Values: Unconstrained
+
+    sim_tAmbient [REAL] [1.]
+        Valid Values: Unconstrained
+
+
+Simulation/SimulationMain/Flame1StageNoise
+    frac_perturb [REAL] [.5]
+        Valid Values: Unconstrained
+        Size of burned region, scaled to domain size (generally x extent)
+    ignite [BOOLEAN] [FALSE]
+        Determines if simulation begins with a flame front in it
+    pseudo_1d [BOOLEAN] [FALSE]
+        If true a planar flame front is created, otherwise a spherical one is
+        planar configuration is as follows based on other parameters y ^        
+        . |    \     . |     \    . |      \ t . yctr +       +  .  fuel |      
+        \ . | ash     \ |          \ +-------+--------------------------> x |
+        frac_ptrb * x extent
+    rho_ambient [REAL] [2.e9]
+        Valid Values: Unconstrained
+        Density of unburned material
+    t_ambient [REAL] [5.0e7]
+        Valid Values: Unconstrained
+        Temperature of unburned material
+    theta [REAL] [0.]
+        Valid Values: Unconstrained
+        angle between surface normal to planar flame surface and x axis (see
+        diagram with pseudo_1d)
+    xctr_perturb [REAL] [1.e-4]
+        Valid Values: Unconstrained
+        Planar: unused Spherical: x coordinate of center of spherical burned
+        region
+    yctr_perturb [REAL] [1.e-4]
+        Valid Values: Unconstrained
+        Planar: pivot point of planar interface (see diagram with pseudo_1d)
+        Spherical: y coordinate of center of spherical burned region
+    zctr_perturb [REAL] [1.e-4]
+        Valid Values: Unconstrained
+        Planar: unused Spherical: z coordinate of center of spherical burned
+        region
+
+Simulation/SimulationMain/FlameChannel
+    frac_perturb [REAL] [.5]
+        Valid Values: Unconstrained
+        Size of burned region, scaled to domain size (generally x extent)
+    ignite [BOOLEAN] [TRUE]
+        Determines if simulation begins with a flame front in it
+    inflowVortex [BOOLEAN] [FALSE]
+        is a boolean. True means no vortices, false means vortices
+    restart_vortex [BOOLEAN] [FALSE]
+        says that a vortex will be inserted upon restart
+    rho_ambient [REAL] [2.e9]
+        Valid Values: Unconstrained
+        Density of unburned material
+    sigP [REAL] [0.]
+        Valid Values: Unconstrained
+
+    sigT [REAL] [1.]
+        Valid Values: Unconstrained
+
+    sigVx [REAL] [1.]
+        Valid Values: Unconstrained
+
+    sigVy [REAL] [0.]
+        Valid Values: Unconstrained
+
+    sigVz [REAL] [0.]
+        Valid Values: Unconstrained
+
+    smooth_level [INTEGER] [0]
+        Valid Values: Unconstrained
+
+    t_ambient [REAL] [5.0e7]
+        Valid Values: Unconstrained
+        Temperature of unburned material
+    turbfield_filename [STRING] ["turb_vel_field.hdf5"]
+        Valid Values: Unconstrained
+
+    turbfield_xmax [REAL] [15.e5]
+        Valid Values: Unconstrained
+
+    turbfield_xmin [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    turbfield_ymax [REAL] [7.5e5]
+        Valid Values: Unconstrained
+
+    turbfield_ymin [REAL] [-7.5e5]
+        Valid Values: Unconstrained
+
+    turbfield_zmax [REAL] [7.5e5]
+        Valid Values: Unconstrained
+
+    turbfield_zmin [REAL] [-7.5e5]
+        Valid Values: Unconstrained
+
+    useBurn [BOOLEAN] [true]
+
+    variableInflow [BOOLEAN] [FALSE]
+        is a boolean and allows inflow rate to match burning rate
+    vortexSize [REAL] [0.25]
+        Valid Values: Unconstrained
+        is the radius of an individual vortex
+    vortexStrength [REAL] [5.0]
+        Valid Values: Unconstrained
+        is the strength of the vortex (should be of order density)
+    vrms [REAL] [1.e7]
+        Valid Values: Unconstrained
+
+    xbegin_vortex [REAL] [0.]
+        Valid Values: Unconstrained
+        is the x coordinate that defines the left side of
+    xend_vortex [REAL] [0.]
+        Valid Values: Unconstrained
+
+    yctr_vortex [REAL] [1.]
+        Valid Values: Unconstrained
+
+
+Simulation/SimulationMain/FlatPlate
+    sim_Mach [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    sim_number [INTEGER] [1]
+        Valid Values: Unconstrained
+
+    sim_pAmbient [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    sim_radius [REAL] [0.2]
+        Valid Values: Unconstrained
+
+    sim_rhoAmbient [REAL] [1.4]
+        Valid Values: Unconstrained
+
+    sim_rhoBulk [REAL] [10.]
+        Valid Values: Unconstrained
+
+    sim_windVelx [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    sim_windVely [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    sim_windVelz [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    sim_xCtr [REAL] [0.3]
+        Valid Values: Unconstrained
+
+    sim_xangle [REAL] [0.]
+        Valid Values: 0 to 360
+        Angle made by diaphragm normal w/x-axis (deg)
+    sim_yCtr [REAL] [0.5]
+        Valid Values: Unconstrained
+
+    sim_yangle [REAL] [90.]
+        Valid Values: 0 to 360
+
+    sim_zCtr [REAL] [0.5]
+        Valid Values: Unconstrained
+
+    sim_zangle [REAL] [90.]
+        Valid Values: 0 to 360
+
+
+Simulation/SimulationMain/GrayDiffRadShock
+    sim_M0 [REAL] [1.0]
+        Valid Values: Unconstrained
+        shock mach number
+    sim_P0 [REAL] [1.0]
+        Valid Values: Unconstrained
+        ratio of radiation pressure to material pressure
+    sim_rho [REAL] [1.0]
+        Valid Values: Unconstrained
+        referene density
+    sim_temp [REAL] [1.0]
+        Valid Values: Unconstrained
+        reference temperature
+
+Simulation/SimulationMain/HeatedFoil
+    sim_foilRadius [REAL] [0.0064]
+        Valid Values: Unconstrained
+        [cm] The radius to use for the target
+    sim_foilThickness [REAL] [0.0008]
+        Valid Values: Unconstrained
+        [cm] The thickness of the foil
+    sim_foilZPosition [REAL] [0.0]
+        Valid Values: Unconstrained
+        < z < sim_foilZPosition + sim_foilThickness
+    sim_rhoFoil [REAL] [2.7]
+        Valid Values: Unconstrained
+        [g/cc] Initial foil density
+    sim_rhoVacu [REAL] [2.7]
+        Valid Values: Unconstrained
+        [g/cc] Initial vacuum density
+    sim_teleFoil [REAL] [290.11375]
+        Valid Values: Unconstrained
+        [K] Initial foil background electron temperature
+    sim_teleRDecayFoil [REAL] [10.0e-04]
+        Valid Values: Unconstrained
+        [cm] Sets lengthscale for temperature drop in R
+    sim_teleVacu [REAL] [290.11375]
+        Valid Values: Unconstrained
+        [K] Initial vacuum electron temperature
+    sim_teleZDecayFoil [REAL] [2.0e-04]
+        Valid Values: Unconstrained
+        [cm] Sets lengthscale for temperature drop in Z
+    sim_thotFoil [REAL] [0.0]
+        Valid Values: Unconstrained
+        [K] sim_thotFoil + sim_teleFoil is the peak foil electron
+    sim_tionFoil [REAL] [290.11375]
+        Valid Values: Unconstrained
+        [K] Initial foil ion temperature
+    sim_tionVacu [REAL] [290.11375]
+        Valid Values: Unconstrained
+        [K] Initial vacuum ion temperature
+    sim_tradFoil [REAL] [290.11375]
+        Valid Values: Unconstrained
+        [K] Initial foil radiation temperature
+    sim_tradVacu [REAL] [290.11375]
+        Valid Values: Unconstrained
+        [K] Initial vacuum radiation temperature
+
+Simulation/SimulationMain/HeatexchangeIonEle
+    cond_K0 [REAL] [1.0]
+        Valid Values: Unconstrained
+        coefficient K0 for conductivity K = rho c_v K0 T^n , where n is given by
+        cond_TemperatureExponent.
+    cond_TemperatureExponent [REAL] [1.0]
+        Valid Values: Unconstrained
+        Temperature exponent n. For n=0 you get constant conductivity. See D.
+        Mihalas & B. W. Mihalas 1984 p 551. For n=6, e.g., you get nonlinear
+        conduction as in Fig 103.1(b) there.
+    initialCondTemperatureExponent [REAL] [-999.0]
+        Valid Values: Unconstrained
+        exponent for computing the temperature curve used as initial condition.
+        Set to 0 to get a Gaussian. Set to -999.0 to get the value of
+        cond_TemperatureExponent.
+    orientation [INTEGER] [1]
+        Valid Values: 0, 1, 2, 3
+        1/2/3 -- planar source is oriented along x/y/z axis, 0     --
+        three-dimensional point source
+    rho_init [REAL] [1.]
+        Valid Values: Unconstrained
+        background density
+    sim_Q [REAL] [1.0]
+        Valid Values: Unconstrained
+        factor used for scaling the initial temperature distribution
+    sim_analytical_maxNewton [INTEGER] [5]
+        Valid Values: Unconstrained
+        maximum number of Newton-Raphson iterations to try.
+    sim_analytical_tolerance [REAL] [1.e-8]
+        Valid Values: Unconstrained
+        tolerance for the Newton-Raphson iterations
+    sim_eleTemp [REAL] [1.0e5]
+        Valid Values: 0.0+ to INFTY
+
+    sim_ionTemp [REAL] [6.0e5]
+        Valid Values: 0.0+ to INFTY
+
+    sim_maxTolCoeff0 [REAL] [1.0e-8]
+        Valid Values: Unconstrained
+
+    sim_maxTolCoeff1 [REAL] [0.0001]
+        Valid Values: Unconstrained
+
+    sim_maxTolCoeff2 [REAL] [0.01]
+        Valid Values: Unconstrained
+
+    sim_maxTolCoeff3 [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    sim_radTemp [REAL] [0.0]
+        Valid Values: 0.0 to INFTY
+
+    sim_schemeOrder [INTEGER] [2]
+        Valid Values: Unconstrained
+
+    sim_tempBackground [REAL] [0.0]
+        Valid Values: Unconstrained
+        constant temperature background, the Gaussian peak gets added to this
+    sim_xctr [REAL] [0.5]
+        Valid Values: Unconstrained
+        Temperature peak center X-coordinate
+    sim_yctr [REAL] [0.5]
+        Valid Values: Unconstrained
+        Temperature peak center Y-coordinate
+    sim_zctr [REAL] [0.5]
+        Valid Values: Unconstrained
+        Temperature peak center Z-coordinate
+    toffset [REAL] [.001]
+        Valid Values: Unconstrained
+        time offset for initial condition
+    updateHydroFluxes [BOOLEAN] [FALSE]
+
+
+Simulation/SimulationMain/HydroStatic
+    sim_presRef [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    sim_tempRef [REAL] [300.0]
+        Valid Values: Unconstrained
+
+    sim_xyzRef [REAL] [0.5]
+        Valid Values: Unconstrained
+
+
+Simulation/SimulationMain/IsentropicVortex
+    nx_subint [INTEGER] [10]
+        Valid Values: Unconstrained
+        number of subintervals along IAXIS
+    ny_subint [INTEGER] [10]
+        Valid Values: Unconstrained
+        number of subintervals along JAXIS
+    p_ambient [REAL] [1.0]
+        Valid Values: Unconstrained
+        Initial ambient pressure
+    particle_attribute_1 [STRING] ["pdens"]
+        Valid Values: Unconstrained
+
+    particle_attribute_2 [STRING] ["ptemp"]
+        Valid Values: Unconstrained
+
+    rho_ambient [REAL] [1.0]
+        Valid Values: Unconstrained
+        Initial ambient density
+    u_ambient [REAL] [1.0]
+        Valid Values: Unconstrained
+        Initial ambient velocity
+    v_ambient [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    vortex_strength [REAL] [5.0]
+        Valid Values: Unconstrained
+
+    xctr [REAL] [0.0]
+        Valid Values: Unconstrained
+        x coordinate of the vortex center
+    yctr [REAL] [0.0]
+        Valid Values: Unconstrained
+        y coordinate of the vortex center
+
+Simulation/SimulationMain/Jeans
+    amplitude [REAL] [0.01]
+        Valid Values: Unconstrained
+
+    delta_deref [REAL] [0.01]
+        Valid Values: Unconstrained
+
+    delta_ref [REAL] [0.1]
+        Valid Values: Unconstrained
+
+    lambdax [REAL] [1.]
+        Valid Values: Unconstrained
+
+    lambday [REAL] [1.]
+        Valid Values: Unconstrained
+
+    lambdaz [REAL] [1.]
+        Valid Values: Unconstrained
+
+    p0 [REAL] [1.]
+        Valid Values: Unconstrained
+
+    reference_density [REAL] [1.]
+        Valid Values: Unconstrained
+
+    rho0 [REAL] [1.]
+        Valid Values: Unconstrained
+
+
+Simulation/SimulationMain/LaserSlab
+    sim_eosCham [STRING] ["eos_gam"]
+        Valid Values: "eos_tab", "eos_gam"
+        chamber EOS type
+    sim_eosTarg [STRING] ["eos_tab"]
+        Valid Values: "eos_tab", "eos_gam"
+        chamber EOS type
+    sim_initGeom [STRING] ["slab"]
+        Valid Values: "slab", "sphere"
+        Use a spherical target if sphere, default to slab
+    sim_rhoCham [REAL] [2.655e-07]
+        Valid Values: Unconstrained
+        Initial chamber density
+    sim_rhoTarg [REAL] [2.7]
+        Valid Values: Unconstrained
+        Initial target density
+    sim_targetHeight [REAL] [0.0250]
+        Valid Values: Unconstrained
+        The height of the target off y-axis
+    sim_targetRadius [REAL] [0.0050]
+        Valid Values: Unconstrained
+        The radius to use for the target
+    sim_teleCham [REAL] [290.11375]
+        Valid Values: Unconstrained
+        Initial chamber electron temperature
+    sim_teleTarg [REAL] [290.11375]
+        Valid Values: Unconstrained
+        Initial target electron temperature
+    sim_tionCham [REAL] [290.11375]
+        Valid Values: Unconstrained
+        Initial chamber ion temperature
+    sim_tionTarg [REAL] [290.11375]
+        Valid Values: Unconstrained
+        Initial target ion temperature
+    sim_tradCham [REAL] [290.11375]
+        Valid Values: Unconstrained
+        Initial chamber radiation temperature
+    sim_tradTarg [REAL] [290.11375]
+        Valid Values: Unconstrained
+        Initial target radiation temperature
+    sim_vacuumHeight [REAL] [0.0200]
+        Valid Values: Unconstrained
+        The thickness of the vacuum region in front of the target
+    sim_zminTarg [REAL] [0.0]
+        Valid Values: Unconstrained
+        target minimum zbar allowed
+
+Simulation/SimulationMain/MGDInfinite
+    sim_beMassFrac [REAL] [0.33]
+        Valid Values: Unconstrained
+
+    sim_poliMassFrac [REAL] [0.33]
+        Valid Values: Unconstrained
+
+    sim_rho [REAL] [1.0]
+        Valid Values: Unconstrained
+        Initial radiation temperature
+    sim_tele [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    sim_tion [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    sim_trad [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    sim_xeMassFrac [REAL] [0.33]
+        Valid Values: Unconstrained
+
+
+Simulation/SimulationMain/MGDStep
+    sim_initGeom [STRING] ["planar"]
+        Valid Values: "planar", "polar"
+
+    sim_rho1 [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    sim_rho2 [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    sim_tele1 [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    sim_tele2 [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    sim_thickness [REAL] [0.1]
+        Valid Values: Unconstrained
+        Size of the "hot" region
+    sim_tion1 [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    sim_tion2 [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    sim_trad1 [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    sim_trad2 [REAL] [1.0]
+        Valid Values: Unconstrained
+
+
+Simulation/SimulationMain/MacLaurin
+    angular_velocity [REAL] [0.]
+        Valid Values: Unconstrained
+        Dimensionless angular velocity (Omega)
+    density [REAL] [1.]
+        Valid Values: -1.0 to INFTY
+        Spheroid density (rho)): set to -1 to generate spheroid mass of 1.0
+    eccentricity [REAL] [0.]
+        Valid Values: 0.0 to 1.0
+        Eccentricity of the ellipsoid (e)
+    equatorial_semimajor_axis [REAL] [1.]
+        Valid Values: 0.1 to INFTY
+        Equatorial semimajor axis (a1)
+    nsubzones [INTEGER] [2]
+        Valid Values: 1 to INFTY
+        Number of sub-zones per dimension
+    xctr [REAL] [0.5]
+        Valid Values: Unconstrained
+        X-coordinate of center of spheroid
+    yctr [REAL] [0.5]
+        Valid Values: Unconstrained
+        Y-coordinate of center of spheroid
+    zctr [REAL] [0.5]
+        Valid Values: Unconstrained
+        Z-coordinate of center of spheroid
+
+Simulation/SimulationMain/NeiTest
+    radius [REAL] [0.2]
+        Valid Values: Unconstrained
+
+    rho_ambient [REAL] [2.e-16]
+        Valid Values: Unconstrained
+
+    t_ambient [REAL] [1.e4]
+        Valid Values: Unconstrained
+
+    t_perturb [REAL] [0.2]
+        Valid Values: Unconstrained
+
+    vel_init [REAL] [3.e5]
+        Valid Values: Unconstrained
+
+    xstep [REAL] [1.5e7]
+        Valid Values: Unconstrained
+
+
+Simulation/SimulationMain/Orbit
+    ext_field [BOOLEAN] [TRUE]
+        external field (TRUE) or self-grav (FALSE)?
+    num_particles [INTEGER] [2]
+        Valid Values: Unconstrained
+
+    ptmass [REAL] [1.]
+        Valid Values: Unconstrained
+        point mass if external field
+    separation [REAL] [1.]
+        Valid Values: Unconstrained
+        particle separation (2*radius)
+
+Simulation/SimulationMain/Pancake
+    MaxParticlePerZone [INTEGER] [10]
+        Valid Values: Unconstrained
+
+    Tfiducial [REAL] [100.0]
+        Valid Values: Unconstrained
+
+    lambda [REAL] [3.0857E24]
+        Valid Values: Unconstrained
+
+    pt_numX [INTEGER] [1]
+        Valid Values: Unconstrained
+
+    pt_numY [INTEGER] [1]
+        Valid Values: Unconstrained
+
+    pt_numZ [INTEGER] [1]
+        Valid Values: Unconstrained
+
+    xangle [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    yangle [REAL] [90.0]
+        Valid Values: Unconstrained
+
+    zcaustic [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    zfiducial [REAL] [100.0]
+        Valid Values: Unconstrained
+
+
+Simulation/SimulationMain/Plasma
+    pt_resetTag [BOOLEAN] [TRUE]
+
+    sim_bx [REAL] [0.0]
+        Valid Values: Unconstrained
+        Initial magnetic field x-component [T]
+    sim_by [REAL] [0.0]
+        Valid Values: Unconstrained
+        Initial magnetic field y-component [T]
+    sim_bz [REAL] [0.0]
+        Valid Values: Unconstrained
+        Initial magnetic field z-component [T]
+
+Simulation/SimulationMain/PoisTest
+    sim_smlRho [REAL] [1.E-10]
+        Valid Values: Unconstrained
+        smallest allowed value of density
+
+Simulation/SimulationMain/PreHeatPlug
+    eos_LEHEosType [STRING] ["eos_gam"]
+        Valid Values: "eos_tab", "eos_gam"
+
+    eos_WashEosType [STRING] ["eos_gam"]
+        Valid Values: "eos_tab", "eos_gam"
+
+    eos_chamEosType [STRING] ["eos_gam"]
+        Valid Values: "eos_tab", "eos_gam"
+
+    eos_gasEosType [STRING] ["eos_gam"]
+        Valid Values: "eos_tab", "eos_gam"
+
+    eos_targEosType [STRING] ["eos_gam"]
+        Valid Values: "eos_tab", "eos_gam"
+
+    sim_eosCham [STRING] ["eos_gam"]
+        Valid Values: "eos_tab", "eos_gam"
+        chamber EOS type
+    sim_eosGas [STRING] ["eos_gam"]
+        Valid Values: "eos_tab", "eos_gam"
+
+    sim_eosLEH [STRING] ["eos_gam"]
+        Valid Values: "eos_tab", "eos_gam"
+
+    sim_eosTarg [STRING] ["eos_tab"]
+        Valid Values: "eos_tab", "eos_gam"
+        chamber EOS type
+    sim_eosWash [STRING] ["eos_gam"]
+        Valid Values: "eos_tab", "eos_gam"
+
+    sim_gasRadius [REAL] [0.0270]
+        Valid Values: Unconstrained
+
+    sim_initGeom [STRING] ["slab"]
+        Valid Values: "slab", "sphere"
+        Use a spherical target if sphere, default to slab
+    sim_plugThickness [REAL] [0.01]
+        Valid Values: Unconstrained
+
+    sim_rhoCham [REAL] [2.655e-07]
+        Valid Values: Unconstrained
+        Initial chamber density
+    sim_rhoGas [REAL] [2.655e-07]
+        Valid Values: Unconstrained
+
+    sim_rhoLEH [REAL] [1.03]
+        Valid Values: Unconstrained
+
+    sim_rhoTarg [REAL] [2.7]
+        Valid Values: Unconstrained
+        Initial target density
+    sim_rhoWash [REAL] [1.03]
+        Valid Values: Unconstrained
+
+    sim_targetHeight [REAL] [0.0250]
+        Valid Values: Unconstrained
+        The height of the target off y-axis
+    sim_targetRadius [REAL] [0.0050]
+        Valid Values: Unconstrained
+        The radius to use for the target
+    sim_targetThickness [REAL] [0.003]
+        Valid Values: Unconstrained
+
+    sim_teleCham [REAL] [290.11375]
+        Valid Values: Unconstrained
+        Initial chamber electron temperature
+    sim_teleGas [REAL] [290.11375]
+        Valid Values: Unconstrained
+
+    sim_teleLEH [REAL] [290.11375]
+        Valid Values: Unconstrained
+
+    sim_teleTarg [REAL] [290.11375]
+        Valid Values: Unconstrained
+        Initial target electron temperature
+    sim_teleWash [REAL] [290.11375]
+        Valid Values: Unconstrained
+
+    sim_tionCham [REAL] [290.11375]
+        Valid Values: Unconstrained
+        Initial chamber ion temperature
+    sim_tionGas [REAL] [290.11375]
+        Valid Values: Unconstrained
+
+    sim_tionLEH [REAL] [290.11375]
+        Valid Values: Unconstrained
+
+    sim_tionTarg [REAL] [290.11375]
+        Valid Values: Unconstrained
+        Initial target ion temperature
+    sim_tionWash [REAL] [290.11375]
+        Valid Values: Unconstrained
+
+    sim_tradCham [REAL] [290.11375]
+        Valid Values: Unconstrained
+        Initial chamber radiation temperature
+    sim_tradGas [REAL] [290.11375]
+        Valid Values: Unconstrained
+
+    sim_tradLEH [REAL] [290.11375]
+        Valid Values: Unconstrained
+
+    sim_tradTarg [REAL] [290.11375]
+        Valid Values: Unconstrained
+        Initial target radiation temperature
+    sim_tradWash [REAL] [290.11375]
+        Valid Values: Unconstrained
+
+    sim_vacuumHeight [REAL] [0.0200]
+        Valid Values: Unconstrained
+        The thickness of the vacuum region in front of the target
+    sim_washRadius [REAL] [0.15]
+        Valid Values: Unconstrained
+
+    sim_washThickness [REAL] [0.05]
+        Valid Values: Unconstrained
+
+    sim_windowsRadius [REAL] [0.01]
+        Valid Values: Unconstrained
+
+    sim_windowsThickness [REAL] [0.0003]
+        Valid Values: Unconstrained
+
+    sim_zminTarg [REAL] [0.0]
+        Valid Values: Unconstrained
+        target minimum zbar allowed
+
+Simulation/SimulationMain/ProtonImaging
+    sim_printBlockVariables [BOOLEAN] [false]
+        Print what is in each block on each processor?
+
+Simulation/SimulationMain/RD_TEST1_gam
+    ExpEner [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    bombRad [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    bombRadIn [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    coremass [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    ener_exp [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    gconst [REAL] [0.0]
+        Valid Values: Unconstrained
+        Gravitational constant, should be G*M(rmin)/rmin**2
+    gdirec [STRING] ["x"]
+        Valid Values: Unconstrained
+
+    hole_radius [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    mass_loss [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    model_file [STRING] ["file.dat"]
+        Valid Values: Unconstrained
+        Name of input file with 1D model
+    nsub [INTEGER] [4]
+        Valid Values: Unconstrained
+
+    paircond [BOOLEAN] [TRUE]
+
+    point_mass [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    r_exp_max [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    r_exp_min [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    r_s [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    rho_s [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    rho_vac [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    rinner [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    router [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    rt_s [REAL] [0.0]
+        Valid Values: Unconstrained
+        Same as r_s, but for temperature instead of density.
+    shellcond [BOOLEAN] [TRUE]
+
+    shelldens [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    shelltempfac [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    sim_tele [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    sim_tion [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    sim_trad [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    staticGpot [BOOLEAN] [FALSE]
+        Flag for whether or not to fix the gpot in time
+    steep [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    t_s [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    t_vac [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    use_PnotT [BOOLEAN] [FALSE]
+
+    vel_mult [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    vel_wind [REAL] [0.0]
+        Valid Values: Unconstrained
+
+
+Simulation/SimulationMain/RHD_Sod
+    sim_pLeft [REAL] [1.]
+        Valid Values: Unconstrained
+        Pressure  in the left part of the grid
+    sim_pRight [REAL] [0.1]
+        Valid Values: Unconstrained
+        Pressure  in the righ part of the grid
+    sim_posn [REAL] [0.5]
+        Valid Values: Unconstrained
+
+    sim_rhoLeft [REAL] [1.]
+        Valid Values: Unconstrained
+        Density in the left part of the grid
+    sim_rhoRight [REAL] [0.125]
+        Valid Values: Unconstrained
+        Density in the right part of the grid
+    sim_uLeft [REAL] [0.]
+        Valid Values: Unconstrained
+        fluid velocity in the left part of the grid
+    sim_uRight [REAL] [0.]
+        Valid Values: Unconstrained
+        fluid velocity in the right part of the grid
+    sim_vLeft [REAL] [0.]
+        Valid Values: Unconstrained
+        fluid velocity in the left part of the grid
+    sim_vRight [REAL] [0.]
+        Valid Values: Unconstrained
+        fluid velocity in the right part of the grid
+    sim_wLeft [REAL] [0.]
+        Valid Values: Unconstrained
+        fluid velocity in the left part of the grid
+    sim_wRight [REAL] [0.]
+        Valid Values: Unconstrained
+        fluid velocity in the right part of the grid
+    sim_xangle [REAL] [0.]
+        Valid Values: Unconstrained
+        Angle made by diaphragm normal w/x-axis (deg)
+    sim_yangle [REAL] [90.]
+        Valid Values: Unconstrained
+
+
+Simulation/SimulationMain/RTFlame
+    dens_unburned [REAL] [1e8]
+        Valid Values: Unconstrained
+
+    flame_initial_position [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    particle_attribute_1 [STRING] ["dens"]
+        Valid Values: Unconstrained
+
+    particle_attribute_2 [STRING] ["temp"]
+        Valid Values: Unconstrained
+
+    particle_attribute_4 [STRING] ["flam"]
+        Valid Values: Unconstrained
+
+    refine_buf [REAL] [1e5]
+        Valid Values: Unconstrained
+        Buffer to prevent refinement pattern jitter
+    refine_lead [REAL] [2e5]
+        Valid Values: Unconstrained
+        Distance above highest burned cell which refined region will reach
+    refine_region_size [REAL] [60e5]
+        Valid Values: Unconstrained
+        Total size of refine region (See source for diagram of parameter
+        meanings)
+    refine_region_stepdown_size [REAL] [45e5]
+        Valid Values: Unconstrained
+        Distance behind fully refined region that is one lower refinement level
+    refine_uniform_region [BOOLEAN] [FALSE]
+        Select whether to refine a selected region uniformly or use
+        standard-style refinement checks (configured with other parameters)
+    sim_ParticleRefineRegion [BOOLEAN] [FALSE]
+
+    sim_ParticleRefineRegionBottom [REAL] [60e5]
+        Valid Values: Unconstrained
+
+    sim_ParticleRefineRegionLevel [INTEGER] [2]
+        Valid Values: Unconstrained
+
+    sim_ParticleRefineRegionTop [REAL] [200e5]
+        Valid Values: Unconstrained
+
+    spert_ampl1 [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    spert_ampl2 [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    spert_phase1 [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    spert_phase2 [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    spert_wl1 [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    spert_wl2 [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    temp_unburned [REAL] [1e8]
+        Valid Values: Unconstrained
+
+    vel_pert_amp [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    vel_pert_wavelength1 [REAL] [1.0]
+        Valid Values: Unconstrained
+
+
+Simulation/SimulationMain/ReinickeMeyer
+    sim_rfInit [REAL] [0.9]
+        Valid Values: Unconstrained
+        Initial thermal front position [cm]
+
+Simulation/SimulationMain/SBlast
+    sim_A1 [REAL] [1.]
+        Valid Values: 1 to INFTY
+        Atomic weight in region 2
+    sim_A2 [REAL] [1.]
+        Valid Values: 1 to INFTY
+
+    sim_AIn [REAL] [1.]
+        Valid Values: 1 to INFTY
+        Atomic weight inside the energy source
+    sim_EIn [REAL] [1.]
+        Valid Values: 0 to INFTY
+        Total energy inside the energy source
+    sim_Z1 [REAL] [1.]
+        Valid Values: 1 to INFTY
+        Atomic number in region 1
+    sim_Z2 [REAL] [1.]
+        Valid Values: 1 to INFTY
+        Atomic number in region 2
+    sim_ZIn [REAL] [1.]
+        Valid Values: 1 to INFTY
+        Atomic number inside the energy source
+    sim_atmos1 [INTEGER] [0]
+        Valid Values: Unconstrained
+
+    sim_atmos2 [INTEGER] [0]
+        Valid Values: Unconstrained
+
+    sim_gamma1 [REAL] [1.4]
+        Valid Values: 1.1 to INFTY
+        gamma in region 1
+    sim_gamma2 [REAL] [1.4]
+        Valid Values: 1.1 to INFTY
+        gamma in region 2
+    sim_gammaIn [REAL] [1.4]
+        Valid Values: 1.1 to INFTY
+        gamma inside the energy source
+    sim_geo [INTEGER] [0]
+        Valid Values: Unconstrained
+        specifies the geometry of the problem, not the geometry of the grid
+    sim_h1 [REAL] [1.]
+        Valid Values: Unconstrained
+        Thickness of region 1
+    sim_ibound [BOOLEAN] [FALSE]
+        Bounday/Discontinuity present?
+    sim_p1 [REAL] [1.]
+        Valid Values: 0 to INFTY
+        Pressure in region 2
+    sim_p2 [REAL] [1.]
+        Valid Values: 0 to INFTY
+
+    sim_pIn [REAL] [1.]
+        Valid Values: 0 to INFTY
+        Pressure inside the energy source
+    sim_rIn [REAL] [0.1]
+        Valid Values: 0 to INFTY
+        radius of the energy source
+    sim_rho1 [REAL] [1.]
+        Valid Values: 0 to INFTY
+        Density in region 2
+    sim_rho2 [REAL] [1.]
+        Valid Values: 0 to INFTY
+
+    sim_rhoIn [REAL] [1.]
+        Valid Values: 0 to INFTY
+        Density inside the energy source
+    sim_sh1 [REAL] [1.]
+        Valid Values: Unconstrained
+        Scale height in region 2
+    sim_sh2 [REAL] [1.]
+        Valid Values: Unconstrained
+
+    sim_useE [BOOLEAN] [FALSE]
+        Use total energy to define energy source
+    sim_xcIn [REAL] [0.]
+        Valid Values: Unconstrained
+        x location of the center of the energy source
+    sim_ycIn [REAL] [0.]
+        Valid Values: Unconstrained
+        y location of the center of the energy source
+    sim_zcIn [REAL] [0.]
+        Valid Values: Unconstrained
+        z location of the center of the energy source
+
+Simulation/SimulationMain/Sedov
+    sim_expEnergy [REAL] [1.]
+        Valid Values: Unconstrained
+        Explosion energy (distributed over 2^dimen central zones)
+    sim_nsubzones [INTEGER] [7]
+        Valid Values: Unconstrained
+        Number of `sub-zones' in cells for applying 1d profile
+    sim_pAmbient [REAL] [1.E-5]
+        Valid Values: Unconstrained
+        Initial ambient pressure
+    sim_rInit [REAL] [0.05]
+        Valid Values: Unconstrained
+        Radial position of inner edge of grid (for 1D)
+    sim_rhoAmbient [REAL] [1.]
+        Valid Values: Unconstrained
+        Initial ambient density
+    sim_xctr [REAL] [0.5]
+        Valid Values: Unconstrained
+        Explosion center coordinates
+    sim_yctr [REAL] [0.5]
+        Valid Values: Unconstrained
+        Explosion center coordinates
+    sim_zctr [REAL] [0.5]
+        Valid Values: Unconstrained
+        Explosion center coordinates
+
+Simulation/SimulationMain/Sedov/WriteParticleSubset
+    sim_expEnergy [REAL] [1.]
+        Valid Values: Unconstrained
+        Explosion energy (distributed over 2^dimen central zones)
+    sim_nsubzones [INTEGER] [7]
+        Valid Values: Unconstrained
+        Number of `sub-zones' in cells for applying 1d profile
+    sim_pAmbient [REAL] [1.E-5]
+        Valid Values: Unconstrained
+        Initial ambient pressure
+    sim_rInit [REAL] [0.05]
+        Valid Values: Unconstrained
+        Radial position of inner edge of grid (for 1D)
+    sim_rhoAmbient [REAL] [1.]
+        Valid Values: Unconstrained
+        Initial ambient density
+    sim_xctr [REAL] [0.5]
+        Valid Values: Unconstrained
+        Explosion center coordinates
+    sim_yctr [REAL] [0.5]
+        Valid Values: Unconstrained
+        Explosion center coordinates
+    sim_zctr [REAL] [0.5]
+        Valid Values: Unconstrained
+        Explosion center coordinates
+
+Simulation/SimulationMain/SedovChamber
+    sim_expEnergy [REAL] [1.]
+        Valid Values: Unconstrained
+        Explosion energy (distributed over 2^dimen central zones)
+    sim_nsubzones [INTEGER] [7]
+        Valid Values: Unconstrained
+        Number of `sub-zones' in cells for applying 1d profile
+    sim_pAmbient [REAL] [1.E-5]
+        Valid Values: Unconstrained
+        Initial ambient pressure
+    sim_rInit [REAL] [0.05]
+        Valid Values: Unconstrained
+        Radial position of inner edge of grid (for 1D)
+    sim_rhoAmbient [REAL] [1.]
+        Valid Values: Unconstrained
+        Initial ambient density
+    sim_xctr [REAL] [0.5]
+        Valid Values: Unconstrained
+        Explosion center coordinates
+    sim_yctr [REAL] [0.5]
+        Valid Values: Unconstrained
+        Explosion center coordinates
+    sim_zctr [REAL] [0.5]
+        Valid Values: Unconstrained
+        Explosion center coordinates
+
+Simulation/SimulationMain/SedovChamber/WriteParticleSubset
+    sim_expEnergy [REAL] [1.]
+        Valid Values: Unconstrained
+        Explosion energy (distributed over 2^dimen central zones)
+    sim_nsubzones [INTEGER] [7]
+        Valid Values: Unconstrained
+        Number of `sub-zones' in cells for applying 1d profile
+    sim_pAmbient [REAL] [1.E-5]
+        Valid Values: Unconstrained
+        Initial ambient pressure
+    sim_rInit [REAL] [0.05]
+        Valid Values: Unconstrained
+        Radial position of inner edge of grid (for 1D)
+    sim_rhoAmbient [REAL] [1.]
+        Valid Values: Unconstrained
+        Initial ambient density
+    sim_xctr [REAL] [0.5]
+        Valid Values: Unconstrained
+        Explosion center coordinates
+    sim_yctr [REAL] [0.5]
+        Valid Values: Unconstrained
+        Explosion center coordinates
+    sim_zctr [REAL] [0.5]
+        Valid Values: Unconstrained
+        Explosion center coordinates
+
+Simulation/SimulationMain/SedovSelfGravity
+    exp_energy [REAL] [1.]
+        Valid Values: Unconstrained
+        Explosion energy (distributed over 2^dimen central zones)
+    p_ambient [REAL] [1.E-5]
+        Valid Values: Unconstrained
+        Initial ambient pressure
+    r_init [REAL] [0.05]
+        Valid Values: Unconstrained
+        Radial position of the inner edge of the grid
+    rho_ambient [REAL] [1.]
+        Valid Values: Unconstrained
+        Initial ambient density
+    sim_nsubzones [INTEGER] [7]
+        Valid Values: Unconstrained
+        Number of `sub-zones' to break cells into for applying 1d profile
+    t_init [REAL] [0.]
+        Valid Values: Unconstrained
+        Initial time since explosion
+
+Simulation/SimulationMain/SedovSolidWall
+    sim_expEnergy [REAL] [1.]
+        Valid Values: Unconstrained
+        Explosion energy (distributed over 2^dimen central zones)
+    sim_nsubzones [INTEGER] [7]
+        Valid Values: Unconstrained
+        Number of `sub-zones' in cells for applying 1d profile
+    sim_pAmbient [REAL] [1.E-5]
+        Valid Values: Unconstrained
+        Initial ambient pressure
+    sim_rInit [REAL] [0.05]
+        Valid Values: Unconstrained
+        Radial position of inner edge of grid (for 1D)
+    sim_rhoAmbient [REAL] [1.]
+        Valid Values: Unconstrained
+        Initial ambient density
+    sim_xctr [REAL] [0.5]
+        Valid Values: Unconstrained
+        Explosion center coordinates
+    sim_yctr [REAL] [0.5]
+        Valid Values: Unconstrained
+        Explosion center coordinates
+    sim_zctr [REAL] [0.5]
+        Valid Values: Unconstrained
+        Explosion center coordinates
+
+Simulation/SimulationMain/ShafranovShock
+    diff_scaleFactThermFlux [REAL] [0.0]
+        Valid Values: Unconstrained
+        Factor applied to the temperature differences (or internal energy
+        differences) that are added to flux arrays by the flux-based thermal
+        Diffusion implementation.
+    gamma [REAL] [1.6667]
+        Valid Values: 0.0 to INFTY
+        Ratio of specific heats for gas - for initialization
+    sim_DataPoints [INTEGER] [448]
+        Valid Values: Unconstrained
+        Number of data points in sim_InitData file
+    sim_InitData [STRING] ["plasma_shock.out"]
+        Valid Values: Unconstrained
+        Name of the file containing input data
+    sim_ShockSpeed [REAL] [1.048805969E+06]
+        Valid Values: Unconstrained
+        Shock Speed
+    sim_abar [REAL] [1.0]
+        Valid Values: Unconstrained
+        Fluid atomic number
+    sim_maxTol [REAL] [2.0E-2]
+        Valid Values: Unconstrained
+        Max allowed error ( < 2% error)
+    sim_zbar [REAL] [1.0]
+        Valid Values: Unconstrained
+        Fluid average ionization
+
+Simulation/SimulationMain/ShuOsher
+    sim_aRho [REAL] [0.2]
+        Valid Values: Unconstrained
+        Amplitude of the density perturbation
+    sim_fRho [REAL] [5.0]
+        Valid Values: Unconstrained
+        Frequency of the density perturbation
+    sim_nsubint [INTEGER] [100]
+        Valid Values: Unconstrained
+        Number of subintervals to average over to get cell-averages.
+    sim_pLeft [REAL] [10.33333]
+        Valid Values: Unconstrained
+        Pressure in left part of grid
+    sim_pRight [REAL] [1.0]
+        Valid Values: Unconstrained
+        Pressure in right part of grid
+    sim_posn [REAL] [-4.0]
+        Valid Values: Unconstrained
+        Point of intersection between the shock plane and the x-axis
+    sim_rhoLeft [REAL] [3.857143]
+        Valid Values: Unconstrained
+        Density in left part of grid
+    sim_rhoRight [REAL] [1.0]
+        Valid Values: Unconstrained
+        Density in right part of grid
+    sim_uLeft [REAL] [2.629369]
+        Valid Values: Unconstrained
+        Fluid velocity in right part of grid
+    sim_uRight [REAL] [0.]
+        Valid Values: Unconstrained
+        Fluid velocity in right part of grid
+
+Simulation/SimulationMain/SinkRotatingCloudCore
+    bb_cs [REAL] [1.66e4]
+        Valid Values: Unconstrained
+
+    bb_dens [REAL] [3.82e-18]
+        Valid Values: Unconstrained
+
+    bb_omega [REAL] [7.2e-13]
+        Valid Values: Unconstrained
+
+    bb_radius [REAL] [5.0e16]
+        Valid Values: Unconstrained
+
+    refine_var_thresh [STRING] ["none"]
+        Valid Values: Unconstrained
+
+
+Simulation/SimulationMain/Sod
+    gamma [REAL] [1.6666666666666667]
+        Valid Values: 0.0 to INFTY
+        Ratio of specific heats for gas - for initialization
+    gammaIon [REAL] [1.6666666666666667]
+        Valid Values: 0.0 to INFTY
+        Ratio of specific heats for ion component, should be 5./3.
+    sim_abarLeft [REAL] [1.]
+        Valid Values: 0 to INFTY
+        ion mean molecular weight of material on left
+    sim_abarRight [REAL] [1.]
+        Valid Values: 0 to INFTY
+        ion mean molecular weight of material on right
+    sim_pLeft [REAL] [1.]
+        Valid Values: 0 to INFTY
+        Pressure  in the left part of the grid
+    sim_pRight [REAL] [0.1]
+        Valid Values: 0 to INFTY
+        Pressure  in the righ part of the grid
+    sim_peleLeft [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    sim_peleRight [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    sim_pionLeft [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    sim_pionRight [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    sim_posn [REAL] [0.5]
+        Valid Values: Unconstrained
+
+    sim_pradLeft [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    sim_pradRight [REAL] [-1.0]
+        Valid Values: Unconstrained
+
+    sim_rhoLeft [REAL] [1.]
+        Valid Values: 0 to INFTY
+        Density in the left part of the grid
+    sim_rhoRight [REAL] [0.125]
+        Valid Values: 0 to INFTY
+        Density in the right part of the grid
+    sim_uLeft [REAL] [0.]
+        Valid Values: Unconstrained
+        fluid velocity in the left part of the grid
+    sim_uRight [REAL] [0.]
+        Valid Values: Unconstrained
+        fluid velocity in the right part of the grid
+    sim_xangle [REAL] [0.]
+        Valid Values: 0 to 360
+        Angle made by diaphragm normal w/x-axis (deg)
+    sim_yangle [REAL] [90.]
+        Valid Values: 0 to 360
+
+    sim_zbarLeft [REAL] [1.]
+        Valid Values: 0 to INFTY
+        ion average charge for material on left
+    sim_zbarRight [REAL] [1.]
+        Valid Values: 0 to INFTY
+        ion average charge for material on right
+
+Simulation/SimulationMain/SodSpherical
+    sim_idir [INTEGER] [1]
+        Valid Values: 1, 2
+        the direction along which to propagate the shock.  sim_idir = 1 is
+        horizontal.  sim_idir = 2 is vertical.
+    sim_pLeft [REAL] [1.]
+        Valid Values: Unconstrained
+        initial pressure on the left side of the interface
+    sim_pRight [REAL] [0.1]
+        Valid Values: Unconstrained
+        initial pressure on the right side of the interface
+    sim_rhoLeft [REAL] [1.]
+        Valid Values: Unconstrained
+        initial density left of the interface
+    sim_rhoRight [REAL] [0.125]
+        Valid Values: Unconstrained
+        initial density right of interface
+    sim_shockpos [REAL] [0.4]
+        Valid Values: Unconstrained
+        distance of the shock plane from y-axis (for sim_idir=1) or x-axis (for
+        sim_idir=2)
+
+Simulation/SimulationMain/SodStep
+    gr_pmrpNboundaries [INTEGER] CONSTANT [6]
+        Valid Values: Unconstrained
+        sets value for PARAMESH runtime parameter nboundaries
+    nblockx [INTEGER] [4]
+        Valid Values: Unconstrained
+        num initial blocks in x dir
+    nblocky [INTEGER] [4]
+        Valid Values: Unconstrained
+        num initial blocks in y dir
+    nblockz [INTEGER] [1]
+        Valid Values: Unconstrained
+        num initial blocks in z dir
+    sim_pLeft [REAL] [1.]
+        Valid Values: 0 to INFTY
+        Pressure  in the left part of the grid
+    sim_pRight [REAL] [0.1]
+        Valid Values: 0 to INFTY
+        Pressure  in the righ part of the grid
+    sim_posn [REAL] [0.5]
+        Valid Values: Unconstrained
+
+    sim_rhoLeft [REAL] [1.]
+        Valid Values: 0 to INFTY
+        Density in the left part of the grid
+    sim_rhoRight [REAL] [0.125]
+        Valid Values: 0 to INFTY
+        Density in the right part of the grid
+    sim_stepInDomain [BOOLEAN] [false]
+        -- whether there is a missing block in the initial domain
+    sim_uLeft [REAL] [0.]
+        Valid Values: Unconstrained
+        fluid velocity in the left part of the grid
+    sim_uRight [REAL] [0.]
+        Valid Values: Unconstrained
+        fluid velocity in the right part of the grid
+    sim_xangle [REAL] [0.]
+        Valid Values: 0 to 360
+        Angle made by diaphragm normal w/x-axis (deg)
+    sim_yangle [REAL] [90.]
+        Valid Values: 0 to 360
+
+
+Simulation/SimulationMain/StirFromFile
+    MagField_z [REAL] [1.e0]
+        Valid Values: Unconstrained
+        magnitude of constant B-field in z
+    c_ambient [REAL] [1.e0]
+        Valid Values: Unconstrained
+        reference sound speed
+    magnetic [BOOLEAN] [FALSE]
+        using magnetic field in z direction
+    rho_ambient [REAL] [1.e0]
+        Valid Values: Unconstrained
+        reference density
+
+Simulation/SimulationMain/StirTurb
+    c_ambient [REAL] [1.e0]
+        Valid Values: Unconstrained
+        reference sound speed
+    mach [REAL] [0.3]
+        Valid Values: Unconstrained
+        reference mach number
+    rho_ambient [REAL] [1.e0]
+        Valid Values: Unconstrained
+        reference density
+
+Simulation/SimulationMain/WindTunnel
+    gr_pmrpNboundaries [INTEGER] [16]
+        Valid Values: 16 to INFTY
+        sets value for PARAMESH runtime parameter nboundaries
+    sim_pAmbient [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    sim_rhoAmbient [REAL] [1.4]
+        Valid Values: Unconstrained
+
+    sim_windVel [REAL] [3.0]
+        Valid Values: Unconstrained
+
+
+Simulation/SimulationMain/incompFlow/TaylorGreenVortex
+    uconv [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    vconv [REAL] [0.0]
+        Valid Values: Unconstrained
+
+
+Simulation/SimulationMain/magnetoHD/BeerCan
+    Az_initial [REAL] [0.001]
+        Valid Values: Unconstrained
+        Strength of initial z-component of magnetic vector potential
+    R_fieldLoop [REAL] [0.3]
+        Valid Values: Unconstrained
+        Radius of field loop
+    U_initial [REAL] [2.23606796749979]
+        Valid Values: Unconstrained
+        Strength of initial vector fields
+    delta [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    r0 [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    r1 [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    rx [REAL] [1.]
+        Valid Values: Unconstrained
+        Field loop advection angle = atan(rx/ry)
+    ry [REAL] [2.]
+        Valid Values: Unconstrained
+
+    sim_b [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    tiny [REAL] [1.e-16]
+        Valid Values: Unconstrained
+        Threshold value used for numerical zero
+    velz_initial [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    xCtr [REAL] [1.]
+        Valid Values: Unconstrained
+        x center of the computational domain
+    yCtr [REAL] [0.5]
+        Valid Values: Unconstrained
+        y center of the computational domain
+    z0 [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    zCtr [REAL] [0.0]
+        Valid Values: Unconstrained
+        z center of the computatoinal domain
+
+Simulation/SimulationMain/magnetoHD/BlastBS
+    Bx0 [REAL] [100.]
+        Valid Values: Unconstrained
+        Initial magnitude of Bx
+    Radius [REAL] [0.1]
+        Valid Values: Unconstrained
+        Radius
+    tiny [REAL] [1.e-16]
+        Valid Values: Unconstrained
+        Threshold value used for numerical zero
+    xCtr [REAL] [0.]
+        Valid Values: Unconstrained
+        x center of the computational domain
+    yCtr [REAL] [0.]
+        Valid Values: Unconstrained
+        y center of the computational domain
+    zCtr [REAL] [0.]
+        Valid Values: Unconstrained
+        z center of the computatoinal domain
+
+Simulation/SimulationMain/magnetoHD/BrioWu
+    b_normal [REAL] [0.75]
+        Valid Values: Unconstrained
+        Magnetic field normal component
+    by_left [REAL] [1.]
+        Valid Values: Unconstrained
+
+    by_right [REAL] [-1.]
+        Valid Values: Unconstrained
+
+    bz_left [REAL] [0.]
+        Valid Values: Unconstrained
+
+    bz_right [REAL] [0.]
+        Valid Values: Unconstrained
+
+    p_left [REAL] [1.]
+        Valid Values: Unconstrained
+
+    p_right [REAL] [0.1]
+        Valid Values: Unconstrained
+
+    posn [REAL] [0.5]
+        Valid Values: Unconstrained
+        Point of intersection between the shock plane and the x-axis
+    rho_left [REAL] [1.]
+        Valid Values: Unconstrained
+
+    rho_right [REAL] [0.125]
+        Valid Values: Unconstrained
+
+    rx [REAL] [0.]
+        Valid Values: Unconstrained
+
+    ry [REAL] [1.]
+        Valid Values: Unconstrained
+
+    tiny [REAL] [1.e-16]
+        Valid Values: Unconstrained
+        Threshold value used for numerical zero
+    u_left [REAL] [0.]
+        Valid Values: Unconstrained
+
+    u_right [REAL] [0.]
+        Valid Values: Unconstrained
+
+    v_left [REAL] [0.]
+        Valid Values: Unconstrained
+
+    v_right [REAL] [0.]
+        Valid Values: Unconstrained
+
+    w_left [REAL] [0.]
+        Valid Values: Unconstrained
+
+    w_right [REAL] [0.]
+        Valid Values: Unconstrained
+
+    xangle [REAL] [0.]
+        Valid Values: Unconstrained
+        Angle made by diaphragm normal w/x-axis (deg)
+    xmax [REAL] [1.]
+        Valid Values: Unconstrained
+
+    xmin [REAL] [0.]
+        Valid Values: Unconstrained
+
+    yangle [REAL] [90.]
+        Valid Values: Unconstrained
+        Angle made by diaphragm normal w/y-axis (deg)
+    ymax [REAL] [1.]
+        Valid Values: Unconstrained
+
+    ymin [REAL] [0.]
+        Valid Values: Unconstrained
+
+
+Simulation/SimulationMain/magnetoHD/CurrentSheet
+    B0 [REAL] [1.0]
+        Valid Values: Unconstrained
+        Magnitude of By
+    U0 [REAL] [0.1]
+        Valid Values: Unconstrained
+        Amplitude of U (x-velocity)
+    beta [REAL] [0.2]
+        Valid Values: Unconstrained
+        Initial beta plasma
+    tiny [REAL] [1.e-16]
+        Valid Values: Unconstrained
+        Threshold value used for a numerical zero
+
+Simulation/SimulationMain/magnetoHD/FieldLoop
+    Az_initial [REAL] [0.001]
+        Valid Values: Unconstrained
+        Strength of initial z-component of magnetic vector potential
+    R_fieldLoop [REAL] [0.3]
+        Valid Values: Unconstrained
+        Radius of field loop
+    U_initial [REAL] [2.23606796749979]
+        Valid Values: Unconstrained
+        Strength of initial vector fields
+    rx [REAL] [1.]
+        Valid Values: Unconstrained
+        Field loop advection angle = atan(rx/ry)
+    ry [REAL] [2.]
+        Valid Values: Unconstrained
+
+    tiny [REAL] [1.e-16]
+        Valid Values: Unconstrained
+        Threshold value used for numerical zero
+    velz_initial [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    xCtr [REAL] [1.]
+        Valid Values: Unconstrained
+        x center of the computational domain
+    yCtr [REAL] [0.5]
+        Valid Values: Unconstrained
+        y center of the computational domain
+    zCtr [REAL] [0.0]
+        Valid Values: Unconstrained
+        z center of the computatoinal domain
+
+Simulation/SimulationMain/magnetoHD/MagneticDoughnut
+    Az_initial [REAL] [0.001]
+        Valid Values: Unconstrained
+        Strength of initial z-component of magnetic vector potential
+    R_fieldLoop [REAL] [0.3]
+        Valid Values: Unconstrained
+        Radius of field loop
+    U_initial [REAL] [2.23606796749979]
+        Valid Values: Unconstrained
+        Strength of initial vector fields
+    delta [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    r0 [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    r1 [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    rx [REAL] [1.]
+        Valid Values: Unconstrained
+        Field loop advection angle = atan(rx/ry)
+    ry [REAL] [2.]
+        Valid Values: Unconstrained
+
+    sim_b [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    tiny [REAL] [1.e-16]
+        Valid Values: Unconstrained
+        Threshold value used for numerical zero
+    velz_initial [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    xCtr [REAL] [1.]
+        Valid Values: Unconstrained
+        x center of the computational domain
+    yCtr [REAL] [0.5]
+        Valid Values: Unconstrained
+        y center of the computational domain
+    z0 [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    zCtr [REAL] [0.0]
+        Valid Values: Unconstrained
+        z center of the computatoinal domain
+
+Simulation/SimulationMain/magnetoHD/Noh
+    tiny [REAL] [1.e-16]
+        Valid Values: Unconstrained
+
+    unit_density [REAL] [1.e-5]
+        Valid Values: Unconstrained
+
+    unit_length [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    unit_velocity [REAL] [1.e7]
+        Valid Values: Unconstrained
+
+
+Simulation/SimulationMain/magnetoHD/NohCylindrical
+    tiny [REAL] [1.e-16]
+        Valid Values: Unconstrained
+
+    unit_density [REAL] [1.e-5]
+        Valid Values: Unconstrained
+
+    unit_length [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    unit_velocity [REAL] [1.e7]
+        Valid Values: Unconstrained
+
+
+Simulation/SimulationMain/magnetoHD/OrszagTang
+    perturbation [REAL] [0.2]
+        Valid Values: Unconstrained
+
+    tiny [REAL] [1.e-16]
+        Valid Values: Unconstrained
+        Threshold value used for numerical zero
+
+Simulation/SimulationMain/magnetoHD/Rotor
+    Radius [REAL] [0.115]
+        Valid Values: Unconstrained
+        Radius
+    perturbZ [REAL] [0.2]
+        Valid Values: Unconstrained
+        small perturbation of velocity fields in z-direciton
+    tiny [REAL] [1.e-16]
+        Valid Values: Unconstrained
+        Threshold value used for numerical zero
+    xCtr [REAL] [0.]
+        Valid Values: Unconstrained
+        x center of the computational domain
+    yCtr [REAL] [0.]
+        Valid Values: Unconstrained
+        y center of the computational domain
+    zCtr [REAL] [0.]
+        Valid Values: Unconstrained
+        z center of the computatoinal domain
+
+Simulation/SimulationMain/magnetoHD/Torus
+    BETA [REAL] [350.]
+        Valid Values: Unconstrained
+        Plasma beta
+    D_Con [REAL] [1.e-4]
+        Valid Values: Unconstrained
+        Density contrast between atmosphere and Torus
+    R_0 [REAL] [1.0]
+        Valid Values: Unconstrained
+        "Gravitational" radius in P-W potential (for R_0 = 0 -> Newton)
+    R_Sphere [REAL] [1.5]
+        Valid Values: Unconstrained
+        Radius of the sink region, must be greater than R_0
+    R_max [REAL] [4.7]
+        Valid Values: Unconstrained
+        Radius of the Torus where pressure is maximum
+    R_min [REAL] [3.0]
+        Valid Values: Unconstrained
+        Minimum cylindrical radius for the Torus (inner rim)
+    T_Con [REAL] [100.0]
+        Valid Values: Unconstrained
+        Temperature contrast between atmosphere and Torus
+    den_cut [REAL] [5.0]
+        Valid Values: Unconstrained
+        Minimum density to define the last contour of the magnetic vec. pot.
+    den_max [REAL] [10.0]
+        Valid Values: Unconstrained
+        Maximum density of the torus (outer rim)
+    tiny [REAL] [1.e-16]
+        Valid Values: Unconstrained
+
+
+Simulation/SimulationMain/magnetoHD/unitTest/NohCylindricalRagelike
+    tiny [REAL] [1.e-16]
+        Valid Values: Unconstrained
+
+    unit_density [REAL] [1.e-5]
+        Valid Values: Unconstrained
+
+    unit_length [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    unit_velocity [REAL] [1.e7]
+        Valid Values: Unconstrained
+
+
+Simulation/SimulationMain/radflaHD/BondiAccretion
+    ExpEner [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    bombRad [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    bombRadIn [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    coremass [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    ener_exp [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    gconst [REAL] [0.0]
+        Valid Values: Unconstrained
+        Gravitational constant, should be G*M(rmin)/rmin**2
+    gdirec [STRING] ["x"]
+        Valid Values: Unconstrained
+
+    hole_radius [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    mass_loss [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    model_file [STRING] ["file.dat"]
+        Valid Values: Unconstrained
+        Name of input file with 1D model
+    nsub [INTEGER] [4]
+        Valid Values: Unconstrained
+
+    paircond [BOOLEAN] [TRUE]
+
+    point_mass [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    r_exp_max [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    r_exp_min [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    r_s [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    rho_s [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    rho_vac [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    rinner [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    router [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    rt_s [REAL] [0.0]
+        Valid Values: Unconstrained
+        Same as r_s, but for temperature instead of density.
+    shellcond [BOOLEAN] [TRUE]
+
+    shelldens [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    shelltempfac [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    sim_TradInitScaleFactor [REAL] [1.0]
+        Valid Values: Unconstrained
+        scale initial radiation temperature value by this factor.
+    sim_accretionRate [REAL] [1.0]
+        Valid Values: Unconstrained
+        Desired acrretion rate that will be used for the boundary conditions
+    sim_initializeAnalytic [BOOLEAN] [TRUE]
+        Initialize Hydro variables (density, velocity) to the analytical
+        solution?
+    sim_plotScaledPressures [BOOLEAN] [FALSE]
+        indicates whether Eo_wrapped should be called before variables are
+        output to plot files and checkpoints, with the appropriate mode to make
+        sure that radiation pressure, and related variables like pres, gamc, and
+        game, are scaled down by a flux limiter factor (3*lambda).
+    sim_tele [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    sim_tion [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    sim_trad [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    staticGpot [BOOLEAN] [FALSE]
+        Flag for whether or not to fix the gpot in time
+    steep [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    t_s [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    t_vac [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    use_PnotT [BOOLEAN] [FALSE]
+
+    vel_mult [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    vel_wind [REAL] [0.0]
+        Valid Values: Unconstrained
+
+
+Simulation/SimulationMain/radflaHD/CriticalRadShock
+    sim_M0 [REAL] [1.0]
+        Valid Values: Unconstrained
+        shock mach number
+    sim_P0 [REAL] [1.0]
+        Valid Values: Unconstrained
+        ratio of radiation pressure to material pressure
+    sim_rho [REAL] [1.0]
+        Valid Values: Unconstrained
+        reference density
+    sim_tgas [REAL] [1.0]
+        Valid Values: Unconstrained
+        gas temperature
+    sim_trad [REAL] [1.0]
+        Valid Values: Unconstrained
+        radiation temperature
+    sim_velx [REAL] [1.0]
+        Valid Values: Unconstrained
+        speed of gas
+
+Simulation/SimulationMain/radflaHD/EnergyXchange
+    sim_rho [REAL] [1.0]
+        Valid Values: Unconstrained
+        Initial radiation temperature
+    sim_tele [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    sim_tion [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    sim_trad [REAL] [1.0]
+        Valid Values: Unconstrained
+
+
+Simulation/SimulationMain/radflaHD/RadBlastWave
+    ExpEner [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    bombRad [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    bombRadIn [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    coremass [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    ener_exp [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    gconst [REAL] [0.0]
+        Valid Values: Unconstrained
+        Gravitational constant, should be G*M(rmin)/rmin**2
+    gdirec [STRING] ["x"]
+        Valid Values: Unconstrained
+
+    hole_radius [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    mass_loss [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    model_file [STRING] ["file.dat"]
+        Valid Values: Unconstrained
+        Name of input file with 1D model
+    nsub [INTEGER] [4]
+        Valid Values: Unconstrained
+
+    paircond [BOOLEAN] [TRUE]
+
+    point_mass [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    r_exp_max [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    r_exp_min [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    r_s [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    rho_s [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    rho_vac [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    rinner [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    router [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    shellcond [BOOLEAN] [TRUE]
+
+    shelldens [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    shelltempfac [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    sim_plotScaledPressures [BOOLEAN] [FALSE]
+        indicates whether Eo_wrapped should be called before variables are
+        output to plot files and checkpoints, with the appropriate mode to make
+        sure that radiation pressure, and related variables like pres, gamc, and
+        game, are scaled down by a flux limiter factor (3*lambda).
+    sim_tele [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    sim_tion [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    sim_trad [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    staticGpot [BOOLEAN] [FALSE]
+        Flag for whether or not to fix the gpot in time
+    steep [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    t_s [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    t_vac [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    use_PnotT [BOOLEAN] [FALSE]
+
+    vel_mult [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    vel_wind [REAL] [0.0]
+        Valid Values: Unconstrained
+
+
+Simulation/SimulationMain/unitTest/Cosmology
+    eintSwitch [REAL] [0.0]
+        Valid Values: Unconstrained
+
+
+Simulation/SimulationMain/unitTest/Eos
+    eosMode [STRING] ["dens_temp"]
+        Valid Values: Unconstrained
+        The Mode for applying Eos
+    sim_densMax [REAL] [1.e8]
+        Valid Values: Unconstrained
+        Initial distribution of density, maximum.  Even distribution between
+        logarithm of min/max.
+    sim_densMin [REAL] [1.e-2]
+        Valid Values: Unconstrained
+        Initial distribution of density, minimum.  Even distribution between
+        logarithm of min/max.
+    sim_initialMass [INTEGER] [-1]
+        Valid Values: -1 to INFTY
+        Distribution of initial mass.  -1 to put gradient in SPEC(1) and
+        SPEC(NSPECIES) 0 to divide evenly throughout SPECIES i to put all mass
+        on SPECIES i
+    sim_presMax [REAL] [1.e7]
+        Valid Values: Unconstrained
+        Initial distribution of pressure, maximum.  Even distribution between
+        logarithm of min/max
+    sim_presMin [REAL] [1.e-2]
+        Valid Values: Unconstrained
+        Initial distribution of pressure, minimum.  Even distribution between
+        logarithm of min/max
+    sim_tempMax [REAL] [1.e9]
+        Valid Values: Unconstrained
+        Initial distribution of temperature, maximum.  Even distribution between
+        logarithm of min/max
+    sim_tempMin [REAL] [1.e5]
+        Valid Values: Unconstrained
+        Initial distribution of temperature, minimum.  Even distribution between
+        logarithm of min/max
+    sim_xnMax [REAL] [1.0]
+        Valid Values: Unconstrained
+        Initial distribution of a single species, maximum.  Even distribution
+        between logarithm of min/max
+    sim_xnMin [REAL] [1.e-10]
+        Valid Values: Unconstrained
+        Initial distribution of a single species, minimum.  Even distribution
+        between logarithm of min/max
+    smallt [REAL] [1.E-10]
+        Valid Values: Unconstrained
+        Cutoff value for temperature
+
+Simulation/SimulationMain/unitTest/Eos/timeEosUnitTest
+    num_eos_calls [INTEGER] [30000]
+        Valid Values: 1 to INFTY
+
+
+Simulation/SimulationMain/unitTest/Gravity/BHTree
+    abar_1 [REAL] [2.0]
+        Valid Values: Unconstrained
+
+    abar_2 [REAL] [0.5]
+        Valid Values: Unconstrained
+
+    gamma_1 [REAL] [1.0001]
+        Valid Values: Unconstrained
+
+    gamma_2 [REAL] [1.0001]
+        Valid Values: Unconstrained
+
+    jeans_deref [REAL] [64.0]
+        Valid Values: Unconstrained
+        Jeans derefinement criterion. Gives number of cells accross the Jeans
+        length to derefine.
+    jeans_ref [REAL] [32.0]
+        Valid Values: Unconstrained
+        Jeans refinement criterion. Gives number of cells accross the Jeans
+        length to refine.
+    sim_nSubZones [INTEGER] [2]
+        Valid Values: Unconstrained
+
+    sim_pertType [INTEGER] [0]
+        Valid Values: Unconstrained
+
+    sim_pertamp [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    sim_radprof_file [STRING] ["be1sm+1+4-xi10"]
+        Valid Values: Unconstrained
+
+    sim_solutionErrorTolerance1 [REAL] [5.e-3]
+        Valid Values: 0 to INFTY
+        the maximum relative deviation of the computed from the analytical
+        potential for which the test shall be considered a success. This
+        tolerance is applied immediately after the potential is computed
+        numerically for the first time.
+    sim_solutionErrorTolerance2 [REAL] [5.e-3]
+        Valid Values: 0 to INFTY
+        the maximum relative deviation of the computed from the analytical
+        potential for which the test shall be considered a success. This
+        tolerance is applied after each time evolution step (if the test is
+        configured to do time steps, by choice of the 'nend' runtime parameter
+        etc.).
+    sim_spharm_l1 [INTEGER] [0]
+        Valid Values: Unconstrained
+
+    sim_spharm_m1 [INTEGER] [0]
+        Valid Values: Unconstrained
+
+    sim_velamp [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    sim_vx [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    sim_vy [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    sim_vz [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    sim_xCenter [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    sim_yCenter [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    sim_zCenter [REAL] [0.0]
+        Valid Values: Unconstrained
+
+
+Simulation/SimulationMain/unitTest/Gravity/BHTree-cylinder
+    abar_1 [REAL] [2.3]
+        Valid Values: Unconstrained
+
+    abar_2 [REAL] [0.6]
+        Valid Values: Unconstrained
+
+    gamma_1 [REAL] [1.0001]
+        Valid Values: Unconstrained
+
+    gamma_2 [REAL] [1.0001]
+        Valid Values: Unconstrained
+
+    sim_dens_c [REAL] [1.6605387e-24]
+        Valid Values: Unconstrained
+        Density inside cylinder
+    sim_press_a [REAL] [6.853383244768104e-16]
+        Valid Values: Unconstrained
+        Pressure outside the cylinder
+    sim_solutionErrorTolerance1 [REAL] [1.e-3]
+        Valid Values: 0 to INFTY
+
+    sim_solutionErrorTolerance2 [REAL] [1.e-3]
+        Valid Values: 0 to INFTY
+
+    sim_temp_a [REAL] [100.0]
+        Valid Values: Unconstrained
+        Temperature outside cylinder
+    sim_temp_c [REAL] [10.0]
+        Valid Values: Unconstrained
+        Temperature inside cylinder
+
+Simulation/SimulationMain/unitTest/Gravity/BHTree-jeans
+    abar_1 [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    gamma_1 [REAL] [1.0001]
+        Valid Values: Unconstrained
+
+    sim_T0 [REAL] [1.0e4]
+        Valid Values: Unconstrained
+
+    sim_delta [REAL] [0.1]
+        Valid Values: Unconstrained
+
+    sim_hx [REAL] [3.0]
+        Valid Values: Unconstrained
+
+    sim_hy [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    sim_hz [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    sim_rho0 [REAL] [1.6605387e-24]
+        Valid Values: Unconstrained
+
+    sim_solutionErrorTolerance1 [REAL] [1.e-3]
+        Valid Values: 0 to INFTY
+        the maximum relative deviation of the computed from the analytical
+        potential for which the test shall be considered a success. This
+        tolerance is applied immediately after the potential is computed
+        numerically for the first time.
+    sim_solutionErrorTolerance2 [REAL] [1.e-3]
+        Valid Values: 0 to INFTY
+        the maximum relative deviation of the computed from the analytical
+        potential for which the test shall be considered a success. This
+        tolerance is applied after each time evolution step (if the test is
+        configured to do time steps, by choice of the 'nend' runtime parameter
+        etc.).
+
+Simulation/SimulationMain/unitTest/Gravity/BHTree-layer
+    abar_1 [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    gamma_1 [REAL] [1.0001]
+        Valid Values: Unconstrained
+
+    sim_dir [INTEGER] [3]
+        Valid Values: Unconstrained
+
+    sim_prof_file [STRING] ["layer_prof"]
+        Valid Values: Unconstrained
+
+    sim_solutionErrorTolerance1 [REAL] [1.e-3]
+        Valid Values: 0 to INFTY
+        the maximum relative deviation of the computed from the analytical
+        potential for which the test shall be considered a success. This
+        tolerance is applied immediately after the potential is computed
+        numerically for the first time.
+    sim_solutionErrorTolerance2 [REAL] [1.e-3]
+        Valid Values: 0 to INFTY
+        the maximum relative deviation of the computed from the analytical
+        potential for which the test shall be considered a success. This
+        tolerance is applied after each time evolution step (if the test is
+        configured to do time steps, by choice of the 'nend' runtime parameter
+        etc.).
+    sim_zMidplane [REAL] [0.0]
+        Valid Values: Unconstrained
+
+
+Simulation/SimulationMain/unitTest/Gravity/Poisson
+    sim_subSample [INTEGER] [7]
+        Valid Values: 1 to 12
+        Reflects the subsampling philosophy of Multipole.  See
+        physics/Grid/GridSolvers/Multipole/Config/mpole_subSample
+
+Simulation/SimulationMain/unitTest/Gravity/Poisson3
+    angular_velocity [REAL] [0.]
+        Valid Values: Unconstrained
+        Dimensionless angular velocity (Omega)
+    density [REAL] [1.]
+        Valid Values: -1.0 to INFTY
+        Spheroid density (rho): set to -1 to generate spheroid mass of 1.0
+    eccentricity [REAL] [0.]
+        Valid Values: 0.0 to 1.0
+        Eccentricity of the ellipsoid (e)
+    equatorial_semimajor_axis [REAL] [1.]
+        Valid Values: 0.0 to INFTY
+        Equatorial semimajor axis (a1)
+    nsubzones [INTEGER] [2]
+        Valid Values: 1 to INFTY
+        Number of sub-zones per dimension
+    pass_tolerance [REAL] [0.015]
+        Valid Values: 0.00000000000001 to 1.0
+        Allowed error for testing.  0.015 = 1.5 percent error
+    xctr [REAL] [0.5]
+        Valid Values: Unconstrained
+        X-coordinate of center of spheroid
+    yctr [REAL] [0.5]
+        Valid Values: Unconstrained
+        Y-coordinate of center of spheroid
+    zctr [REAL] [0.5]
+        Valid Values: Unconstrained
+        Z-coordinate of center of spheroid
+
+Simulation/SimulationMain/unitTest/Gravity/Poisson3/timeMultipole
+    num_poisson_solves [INTEGER] [100]
+        Valid Values: 1 to INFTY
+
+
+Simulation/SimulationMain/unitTest/Gravity/Poisson3_active
+    angular_velocity [REAL] [0.]
+        Valid Values: Unconstrained
+        Dimensionless angular velocity (Omega)
+    density [REAL] [1.]
+        Valid Values: -1.0 to INFTY
+        Spheroid density (rho): set to -1 to generate spheroid mass of 1.0
+    eccentricity [REAL] [0.]
+        Valid Values: 0.0 to 1.0
+        Eccentricity of the ellipsoid (e)
+    equatorial_semimajor_axis [REAL] [1.]
+        Valid Values: 0.0 to INFTY
+        Equatorial semimajor axis (a1)
+    nsubzones [INTEGER] [2]
+        Valid Values: 1 to INFTY
+        Number of sub-zones per dimension
+    pass_tolerance [REAL] [0.015]
+        Valid Values: 0.00000000000001 to 1.0
+        Allowed error for testing.  0.015 = 1.5 percent error
+    xctr [REAL] [0.5]
+        Valid Values: Unconstrained
+        X-coordinate of center of spheroid
+    yctr [REAL] [0.5]
+        Valid Values: Unconstrained
+        Y-coordinate of center of spheroid
+    zctr [REAL] [0.5]
+        Valid Values: Unconstrained
+        Z-coordinate of center of spheroid
+
+Simulation/SimulationMain/unitTest/IO/IOMeshReplication
+    totalSharedVars [INTEGER] [12]
+        Valid Values: Unconstrained
+
+
+Simulation/SimulationMain/unitTest/Laser_quadraticTube/Ring
+    sim_printBlockVariables [BOOLEAN] [false]
+        Print what is in each block on each processor?
+
+Simulation/SimulationMain/unitTest/Laser_quadraticTube/RingCubicPath
+    sim_printBlockVariables [BOOLEAN] [false]
+        Print what is in each block on each processor?
+    sim_totalNumberOfBoxes [INTEGER] [10000]
+        Valid Values: Unconstrained
+        The overall number of boxes to hold the results.
+
+Simulation/SimulationMain/unitTest/Laser_quadraticTube/RingExpPotential
+    sim_alpha [INTEGER] [2]
+        Valid Values: Unconstrained
+
+    sim_exitPowerFraction [REAL] [0.5]
+        Valid Values: Unconstrained
+        The fraction of initial ray power that should remain on exit.
+    sim_printBlockVariables [BOOLEAN] [false]
+        Print what is in each block on each processor?
+    sim_totalNumberOfBoxes [INTEGER] [10000]
+        Valid Values: Unconstrained
+        The overall number of boxes to hold the results.
+
+Simulation/SimulationMain/unitTest/Laser_quadraticTube/testI
+    sim_lasersOrientation [STRING] [" "]
+        Valid Values: Unconstrained
+        The orientation of the lasers
+    sim_printBlockVariables [BOOLEAN] [false]
+        Print what is in each block on each processor?
+
+Simulation/SimulationMain/unitTest/Laser_quadraticTube/testII
+    sim_printBlockVariables [BOOLEAN] [false]
+        Print what is in each block on each processor?
+
+Simulation/SimulationMain/unitTest/Multipole
+    density [REAL] [1.]
+        Valid Values: -1.0 to INFTY
+        Spheroid density (rho): set to -1 to generate spheroid mass of 1.0
+    eccentricity [REAL] [0.]
+        Valid Values: 0.0 to 1.0
+        Eccentricity of the ellipsoid (e)
+    equatorialSemimajorAxis [REAL] [1.]
+        Valid Values: 0.0 to INFTY
+        Equatorial semimajor axis (a1)
+    nsubzones [INTEGER] [2]
+        Valid Values: 1 to INFTY
+        Number of sub-zones per dimension
+    passTolerance [REAL] [0.015]
+        Valid Values: 0.00000000000001 to 1.0
+        Allowed error for testing.  0.015 = 1.5 percent error
+    xctr [REAL] [0.5]
+        Valid Values: Unconstrained
+        X-coordinate of center of spheroid
+    yctr [REAL] [0.5]
+        Valid Values: Unconstrained
+        Y-coordinate of center of spheroid
+    zctr [REAL] [0.5]
+        Valid Values: Unconstrained
+        Z-coordinate of center of spheroid
+
+Simulation/SimulationMain/unitTest/PFFT_BlktriFD
+    alpha_x [REAL] [0.]
+        Valid Values: Unconstrained
+
+    waven_x [REAL] [1.]
+        Valid Values: Unconstrained
+
+    waven_y [REAL] [1.]
+        Valid Values: Unconstrained
+
+    waven_z [REAL] [1.]
+        Valid Values: Unconstrained
+
+
+Simulation/SimulationMain/unitTest/PFFT_XYperZneuFD
+    alpha_x [REAL] [0.3141592653589793]
+        Valid Values: Unconstrained
+
+    alpha_y [REAL] [0.3141592653589793]
+        Valid Values: Unconstrained
+
+    waven_x [REAL] [1.]
+        Valid Values: Unconstrained
+
+    waven_y [REAL] [1.]
+        Valid Values: Unconstrained
+
+    waven_z [REAL] [1.]
+        Valid Values: Unconstrained
+
+
+Simulation/SimulationMain/unitTest/ParticlesAdvance
+    sim_maxTolCoeff0 [REAL] [1.0e-8]
+        Valid Values: Unconstrained
+
+    sim_maxTolCoeff1 [REAL] [0.0001]
+        Valid Values: Unconstrained
+
+    sim_maxTolCoeff2 [REAL] [0.01]
+        Valid Values: Unconstrained
+
+    sim_maxTolCoeff3 [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    sim_schemeOrder [INTEGER] [2]
+        Valid Values: Unconstrained
+
+
+Simulation/SimulationMain/unitTest/ParticlesAdvance/HomologousPassive
+    sim_a0 [REAL] [1.0]
+        Valid Values: Unconstrained
+        constant component of velocity field factor a(t)
+    sim_a1 [REAL] [0.1]
+        Valid Values: Unconstrained
+        varying part of velocity field factor a(t)
+    sim_analyticParticlePositions [BOOLEAN] [FALSE]
+
+    sim_fakeMapMeshToParticles [BOOLEAN] [TRUE]
+
+    sim_p_amb [REAL] [8.e5]
+        Valid Values: Unconstrained
+        Gas Pressure: Entire domain receives this ambient parameter
+    sim_rho_amb [REAL] [0.95e-3]
+        Valid Values: Unconstrained
+        Gas Density:  Entire domain receives this ambient parameter
+    sim_seed [REAL] [1.0]
+        Valid Values: Unconstrained
+        Random number seed -- NOT USED please ignore
+    sim_vx_amb [REAL] [0.5]
+        Valid Values: Unconstrained
+        Gas x-velocity:  Dominant flow velocity throughout domain
+    sim_vx_multiplier [REAL] [1.0]
+        Valid Values: Unconstrained
+        Half of the domain in y has x-velocity multiplied by this value
+    sim_vx_pert [REAL] [0.1]
+        Valid Values: Unconstrained
+        Scales [-1,1] random number in x direction: set to zero for uniform flow
+    sim_vy_pert [REAL] [0.1]
+        Valid Values: Unconstrained
+        Scales [-1,1] random number in y direction: set to zero for uniform flow
+    sim_vz_pert [REAL] [0.1]
+        Valid Values: Unconstrained
+        Scales [-1,1] random number in z direction: set to zero for uniform flow
+
+Simulation/SimulationMain/unitTest/ParticlesRefine
+    sim_densityThreshold [REAL] [0.85]
+        Valid Values: Unconstrained
+        the level of density in any cell above which the particles are used to
+        simulate the mass in the domain. This formulation is used only to test
+        refinement based on particles.
+    sim_minBlks [INTEGER] [40]
+        Valid Values: Unconstrained
+        parameter to ensure that refinement is taking place
+    sim_ptMass [REAL] [0.005]
+        Valid Values: Unconstrained
+        mass of one particles when replacing some mass in the domain with active
+        particles to test refinement based on particles count
+    sim_smlRho [REAL] [1.e-10]
+        Valid Values: Unconstrained
+        the smallest allowed value of density so that we don't have overflow in
+        calculations.
+
+Simulation/SimulationMain/unitTest/Pipeline
+    sim_channelSize [INTEGER] [50]
+        Valid Values: Unconstrained
+        The pipeline channel size to be used
+    sim_itemSize [INTEGER] [10]
+        Valid Values: Unconstrained
+        The number of elements in each item
+    sim_lowestNumItemsOnProc [INTEGER] [100]
+        Valid Values: Unconstrained
+        The lowest number of items to reach a processor
+    sim_maxItemsPipeline [INTEGER] [100]
+        Valid Values: Unconstrained
+        The maximum number of items that the pipeline can handle
+
+Simulation/SimulationMain/unitTest/Poisson/BiCG/MgMCPfft
+    alpha_x [REAL] [0.3141592653589793]
+        Valid Values: Unconstrained
+
+    alpha_y [REAL] [0.3141592653589793]
+        Valid Values: Unconstrained
+
+    waven_x [REAL] [1.]
+        Valid Values: Unconstrained
+
+    waven_y [REAL] [1.]
+        Valid Values: Unconstrained
+
+    waven_z [REAL] [1.]
+        Valid Values: Unconstrained
+
+
+Simulation/SimulationMain/unitTest/Poisson/MgMC
+    alpha_x [REAL] [0.3141592653589793]
+        Valid Values: Unconstrained
+
+    alpha_y [REAL] [0.3141592653589793]
+        Valid Values: Unconstrained
+
+    waven_x [REAL] [1.]
+        Valid Values: Unconstrained
+
+    waven_y [REAL] [1.]
+        Valid Values: Unconstrained
+
+    waven_z [REAL] [1.]
+        Valid Values: Unconstrained
+
+
+Simulation/SimulationMain/unitTest/ProtonImaging/CircleDeflection
+    sim_clockwiseB [BOOLEAN] [false]
+        Should B point clockwise (inward force) from each radial position?
+    sim_magneticFluxDensity [REAL] [0.0]
+        Valid Values: Unconstrained
+        The value of the magnetic flux density B
+    sim_printBlockVariables [BOOLEAN] [false]
+        Print what is in each block on each processor?
+    sim_xCenter [REAL] [0.5]
+        Valid Values: Unconstrained
+        The x-coordinate of the center location
+    sim_zCenter [REAL] [0.5]
+        Valid Values: Unconstrained
+        The z-coordinate of the center location
+
+Simulation/SimulationMain/unitTest/ProtonImaging/Validation1
+    sim_clockwiseB [BOOLEAN] [false]
+        Should B point clockwise (inward force) from each radial position?
+    sim_magneticFluxDensity [REAL] [0.0]
+        Valid Values: Unconstrained
+        The value of the magnetic flux density B
+    sim_printBlockVariables [BOOLEAN] [false]
+        Print what is in each block on each processor?
+    sim_xCenter [REAL] [0.5]
+        Valid Values: Unconstrained
+        The x-coordinate of the center location
+    sim_zCenter [REAL] [0.5]
+        Valid Values: Unconstrained
+        The z-coordinate of the center location
+
+Simulation/SimulationMain/unitTest/Roots/x3Polynomials
+    sim_printInfo [BOOLEAN] [false]
+        Should details about solving each polynomial be printed
+
+Simulation/SimulationMain/unitTest/Roots/x4Polynomials
+    sim_printInfo [BOOLEAN] [false]
+        Should details about solving each polynomial be printed
+
+Simulation/SimulationMain/unitTest/RungeKutta/2Dellipse
+    sim_RungeKuttaMethod [STRING] ["CashKarp45"]
+        Valid Values: Unconstrained
+        The method for the Runge Kutta stepper
+    sim_ellipseAspectRatio [REAL] [2.0]
+        Valid Values: Unconstrained
+        The ellipse aspect ratio (major:minor axis)
+    sim_errorFraction [REAL] [1.0e-8]
+        Valid Values: Unconstrained
+        The error fraction for the dependent variables
+    sim_numberOfEllipses [INTEGER] [1]
+        Valid Values: Unconstrained
+        The number of ellipses the particle has to sweep
+    sim_stepSize [REAL] [0.1]
+        Valid Values: Unconstrained
+        The step size
+    sim_x0 [REAL] [1.0]
+        Valid Values: Unconstrained
+        The initial x position of the particle
+    sim_y0 [REAL] [1.0]
+        Valid Values: Unconstrained
+        The initial y position of the particle
+
+Simulation/SimulationMain/unitTest/RungeKutta/3Dcircle
+    sim_RungeKuttaMethod [STRING] ["Fehlberg45"]
+        Valid Values: Unconstrained
+        The method for the Runge Kutta stepper
+    sim_errorFraction [REAL] [1.0e-8]
+        Valid Values: Unconstrained
+        The error fraction for the dependent variables
+    sim_numberOfCircles [INTEGER] [1]
+        Valid Values: Unconstrained
+        The number of circles the particle has to sweep
+    sim_numberOfRungeKuttaSteps [INTEGER] [10]
+        Valid Values: Unconstrained
+        The number of Runge Kutta steps to be performed
+    sim_rx0 [REAL] [1.0]
+        Valid Values: Unconstrained
+        The initial x position of the particle
+    sim_ry0 [REAL] [1.0]
+        Valid Values: Unconstrained
+        The initial y position of the particle
+    sim_rz0 [REAL] [1.0]
+        Valid Values: Unconstrained
+        The initial z position of the particle
+    sim_speed [REAL] [1.0]
+        Valid Values: Unconstrained
+        The speed of the particle
+    sim_stepSize [REAL] [0.1]
+        Valid Values: Unconstrained
+        The step size
+
+Simulation/SimulationMain/unitTest/SinkMomTest
+    refine_var_thresh [STRING] ["none"]
+        Valid Values: Unconstrained
+
+    sim_cs [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    sim_dens [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    sim_massTol [REAL] [1.e20]
+        Valid Values: Unconstrained
+
+    sim_momXTol [REAL] [1.e32]
+        Valid Values: Unconstrained
+
+    sim_momYTol [REAL] [1.e32]
+        Valid Values: Unconstrained
+
+    sim_momZTol [REAL] [1.e32]
+        Valid Values: Unconstrained
+
+    sim_radius [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    sim_sink_mass [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    sim_sink_vx [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    sim_sink_vy [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    sim_sink_vz [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    sim_sink_x [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    sim_sink_y [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    sim_sink_z [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    sim_vx [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    sim_vy [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    sim_vz [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    sim_xcenter [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    sim_ycenter [REAL] [0.0]
+        Valid Values: Unconstrained
+
+    sim_zcenter [REAL] [0.0]
+        Valid Values: Unconstrained
+

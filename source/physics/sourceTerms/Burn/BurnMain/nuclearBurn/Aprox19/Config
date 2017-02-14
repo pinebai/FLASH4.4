@@ -1,0 +1,24 @@
+#	Configuration file for the "aprox19" augmented alpha-chain burn network.
+#  [source/physics/sourceTerms/Burn/BurnMain/nuclearBurn/Aprox19]
+
+REQUIRES physics/Eos
+
+SPECIES    H1    # Properties A=1.  Z=1.  Eb=0.
+SPECIES    HE3   # Properties A=3.  Z=2.  Eb=7.71819
+SPECIES    HE4   # Properties A=4.  Z=2.  Eb=28.29603
+SPECIES    C12   # Properties A=12. Z=6.  Eb=92.16294
+SPECIES    N14   # Properties A=14. Z=7.  Eb=104.65998
+SPECIES    O16   # Properties A=16. Z=8.  Eb=127.62093
+SPECIES    NE20  # Properties A=20. Z=10. Eb=160.64788
+SPECIES    MG24  # Properties A=24. Z=12. Eb=198.25790
+SPECIES    SI28  # Properties A=28. Z=14. Eb=236.53790
+SPECIES    S32   # Properties A=32. Z=16. Eb=271.78250
+SPECIES    AR36  # Properties A=36. Z=18. Eb=306.72020
+SPECIES    CA40  # Properties A=40. Z=20. Eb=342.05680
+SPECIES    TI44  # Properties A=44. Z=22. Eb=375.47720
+SPECIES    CR48  # Properties A=48. Z=24. Eb=411.46900
+SPECIES    FE52  # Properties A=52. Z=26. Eb=447.70800
+SPECIES    FE54  # Properties A=54. Z=26. Eb=471.7696
+SPECIES    NI56  # Properties A=56. Z=28. Eb=484.00300
+SPECIES    NEUT  # Properties A=1.  Z=0.  Eb=0.
+SPECIES    PROT  # Properties A=1.  Z=1.  Eb=0.

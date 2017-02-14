@@ -1,0 +1,169 @@
+<code>
+  <UnitTest>
+    <Gravity>
+      <Poisson3>
+        <Chombo>
+          <UG>
+            <3d>
+              setupName: unitTest/Gravity/Poisson3
+              setupOptions: -auto -3d +chombo_ug -debug +newMpole
+              numProcs: 8
+              parfiles: <pathToSimulations>/unitTest/Gravity/Poisson3/chombo_3d.par
+            </3d>
+          </UG>
+          <AMR>
+            <3d>
+              setupName: unitTest/Gravity/Poisson3
+              setupOptions: -auto -3d +chombo_amr -debug +newMpole
+              numProcs: 8
+              parfiles: <pathToSimulations>/unitTest/Gravity/Poisson3/chombo_3d.par
+            </3d>
+          </AMR>
+        </Chombo>
+      </Poisson3>
+    </Gravity>
+    <Eos>
+      <Multigamma>
+        <Chombo>
+          <AMR>
+            <3d>
+              setupName: unitTest/Eos/Multigamma
+              setupOptions: -auto -3d +chombo_amr +noio -debug
+              numProcs: 1
+              parfiles: <pathToSimulations>/unitTest/Eos/Multigamma/chombo_3d.par
+            </3d>
+          </AMR>
+          <UG>
+            <3d>
+              setupName: unitTest/Eos/Multigamma
+              setupOptions: -auto -3d +chombo_ug +noio -debug
+              numProcs: 1
+              parfiles: <pathToSimulations>/unitTest/Eos/Multigamma/chombo_3d.par
+            </3d>
+          </UG>
+        </Chombo>
+      </Multigamma>
+    </Eos>
+    <PFFT_PoissonFD>
+      <Chombo>
+        <UG>
+          <3d>
+            setupName: unitTest/PFFT_PoissonFD
+            setupOptions: -auto -3d +chombo_ug +noio -debug
+            numProcs: 4
+            pathToParfiles: <pathToSimulations>/unitTest/PFFT_PoissonFD
+            parfiles: <pathToParfiles>/test_UG_4p_3d_16cube.par <pathToParfiles>/test_UG_4p_3d_32cube.par <pathToParfiles>/test_UG_4p_3d_64cube.par <pathToParfiles>/test_UG_4p_3d_128cube.par
+          </3d>
+        </UG>
+      </Chombo>
+    </PFFT_PoissonFD>
+  </UnitTest>
+  <Comparison>
+    <Sedov>
+      <Chombo>
+        <AMR>
+          <2d>
+            setupName: Sedov
+            setupOptions: -auto +chombo_amr -opt
+            numProcs: 4
+            shortPathToBenchmark: <siteDir>/2011-04-14/<buildDir>/<runDir>/<chkMax>
+            parfiles: <pathToSimulations>/Sedov/test_chombo_amr_2d.par
+          </2d>
+        </AMR>
+        <UG>
+          <2d>
+            setupName: Sedov
+            setupOptions: -auto +chombo_ug -opt
+            numProcs: 4
+            shortPathToBenchmark: <siteDir>/2011-02-21/<buildDir>/<runDir>/<chkMax>
+            parfiles: <pathToSimulations>/Sedov/test_chombo_ug_2d.par
+          </2d>
+        </UG>
+      </Chombo>
+    </Sedov>
+    <Sod>
+      <Chombo>
+        <AMR>
+          <2d>
+            <split>
+              setupName: Sod
+              setupOptions: -auto +chombo_amr
+              numProcs: 8
+              shortPathToBenchmark: <siteDir>/2011-04-14/<buildDir>/<runDir>/<chkMax>
+              parfiles: <pathToSimulations>/Sod/test_chombo_amr_2d.par <pathToSimulations>/Sod/test_regular_fluxes_fbs.par <pathToSimulations>/Sod/test_regular_fluxes_exc_pres_fbs.par <pathToSimulations>/Sod/test_hybrid_fluxes_fbs.par <pathToSimulations>/Sod/test_hybrid_fluxes_exc_pres_fbs.par
+            </split>
+            <unsplit>
+              setupName: Sod
+              setupOptions: -auto +chombo_amr +uhd
+              numProcs: 8
+              shortPathToBenchmark: <siteDir>/2011-04-11/<buildDir>/<runDir>/<chkMax>
+              parfiles: <pathToSimulations>/Sod/test_chombo_amr_2d.par
+            </unsplit>
+          </2d>
+        </AMR>
+      </Chombo>
+    </Sod>
+    <Blast2>
+      <Chombo>
+        <AMR>
+          <1d>
+            setupName: Blast2
+            setupOptions: -auto -1d +chombo_amr
+            numProcs: 2
+            shortPathToBenchmark: <siteDir>/2011-04-14/<buildDir>/<runDir>/<chkMax>
+            parfiles: <pathToSimulations>/Blast2/test_regular_fluxes_nofbs_1d.par <pathToSimulations>/Blast2/test_regular_fluxes_exc_pres_nofbs_1d.par <pathToSimulations>/Blast2/test_hybrid_fluxes_nofbs_1d.par <pathToSimulations>/Blast2/test_hybrid_fluxes_exc_pres_nofbs_1d.par
+          </1d>
+        </AMR>
+      </Chombo>
+    </Blast2>
+    <IsentropicVortex>
+      <Chombo>
+        <AMR>
+          <2d>
+            setupName: IsentropicVortex
+            setupOptions: -auto -2d +chombo_amr
+            numProcs: 2
+            shortPathToBenchmark: <siteDir>/2011-04-14/<buildDir>/<runDir>/<chkMax>
+            parfiles: <pathToSimulations>/IsentropicVortex/test_chombo_amr_2d.par
+          </2d>
+        </AMR>
+      </Chombo>
+      <ChomboBug>
+        <1>
+          setupName: IsentropicVortex
+          setupOptions: -auto -2d +chombo_amr
+          numProcs: 3
+          shortPathToBenchmark: <siteDir>/2011-04-11/<buildDir>/<runDir>/<chkMax>
+          parfiles: <pathToSimulations>/IsentropicVortex/test_chombo_3lev_bugs.par
+        </1>
+        <2>
+          setupName: IsentropicVortex
+          setupOptions: -auto -2d +chombo_amr
+          numProcs: 4
+          shortPathToBenchmark: <siteDir>/2011-04-11/<buildDir>/<runDir>/<chkMax>
+          parfiles: <pathToSimulations>/IsentropicVortex/test_chombo_2lev_bugs.par
+        </2>
+        <3>
+          setupName: IsentropicVortex
+          setupOptions: -auto -2d +chombo_amr
+          numProcs: 5
+          shortPathToBenchmark: <siteDir>/2011-04-11/<buildDir>/<runDir>/<chkMax>
+          parfiles: <pathToSimulations>/IsentropicVortex/test_chombo_2lev_bugs.par
+        </3>
+      </ChomboBug>
+    </IsentropicVortex>
+    <StirTurb>
+      <Chombo>
+        <AMR>
+          <3d>
+            setupName: StirTurb
+            setupOptions: -auto -3d +chombo_amr
+            numProcs: 4
+            shortPathToBenchmark: <siteDir>/2011-04-14/<buildDir>/<runDir>/<chkMax>
+            parfiles: <pathToSimulations>/StirTurb/test_chombo_amr_3d.par
+          </3d>
+        </AMR>
+      </Chombo>
+    </StirTurb>
+  </Comparison>
+</code>

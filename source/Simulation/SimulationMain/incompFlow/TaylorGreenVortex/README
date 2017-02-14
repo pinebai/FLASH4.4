@@ -1,0 +1,64 @@
+# Taylor Green Vortex problem, with a constant advection velocity in x direction (uc=1).
+# One hundred steps are run and errors respect to analytical solution are compared. 
+
+# UG Grid:
+/setup incompFlow/TaylorGreenVortex  -2d -auto +ug  -nxb=64 -nyb=32 -debug PfftSolver=HomBcTrigSolver -objdir=TAYLOR_GREEN_UG -parfile=flash_ug_2p_2d.par -site=(YOUR SITE) -noclobber
+
+# Make directory IOData within the object directory.
+
+# Result for step 100, problem run with TWO processors. Linf and L2 norms of error:
+###############################################################################
+      99 1.4588E+00 1.4735E-02  (  4.66    ,   3.09    ,   0.00    ) |  1.495E-02
+ Mean DivUstar, DeltaMass=   8.3443333216389247E-018  -3.2942107550161647E-016
+  
+          Min , Max  U =  0.300892E-01   1.96991    
+          Min , Max  V = -0.969975      0.969975    
+          Min , Max  P = -0.468679      0.468679    
+ Min , Max  Divergence = -0.233147E-14  0.233147E-14
+ Total AB Step Time =   4.0000000000000001E-003
+ *** Wrote plotfile to INS_Taylor_Green_hdf5_plt_cnt_0001 ****
+  
+   100, TimeStep=   0.14735090E-01, SimTime=    1.4735090    
+ ###############################################################################
+     100 1.4735E+00 1.4735E-02  (  4.66    ,   3.09    ,   0.00    ) |  1.495E-02
+ Mean Pressure =   9.7211721425109952E-018
+ Mean Pressure =   9.7211721425109952E-018
+ Nux,Nvy,Npp=        2080        2112        2048
+           0 einf U=   2.1647278199102421E-003 eL2 U=   1.0762964993700315E-003
+           0 einf V=   2.1692350435355973E-003 eL2 U=   1.0680816928041899E-003
+           0 einf P=   4.9655440855697619E-003 eL2 P=   3.2171953765969099E-003
+ Nux,Nvy,Npp=        2080        2112        2048
+
+
+
+# AMR Grid:
+# Setup line:
+./setup incompFlow/TaylorGreenVortex -2d -auto -nxb=16 -nyb=16 -opt -maxblocks=3000 -gridinterpolation=native +pm4dev PfftSolver=HomBcTrigSolver -parfile=flash_pm4dev_4p_2d.par  -objdir=TAYLOR_GREEN_AMR -site=(YOUR SITE) -noclobber
+
+# Make directory IOData within the object directory.
+
+# Result for step 100, problem run with ONE processor. Linf and L2 norms of error:
+ ###############################################################################
+      99 3.6449E-01 3.6817E-03  (  6.47    ,   4.50    ,   0.00    ) |  3.695E-03
+ Mean DivUstar, DeltaMass=   5.2886325720299857E-018  -2.0878684523460700E-016
+ [gr_mgPfftInitGrid]: Able to retain PFFT grid from last time.
+cycle    1 : res_norm_ratio =  2.83E-05 res norm =  9.13E-07 new to old ratio =  3.85E-03
+cycle    2 : res_norm_ratio =  1.99E-07 res norm =  6.43E-09 new to old ratio =  7.04E-03
+cycle    3 : res_norm_ratio =  3.44E-09 res norm =  1.11E-10 new to old ratio =  1.72E-02
+cycle    4 : res_norm_ratio =  9.40E-11 res norm =  3.03E-12 new to old ratio =  2.74E-02
+  
+          Min , Max  U =  0.740482E-02   1.99260    
+          Min , Max  V = -0.992713      0.992712    
+          Min , Max  P = -0.492574      0.492575    
+ Min , Max  Divergence = -0.226485E-13  0.376366E-13
+ Total AB Step Time =  0.52500000000000002     
+  
+   100, TimeStep=   0.36816925E-02, SimTime=   0.36816925    
+ ###############################################################################
+     100 3.6817E-01 3.6817E-03  (  6.47    ,   4.50    ,   0.00    ) |  3.695E-03
+ Mean Pressure =  -1.4939960049640228E-017
+ Nux,Nvy,Npp=       34816       34816       32768
+           0 einf U=   1.1082602986300927E-004 eL2 U=   3.6026866567708342E-005
+           0 einf V=   8.0589711074829928E-005 eL2 U=   3.4549799862545403E-005
+           0 einf P=   1.0738268586333866E-003 eL2 P=   6.6343225141372354E-004
+

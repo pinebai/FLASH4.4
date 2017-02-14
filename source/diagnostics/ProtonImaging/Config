@@ -1,0 +1,8 @@
+# Config file for ProtonImaging unit
+DEFAULT ProtonImagingMain
+
+D 	useProtonImaging flag indicating whether to use the ProtonImaging unit
+PARAMETER useProtonImaging BOOLEAN CONSTANT FALSE
+
+# localAPI 
+CHILDORDER localAPI

@@ -1,0 +1,402 @@
+dnl This script aids in the creation of the Makefile.h file for a
+dnl specific site for the FLASH code.
+dnl
+dnl Default Behaviors (no flags to configure)
+dnl	Prototype: Linux
+dnl	HDFPATH  : none
+dnl     MPIPATH  : searches paths
+
+dnl Process this file with autoconf to produce a configure script.
+AC_INIT()
+
+dnl Initialize the non-standard configure variables.
+AC_SUBST(F77)
+AC_SUBST(CC)
+AC_SUBST(CXX)
+AC_SUBST(LINK)
+AC_SUBST(FFLAGS)
+AC_SUBST(FFLAGS_DEBUG)
+AC_SUBST(CFLAGS)
+AC_SUBST(CFLAGS_DEBUG)
+AC_SUBST(CPPFLAGS)
+AC_SUBST(LDFLAGS)
+AC_SUBST(LDFLAGS_DEBUG)
+AC_SUBST(F90FLAGS)
+AC_SUBST(f90FLAGS)
+AC_SUBST(HDF_HOME)
+AC_SUBST(MPI_HOME)
+AC_SUBST(LIBS)
+AC_SUBST(BRENAMES)
+AC_SUBST(MACHOBJ)
+
+BRENAMES=""
+
+dnl Cannot easily use --build because I need to figure out
+dnl AC_CANONICAL_SYSTEMS first.  So, I am going to abuse --with.
+
+AC_MSG_CHECKING(What prototype to build)
+AC_ARG_WITH(prototype,
+[  --with-prototype=OS     AIX/IRIX64/Linux/TFLOPS/UNICOS
+  --without-protoype      This is meaningless.  Must have a system type],
+
+[if test "$withval" != no; then
+	PROTO="$withval"
+	AC_MSG_RESULT(yes : $PROTO)
+else
+	AC_MSG_RESULT(no)
+	AC_MSG_ERROR(You must specify a prototype OS)
+fi],
+PROTO="Linux")
+
+dnl ####
+dnl Sets the default mpich comilers for Linux architecture
+dnl ####
+
+case $PROTO in
+AIX) 
+	PROTO_CC=newmpcc
+	PROTO_CXX=newmpCC
+	PROTO_F77=newmpxlf
+	PROTO_FC=newmpxlf
+	PROTO_LINK=newmpxlf
+
+	PROTO_FFLAGS="-O3 -qintsize=4 -qrealsize=8 -cpp -c -qfixed \
+             -qalias=noaryovrlp -qtune=auto"
+	PROTO_FFLAGS_DEBUG=" -g -qintsize=4 -qrealsize=8 -cpp -c -qfixed"
+	PROTO_CFLAGS="-c -O3 -qalias=noaryovrlp -qtune=auto -DIBM"
+	PROTO_CFLAGS_DEBUG="-g -c -DIBM"
+
+	PROTO_LDFLAGS="\$(BRENAMES) -o"
+	PROTO_LDFLAGS_DEBUG="\$(BRENAMES) -o"
+
+	PROTO_F90FLAGS="-qsuffix=f=F90:cpp=F90 -qfree"
+	PROTO_f90FLAGS="-qsuffix=f=f90:cpp=F90 -qfree"
+
+	PROTO_MPI_HOME=""
+
+	dnl Default HDF setting - not serial default HDF5
+
+	PROTO_HDF4_HOME="/usr/local/lib/HDF/4.0r2"
+	PROTO_HDF4_LDFLAGS="-L\$(HDFPATH)/lib"
+	PROTO_HDF4_CPPFLAGS="-I\$(HDFPATH)/include"
+	PROTO_HDF4_LIBS="-lmfhdf -ljpeg -ldf -lz"
+
+	PROTO_HDF5_HOME="/usr/local/hdf5/hdf5-1.2.0_released/serial"
+	PROTO_HDF5_LDFLAGS=""
+	PROTO_HDF5_CPPFLAGS="-I \$(HDFPATH)/include"
+	PROTO_HDF5_LIBS="-L \$(HDFPATH)/lib -lhdf5"
+	
+;;
+IRIX64)
+	PROTO_CC=cc
+	PROTO_CXX=CC
+	PROTO_F77=f90
+	PROTO_FC=f90
+	PROTO_LINK=f90
+
+	PROTO_FFLAGS="-c -Ofast=ip27 -OPT:Olimit=0:IEEE_arithmetic=3:roundoff=3 -IPA \
+		-r8 -d8 -i4 -cpp -r10000 -LNO"
+	PROTO_FFLAGS_DEBUG="-c -DEBUG:subscript_check=ON:verbose_runtime=ON -r8 -d8 -i4 \
+		-cpp -g -static"
+	PROTO_CFLAGS="-IPA -Ofast=ip27 -c"
+	PROTO_CFLAGS_DEBUG="-g -c"
+
+	PROTO_MPI_HOME="/usr/lib32"
+
+	PROTO_LDFLAGS=""
+	PROTO_LDFLAGS_DEBUG="-g"
+
+	PROTO_HDF4_HOME="/opt/pkgs/HDF/4.1r2_irix64v6.4-n32"
+	PROTO_HDF4_LDFLAGS="-L\$(HDFPATH)/lib"
+	PROTO_HDF4_CPPFLAGS="-I\$(HDFPATH)/include"
+	PROTO_HDF4_LIBS="-lmfhdf -ljpeg -ldf -lz"
+
+	PROTO_HDF5_HOME="/opt/pkgs/HDF5-1.2.1"
+	PROTO_HDF5_LDFLAGS=""
+	PROTO_HDF5_CPPFLAGS="-I \$(HDFPATH)/include"
+	PROTO_HDF5_LIBS="-L \$(HDFPATH)/lib -lhdf5"
+
+;;
+Linux)
+	PROTO_CC=cc
+	PROTO_CXX=c++
+	PROTO_F77=pgf90
+	PROTO_FC=pgf90
+	PROTO_LINK=pgf90
+
+	PROTO_FFLAGS="-c -Mdclchk -fast -r8 -i4 ${CPPFLAGS}"
+	PROTO_FFLAGS_DEBUG="$FFLAGS -g"
+	PROTO_CFLAGS="-c ${CPPFLAGS}"
+	PROTO_CFLAGS_DEBUG="${CFLAGS} -g"
+
+	PROTO_MPI_HOME="/usr/mpi"
+
+dnl LDFLAGS="-L/usr/mpi/lib -L/usr/local/hdf4/lib"
+dnl CPPFLAGS="-I/usr/mpi/include"
+	PROTO_LDFLAGS=""
+	PROTO_LDFLAGS_DEBUG=""
+
+	PROTO_HDF4_HOME="/usr/local/hdf4"
+	PROTO_HDF4_LDFLAGS="-L\$(HDFPATH)/lib"
+	PROTO_HDF4_CPPFLAGS="-I\$(HDFPATH)/include"
+	PROTO_HDF4_LIBS="-lmfhdf -ljpeg -ldf -lz"
+
+	PROTO_HDF5_HOME="/usr/local/hdf5/"
+	PROTO_HDF5_LDFLAGS=""
+	PROTO_HDF5_CPPFLAGS="-I \$(HDFPATH)/include"
+	PROTO_HDF5_LIBS="-L \$(HDFPATH)/lib -lhdf5"
+
+;;
+TFLOPS)
+	PROTO_CC=cicc
+	PROTO_CXX=ciCC
+	PROTO_F77=cif90
+	PROTO_FC=cif90
+	PROTO_LINK=cif90
+
+	PROTO_FFLAGS="-byteswapio -fast -O2 -r8 -c"
+	PROTO_FFLAGS_DEBUG="-g -c"
+	PROTO_CFLAGS="-fast -c"
+	PROTO_CFLAGS_DEBUG="-g -c"
+
+	PROTO_LIBS="${LIBS} -lc -lnoop_stubs"
+
+	PROTO_MPI_HOME="/usr"
+
+	PROTO_LDFLAGS="-lnoop_stubs -o"
+	PROTO_LDFLAGS_DEBUG="-lnoop_stubs -o"
+	
+	PROTO_HDF4_HOME="/usr/community/hdf"
+	PROTO_HDF4_LDFLAGS="-L\$(HDFPATH)/lib"
+	PROTO_HDF4_CPPFLAGS="-I\$(HDFPATH)/include"
+	PROTO_HDF4_LIBS="-lmfhdf -ljpeg -ldf -lz"
+
+	PROTO_HDF5_HOME="/usr/community/hdf5/hdf5-1_2_1"
+	PROTO_HDF5_LDFLAGS=""
+	PROTO_HDF5_CPPFLAGS="-I \$(HDFPATH)/include"
+	PROTO_HDF5_LIBS="-L \$(HDFPATH)/lib -lhdf5"
+
+;;
+UNICOS) 
+	PROTO_CC=cc
+	PROTO_CXX=CC
+	PROTO_F77=f90
+	PROTO_FC=f90
+	PROTO_LINK=f90
+
+	PROTO_FFLAGS="-c -F -02"
+	PROTO_FFLAGS_DEBUG="-g -c"
+	PROTO_CFLAGS="-c"
+	PROTO_CFLAGS_DEBUG="-g -c"
+
+	PROTO_MPI_HOME=""
+
+	PROTO_LDFLAGS="-o"
+	PROTO_LDFLAGS_DEBUG="-o"
+
+	PROTO_HDF4_HOME="/usr/local/lib/HDF/4.0r2"
+	PROTO_HDF4_LDFLAGS="-L\$(HDFPATH)/lib"
+	PROTO_HDF4_CPPFLAGS="-I\$(HDFPATH)/include"
+	PROTO_HDF4_LIBS="-lmfhdf -ljpeg -ldf -lz"
+
+	PROTO_HDF5_HOME="/usr/local/hdf5/hdf5-1.2.0_released/serial"
+	PROTO_HDF5_LDFLAGS=""
+	PROTO_HDF5_CPPFLAGS="-I \$(HDFPATH)/include"
+	PROTO_HDF5_LIBS="-L \$(HDFPATH)/lib -lhdf5"
+;;
+*) 
+	AC_MSG_ERROR(There is not Prototype match, therefore no compilers)
+;;
+esac
+
+AC_ARG_WITH(cc,
+[  --with-cc               The desired cc compiler
+  --without-cc No cc.     This is impossible.  It will use prototype default],
+
+[if test "$withval" != no; then
+	CC="$withval"
+	AC_MSG_RESULT(yes : $CC)
+else
+	AC_MSG_RESULT(default : $PROTO_CC)
+	CC=$PROTO_CC
+fi],
+CC=$PROTO_CC)
+
+AC_ARG_WITH(cxx,
+[  --with-cxx              The desired cc compiler
+  --without-cxx           No cxx.  It will use prototype default],
+
+[if test "$withval" != no; then
+	CXX="$withval"
+	AC_MSG_RESULT(yes : $CXX)
+else
+	AC_MSG_RESULT(default : $PROTO_CXX)
+	CXX=$PROTO_CXX
+fi],
+CXX=$PROTO_CXX)
+
+AC_ARG_WITH(f77,
+[  --with-f77              The desired cc compiler
+  --without-f77           No f77.  It will use prototype default],
+
+[if test "$withval" != no; then
+	F77="$withval"
+	AC_MSG_RESULT(yes : $F77)
+else
+	AC_MSG_RESULT(default : $PROTO_F77)
+	F77=$PROTO_F77
+fi],
+F77=$PROTO_F77)
+
+AC_ARG_WITH(fc,
+[  --with-fc               The desired fc compiler
+  --without-fc No fc.     Fortran compiler required. Will use default],
+
+[if test "$withval" != no; then
+	FC="$withval"
+	AC_MSG_RESULT(yes : $FC)
+else
+	AC_MSG_RESULT(default : $PROTO_FC)
+	FC=$PROTO_FC
+fi],
+FC=$PROTO_FC)
+
+AC_ARG_WITH(linker,
+[  --with-linker           The desired linker
+  --without-linker        A linker is required. Will use default],
+
+[if test "$withval" != no; then
+	LINK="$withval"
+	AC_MSG_RESULT(yes : $LINK)
+else
+	AC_MSG_RESULT(default : $PROTO_LINK)
+	LINK=$PROTO_LINK
+fi],
+LINK=$PROTO_LINK)
+
+AC_ARG_WITH(fflags,
+[  --with-fflag            Desired fortran flags
+  --without-fflags        No flags? Okay - we can try that],
+
+[if test "$withval" != no; then
+	FFLAGS="$withval"
+	AC_MSG_RESULT(yes : $FFLAGS : default was: $PROTO_FFLAGS)
+else
+	AC_MSG_RESULT(default : $FFLAGS)
+	FFLAGS=$PROTO_FFLAGS
+fi],
+FFLAGS=$PROTO_FFLAGS)
+
+AC_ARG_WITH(cflags,
+[  --with-cflag            Desired fortran flags
+  --without-cflags        No flags? Okay - we can try that],
+
+[if test "$withval" != no; then
+	FFLAGS="$withval"
+	AC_MSG_RESULT(yes : $CFLAGS : default was: $PROTO_CFLAGS)
+else
+	AC_MSG_RESULT(default : $CFLAGS)
+	CFLAGS=$PROTO_CFLAGS
+fi],
+CFLAGS=$PROTO_CFLAGS)
+
+AC_ARG_WITH(f90flags,
+[  --with-f90flag          Desired fortran flags
+  --without-f90flags      No flags? Okay - we can try that],
+
+[if test "$withval" != no; then
+	f90FLAGS="$withval"
+	AC_MSG_RESULT(yes : $f90FLAGS : default was: $PROTO_f90FLAGS)
+else
+	AC_MSG_RESULT(default : $f90FLAGS)
+	FFLAGS=$PROTO_f90FLAGS
+fi],
+f90FLAGS=$PROTO_f90FLAGS)
+
+AC_ARG_WITH(F90flags,
+[  --with-F90flag          Desired fortran flags
+  --without-F90flags      No flags? Okay - we can try that],
+
+[if test "$withval" != no; then
+	F90FLAGS="$withval"
+	AC_MSG_RESULT(yes : $F90FLAGS : default was: $PROTO_F90FLAGS)
+else
+	AC_MSG_RESULT(default : $F90FLAGS)
+	FFLAGS=$PROTO_F90FLAGS
+fi],
+F90FLAGS=$PROTO_F90FLAGS)
+
+dnl FFLAGS       = $PROTO_FFLAG
+dnl FFLAGS_DEBUG = $PROTO_FFLAGS_DEBUG
+dnl CFLAGS       = $PROTO_CFLAGS
+dnl CFLAGS_DEBUG = $PROTO_CFLAGS_DEBUG
+dnl F90FLAGS     = $PROTO_F90FLAGS 
+dnl f90FLAGS     = $PROTO_f90FLAGS
+
+HDF_HOME     = $PROTO_HDF_HOME
+MPI_HOME     = $PROTO_MPI_HOME
+
+LDFLAGS=$PROTO_LDFLAGS
+LDFLAGS_DEBUG=$PROTO_LDFLAGS_DEBUG
+
+HDF4_HOME=$PROTO_HDF4_HOME
+HDF4_LDFLAGS=$PROTO_HDF4_LDFLAGS
+HDF4_CPPFLAGS=$PROTO_HDF4_CPPFLAGS
+HDF4_LIBS=$PROTO_HDF4_LIBS
+
+HDF5_HOME=$PROTO_HDF5_HOME
+HDF5_LDFLAGS=$PROTO_HDF5_LDFLAGS
+HDF5_CPPFLAGS=$PROTO_HDF5_CPPFLAGS
+HDF5_LIBS=$PROTO_HDF5_LIBS
+
+
+dnl ####
+dnl Checks for programs.
+dnl ####
+AC_PROG_CC
+AC_PROG_F77
+AC_PROG_CXX
+AC_PROG_RANLIB
+
+FAC_CHECK_MPI
+
+dnl Figure out which HDF to use, and then check up on it
+FAC_WHICH_HDF
+#FAC_CHECK_HDF4
+
+dnl ####
+dnl Checks for header files.
+dnl ####
+dnl mpi include should be looked for in a macro
+dnl in the linux case, we will probably be using mpich, so, their
+dnl wrappers will take care of a lot.
+
+dnl ####
+dnl Checks for typedefs, structures, and compiler characteristics.
+dnl ####
+
+dnl ####
+dnl Checks for library functions.
+dnl ####
+dnl Check for various different commands needed
+dnl Need to check for flags at some point
+dnl (mv -f, ar -f, rm -f)
+dnl The usage AC_CHECK_PROG(VAR,program,
+dnl 	value if prog exists,value is prog does not)
+
+AC_CHECK_PROG(MV,mv,mv,mv)
+AC_CHECK_PROG(AR,ar,ar,ar)
+AC_CHECK_PROG(RM,rm,rm,rm)
+AC_CHECK_PROG(CD,cd,cd,cd)
+AC_CHECK_PROG(ECHO,echo,echo,echo)
+
+dnl AC_CANONICAL_SYSTEM
+dnl AC_MSG_RESULT($build $host $target)
+dnl AC_MSG_RESULT($build_alias $host_alias $target_alias)
+dnl AC_MSG_RESULT($build_cpu $build_vendor $build_os)
+dnl AC_MSG_RESULT($host_cpu $host_vendor $host_os)
+dnl AC_MSG_RESULT($target_cpu $target_vendor $target_os)
+
+#AC_OUTPUT($PROTO/Makefile.h)
+AC_OUTPUT(Makefile.h)
+

@@ -1,0 +1,161 @@
+#-------------------------------------------------------------------
+# FLASH makefile definitions for ALCF (argonne) cluster (eureka)
+# Makefile for optimized version of MPI
+#
+# Your .softenvrc file should contain:
+# +mpich2-mx-1.0.7..2
+# +intel-11.0
+# @default
+#
+# Run with:
+# mpdboot -n 5 -f $COBALT_NODEFILE
+# mpiexec -n 40 ./HelloWorld_mpi2
+#-------------------------------------------------------------------
+
+#----------------------------------------------------------------------------
+# Set the HDF/HDF5 library paths -- these need to be updated for your system
+#----------------------------------------------------------------------------
+
+HDF5_PATH = /soft/apps/hdf5-1.8.3-par-mx
+
+#Use this serial version of HDF5 if you wish to use an MPI environment
+#other than +mpich2-mx-1.0.7..2
+#HDF5_PATH = /soft/apps/hdf5-1.6.7
+
+ZLIB_PATH =
+HYPRE_PATH = /home/scopatz/.local-eureka
+
+HPM_PATH =
+PNG_PATH = 
+
+NCMPI_PATH = 
+
+
+
+
+MPI_PATH = /soft/apps/mpich2-mx-1.0.7..2
+
+LAPACK_PATH = /home/long/lib
+
+#----------------------------------------------------------------------------
+# Compiler and linker commands
+#
+#  We use the f90 compiler as the linker, so some C libraries may explicitly
+#  need to be added into the link line.
+#----------------------------------------------------------------------------
+
+ifdef PDTDIR
+OPT=-optPDBFile=merged.pdb -optTauSelectFile="select.tau" -optReset="" -optVerbose
+else
+#LIB_MPI = -L/$(MPI_PATH)/lib -lmpich.rts -lmsglayer.rts -ldevices.rts -lrts.rts -ldevices.rts
+LIB_MPI = 
+endif
+
+FCOMP   = $(MPI_PATH)/bin/mpif90
+CCOMP   = $(MPI_PATH)/bin/mpicc -I${MPI_PATH}/include
+CPPCOMP = $(MPI_PATH)/bin/mpif90 -I${MPI_PATH}/include
+LINK    = $(MPI_PATH)/bin/mpif90
+
+#CONFIG_LIB = -L/bgl/BlueLight/ppcfloor/bglsys/lib -lmpich.rts -lmsglayer.rts -ldevices.rts -lrts.rts -ldevices.rts
+#-----------------------------------------------------------------------------
+# Compilation flags
+#
+#  Three sets of compilation/linking flags are defined: one for optimized code
+#  code ("-opt"), one for debugging ("-debug"), and one for testing ("-test").
+#  Passing these flags to the setup script will cause the value associated with
+#  the corresponding keys (i.e. those ending in "_OPT", "_DEBUG", or "_TEST") to
+#  be incorporated into the final Makefile. For example, passing "-opt" to the
+#  setup script will cause the flags following "FFLAGS_OPT" to be assigned to
+#  "FFLAGS" in the final Makefile. If none of these flags are passed, the default
+#  behavior will match that of the "-opt" flag.
+#  In general, "-opt" is meant to optimize compilation and linking. "-debug"
+#  should enable runtime bounds checking, debugger symbols, and other compiler-
+#  specific debugging options. "-test" is useful for testing different
+#  combinations of compiler flags particular to your individual system.
+#----------------------------------------------------------------------------
+
+FFLAGS_OPT   = -g -O3 -r8 -i4 -traceback -real_size 64 -auto -c
+FFLAGS_DEBUG = -c -g -r8 -i4 -traceback -check bounds -check format -check output_conversion -warn all -real_size 64 -check uninit -traceback -fp-stack-check -fpe0
+FFLAGS_TEST  = -c -g -r8 -i4 -traceback -real_size 64
+FFLAGS_HYPRE = -I${HYPRE_PATH}/include
+CFLAGS_HYPRE = -I${HYPRE_PATH}/include
+               
+F90FLAGS     =
+f90FLAGS     =
+
+# if we are using HDF5, we need to specify the path to the include files
+
+CFLAGS_OPT   = -O3 -g -traceback -D_LARGEFILE64_SOURCE -c
+CFLAGS_DEBUG = -c -g -traceback -debug extended -D_LARGEFILE64_SOURCE
+CFLAGS_TEST  = -c -g -traceback -D_LARGEFILE64_SOURCE
+
+CFLAGS_HDF5  = -I${HDF5_PATH}/include -DH5_USE_16_API
+CFLAGS_NCMPI = -I$(NCMPI_PATH)/include
+
+MDEFS =
+
+.SUFFIXES: .o .c .f .F .h .fh .F90 .f90
+
+#----------------------------------------------------------------------------
+# Linker flags
+#
+#  There is a seperate version of the linker flags for each of the _OPT, 
+#  _DEBUG, and _TEST cases.
+#----------------------------------------------------------------------------
+
+LFLAGS_OPT   = -O3 -o 
+LFLAGS_TEST  = -O2 -o
+LFLAGS_DEBUG = -g -o
+
+#----------------------------------------------------------------------------
+# Library specific linking
+#
+#  If a FLASH module has a 'LIBRARY xxx' line in its Config file, we need to
+#  create a macro in this Makefile.h for LIB_xxx, which will be added to the
+#  link line when FLASH is built.  This allows us to switch between different
+#  (incompatible) libraries.  We also create a _OPT, _DEBUG, and _TEST
+#  library macro to add any performance-minded libraries (like fast math),
+#  depending on how FLASH was setup.
+#----------------------------------------------------------------------------
+
+
+LIB_MPI   = 
+LIB_HDF5  = -L${HDF5_PATH}/lib -lhdf5 -lz
+LIB_NCMPI = -L$(NCMPI_PATH)/lib -lpnetcdf
+LIB_HYPRE = -L${HYPRE_PATH}/lib -lHYPRE
+
+LIB_MATH  = 
+
+LIB_OPT   =
+LIB_DEBUG =
+LIB_TEST  =
+
+LIB_LAPACK = -L$(LAPACK_PATH) -llapack -lblas
+
+#----------------------------------------------------------------------------
+# Additional machine-dependent object files
+#
+#  Add any machine specific files here -- they will be compiled and linked
+#  when FLASH is built.
+#----------------------------------------------------------------------------
+
+MACHOBJ = 
+
+#----------------------------------------------------------------------------
+# Additional commands
+#---------------------------------------------------------------------------- 
+
+MV = mv -f
+AR = ar -r
+RM = rm -f
+CD = cd
+RL = ranlib
+ECHO = echo
+
+# This next section only applies to compiling FLASH, not some library.
+# Anything that mentions a specific file should be within this ifeq block
+ifeq ($(FLASHBINARY),true)
+＃Simulation += io_meminfoMallinfo.o io_memory_usage_mallinfo.o
+＃CDEFINES += -DHAVE_MALLINFO
+＃$(Simulation) : Makefile.h
+endif

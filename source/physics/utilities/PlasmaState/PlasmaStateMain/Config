@@ -1,0 +1,6 @@
+# Config file for the PlasmaState/PlasmaStateMain implementation
+
+REQUIRES physics/utilities/PlasmaState/localAPI
+
+D         usePlasmaState flags whether the PlasmaState unit is being used at all
+PARAMETER usePlasmaState BOOLEAN TRUE

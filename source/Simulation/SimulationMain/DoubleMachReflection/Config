@@ -1,0 +1,29 @@
+#	Configuration file for the Woodward-Colella Double Mach Reflection problem
+#	Ref: Woodward and Colella, JCP, 54:115-173 (1984)
+
+REQUIRES Driver
+REQUIRES physics/Hydro
+REQUIRES physics/Eos
+
+
+D  sim_rhoLeft		Density in left part of grid
+D  sim_rhoRight		Density in right part of grid
+D  sim_pLeft		Pressure in left part of grid
+D  sim_pRight		Pressure in right part of grid
+D  sim_uLeft		Fluid velocity in right part of grid
+D  sim_uRight		Fluid velocity in right part of grid
+D  sim_vLeft		Fluid velocity in right part of grid
+D  sim_vRight		Fluid velocity in right part of grid
+D  sim_posn	        Point of intersection between the shock plane and the x-axis
+D sim_xangle  		Angle made by diaphragm normal w/x-axis (deg)
+ 
+PARAMETER sim_rhoLeft	REAL    1.4
+PARAMETER sim_rhoRight	REAL    8.0
+PARAMETER sim_pLeft	REAL    1.0
+PARAMETER sim_pRight	REAL    116.5
+PARAMETER sim_uLeft	REAL    0.0
+PARAMETER sim_uRight	REAL    7.1447096
+PARAMETER sim_vLeft	REAL    0.0
+PARAMETER sim_vRight	REAL    -4.125
+PARAMETER sim_posn	REAL	0.1666666666
+PARAMETER sim_xangle	REAL	60.

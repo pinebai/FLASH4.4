@@ -1,0 +1,20 @@
+# Config for IO/IOMain/hdf5/parallel
+
+DEFAULT PM
+
+USESETUPVARS Grid, fixedBlockSize, typeIO
+PPDEFINE IO_HDF5_PARALLEL
+
+IF Grid=='UG'
+   DEFAULT UG
+ENDIF
+
+# If running in non-fbs, pull in sub-unit for that instead.
+IF not fixedBlockSize
+   DEFAULT NoFbs
+ENDIF
+
+# The derived datatype I/O works with UG, NoFBS UG and PM.
+IF typeIO
+   DEFAULT PM_argonne
+ENDIF

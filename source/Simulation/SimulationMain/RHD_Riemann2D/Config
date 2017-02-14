@@ -1,0 +1,5 @@
+#	Configuration file for the Relativistic 2D Riemann  problem
+
+REQUIRES Driver
+REQUIRES physics/Hydro/HydroMain/split/RHD
+REQUIRES physics/Eos/EosMain/Gamma/RHD

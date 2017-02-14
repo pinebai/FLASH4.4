@@ -1,0 +1,63 @@
+Planck Absorption
+Planck Absorption
+Planck Absorption
+0.000000E+00
+0.000000E+00
+0.000000E+00
+IONMIX
+h-100grp-lte.imx
+-------------------------------
+Planck Emission
+Planck Emission
+Planck Emission
+0.000000E+00
+0.000000E+00
+0.000000E+00
+IONMIX
+n-100grp-lte.imx
+-------------------------------
+Constant
+Constant
+Constant
+1.000000E+01
+2.000000E+01
+3.000000E+01
+VOID
+void
+-------------------------------
+Rosseland
+Rosseland
+Rosseland
+0.000000E+00
+0.000000E+00
+0.000000E+00
+IONMIX
+o-100grp-lte.imx
+-------------------------------
+Constant
+Constant
+Constant
+3.000000E+00
+5.000000E+00
+7.000000E+00
+VOID
+void
+-------------------------------
+Rosseland
+Constant
+Planck Absorption
+0.000000E+00
+1.234567E+01
+0.000000E+00
+IONMIX
+be-100grp-lte.imx
+-------------------------------
+Planck Absorption
+Planck Emission
+Rosseland
+0.000000E+00
+0.000000E+00
+0.000000E+00
+IONMIX
+xe-100grp-lte.imx
+-------------------------------

@@ -1,0 +1,9 @@
+PARTICLETYPE passive INITMETHOD lattice MAPMETHOD quadratic ADVMETHOD rungekutta
+REQUESTS Particles/ParticlesInitialization/Lattice
+REQUESTS Particles/ParticlesMapping/Quadratic
+
+PARAMETER sim_schemeOrder INTEGER 2
+PARAMETER sim_maxTolCoeff0 REAL 1.0e-8
+PARAMETER sim_maxTolCoeff1 REAL 0.0001
+PARAMETER sim_maxTolCoeff2 REAL 0.01
+PARAMETER sim_maxTolCoeff3 REAL 0.0

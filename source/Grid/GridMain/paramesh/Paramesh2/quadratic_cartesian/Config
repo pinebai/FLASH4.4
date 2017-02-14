@@ -1,0 +1,10 @@
+#  Configuration file for monotonic, conservative, quadrant interpolation
+#  routines
+
+#  Parameters:
+
+D  grid_monotone_hack       If .true., apply radical monotonicity constraints to
+D &                  interpolants (i.e., completely flatten them if they
+D &                  violate monotonicity)
+
+PARAMETER grid_monotone_hack  BOOLEAN  TRUE

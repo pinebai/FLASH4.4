@@ -1,0 +1,99 @@
+#!/bin/sh -f
+
+# a simple script to take the setup_units file created by setup and
+# produce a Fortran 90 Unit that returns the number of units
+# used to build the FLASH executable and a character array containing
+# their names
+
+# set the maximum length of a character string
+max_length=80
+
+units=`cat setup_units | cut -c 1-$max_length`
+
+# count number of units
+num_units=`wc -l setup_units |tr -dc 0-9`
+
+    
+# setup the program body
+cat > setup_flashUnits.F90 << EOF
+
+!!****f* object/setup_flashUnits
+!!
+!! NAME
+!!
+!!  setup_getFlashUnits
+!!
+!!
+!! SYNOPSIS
+!!
+!!
+!!  setup_getFlashUnits(unit_names)
+!!
+!!  setup_getFlashUnits(character())
+!!
+!!
+!! DESCRIPTION
+!!
+!!  Return a character array of size NUM_UNITS containing
+!!  the names of all of the FLASH units used to assemble
+!!  the current executable
+!!
+!!  The unit_names variable should be declared as
+!!
+!!    use flashUnits
+!!
+!!  
+!!    character (len=MAX_STRING_LENGTH) :: flash_units(NUM_UNITS) 
+!!
+!!
+!!  The length of each character string is set to MAX_STRING_LENGTH,
+!!  which is defined in the automatically generated flash_defines.fh
+!!
+!!***
+
+  subroutine setup_getFlashUnits(unit_names)
+
+#include "constants.h"
+    implicit none
+
+    integer, PARAMETER :: NUM_UNITS = $num_units
+    character (len=MAX_STRING_LENGTH) :: unit_names(NUM_UNITS)
+
+!! temporary holds the result of the cat/cut from the setup_unit -- it is
+!! dimensioned to be the same size as the result from the cut so we do
+!! not overflow.  
+    character (len=$max_length) :: temporary
+
+EOF
+
+n=1
+
+for unit in $units
+do
+  echo "    temporary = " \"$unit\" >> setup_flashUnits.F90
+  echo "    unit_names($n) = " temporary\(1:min\(MAX_STRING_LENGTH,$max_length\)\) >> setup_flashUnits.F90
+  echo "  " >> setup_flashUnits.F90
+  n=`expr $n + 1`
+done
+
+
+    cat >> setup_flashUnits.F90 << EOF
+
+    return
+
+  end subroutine setup_getFlashUnits
+
+  subroutine setup_getNumFlashUnits(numUnits)
+
+#include "constants.h"
+    implicit none
+
+    integer, intent(out) :: numUnits
+    integer, PARAMETER :: NUM_UNITS = $num_units
+
+    numUnits = NUM_UNITS
+
+    return
+
+  end subroutine setup_getNumFlashUnits
+

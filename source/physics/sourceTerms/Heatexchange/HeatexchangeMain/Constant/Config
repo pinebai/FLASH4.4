@@ -1,0 +1,39 @@
+# Config for physics/sourceTerms/Heatexchange/HeatexchangeMain/Constant
+
+PARAMETER hx_dtFactor REAL 0.5 [0.0+ ... ]
+
+# Note that this implementations assumes that component *specific
+# energy* difference per temperature difference per time is constant,
+# not that componenet *energy density* difference per temperature
+# difference per time is constant.  The following runtime parameters
+# for the coupling constants should therefore be understood as having
+# units of energy / (mass * temperature * time).
+
+D hx_couplingConst12 ion-electron heat exchange coupling constant
+D hx_couplingConst13 ion-radiation heat exchange coupling constant (usually ignored)
+D hx_couplingConst23 electron-radiation heat exchange coupling constant, representing
+D & emission and absorption effects
+PARAMETER hx_couplingConst12 REAL 1.0 [0.0 ...]
+PARAMETER hx_couplingConst13 REAL 0.0 [-1.0, 0.0 ...]
+PARAMETER hx_couplingConst23 REAL 1.0 [-1.0, 0.0 ...]
+
+D hx_relTol relative tolerance for temperature errors introduced by HeatExchange.
+D & This runtime parameter affects the time step computed by Heatexchange_computeDt.
+D & Basically, if the max (abs) temperature adjustment that would be introduced in any nonzero
+D & component in any cell is less than hx_relTol, then the time step limit is relaxed.
+D & Set to a negative value to inherite the value of runtime parameter eos_tolerance.
+PARAMETER hx_relTol	REAL 	-1.0
+
+USESETUPVARS HxApproach
+
+IF HxApproach in ["SimpleHeun","Heun"]
+   LINKIF Heatexchange.F90.Heun Driver
+   IF HxApproach=="SimpleHeun"
+      PPDEFINE FLASH_HX_SIMPLEHEUN
+   ENDIF
+   IF HxApproach=="Heun"
+      VARIABLE q1dt
+      VARIABLE q2dt
+      VARIABLE q3dt
+   ENDIF
+ENDIF

@@ -1,0 +1,1547 @@
+!!****h* source/source_terms/burn/iso7/net
+!!
+!! NAME
+!!
+!!  net
+!!
+!!
+!! SYNOPSIS
+!!
+!!  use net
+!!
+!!
+!! DESCRIPTION
+!!
+!!  iso7 is the fourth network installed in flash1.5
+!!  it is like the original iso13 network, but uses some equilibrium
+!!  relations during silicon burning in order to go directly
+!!  from silicon to nickel
+!!
+!!     
+!!
+!! METHODS
+!!
+!!  initnet:   initializes the iso7 network
+!!  burner:    drives the iso7 network
+!!
+!!
+!!***
+
+      module net
+
+      public :: burner, initnet
+
+      contains
+
+!..routine iso7 sets up the odes
+!..routine diso7 sets up the dense iso7 jacobian
+!..routine biso7 sets the sparse matrix pointers 
+!..routine siso7 sets up the sparse iso7 jacobian
+!..routine iso7rat evaluates the raw reaction rates
+!..routine iso7tab generates the raw rates by table interpolation
+!..routine screen_iso7 applies screening corrections to the raw rates
+
+
+
+      subroutine burner(tstep,tt,dd,xin,xout,sdot)
+      use dBase, only : ionmax
+      use runtime_parameters
+
+      implicit none
+      include 'eos_common.fh'
+      include 'network_common.fh'
+!      save
+
+
+!..given time step tstep, temperature tt, density dd, and 
+!..composition xin, this routine returns the burned composition xout
+!..and the energy generation rate sdot.
+
+!..declare the pass
+      real             tstep,tt,dd,xin(*),xout(*),sdot
+
+!..local varaibles
+
+!      external         iso7,siso7,biso7,stifbs3,               &
+!     &                 diso7,stifbs_gift,rosen_ma28,rosen_gift
+
+      external         stifbs3,stifbs_gift,rosen_ma28,rosen_gift
+
+
+      integer          i,k,tdim,nok,nbad,kount,iprint,nostore
+      parameter        (tdim=10, iprint=0, nostore=0)
+
+      real             beg,stptry,stpmin,odescal,ys2(ionmax),           &
+     &                 ttime(tdim),elem(ionmax,tdim),                   &
+     &                 avo,ev2erg,conv,tol
+      parameter        (avo  = 6.0221367e23,     ev2erg = 1.602e-12,    &
+     &                  conv = ev2erg*1.0e6*avo, tol    = 1.0e-5,       &
+     &                  beg = 0.0e0,             odescal = 1.0e-6)
+
+
+      integer, save :: algebra, ode_steper, use_table
+      logical, save :: first_call = .true.
+
+
+
+!..MPI error information
+      integer FAIL, ierr
+      parameter (FAIL = -1)
+
+
+      if (first_call) then
+         call get_parm_from_context("algebra", algebra )
+         call get_parm_from_context("ode_steper", ode_steper )
+         call get_parm_from_context("use_table", use_table )
+         first_call = .false.
+      end if
+
+!..set the the material and network variables
+      btemp = tt
+      den  = dd
+      do i=1,ionmax
+       xmass(i) = xin(i)
+      enddo
+      call azbar
+      do i=1,ionmax
+       ys2(i) = ymass(i)
+      enddo
+
+
+!..get the reaction rates
+      if (use_table .eq. 1) then
+       call iso7tab
+      else
+       call iso7rat
+      endif
+      call screen_iso7(ymass)
+
+
+!..set the time step variables for a single point burn
+      stptry = tstep
+      stpmin = stptry * 1.0e-20
+
+
+!..bader-deuflhard integration
+      if (ode_steper .eq. 1) then
+
+
+!..with ma28 algebra
+       if (algebra .eq. 1) then
+        call netint(beg,stptry,stpmin,tstep,ys2,                        &
+     &              tol,beg,nostore,                                    &
+     &              ttime,elem,tdim,ionmax,tdim,ionmax,                 &
+     &              nok,nbad,kount,odescal,iprint,                      &
+     &              iso7,siso7,biso7,stifbs3)
+
+
+!..with gift algebra
+       else if (algebra .eq. 2) then
+        call netint(beg,stptry,stpmin,tstep,ys2,                        &
+     &              tol,beg,nostore,                                    &
+     &              ttime,elem,tdim,ionmax,tdim,ionmax,                 &
+     &              nok,nbad,kount,odescal,iprint,                      &
+     &              iso7,diso7,biso7,stifbs_gift)
+
+
+!..bad run time parameter
+       else
+        write(6,*) 
+        write(6,*) 'only algebra=1 = ma28'
+        write(6,*) 'and  algebra=2 = gift are valid'
+        write(6,*) 'and you have specified algebra=',algebra
+        write(6,*) 'error in routine burner'
+	    call abort_flash("Error in routine burner")
+       end if
+
+
+!..rosenbrock integration
+      else if (ode_steper .eq. 2) then
+
+!..with ma28 algebra
+       if (algebra .eq. 1) then
+        call netint(beg,stptry,stpmin,tstep,ys2,                        &
+     &              tol,beg,nostore,                                    &
+     &              ttime,elem,tdim,ionmax,tdim,ionmax,                 &
+     &              nok,nbad,kount,odescal,iprint,                      &
+     &              iso7,siso7,biso7,rosen_ma28)
+
+
+!..with gift algebra
+       else if (algebra .eq. 2) then
+        call netint(beg,stptry,stpmin,tstep,ys2,                        &
+     &              tol,beg,nostore,                                    &
+     &              ttime,elem,tdim,ionmax,tdim,ionmax,                 &
+     &              nok,nbad,kount,odescal,iprint,                      &
+     &              iso7,diso7,biso7,rosen_gift)
+
+
+!..bad run time parameter
+       else
+        write(6,*) 
+        write(6,*) 'only algebra=1 = ma28'
+        write(6,*) 'and  algebra=2 = gift are valid'
+        write(6,*) 'and you have specified algebra=',algebra
+        write(6,*) 'error in routine burner'
+	    call abort_flash("Error in routine burner")
+       end if
+      end if
+
+
+      xoktot  = xoktot + real(nok)
+      xbadtot = xbadtot + real(nbad)
+
+
+
+!..the average energy generated over the time step
+      sdot = 0.0e0
+      do k=1,ionmax
+       sdot = sdot + (ys2(k) - ymass(k)) * bion(k)
+      enddo
+      sdot = sdot * conv/tstep
+
+
+!..take into neutrino losses
+      call sneutx
+      sdot = sdot - sneut
+
+
+!..update the composition 
+      do i=1,ionmax
+        xout(i)  = ys2(i) * aion(i)
+      enddo
+      return
+      end subroutine burner
+
+
+
+
+
+
+      subroutine iso7(tt,y,dydt)   
+      use dBase, ONLY : ionmax
+      implicit none
+!      save
+      include 'eos_common.fh'
+      include 'network_common.fh'
+
+!.. 
+!..this routine sets up the system of ode's for the iso7 nuclear reactions.
+!..
+!..isotopes: he4, c12, o16, ne20, mg25, si28, ni56
+!.. 
+!..declare
+      integer i
+      real    tt,y(*),dydt(*),t9,yeff_ca40,yeff_ti44,                   &
+     &                 t9i,t932,t9i32,rsi2ni,rni2si
+
+
+!..positive definite mass fractions
+      do i=1,ionmax
+       y(i) = min(1.0e0,max(y(i),1.0e-30))
+      enddo
+
+
+!..some common factors and branching ratios
+      t9    = btemp * 1.0e-9
+      t9i   = 1.0e0/t9
+      t932  = t9 * sqrt(t9)
+      t9i32 = 1.0e0/t932
+
+
+!..rsi2ni is the rate for silicon to nickel
+!..rni2si is the rate for nickel to silicon
+      rsi2ni = 0.0e0
+      rni2si = 0.0e0
+!      if (t9 .gt. 20.0) then
+      if (t9 .gt. 2.5 .and. y(ic12)+y(io16) .le. 4.0e-3) then
+       yeff_ca40 = (t9i32**3) * exp(239.42*t9i-74.741)
+       yeff_ti44 = (t932**3) * exp(-274.12*t9i+74.914)
+       rsi2ni = yeff_ca40*den**3 * y(ihe4)**3 * ratdum(ircaag)*y(isi28)
+       rni2si = min(1.0e20,yeff_ti44*ratdum(irtiga)/(den**3*y(ihe4)**3))
+      end if
+
+
+!..set up the system of ode's : 
+!..4he reactions  
+      dydt(ihe4) =  3.0 * y(ic12) * ratdum(irg3a)                       &
+     &            - 3.0 * y(ihe4) * y(ihe4) * y(ihe4) * ratdum(ir3a)    &
+     &            + y(io16) * ratdum(iroga)                             &
+     &            - y(ic12) * y(ihe4) * ratdum(ircag)                   &
+     &            + y(ic12) * y(ic12) * ratdum(ir1212)                  &
+     &            + 0.5e0 * y(ic12) * y(io16) * ratdum(ir1216)          &
+     &            + y(io16) * y(io16) * ratdum(ir1616)                  &
+     &            - y(io16) * y(ihe4) * ratdum(iroag)                   &
+     &            + y(ine20) * ratdum(irnega)                           &
+     &            + y(img24) * ratdum(irmgga)                           &
+     &            - y(ine20) * y(ihe4) * ratdum(irneag)                 &
+     &            + y(isi28) * ratdum(irsiga)                           &
+     &            - y(img24) * y(ihe4) * ratdum(irmgag)                 &
+     &            - 7.0e0 * rsi2ni * y(ihe4)                            &
+     &            + 7.0e0 * rni2si * y(ini56)
+
+
+!..12c reactions  
+      dydt(ic12) =   y(ihe4) * y(ihe4) * y(ihe4) * ratdum(ir3a)         &
+     &             - y(ic12) * ratdum(irg3a)                            &
+     &             + y(io16) * ratdum(iroga)                            &
+     &             - y(ic12) * y(ihe4) * ratdum(ircag)                  &
+     &             - 2.0e0 * y(ic12) * y(ic12) * ratdum(ir1212)         &
+     &             - y(ic12) * y(io16) * ratdum(ir1216)
+
+!..16o reactions  
+      dydt(io16) = -y(io16) * ratdum(iroga)                             &
+     &            + y(ic12) * y(ihe4) * ratdum(ircag)                   &
+     &            - y(ic12) * y(io16) * ratdum(ir1216)                  &
+     &            - 2.0e0 * y(io16) * y(io16) * ratdum(ir1616)          &
+     &            - y(io16) * y(ihe4) * ratdum(iroag)                   &
+     &            + y(ine20) * ratdum(irnega)
+
+!..20ne reactions 
+      dydt(ine20) =  y(ic12) * y(ic12) * ratdum(ir1212)                 &
+     &             + y(io16) * y(ihe4) * ratdum(iroag)                  &
+     &             - y(ine20) * ratdum(irnega)                          &
+     &             + y(img24) * ratdum(irmgga)                          &
+     &             - y(ine20) * y(ihe4) * ratdum(irneag)
+
+
+!..24mg reactions  
+      dydt(img24) =  0.5e0 * y(ic12) * y(io16) * ratdum(ir1216)         &
+     &             - y(img24) * ratdum(irmgga)                          &
+     &             + y(ine20) * y(ihe4) * ratdum(irneag)                &
+     &             + y(isi28) * ratdum(irsiga)                          &
+     &             - y(img24) * y(ihe4) * ratdum(irmgag)
+
+!..28si reactions  
+      dydt(isi28) =  0.5e0 * y(ic12) * y(io16) * ratdum(ir1216)         &
+     &             + y(io16) * y(io16) * ratdum(ir1616)                 &
+     &             - y(isi28) * ratdum(irsiga)                          &
+     &             + y(img24) * y(ihe4) * ratdum(irmgag)                &
+     &             - rsi2ni * y(ihe4)                                   &
+    &             + rni2si * y(ini56)
+
+!..ni56 reactions  
+      dydt(ini56) =  rsi2ni * y(ihe4)                                   &
+     &             - rni2si*y(ini56)
+
+      return
+      end subroutine iso7
+
+
+
+
+
+
+      subroutine diso7(tt,y,dfdy,nlog,nphys)   
+      use dBase, ONLY : ionmax
+      implicit none
+!      save
+      include 'eos_common.fh'
+      include 'network_common.fh'
+!
+!..this routine sets up the dense iso7 jacobian
+!
+!..declare
+      integer    nlog,nphys,i,j
+      real       tt,y(*),dfdy(nphys,nphys),t9,yeff_ca40,                &
+     &           yeff_ti44,t9i,t932,t9i32,rsi2ni,rni2si,                &
+     &           rsi2nida,rsi2nidsi,rni2sida
+
+
+!..zero the jacobian
+      do j=1,nlog
+       do i=1,nlog
+        dfdy(i,j) = 0.0e0
+       enddo
+      enddo
+
+
+!..positive definite mass fractions
+      do i=1,ionmax
+       y(i) = min(1.0e0,max(y(i),1.0e-30))
+      enddo
+
+
+!..some common factors and branching ratios
+      t9    = btemp * 1.0e-9
+      t9i   = 1.0e0/t9
+      t932  = t9 * sqrt(t9)
+      t9i32 = 1.0e0/t932
+
+
+!..rsi2ni is the rate for silicon to nickel
+!..rni2si is the rate for nickel to silicon
+      rsi2ni    = 0.0e0
+      rsi2nida  = 0.0e0
+      rsi2nidsi = 0.0e0
+      rni2si    = 0.0e0
+      rni2sida  = 0.0e0
+
+!      if (t9 .gt. 20.0) then
+      if (t9 .gt. 2.5 .and. y(ic12)+y(io16) .le. 4.0e-3) then
+       yeff_ca40 = (t9i32**3) * exp(239.42*t9i-74.741)
+       yeff_ti44 = (t932**3) * exp(-274.12*t9i+74.914)
+       rsi2ni    = yeff_ca40*den**3*y(ihe4)**3*ratdum(ircaag)*y(isi28)
+       rsi2nida  = 3.0e0 * rsi2ni/y(ihe4)
+       rsi2nidsi = rsi2ni/y(isi28)
+       rni2si = min(1.0e20,yeff_ti44*ratdum(irtiga)/(den**3*y(ihe4)**3))
+       rni2sida  = -3.0e0 * rni2si/y(ihe4)
+       if (rni2si .eq. 1.0e20) rni2sida = 0.0e0
+      end if
+
+
+
+!..set up the jacobian
+!..4he jacobian elementss
+      dfdy(ihe4,ihe4)  = -6.0e0 * y(ihe4) * y(ihe4) * ratdum(ir3a)      &
+     &                  - y(ic12) * ratdum(ircag)                       &
+     &                  - y(io16) * ratdum(iroag)                       &
+     &                  - y(ine20) * ratdum(irneag)                     &
+     &                  - y(img24) * ratdum(irmgag)                     &
+     &                  - 7.0e0 * rsi2ni                                &
+     &                  - 7.0e0 * rsi2nida * y(ihe4)                    &
+     &                  + 7.0e0 * rni2sida * y(ini56)
+
+      dfdy(ihe4,ic12)  =  3.0e0 * ratdum(irg3a)                         &
+     &                  - y(ihe4) * ratdum(ircag)                       &
+     &                  + 2.0e0 * y(ic12) * ratdum(ir1212)              &
+     &                  + 0.5e0 * y(io16) * ratdum(ir1216)
+
+      dfdy(ihe4,io16)  =  ratdum(iroga)                                 &
+     &                  + 0.5e0 * y(ic12) * ratdum(ir1216)              &
+     &                  + 2.0e0 * y(io16) * ratdum(ir1616)              &
+     &                  - y(ihe4) * ratdum(iroag)
+
+      dfdy(ihe4,ine20) =  ratdum(irnega)                                &
+     &                  - y(ihe4) * ratdum(irneag) 
+
+      dfdy(ihe4,img24) =  ratdum(irmgga)                                &
+     &                  - y(ihe4) * ratdum(irmgag)
+
+      dfdy(ihe4,isi28) =  ratdum(irsiga)                                &
+     &                  - 7.0e0 * rsi2nidsi * y(ihe4)
+
+      dfdy(ihe4,ini56) =  7.0e0 * rni2si
+
+
+
+!..12c jacobian elements 
+      dfdy(ic12,ihe4) =  3.0e0 * y(ihe4) * y(ihe4) * ratdum(ir3a)       &
+     &                  - y(ic12) * ratdum(ircag)
+
+      dfdy(ic12,ic12) = -ratdum(irg3a)                                  &
+     &                 - y(ihe4) * ratdum(ircag)                        &
+     &                 - 4.0e0 * y(ic12) * ratdum(ir1212)               &
+     &                 - y(io16) * ratdum(ir1216)
+
+      dfdy(ic12,io16) =  ratdum(iroga)                                  &
+     &                 - y(ic12) * ratdum(ir1216)
+
+
+!..16o jacobian elements 
+      dfdy(io16,ihe4)  =  y(ic12) * ratdum(ircag)                       &
+     &                  - y(io16) * ratdum(iroag) 
+
+      dfdy(io16,ic12)  =  y(ihe4) * ratdum(ircag)                       &
+     &                  - y(io16) * ratdum(ir1216) 
+
+      dfdy(io16,io16)  = -ratdum(iroga)                                 &
+     &                  - y(ic12) * ratdum(ir1216)                      &
+     &                  - 4.0e0 * y(io16) * ratdum(ir1616)              &
+     &                  - y(ihe4) * ratdum(iroag) 
+
+      dfdy(io16,ine20) =  ratdum(irnega)
+
+
+
+!..20ne jacobian elements 
+      dfdy(ine20,ihe4)  =  y(io16) * ratdum(iroag)                      &
+     &                   - y(ine20) * ratdum(irneag)
+
+      dfdy(ine20,ic12)  =  2.0e0 * y(ic12) * ratdum(ir1212)
+
+      dfdy(ine20,io16)  =  y(ihe4) * ratdum(iroag)
+
+      dfdy(ine20,ine20) = -ratdum(irnega)                               &
+     &                   - y(ihe4) * ratdum(irneag)
+
+      dfdy(ine20,img24) =  ratdum(irmgga)
+
+
+
+!..24mg jacobian elements 
+      dfdy(img24,ihe4)  =  y(ine20) * ratdum(irneag)                    &
+     &                   - y(img24) * ratdum(irmgag)
+
+      dfdy(img24,ic12)  =  0.5e0 * y(io16) * ratdum(ir1216)
+
+      dfdy(img24,io16)  =  0.5e0 * y(ic12) * ratdum(ir1216)
+
+      dfdy(img24,ine20) =  y(ihe4) * ratdum(irneag)  
+
+      dfdy(img24,img24) = -ratdum(irmgga)                               &
+     &                   - y(ihe4) * ratdum(irmgag)
+
+      dfdy(img24,isi28) =  ratdum(irsiga)
+
+
+
+!..28si jacobian elements 
+      dfdy(isi28,ihe4)  =  y(img24) * ratdum(irmgag)                    &
+     &                   - rsi2ni                                       &
+     &                   - rsi2nida * y(ihe4)                           &
+     &                   + rni2sida * y(ini56)
+
+      dfdy(isi28,ic12)  = 0.5e0 * y(io16) * ratdum(ir1216) 
+
+      dfdy(isi28,io16)  =  2.0e0 * y(io16) * ratdum(ir1616)             &
+     &                   + 0.5e0 * y(ic12) * ratdum(ir1216) 
+
+      dfdy(isi28,img24) =  y(ihe4) * ratdum(irmgag) 
+
+      dfdy(isi28,isi28) = -ratdum(irsiga)                               &
+     &                   - rsi2nidsi * y(ihe4)
+
+      dfdy(isi28,ini56) =  rni2si 
+
+
+
+!..ni56 jacobian elements 
+      dfdy(ini56,ihe4)  =   rsi2ni                                      &
+     &                    + rsi2nida * y(ihe4)                          &
+     &                    - rni2sida * y(ini56)
+
+      dfdy(ini56,isi28) =  rsi2nidsi * y(ihe4)
+
+      dfdy(ini56,ini56) = -rni2si
+
+      return
+      end subroutine diso7 
+
+
+
+
+
+
+      subroutine biso7(iloc,jloc,nzo,np)
+      use dBase, ONLY : ionmax
+      implicit none
+!      save
+      include 'eos_common.fh'
+      include 'network_common.fh'
+!.. 
+!..this routine builds the nonzero matrix locations for siso7
+!..input is the integer arrys iloc and jloc, both of dimension np, that
+!..on output contain nzo matrix element locations.
+!.. 
+
+!..declare
+      integer          iloc(*),jloc(*),nzo,np,i
+
+
+!..communicate with siso7
+      integer          neloc
+      parameter        (neloc=34)
+      integer          eloc(neloc),nterms
+      common /elcpp/   eloc,nterms
+
+
+!..initialize
+      nterms = 0
+      nzo    = 0
+      do i=1,neloc 
+       eloc(i) = 0
+      enddo
+
+!..tag the nonzero locations
+!..4he jacobian elementss
+      call mcord(ihe4,ihe4,iloc,jloc,nzo,np,eloc,nterms,neloc)
+      call mcord(ihe4,ic12,iloc,jloc,nzo,np,eloc,nterms,neloc)
+      call mcord(ihe4,io16,iloc,jloc,nzo,np,eloc,nterms,neloc)
+      call mcord(ihe4,ine20,iloc,jloc,nzo,np,eloc,nterms,neloc)
+      call mcord(ihe4,img24,iloc,jloc,nzo,np,eloc,nterms,neloc)
+      call mcord(ihe4,isi28,iloc,jloc,nzo,np,eloc,nterms,neloc)
+      call mcord(ihe4,ini56,iloc,jloc,nzo,np,eloc,nterms,neloc)
+
+!..12c jacobian elements 
+      call mcord(ic12,ihe4,iloc,jloc,nzo,np,eloc,nterms,neloc)
+      call mcord(ic12,ic12,iloc,jloc,nzo,np,eloc,nterms,neloc)
+      call mcord(ic12,io16,iloc,jloc,nzo,np,eloc,nterms,neloc)
+
+!..16o jacobian elements 
+      call mcord(io16,ihe4,iloc,jloc,nzo,np,eloc,nterms,neloc)
+      call mcord(io16,ic12,iloc,jloc,nzo,np,eloc,nterms,neloc)
+      call mcord(io16,io16,iloc,jloc,nzo,np,eloc,nterms,neloc)
+      call mcord(io16,ine20,iloc,jloc,nzo,np,eloc,nterms,neloc)
+
+!..20ne jacobian elements 
+      call mcord(ine20,ihe4,iloc,jloc,nzo,np,eloc,nterms,neloc)
+      call mcord(ine20,ic12,iloc,jloc,nzo,np,eloc,nterms,neloc)
+      call mcord(ine20,io16,iloc,jloc,nzo,np,eloc,nterms,neloc)
+      call mcord(ine20,ine20,iloc,jloc,nzo,np,eloc,nterms,neloc)
+      call mcord(ine20,img24,iloc,jloc,nzo,np,eloc,nterms,neloc)
+
+!..24mg jacobian elements 
+      call mcord(img24,ihe4,iloc,jloc,nzo,np,eloc,nterms,neloc)
+      call mcord(img24,ic12,iloc,jloc,nzo,np,eloc,nterms,neloc)
+      call mcord(img24,io16,iloc,jloc,nzo,np,eloc,nterms,neloc)
+      call mcord(img24,ine20,iloc,jloc,nzo,np,eloc,nterms,neloc)
+      call mcord(img24,img24,iloc,jloc,nzo,np,eloc,nterms,neloc)
+      call mcord(img24,isi28,iloc,jloc,nzo,np,eloc,nterms,neloc)
+
+!..28si jacobian elements 
+      call mcord(isi28,ihe4,iloc,jloc,nzo,np,eloc,nterms,neloc)
+      call mcord(isi28,ic12,iloc,jloc,nzo,np,eloc,nterms,neloc)
+      call mcord(isi28,io16,iloc,jloc,nzo,np,eloc,nterms,neloc)
+      call mcord(isi28,img24,iloc,jloc,nzo,np,eloc,nterms,neloc)
+      call mcord(isi28,isi28,iloc,jloc,nzo,np,eloc,nterms,neloc)
+      call mcord(isi28,ini56,iloc,jloc,nzo,np,eloc,nterms,neloc)
+
+!..ni56 jacobian elements 
+      call mcord(ini56,ihe4,iloc,jloc,nzo,np,eloc,nterms,neloc)
+      call mcord(ini56,isi28,iloc,jloc,nzo,np,eloc,nterms,neloc)
+      call mcord(ini56,ini56,iloc,jloc,nzo,np,eloc,nterms,neloc)
+
+
+!..write a diagnostic
+!..      write(6,*) ' '
+!..      write(6,*) nzo,' matrix elements'
+!..      write(6,*) nterms,' jacobian contributions'
+!..      write(6,*) ' '
+
+      return
+      end subroutine biso7 
+
+
+
+
+      subroutine siso7(tt,y,dfdy,nzo)
+      use dBase, ONLY : ionmax
+      implicit none
+!      save
+      include 'eos_common.fh'
+      include 'network_common.fh'
+      include 'mpif.h'
+!
+!..this routine sets up the sparse iso7 jacobian. 
+!..input is tt (irrelevant here) and the abundances y(*). 
+!..output is the jacobian dfdy(nzo).
+
+!..declare
+      integer i,nzo,nt,iat
+      real    tt,y(*),dfdy(*),t9,yeff_ca40,yeff_ti44,                   &
+     &                 t9i,t932,t9i32,rsi2ni,rni2si,rsi2nida,           &
+     &                 rsi2nidsi,rni2sida,a1
+
+
+!..MPI error information
+      integer   FAIL, ierr
+      parameter (FAIL = -1)
+
+
+!..communicate with the jacobian builder
+      integer          neloc
+      parameter        (neloc=34)
+      integer          eloc(neloc),nterms
+      common /elcpp/   eloc,nterms
+
+
+!..initialize
+      nt   = 0
+      do i=1,nzo
+       dfdy(i) = 0.0e0
+      enddo
+
+
+!..positive definite mass fractions
+      do i=1,ionmax
+       y(i) = min(1.0e0,max(y(i),1.0e-30))
+      enddo
+
+
+!..some common factors and branching ratios
+      t9    = btemp * 1.0e-9
+      t9i   = 1.0e0/t9
+      t932  = t9 * sqrt(t9)
+      t9i32 = 1.0e0/t932
+
+!..rsi2ni is the rate for silicon to nickel
+!..rni2si is the rate for nickel to silicon
+      rsi2ni    = 0.0e0
+      rsi2nida  = 0.0e0
+      rsi2nidsi = 0.0e0
+      rni2si    = 0.0e0
+      rni2sida  = 0.0e0
+
+!      if (t9 .gt. 20.0) then
+      if (t9 .gt. 2.5 .and. y(ic12)+y(io16) .le. 4.0e-3) then
+       yeff_ca40 = (t9i32**3) * exp(239.42*t9i-74.741)
+       yeff_ti44 = (t932**3) * exp(-274.12*t9i+74.914)
+       rsi2ni    = yeff_ca40*den**3*y(ihe4)**3*ratdum(ircaag)*y(isi28)
+       rsi2nida  = 3.0e0 * rsi2ni/y(ihe4)
+       rsi2nidsi = rsi2ni/y(isi28)
+       rni2si = min(1.0e20,yeff_ti44*ratdum(irtiga)/(den**3*y(ihe4)**3))
+       rni2sida  = -3.0e0 * rni2si/y(ihe4)
+       if (rni2si .eq. 1.0e20) rni2sida = 0.0e0
+      end if
+
+
+!..set up the jacobian
+!..4he jacobian elements
+!..d(he4)/d(he4)
+      a1 = -6.0 * y(ihe4) * y(ihe4) * ratdum(ir3a)                      &
+     &    - y(ic12) * ratdum(ircag)                                     &
+     &    - y(io16) * ratdum(iroag)                                     &
+     &    - y(ine20) * ratdum(irneag)                                   &
+     &    - y(img24) * ratdum(irmgag)                                   &
+     &    - 7.0e0 * rsi2ni                                              &
+     &    - 7.0e0 * rsi2nida * y(ihe4)                                  &
+     &    + 7.0e0 * rni2sida * y(ini56)
+      nt  = nt + 1
+      iat = eloc(nt)
+      dfdy(iat) = dfdy(iat) + a1
+
+!..d(he4)/d(c12)
+      a1 =  3.0e0 * ratdum(irg3a)                                       &
+     &    - y(ihe4) * ratdum(ircag)                                     &
+     &    + 2.0e0 * y(ic12) * ratdum(ir1212)                            &
+     &    + 0.5e0 * y(io16) * ratdum(ir1216)
+      nt  = nt + 1
+      iat = eloc(nt)
+      dfdy(iat) = dfdy(iat) + a1
+
+!..d(he4)/d(o16)
+      a1 =  ratdum(iroga)                                               &
+     &    + 0.5e0 * y(ic12) * ratdum(ir1216)                            &
+     &    + 2.0e0 * y(io16) * ratdum(ir1616)                            &
+     &    - y(ihe4) * ratdum(iroag)
+      nt  = nt + 1
+      iat = eloc(nt)
+      dfdy(iat) = dfdy(iat) + a1
+
+!..d(he4)/d(ne20)
+      a1 =  ratdum(irnega)                                              &
+     &    - y(ihe4) * ratdum(irneag) 
+      nt  = nt + 1
+      iat = eloc(nt)
+      dfdy(iat) = dfdy(iat) + a1
+
+!..d(he4)/d(mg24)
+      a1 =  ratdum(irmgga)                                              &
+     &    - y(ihe4) * ratdum(irmgag)
+      nt  = nt + 1
+      iat = eloc(nt)
+      dfdy(iat) = dfdy(iat) + a1
+
+!..d(he4)/d(si28)
+      a1 =  ratdum(irsiga)                                              &
+     &    - 7.0e0 * rsi2nidsi * y(ihe4)
+      nt  = nt + 1
+      iat = eloc(nt)
+      dfdy(iat) = dfdy(iat) + a1
+
+!..d(he4)/d(ni56)
+      a1 =  7.0e0 * rni2si
+      nt  = nt + 1
+      iat = eloc(nt)
+      dfdy(iat) = dfdy(iat) + a1
+
+
+!..12c jacobian elements 
+!..d(c12)/d(he4)
+      a1 =  3.0e0 * y(ihe4) * y(ihe4) * ratdum(ir3a)                    &
+     &    - y(ic12) * ratdum(ircag)
+      nt  = nt + 1
+      iat = eloc(nt)
+      dfdy(iat) = dfdy(iat) + a1
+
+!..d(c12)/d(c12)
+      a1 = -ratdum(irg3a)                                               &
+     &    - y(ihe4) * ratdum(ircag)                                     &
+     &    - 4.0e0 * y(ic12) * ratdum(ir1212)                            &
+     &    - y(io16) * ratdum(ir1216)
+      nt  = nt + 1
+      iat = eloc(nt)
+      dfdy(iat) = dfdy(iat) + a1
+
+!..d(c12)/d(o16)
+      a1 =  ratdum(iroga)                                               &
+     &    - y(ic12) * ratdum(ir1216)
+      nt  = nt + 1
+      iat = eloc(nt)
+      dfdy(iat) = dfdy(iat) + a1
+
+
+!..16o jacobian elements 
+!..d(o16)/d(he4)
+      a1 =  y(ic12) * ratdum(ircag)                                     &
+     &    - y(io16) * ratdum(iroag) 
+      nt  = nt + 1
+      iat = eloc(nt)
+      dfdy(iat) = dfdy(iat) + a1
+
+!..d(o16)/d(c12)
+      a1 =  y(ihe4) * ratdum(ircag)                                     &
+     &    - y(io16) * ratdum(ir1216) 
+      nt  = nt + 1
+      iat = eloc(nt)
+      dfdy(iat) = dfdy(iat) + a1
+
+!..d(o16)/d(o16)
+      a1 = -ratdum(iroga)                                               &
+     &    - y(ic12) * ratdum(ir1216)                                    &
+     &    - 4.0e0 * y(io16) * ratdum(ir1616)                            &
+     &    - y(ihe4) * ratdum(iroag) 
+      nt  = nt + 1
+      iat = eloc(nt)
+      dfdy(iat) = dfdy(iat) + a1
+
+!..d(o16)/d(ne20)
+      a1 =  ratdum(irnega)
+      nt  = nt + 1
+      iat = eloc(nt)
+      dfdy(iat) = dfdy(iat) + a1
+
+
+!..20ne jacobian elements 
+!..d(ne20)/d(he4)
+      a1 =  y(io16) * ratdum(iroag) - y(ine20) * ratdum(irneag)
+      nt  = nt + 1
+      iat = eloc(nt)
+      dfdy(iat) = dfdy(iat) + a1
+
+!..d(ne20)/d(c12)
+      a1 =  2.0e0 * y(ic12) * ratdum(ir1212)
+      nt  = nt + 1
+      iat = eloc(nt)
+      dfdy(iat) = dfdy(iat) + a1
+
+!..d(ne20)/d(o16)
+      a1 =  y(ihe4) * ratdum(iroag)
+      nt  = nt + 1
+      iat = eloc(nt)
+      dfdy(iat) = dfdy(iat) + a1
+
+!..d(ne20)/d(ne20)
+      a1 = -ratdum(irnega) - y(ihe4) * ratdum(irneag)
+      nt  = nt + 1
+      iat = eloc(nt)
+      dfdy(iat) = dfdy(iat) + a1
+
+!..d(ne20)/d(mg24)
+      a1 =  ratdum(irmgga)
+      nt  = nt + 1
+      iat = eloc(nt)
+      dfdy(iat) = dfdy(iat) + a1
+
+
+!..24mg jacobian elements 
+!..d(mg24)/d(he4)
+      a1 =  y(ine20) * ratdum(irneag)                                   &
+     &    - y(img24) * ratdum(irmgag)
+      nt  = nt + 1
+      iat = eloc(nt)
+      dfdy(iat) = dfdy(iat) + a1
+
+!..d(mg24)/d(c12)
+      a1 =  0.5e0 * y(io16) * ratdum(ir1216)
+      nt  = nt + 1
+      iat = eloc(nt)
+      dfdy(iat) = dfdy(iat) + a1
+
+!..d(mg24)/d(o16)
+      a1 =  0.5e0 * y(ic12) * ratdum(ir1216)
+      nt  = nt + 1
+      iat = eloc(nt)
+      dfdy(iat) = dfdy(iat) + a1
+
+!..d(mg24)/d(ne20)
+      a1 =  y(ihe4) * ratdum(irneag)  
+      nt  = nt + 1
+      iat = eloc(nt)
+      dfdy(iat) = dfdy(iat) + a1
+
+!..d(mg24)/d(mg24)
+      a1 = -ratdum(irmgga)                                              &
+     &    - y(ihe4) * ratdum(irmgag)
+      nt  = nt + 1
+      iat = eloc(nt)
+      dfdy(iat) = dfdy(iat) + a1
+
+!..d(mg24)/d(si28)
+      a1 =  ratdum(irsiga)
+      nt  = nt + 1
+      iat = eloc(nt)
+      dfdy(iat) = dfdy(iat) + a1
+
+
+!..28si jacobian elements 
+!..d(si28)/d(he4)
+      a1 =  y(img24) * ratdum(irmgag)                                   &
+     &    - rsi2ni                                                      &
+     &    - rsi2nida * y(ihe4)                                          &
+     &    + rni2sida * y(ini56)
+      nt  = nt + 1
+      iat = eloc(nt)
+      dfdy(iat) = dfdy(iat) + a1
+
+!..d(si28)/d(c12)
+      a1 =  0.5e0 * y(io16) * ratdum(ir1216) 
+      nt  = nt + 1
+      iat = eloc(nt)
+      dfdy(iat) = dfdy(iat) + a1
+
+!..d(si28)/d(o16)
+      a1 =  2.0e0 * y(io16) * ratdum(ir1616)                            &
+     &    + 0.5e0 * y(ic12) * ratdum(ir1216) 
+      nt  = nt + 1
+      iat = eloc(nt)
+      dfdy(iat) = dfdy(iat) + a1
+
+!..d(si28)/d(mg24)
+      a1 =  y(ihe4) * ratdum(irmgag) 
+      nt  = nt + 1
+      iat = eloc(nt)
+      dfdy(iat) = dfdy(iat) + a1
+
+!..d(si28)/d(si28)
+      a1 = -ratdum(irsiga)                                              &
+     &    - rsi2nidsi * y(ihe4)
+      nt  = nt + 1
+      iat = eloc(nt)
+      dfdy(iat) = dfdy(iat) + a1
+
+!..d(si28)/d(ni56)
+      a1 =  rni2si 
+      nt  = nt + 1
+      iat = eloc(nt)
+      dfdy(iat) = dfdy(iat) + a1
+
+
+!..ni56 jacobian elements 
+!..d(ni56)/d(he4)
+      a1 =  rsi2ni                                                      &
+     &    + rsi2nida * y(ihe4)                                          &
+     &    - rni2sida * y(ini56)
+      nt  = nt + 1
+      iat = eloc(nt)
+      dfdy(iat) = dfdy(iat) + a1
+
+!..d(ni56)/d(si28)
+      a1 = rsi2nidsi * y(ihe4)
+      nt  = nt + 1
+      iat = eloc(nt)
+      dfdy(iat) = dfdy(iat) + a1
+
+!..d(ni56)/d(ni56)
+      a1 = -rni2si
+      nt  = nt + 1
+      iat = eloc(nt)
+      dfdy(iat) = dfdy(iat) + a1
+
+!..bullet check the counting
+      if (nt .ne. nterms) then
+       write(6,*) 'nt =',nt,'  nterms =',nterms
+       write(6,*) 'error in routine siso7: nt .ne. nterms'
+       call abort_flash("Error in routine siso7: nt .ne. nterms")
+       stop
+      end if
+      return
+      end subroutine siso7 
+
+
+
+
+
+
+
+      subroutine iso7rat
+      use dBase, ONLY : ionmax
+      implicit none
+!      save
+      include 'eos_common.fh'
+      include 'network_common.fh'
+!
+!..this routine generates nuclear reaction rates for the iso7 network.
+!..     r1616 = o16+o16      r1212 = c12+c12      r3a   = 3a-c12
+!..     rg3a  = c12-3a       roga  = o16(ga)      roag  = o16(ag)   
+!..     rnega = ne20(ga)     rneag = ne20(ag)     rmgga = mg24(ga)     
+!..     rmgag = mg24(ag)     rsiga = si28(ga)     r1216 = o16+c12
+!..     rcaag = ca40(ag)     rtiga = ti44(ga)     rcag  = c12(ag)
+!..
+!..declare  
+      integer          i
+      real tt9,t9r,t9,t912,t913,t923,t943,t953,t932,                    &
+     &                 t92,t93,t972,t9r32,t9i,t9i13,t9i23,t9i32,        &
+     &                 t9i12,t9ri,term,term1,term2,term3,rev,           &
+     &                 r2abe,t9a,t9a13,t9a56,t9a23,gt9h,gca40,gti44,    &
+     &                 rbeac,oneth,fivsix,sav(20)
+      parameter        (oneth = 1.0e0/3.0e0, fivsix=5.0e0/6.0e0)
+
+!..zero the rates
+      do i=1,nrat
+       ratraw(i) = 0.0e0
+      enddo
+
+!..some temperature factors 
+!..limit t9 to 10, except for the reverse ratios
+      tt9   = btemp * 1.0e-9
+      t9r   = tt9
+      t9    = min(tt9,10.0e0)
+      t912  = sqrt(t9)
+      t913  = t9**oneth
+      t923  = t913*t913
+      t943  = t9*t913
+      t953  = t9*t923
+      t932  = t9*t912
+      t92   = t9*t9
+      t93   = t9*t92
+      t972  = t912*t93
+      t9r32 = t9r*sqrt(t9r)
+      t9i   = 1.0e0/t9
+      t9i13 = 1.0e0/t913
+      t9i23 = 1.0e0/t923
+      t9i32 = 1.0e0/t932
+      t9i12 = 1.0e0/t912
+      t9ri  = 1.0e0/t9r
+
+
+!..12c(ag)16o; note 1.7 times cf88 value
+      term          = 1.04e8/(t92*(1.0e0 + 0.0489e0*t9i23)**2) *        &
+     &                  exp(-32.120e0*t9i13 - t92/12.222016e0)          &
+     &                + 1.76e8/(t92*(1.0e0 + 0.2654e0*t9i23)**2) *      &
+     &                  exp(-32.120e0*t9i13)                            &
+     &                + 1.25e3*t9i32*exp(-27.499*t9i)                   &
+     &                + 1.43e-2*t92*t93*exp(-15.541*t9i)
+      term          = 1.7e0 * term
+      ratraw(ircag) = term * den 
+      rev           = 5.13e10 * t9r32 * exp(-83.111*t9ri)
+      ratraw(iroga) = rev * term
+
+
+!..triple alpha to c12 (has been divided by six)
+!..rate revised according to caughlan and fowler (nomoto ref.) 1988 q = -0.092
+      r2abe = (7.40e+05 * t9i32)* exp(-1.0663*t9i) +                    &
+     &        4.164e+09 * t9i23 * exp(-13.49*t9i13 - t92/0.009604) *    &
+     &        (1.0e0 + 0.031*t913 + 8.009*t923 + 1.732*t9 +             &
+     &        49.883*t943 + 27.426*t953)
+!..q = 7.367
+      rbeac = (130.*t9i32) * exp(-3.3364*t9i) +                         &
+     &        2.510e+07 * t9i23 * exp(-23.57*t9i13 - t92/0.055225) *    &
+     &        (1.0e0 + 0.018*t913 + 5.249*t923 + 0.650*t9 +             &
+     &        19.176*t943 + 6.034*t953)
+!..q = 7.275
+      if (t9.gt.0.08) then
+       term = 2.90e-16 * (r2abe*rbeac) +                                &
+     &        0.1 * 1.35e-07 * t9i32 * exp(-24.811*t9i)
+      else
+       term = 2.90e-16*(r2abe*rbeac) *                                  &
+     &        (0.01 + 0.2*(1.0e0 + 4.0e0*exp(-(0.025*t9i)**3.263)) /    &
+     &        (1.0e0 + 4.0e0*exp(-(t9/0.025)**9.227))) +                &
+     &        0.1 * 1.35e-07 * t9i32 * exp(-24.811*t9i)
+      end if
+      ratraw(ir3a)  = term * (den*den)/6.0e0
+      rev           = 2.00e+20*exp(-84.424*t9ri)
+      ratraw(irg3a) = rev*(t9r*t9r*t9r) * term
+
+
+!..c12 + c12 reaction; see cf88 references 47-49
+      t9a            = t9/(1.0e0 + 0.0396*t9)
+      t9a13          = t9a**oneth
+      t9a56          = t9a**fivsix
+      term           = 4.27e+26 * t9a56/t932 *                          &
+     &                 exp(-84.165/t9a13-2.12e-03*t9*t9*t9)
+      ratraw(ir1212) = 0.5e0 * den * term
+
+
+!..c12 + o16 reaction;  q = 16.755; valid for t9 .gt. 0.5
+!..y(nc12)*y(no16)*rc28 is the rate of formation of the si28 compound nucleus
+      if (t9.ge.0.5) then
+       t9a   = t9/(1.+0.055*t9)
+       t9a13 = t9a**oneth
+       t9a23 = t9a13*t9a13
+       t9a56 = t9a**fivsix
+       term  = 1.72e+31 * t9a56 * t9i32 * exp(-106.594/t9a13) /         &
+     &         (exp(-0.18*t9a*t9a) + 1.06e-03*exp(2.562*t9a23))
+       ratraw(ir1216) = den * term
+      else
+       ratraw(ir1216) = 0.0e0
+      endif
+
+
+!..16o+16o rate; q = 16.542; 
+!..y16*y16*r32 is rate of formation of 32s compound nucleus
+      term           = 7.10e36 * t9i23 *                                &
+     &                 exp(-135.93 * t9i13 - 0.629*t923 -               &
+     &                 0.445*t943 + 0.0103*t9*t9)
+      ratraw(ir1616) = 0.5e0 * den * term                     
+
+
+!..16o(ag)20ne + inverse
+      term1          = 9.37e9 * t9i23 *                                 &
+     &                 exp(-39.757*t9i13- t92/2.515396)
+      term2          = 62.1 * t9i32 * exp(-10.297*t9i) +                &
+     &                 538.0e0 * t9i32 * exp(-12.226*t9i) +             &
+     &                 13.0e0 * t92 * exp(-20.093*t9i)
+      term           = term1 + term2
+      ratraw(iroag)  = den * term
+      rev            = 5.65e+10*t9r32*exp(-54.937*t9ri)
+      ratraw(irnega) = rev * term
+
+
+!..20ne(ag)24mg + inverse
+      term1          = 4.11e+11 * t9i23 *                               &
+     &                 exp(-46.766*t9i13- t92/4.923961) *               &
+     &                 (1.0e0 + 0.009*t913 + 0.882*t923 + 0.055*t9 +    &
+     &                 0.749*t943 + 0.119*t953)
+      term2          = 5.27e+03 * t9i32 * exp(-15.869*t9i) +            &
+     &                 6.51e+03 * t912 * exp(-16.223*t9i)
+      term3          = 0.1e0 * (42.1 * t9i32 * exp(-9.115*t9i) +        &
+     &                 32.0 * t9i23 * exp(-9.383*t9i))
+      term           = (term1+term2+term3)/                             &
+     &                 (1.0e0 + 5.0e0*exp(-18.960*t9i))
+      ratraw(irneag) = den * term
+      rev            = 6.01e+10 * t9r32 * exp(-108.059*t9ri)
+      ratraw(irmgga) = term * rev
+
+
+!..24mg(ag)28si + inverse
+      term1          = (1.0e0 + 5.0e0*exp(-15.882*t9i))
+      term           = (4.78e+01 * t9i32 * exp(-13.506*t9i) +           &
+     &                 2.38e+03 * t9i32 * exp(-15.218*t9i) +            &
+     &                 2.47e+02 * t932 * exp(-15.147*t9i) +             &
+     &                 0.1 * (1.72e-09 * t9i32 * exp(-5.028*t9i) +      &
+     &                 1.25e-03 * t9i32 * exp(-7.929*t9i) +             &
+     &                 2.43e+01 * t9i * exp(-11.523*t9i)))/term1
+      ratraw(irmgag) = den * term
+      rev            = 6.27e+10 * t9r32 * exp(-115.862*t9ri)
+      ratraw(irsiga) = rev * term 
+
+
+!..40ca(ag)44ti + inverse 
+!..take into account the temp dependence of the partition functions
+      gca40=1.0e0 +exp((-4.150E+01 + 1.636E+00*t9 + 1.483E-01*t92)*t9ri)
+      gti44=1.0e0 +exp((-1.111E+01 + 6.293E-01*t9 + 1.732E-01*t92)*t9ri)
+      term           = 4.66e+24 * t9i23 * exp(-76.435 * t9i13 *         &
+     &                 (1.0e0 + 1.650e-02*t9 + 5.973e-03*t92 -          &
+     &                  3.889e-04*t93))
+      rev            = 6.843e+10 * t9r32 * exp(-59.510*t9ri)
+      ratraw(ircaag) = den*term
+      ratraw(irtiga) = rev*term * gca40/gti44
+
+      return
+      end subroutine  iso7rat
+
+
+
+
+
+      subroutine iso7tab
+      use dBase, ONLY : ionmax
+      implicit none
+!      save
+      include 'eos_common.fh'
+      include 'network_common.fh'
+
+
+!..uses tables instead of analytical expressions to evaluate the 
+!..raw reaction rates. a cubic polynomial is hardwired for speed.
+
+      integer          i,j,imax,iat,mp,ifirst
+      parameter        (mp = 4)
+      real             tlo,thi,tstp,den_sav,btemp_sav,     &
+     &                 x,x1,x2,x3,x4,a,b,c,d,e,f,g,h,p,q,  &
+     &                 alfa,beta,gama,delt
+      data             ifirst/0/
+
+
+!..make the table
+      if (ifirst .eq. 0) then
+       ifirst = 1
+
+!..set the log temperature loop limits
+!..use 120 points per decade
+       imax = 481
+       if (imax .gt. nrattab) stop 'imax too small in iso7tab'
+       tlo  = 6.0e0
+       thi  = 10.0e0
+       tstp = (thi - tlo)/float(imax-1)
+
+!..save the input
+       btemp_sav = btemp
+       den_sav   = den
+
+!..form the table
+       den = 1.0e0
+       do i=1,imax
+        btemp = tlo + float(i-1)*tstp
+        btemp = 10.0e0**(btemp)
+        call iso7rat
+        ttab(i) = btemp
+        do j=1,nrat
+         rattab(j,i) = ratraw(j)
+        enddo
+       enddo
+
+!..restore the input
+       den  = den_sav
+       btemp = btemp_sav
+      end if
+ 
+
+!..normal execution starts here
+!..set the density dependence vector
+      dtab(ircag)  = den 
+      dtab(iroga)  = 1.0e0
+      dtab(ir3a)   = den*den
+      dtab(irg3a)  = 1.0e0
+      dtab(ir1212) = den 
+      dtab(ir1216) = den 
+      dtab(ir1616) = den 
+      dtab(iroag)  = den
+      dtab(irnega) = 1.0e0
+      dtab(irneag) = den 
+      dtab(irmgga) = 1.0e0
+      dtab(irmgag) = den 
+      dtab(irsiga) = 1.0e0
+      dtab(ircaag) = den
+      dtab(irtiga) = 1.0e0
+
+
+
+!..hash locate the temperature
+      iat = int((log10(btemp) - tlo)/tstp) + 1
+      iat = max(1,min(iat - mp/2 + 1,imax - mp + 1))
+
+!..setup the lagrange interpolation coefficients for a cubic
+      x  = btemp
+      x1 = ttab(iat)
+      x2 = ttab(iat+1)
+      x3 = ttab(iat+2)
+      x4 = ttab(iat+3)
+      a  = x - x1
+      b  = x - x2
+      c  = x - x3
+      d  = x - x4
+      e  = x1 - x2
+      f  = x1 - x3
+      g  = x1 - x4
+      h  = x2 - x3
+      p  = x2 - x4
+      q  = x3 - x4
+      alfa =  b*c*d/(e*f*g)
+      beta = -a*c*d/(e*h*p)
+      gama =  a*b*d/(f*h*q)
+      delt = -a*b*c/(g*p*q)
+
+!..crank off the raw reaction rates
+      do j=1,nrat
+       ratraw(j) = (alfa*rattab(j,iat)      &
+     &            + beta*rattab(j,iat+1)    &
+     &            + gama*rattab(j,iat+2)    & 
+     &            + delt*rattab(j,iat+3)    &
+     &              ) * dtab(j)
+      enddo
+      return
+      end subroutine iso7tab
+
+
+
+
+
+
+      subroutine screen_iso7(y)
+      use dBase, ONLY : ionmax
+      implicit none
+!      save
+      include 'eos_common.fh'
+      include 'network_common.fh'
+
+!..this routine computes the screening factors
+!..and applies them to the raw reaction rates,
+!..producing the final reaction rates used by the
+!..right hand sides and jacobian matrix elements
+
+!..declare
+      integer          i,j,k,jscr,screen_init,screen_on
+      parameter        (screen_on = 1)
+      real             y(1),sc1a,sc2a,sc3a,zbarxx,z2barxx
+
+!..initialize
+      data             screen_init/1/
+
+
+!..if screening is off
+      if (screen_on .eq. 0) then
+       do i=1,nrat
+        ratdum(i) = ratraw(i)
+        scfac(i)  = 1.0e0
+       end do
+       return
+      end if
+
+!..screening is on
+!..with the passed composition, compute abar,zbar and other variables
+      zbarxx  = 0.0e0
+      z2barxx = 0.0e0
+      ytot1   = 0.0e0
+      do i=1,ionmax
+       ytot1    = ytot1 + y(i)
+       zbarxx   = zbarxx + zion(i) * y(i)
+       z2barxx  = z2barxx + zion(i) * zion(i) * y(i)
+      enddo
+      abar   = 1.0e0/ytot1
+      zbar   = zbarxx * abar
+      z2bar  = z2barxx * abar
+
+
+!..first the always fun triple alpha and its inverse
+      jscr = 1
+      call screen4(zbar,abar,z2bar,                             &
+     &             zion(ihe4),aion(ihe4),zion(ihe4),aion(ihe4), &
+     &             jscr,screen_init,sc1a)
+
+      jscr = jscr + 1
+      call screen4(zbar,abar,z2bar,                             &
+     &             zion(ihe4),aion(ihe4),4.0e0,8.0e0,           &
+     &             jscr,screen_init,sc2a)
+
+      sc3a          = sc1a * sc2a                            
+
+      ratdum(ir3a)  = ratraw(ir3a) * sc3a
+      scfac(ir3a)   = sc3a
+
+      ratdum(irg3a)  = ratraw(irg3a) 
+      scfac(irg3a)   = 1.0e0
+
+
+!..c12 to o16 
+      jscr = jscr + 1
+      call screen4(zbar,abar,z2bar,                             &
+     &             zion(ic12),aion(ic12),zion(ihe4),aion(ihe4), &
+     &             jscr,screen_init,sc1a)
+
+      ratdum(ircag)  = ratraw(ircag)  * sc1a
+      scfac(ircag)   = sc1a
+
+      ratdum(iroga)  = ratraw(iroga)  
+      scfac(iroga)   = 1.0e0
+
+
+!..c12 + c12
+      jscr = jscr + 1
+      call screen4(zbar,abar,z2bar,                             &
+     &             zion(ic12),aion(ic12),zion(ic12),aion(ic12), &
+     &             jscr,screen_init,sc1a)
+
+      ratdum(ir1212) = ratraw(ir1212) * sc1a
+      scfac(ir1212)  = sc1a
+
+
+!..c12 + o16
+      jscr = jscr + 1
+      call screen4(zbar,abar,z2bar,                             &
+     &             zion(ic12),aion(ic12),zion(io16),aion(io16), &
+     &             jscr,screen_init,sc1a)
+
+      ratdum(ir1216) = ratraw(ir1216) * sc1a
+      scfac(ir1216)  = sc1a
+
+
+!..o16 + o16
+      jscr = jscr + 1
+      call screen4(zbar,abar,z2bar,                             &
+     &             zion(io16),aion(io16),zion(io16),aion(io16), &
+     &             jscr,screen_init,sc1a)
+
+      ratdum(ir1616) = ratraw(ir1616) * sc1a
+      scfac(ir1616)  = sc1a
+
+
+!..o16 to ne20
+      jscr = jscr + 1
+      call screen4(zbar,abar,z2bar,                             &
+     &             zion(io16),aion(io16),zion(ihe4),aion(ihe4), &
+     &             jscr,screen_init,sc1a)
+
+      ratdum(iroag)  = ratraw(iroag) * sc1a 
+      scfac(iroag)   = sc1a
+
+      ratdum(irnega) = ratraw(irnega) 
+      scfac(irnega)  = 1.0e0
+
+
+!..o16 to mg24
+      jscr = jscr + 1
+      call screen4(zbar,abar,z2bar,                               &
+     &             zion(ine20),aion(ine20),zion(ihe4),aion(ihe4), &
+     &             jscr,screen_init,sc1a)
+
+      ratdum(irneag) = ratraw(irneag) * sc1a
+      scfac(irneag)  = sc1a
+
+      ratdum(irmgga) = ratraw(irmgga) 
+      scfac(irmgga)  = 1.0e0
+
+
+!..mg24 to si28
+      jscr = jscr + 1
+      call screen4(zbar,abar,z2bar,                               &
+     &             zion(img24),aion(img24),zion(ihe4),aion(ihe4), &
+     &             jscr,screen_init,sc1a)
+
+      ratdum(irmgag) = ratraw(irmgag) * sc1a
+      scfac(irmgag)  = sc1a
+
+      ratdum(irsiga) = ratraw(irsiga) 
+      scfac(irsiga)  = 1.0e0
+#if 0
+
+
+!..ca40 to ti44
+      jscr = jscr + 1
+      call screen4(zbar,abar,z2bar,                               &
+     &             zion(ica40),aion(ica40),zion(ihe4),aion(ihe4), &
+     &             jscr,screen_init,sc1a)
+
+      ratdum(ircaag) = ratraw(ircaag) * sc1a
+      scfac(ircaag)  = sc1a
+
+      ratdum(irtiga) = ratraw(irtiga) 
+      scfac(irtiga)  = 1.0e0
+#endif
+
+!..reset the screen initialization flag
+      screen_init = 0
+
+      return
+      end subroutine screen_iso7
+
+
+
+
+
+
+
+      subroutine initnet
+      use dBase, ONLY : ionmax
+      implicit none
+!      save
+      include 'eos_common.fh'
+      include 'network_common.fh'
+!..
+!..this routine initializes stuff for the iso7 network
+!..
+!..declare
+      integer          i,isotp(nisotp)
+      equivalence      (isotp(1),ih1)
+
+
+
+!..zero all the isotope pointers
+      do i=1,nisotp
+       isotp(i)   = 0
+      enddo
+
+
+!..zero the steps taken
+      xoktot  = 0.0e0
+      xbadtot = 0.0e0
+      xkbrn   = 0.0e0
+
+
+
+!..set the id numbers of the elements
+      ihe4  = 1
+      ic12  = 2
+      io16  = 3
+      ine20 = 4
+      img24 = 5
+      isi28 = 6
+      ini56 = 7 
+
+
+!..set the names of the elements
+      ionam(ihe4)  = 'he4 '
+      ionam(ic12)  = 'c12 '
+      ionam(io16)  = 'o16 '
+      ionam(ine20) = 'ne20'
+      ionam(img24) = 'mg24'
+      ionam(isi28) = 'si28'
+      ionam(ini56) = 'ni56'
+
+
+!..set the number of nucleons in the element
+      aion(ihe4)  = 4.0e0
+      aion(ic12)  = 12.0e0   
+      aion(io16)  = 16.0e0   
+      aion(ine20) = 20.0e0   
+      aion(img24) = 24.0e0  
+      aion(isi28) = 28.0e0  
+      aion(ini56) = 56.0e0  
+      do i=1,ionmax
+       aionin(i) = 1.0e0/aion(i)
+      enddo
+
+
+!..set the number of protons in the element
+      zion(ihe4)  = 2.0e0
+      zion(ic12)  = 6.0e0
+      zion(io16)  = 8.0e0
+      zion(ine20) = 10.0e0   
+      zion(img24) = 12.0e0  
+      zion(isi28) = 14.0e0  
+      zion(ini56) = 28.0e0  
+      do i=1,ionmax
+       zionsq(i) = zion(i) * zion(i)
+      enddo
+
+!..set the binding energy of the element
+      bion(ihe4)  =  28.29603e0 
+      bion(ic12)  =  92.16294e0
+      bion(io16)  = 127.62093e0 
+      bion(ine20) = 160.64788e0 
+      bion(img24) = 198.25790e0 
+      bion(isi28) = 236.53790e0 
+      bion(ini56) = 484.00300e0 
+
+
+
+!..set the id numbers of the reaction rates
+      ircag  = 1
+      iroga  = 2
+      ir3a   = 3
+      irg3a  = 4
+      ir1212 = 5
+      ir1216 = 6
+      ir1616 = 7
+      iroag  = 8
+      irnega = 9
+      irneag = 10
+      irmgga = 11
+      irmgag = 12
+      irsiga = 13
+      ircaag = 14
+      irtiga = 15
+
+!..set the names of the reaction rates
+      ratnam(ircag)  = 'rcag '
+      ratnam(iroga)  = 'roga '
+      ratnam(ir3a)   = 'r3a  '
+      ratnam(irg3a)  = 'rg3a '
+      ratnam(ir1212) = 'r1212'
+      ratnam(ir1216) = 'r1216'
+      ratnam(ir1616) = 'r1616'
+      ratnam(iroag)  = 'roag '
+      ratnam(irnega) = 'rnega'
+      ratnam(irneag) = 'rneag'
+      ratnam(irmgga) = 'rmgga'
+      ratnam(irmgag) = 'rmgag'
+      ratnam(irsiga) = 'rsiga'
+      ratnam(ircaag) = 'rcaag'
+      ratnam(irtiga) = 'rtiga'
+
+      return
+      end subroutine initnet
+!
+      end Module Net

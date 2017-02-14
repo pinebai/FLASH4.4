@@ -1,0 +1,219 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{fancyvrb,relsize}
+\usepackage{graphicx}
+\usepackage[bookmarks=true,bookmarksnumbered=true]{hyperref}
+
+\setlength\topmargin{0in}
+\setlength\headheight{0in}
+\setlength\headsep{0in}
+\setlength\textheight{7.7in}
+\setlength\textwidth{6.5in}
+\setlength\oddsidemargin{0in}
+\setlength\evensidemargin{0in}
+\setlength\parindent{0.25in}
+\setlength\parskip{0.25in} 
+
+
+
+\begin{document}
+
+\title{FLASH I/O}
+%\author{Chris Daley}
+\maketitle
+
+\tableofcontents
+%\listoftables
+%\listoffigures
+
+
+\newpage
+\section{Data stored in memory}
+FLASH stores double precision cell-centered mesh data in a
+5-dimensional array named \textbf{unk}.  In Fortran ordering the array
+has size:
+
+\begin{align} \label{Eq:unk}
+     unk ( &NUNK\_VARS, \nonumber \\
+     & NXB+2*NGUARD, \nonumber \\
+     & NYB+2*NGUARD, \nonumber \\
+     & NZB+2*NGUARD, \nonumber \\
+     & MAXBLOCKS)
+\end{align}
+
+\textbf{NUNK\_VARS} is the number of cell-centered variables, where a
+variable (in FLASH terminology) is e.g. density (dens), pressure
+(pres), temperature(temp).  \textbf{NXB}, \textbf{NYB}, \textbf{NZB}
+are the number of x,y,z internal cells, and \textbf{NGUARD} is the
+number of guard cells.  Finally, \textbf{MAXBLOCKS} is the maximum
+number of blocks that can reside in a single MPI process.
+
+This array is allocated once at the start of a FLASH application and
+has the same size in each MPI process.  Since FLASH decomposes the
+global domain across blocks, the maximum number of blocks that can
+exist is \textbf{MAXBLOCKS} * \textbf{NPROCS}, where \textbf{NPROCS}
+is the number of MPI processes.
+
+
+\section{File types}
+FLASH generates checkpoint file and plot files.  A checkpoint file
+contains all variables in double precision and a plot file contains a
+subset of variables in single precision.
+
+
+\section{File formats}
+\subsection{Standard file format}
+\label{sec:standardFile}
+FLASH writes each variable into a separate dataset (in HDF5
+terminology).  We only store data for blocks in existance and exclude
+guard cells.  For example, an application that uses two variables
+\textbf{dens} and \textbf{pres} writes to \textbf{dens} and
+\textbf{pres} datasets:
+
+\begin{align} \label{Eq:file1dens}
+     dens (& 1:NXB, \nonumber \\
+     & 1:NYB, \nonumber \\
+     & 1:NZB, \nonumber \\
+     & 1:nblocks\_global)
+\end{align}
+
+\begin{align} \label{Eq:file1pres}
+     pres (& 1:NXB, \nonumber \\
+     & 1:NYB, \nonumber \\
+     & 1:NZB, \nonumber \\
+     & 1:nblocks\_global)
+\end{align}
+
+Here, \textbf{nblocks\_global} is the global number of blocks in
+existance.  
+
+
+\subsection{Experimental file format}
+\label{sec:experimentalFile}
+FLASH writes all variables into the same dataset.  Again, we only
+store data for blocks in existance and exclude guard cells.  An
+application using two variables writes the following data to the
+\textbf{unk\_file} dataset:
+
+\begin{align} \label{Eq:file2}
+     unk\_file (& 1:2, \nonumber \\
+     & 1:NXB, \nonumber \\
+     & 1:NYB, \nonumber \\
+     & 1:NZB, \nonumber \\
+     & 1:nblocks\_global)
+\end{align}
+
+
+\section{I/O strategies}
+\subsection{Standard blocking I/O}
+\label{sec:standardBlocking}
+The standard I/O implementation (present in FLASH2 and FLASH3) stores
+data in the file format shown in Section \ref{sec:standardFile}.  For
+a checkpoint file, FLASH copies a single variable from \textbf{unk}
+into a temporary double precision array named \textbf{unkBuf}.  The
+data in \textbf{unkBuf} is written to file and then the next variable
+is stored in \textbf{unkBuf}, and the process repeats.  Note that
+\textbf{unkBuf} is only large enough to store the internal cells for a
+single variable at a time.
+
+\begin{align} \label{Eq:strat1chk}
+     unkBuf ( &1:NXB, \nonumber \\
+     & 1:NYB, \nonumber \\
+     & 1:NZB, \nonumber \\
+     & 1:nblocks) = \nonumber \\
+     unk (&i, \nonumber \\
+     & NGUARD+1:NXB+NGUARD, \nonumber \\
+     & NGUARD+1:NYB+NGUARD, \nonumber \\
+     & NGUARD+1:NZB+NGUARD, \nonumber \\
+     & 1:nblocks)
+\end{align}
+
+Here, \textbf{nblocks} is the number of blocks in existance in each
+MPI process.  This value is generally different in different MPI
+processes.  \textbf{i} is a loop index that iterates $1$ to
+\textbf{NUNK\_VARS}.\newline
+
+A second temporary single precision array named \textbf{unkt} is used
+for plot file data.
+
+\begin{align} \label{Eq:strat1plot}
+     unkt ( &1:NXB, \nonumber \\
+     & 1:NYB, \nonumber \\
+     & 1:NZB, \nonumber \\
+     & 1:nblocks) = \nonumber \\
+     real (unk (&j, \nonumber \\
+     & NGUARD+1:NXB+NGUARD, \nonumber \\
+     & NGUARD+1:NYB+NGUARD, \nonumber \\
+     & NGUARD+1:NZB+NGUARD, \nonumber \\
+     & 1:nblocks) kind = single)
+\end{align}
+
+Here, \textbf{j} is a placeholder for each variable that is selected
+to be written to plot file.
+
+
+\subsection{Experimental blocking I/O}
+\label{sec:experimentalBlocking}
+The experimental I/O implementation stores data in the file format
+shown in Section \ref{sec:experimentalFile}.  It uses MPI derived
+datatypes to describe a single FLASH block, which is then used to
+pick-up the required data in \textbf{unk} instead of using temporary
+arrays.  Note that all blocks have the same number of variables and
+the same number of cells in the x,y,z direction
+
+The block datatype used for checkpoint files excludes guardcells:
+
+\begin{align} \label{Eq:strat2chk}
+     block\_chk (& 1:NUNK\_VARS, \nonumber \\
+     & NGUARD+1:NXB+NGUARD, \nonumber \\
+     & NGUARD+1:NYB+NGUARD, \nonumber \\
+     & NGUARD+1:NZB+NGUARD)
+\end{align}
+
+Each MPI process selects the data to be written to file by using a
+count of \textbf{nblocks} instances of MPI datatype
+\textbf{block\_chk} at starting point \textbf{unk(1,1,1,1,1)}.
+
+The block datatype used for plot files is more complicated, as it
+excludes guardcells and only includes variables of interest:
+
+\begin{align} \label{Eq:strat2plot}
+     block\_plot (& subset, \nonumber \\
+     & NGUARD+1:NXB+NGUARD, \nonumber \\
+     & NGUARD+1:NYB+NGUARD, \nonumber \\
+     & NGUARD+1:NZB+NGUARD)
+\end{align}
+
+Here, \textbf{subset} indicates the chosen subset of variables from
+space \textbf{1:NUNK\_VARS} that may or may not be contiguous.  Once
+again, each process selects the data to be written to file by using a
+count of \textbf{nblocks} instances of MPI datatype
+\textbf{block\_plot} at starting point \textbf{unk(1,1,1,1,1)}.
+
+
+\subsection{Standard non-blocking I/O}
+\label{sec:standardNonBlocking}
+This implementation produces the same files as the implementation
+described in Section \ref{sec:standardBlocking}.  It uses a MPI
+derived datatype to select a single variable at a time.
+
+\begin{align} \label{Eq:strat3}
+     block\_var (&1, \nonumber \\
+     & NGUARD+1:NXB+NGUARD, \nonumber \\
+     & NGUARD+1:NYB+NGUARD, \nonumber \\
+     & NGUARD+1:NZB+NGUARD)
+\end{align}
+
+The first array index in the MPI derived datatype \textbf{block\_var}
+picks up a single variable from space \textbf{1:NUNK\_VARS}.  The same
+datatype is used to select data in memory for both checkpoint and plot
+files. \newline
+
+Suppose a FLASH application includes two variables \textbf{dens} and
+\textbf{pres}.  Each process writes to the \textbf{dens} dataset by
+using a count of \textbf{nblocks} instances of MPI datatype
+\textbf{block\_var} at starting point \textbf{unk(1,1,1,1,1)}.  Then
+each process writes to the \textbf{pres} dataset by using a count of
+\textbf{nblocks} instances of MPI datatype \textbf{block\_var} at
+starting point \textbf{unk(2,1,1,1,1)}.
+\end{document}

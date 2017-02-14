@@ -1,0 +1,30 @@
+HDF5 "Test_write_fortran.hdf5" {
+GROUP "/" {
+   DATASET "unknown" {
+      DATATYPE  H5T_IEEE_F64LE
+      DATASPACE  SIMPLE { ( 1, 1, 3, 2, 1 ) / ( 1, 1, 3, 2, 1 ) }
+      DATA {
+      (0,0,0,0,0): 6,
+      (0,0,0,1,0): 7,
+      (0,0,1,0,0): 10,
+      (0,0,1,1,0): 11,
+      (0,0,2,0,0): 14,
+      (0,0,2,1,0): 15
+      }
+      ATTRIBUTE "maximum" {
+         DATATYPE  H5T_IEEE_F64LE
+         DATASPACE  SIMPLE { ( 1 ) / ( 1 ) }
+         DATA {
+         (0): 22.1
+         }
+      }
+      ATTRIBUTE "minimum" {
+         DATATYPE  H5T_IEEE_F64LE
+         DATASPACE  SIMPLE { ( 1 ) / ( 1 ) }
+         DATA {
+         (0): 10.1
+         }
+      }
+   }
+}
+}

@@ -1,0 +1,71 @@
+Applications may be setup with any grid and can also use particles.
+The user must ensure that a HDF5 application with particles uses the
+HDF5 parallel IOParticles subunit (must specify setup option
+parallelIO=True).
+
+There are a set of lrefine_min=lrefine_max=1 parfiles that can easily
+test nprocs > nblocks situations, and a set of
+lrefine_min=lrefine_max=3 parfiles that can easily test repeated
+application of the same derived datatype.
+
+
+Flash.par parameters:
+------------------------------------------------------------------------
+
+useparticles = .true. / .false.
+fileFormatVersion = 9 / 10   (version 9 is the traditional FLASH file format)
+
+We can vary the following HDF5 switches:
+packMeshPlotWriteHDF5 = .true. / .false.
+packMeshChkWriteHDF5 = .true. / .false.
+packMeshChkReadHDF5 = .true. / .false.
+
+We can vary the following pnetcdf switches:
+asyncMeshPlotWritePnet = .true. / .false.
+asyncMeshChkWritePnet = .true. / .false.
+asyncMeshChkReadPnet = .true. / .false.
+
+
+
+Example setup lines:
+------------------------------------------------------------------------
+
+#Paramesh grid with particles
+
+./setup unitTest/IO/IOTypes -auto
+-unit=IO/IOMain/hdf5/parallel/PM_argonne withParticles=True IO=hdf5
+parallelIO=True -parfile=test_pm_3lev_hdf5_fmt9_pack.par +pm4dev
+
+./setup unitTest/IO/IOTypes -auto -unit=IO/IOMain/pnetcdf/PM_argonne
+withParticles=True IO=pnetcdf -parfile=test_pm_3lev_pnetcdf_fmt9_async.par
++pm4dev
+
+
+#Uniform grid with particles
+
+./setup unitTest/IO/IOTypes -2d -auto
+-unit=IO/IOMain/hdf5/parallel/PM_argonne withParticles=True IO=hdf5
+parallelIO=True -parfile=test_ug_hdf5_fmt9_pack.par +ug
+
+./setup unitTest/IO/IOTypes -auto -unit=IO/IOMain/pnetcdf/PM_argonne
+withParticles=True IO=pnetcdf -parfile=test_ug_pnetcdf_fmt9_async.par
++ug
+
+
+#NoFbs with particles
+
+./setup unitTest/IO/IOTypes -2d -auto
+-unit=IO/IOMain/hdf5/parallel/PM_argonne withParticles=True IO=hdf5
+parallelIO=True -parfile=test_ug_hdf5_fmt9_pack.par +ug -nofbs
+
+
+Don't want to edit the Config files yet but to compile with 
+NoFbs, pnetcdf and particles, we must comment out the following in
+IO/IOParticles/Config:
+IF not fixedBlockSize
+  DEFAULT hdf5/parallel
+ENDIF
+
+./setup unitTest/IO/IOTypes -auto -unit=IO/IOMain/pnetcdf/PM_argonne
+withParticles=True IO=pnetcdf -parfile=test_ug_pnetcdf_fmt9_async.par
++ug -nofbs

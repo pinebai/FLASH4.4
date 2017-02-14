@@ -1,0 +1,550 @@
+!!****if* source/Simulation/SimulationMain/ConductionDeltaSaDiff/Simulation_initBlock
+!!
+!! NAME
+!!
+!!  Simulation_computeAnalytical
+!!
+!!
+!! SYNOPSIS
+!!
+!!  call Simulation_computeAnalytical(integer(IN) :: blockID, 
+!!                                       real(IN) :: tcurr)
+!!
+!!
+!!
+!! DESCRIPTION
+!!
+!!  Compute an analytical solution to compare numerical solution with.
+!!
+!!  This implementation solves simple ion-electron temperature relaxation
+!!  for the case of constant ion-electron temperature coupling.
+!!
+!!  The intial componeent temperatures (for t=0) are assumed to be stored in
+!!  UNK variables T0IO and T0EL (and T0R).
+!!
+!!  The solution is for
+!!  
+!!   Cv{ion} d/td Tion(r,t) =  - c12 (Tion(r,t) - Tele(r,t))
+!!   Cv{ele} d/td Tele(r,t) =    c12 (Tion(r,t) - Tele(r,t))
+!!
+!!  with initial conditions Tion(r,0), Tele(r,0) given,
+!!  where Cv{ion}, Cv{ele} are heat capacities and are assumed constant.
+!!
+!!  Define
+!!   Tm(r,t) := (Cv{ion} Tion(r,t) + Cv{ele} Tele(r,t)) / (Cv{ion} + Cv{ele})
+!! (a capacity-weighted avarage temperature), then
+!!
+!!   d/dt Tm(r,t) = 0
+!!
+!! so
+!!
+!!   Tm(r,t) = Tm(r,0) =: Tm(r)
+!!
+!! Define
+!!   y1(r,t) = Tion(r,t) - Tm(r)
+!!   y2(r,t) = Tele(r,t) - Tm(r)
+!!
+!! Then both y1 and y2 have to satisfy the same equation:
+!!   d/dt y1(r,t) = - c12 (Cv{ion}+Cv{ele})/(Cv{ion}Cv{ele}) y1(r,t)
+!!   d/dt y2(r,t) = - c12 (Cv{ion}+Cv{ele})/(Cv{ion}Cv{ele}) y2(r,t)
+!!
+!! so the solution is
+!!   y1(r,t) = y1(r,0) * f(t),
+!!   y2(r,t) = y2(r,0) * f(t),
+!! with
+!!   f(t) = exp(-c12 (Cv{ion}+Cv{ele})/(Cv{ion}Cv{ele}) t)
+!!
+!! Substituting this back, we get the analytical solution in the original temperature
+!! variables as
+!!   Tion(r,t) = Tm(r) + y1(r,t) = Tm(r) + (Tion(0,t)-Tm(r)) * f(t),
+!!   Tele(r,t) = Tm(r) + y2(r,t) = Tm(r) + (Tele(0,t)-Tm(r)) * f(t).
+!!
+!! 
+!! The analytical Tion(r,t) is saved in TANA_VAR.
+!!
+!! ARGUMENTS
+!!
+!!  blockID -        the number of the block to initialize
+!!  tcurr   -        current time
+!!
+!!
+!!***
+
+!!REORDER(4) solnData
+
+subroutine Simulation_computeAnalytical(blockId, tcurr)
+
+  use Simulation_data
+  use Heatexchange_data, ONLY : hx_coulombLog, hx_c12
+  use Conductivity_interface, ONLY : Conductivity
+  use Eos_interface, ONLY : Eos
+  use Grid_interface, ONLY : Grid_getBlkIndexLimits, &
+    Grid_getCellCoords, Grid_getBlkPtr, Grid_releaseBlkPtr
+  use Driver_interface, ONLY: Driver_abortFlash
+
+  implicit none
+
+#include "constants.h"
+#include "Flash.h"
+#include "Eos.h"   
+
+  ! compute the maximum length of a vector in each coordinate direction 
+  ! (including guardcells)
+  
+  integer, intent(in) :: blockId
+  real,    intent(in) :: tcurr
+
+  integer :: i, j, k, n, ii
+  integer :: iMax, jMax, kMax
+  real :: xx, yy, zz, x0, y0, z0, r2, toff, pi
+  integer :: ivelx, ively, ivelz
+
+  real,allocatable,dimension(:) :: xCenter,yCenter,zCenter
+  real,pointer :: solnData(:,:,:,:)
+
+  integer, dimension(2,MDIM) :: blkLimits, blkLimitsGC
+  integer :: sizeX,sizeY,sizeZ,vecLen,sizeXInner
+  integer :: is, ie
+  integer, dimension(MDIM) :: axis
+
+  real :: rhoZone, velxZone, velyZone, velzZone, presZone, & 
+       enerZone, ekinZone, eintZone, tempZone, &
+       temp1Zone, temp2Zone, temp3Zone, &
+       dens
+  real, allocatable :: temp1ZonesIni(:), temp2ZonesIni(:), Tm(:)
+  real, allocatable :: y2Row(:), y2Min(:), bRow(:), aRow(:), gRow(:)
+  real :: CvIon,CvEle, ft, y20, y2, y10, y1
+  real, allocatable,dimension(:) :: y20Row !, y10, y1
+  real                       :: Ye, ni, nePerDens, ionMassInUAmu
+  real                       :: numFactor, chargeEtcFactor, massFactor
+  real, parameter :: bogusUnusedTemperature = -1e20
+  real, save :: bogusUnusedMassFrac(NSPECIES)
+  
+  logical :: gcell = .true.
+#ifdef DEBUG_SIMANA
+  logical,save :: firstTimeDbg = .TRUE.
+#endif
+
+
+  pi = 4. * atan (1.d0)
+
+  ! WE COULD dump some output to stdout listing the parameters.
+  ! But currently we don't.
+  if (sim_meshMe == MASTER_PE) then
+
+1    format (1X, 1P, 4(A7, E13.7, :, 1X))
+2    format (1X, 1P, 2(A7, E13.7, 1X), A7, I13)
+
+  endif
+
+  ! get the coordinate information for the current block from the database
+  call Grid_getBlkIndexLimits(blockId,blkLimits,blkLimitsGC)
+  sizeX = blkLimitsGC(HIGH,IAXIS)
+  is = blkLimits(LOW,IAXIS)
+  ie = blkLimits(HIGH,IAXIS) !;ie=is
+  sizeXInner = ie - is + 1
+  sizeY = blkLimitsGC(HIGH,JAXIS)
+  sizeZ = blkLimitsGC(HIGH,KAXIS)
+  allocate(xCenter(sizeX))
+  allocate(yCenter(sizeY))
+  allocate(zCenter(sizeZ))
+  allocate(temp1ZonesIni(sizeXInner))
+  allocate(temp2ZonesIni(sizeXInner))
+  allocate(           Tm(sizeXInner))
+  allocate(        y2Row(sizeXInner))
+  allocate(       y20Row(sizeXInner))
+  allocate(        y2Min(sizeXInner))
+  allocate(         bRow(sizeXInner))
+  allocate(         aRow(sizeXInner))
+  allocate(         gRow(sizeXInner))
+  vecLen = sizeXInner
+
+  if (NDIM == 3) call Grid_getCellCoords&
+                      (KAXIS, blockId, CENTER,gcell, zCenter, sizeZ)
+  if (NDIM >= 2) call Grid_getCellCoords&
+                      (JAXIS, blockId, CENTER,gcell, yCenter, sizeY)
+  call Grid_getCellCoords(IAXIS, blockId, CENTER, gcell, xCenter, sizeX)
+  call Grid_getBlkPtr(blockId, solnData)
+!------------------------------------------------------------------------------
+
+! Coordinates of initial point source
+
+  x0 = sim_xCenter
+  y0 = sim_yCenter
+  z0 = sim_zCenter
+
+  CvIon = sim_CvIon
+  CvEle = sim_CvEle
+
+  hx_c12 = 1e8
+!  ft = exp(-hx_c12 * (CvIon+CvEle)/(CvIon*CvEle) * tcurr)
+
+! Loop over cells in the block.  For each, compute the physical position of 
+!  the state using an exact solution.
+
+  do k = blkLimits(LOW,KAXIS),blkLimits(HIGH,KAXIS)
+     ! get the coordinates of the cell center in the z-direction
+!     zz = zCenter(k)
+     do j = blkLimits(LOW,JAXIS),blkLimits(HIGH,JAXIS)
+        ! get the coordinates of the cell center in the y-direction
+!        yy = yCenter(j)
+
+
+
+        toff = tcurr  !  + sim_toffset ! + 1e-7
+        dens = sim_rhoInit
+
+        temp1ZonesIni = solnData(T0IO_VAR,is:ie,j,k)
+        temp2ZonesIni = solnData(T0EL_VAR,is:ie,j,k)
+        Tm(:) = (CvIon * temp1ZonesIni(:) + CvEle * temp2ZonesIni(:)) / (CvIon+CvEle)
+#ifdef DEBUG_SIMANA
+        if (firstTimeDbg) then
+           call sim_anaDebug
+           firstTimeDbg = .FALSE.
+        end if
+#endif
+
+        y2Min(:) = - Tm(:)
+!!$           print*,'Tm is',Tm
+        y20Row(:) = temp2ZonesIni - Tm
+!        bRow(:) = (sim_memi*CvEle-CvIon)/(CvIon+CvEle)
+        bRow(:) = (CvIon - sim_memi*CvEle)/(CvIon)
+        aRow(:) = (1.0+sim_memi)*Tm
+              Ye = sim_dynamicZ / sim_relA
+              ni = dens * sim_Avogadro / sim_relA
+              nePerDens = sim_Avogadro * Ye
+              numFactor = 8*sqrt(2*PI)/3.0
+              chargeEtcFactor = ni * sim_dynamicZ**2 * sim_eleCharge**4 * sim_kBoltzmann**(-1.5)
+              ionMassInUAmu = sim_relA - sim_dynamicZ * sim_eMassInUAmu
+
+              massFactor = sqrt(sim_eMassInUAmu)/ionMassInUAmu * sqrt(sim_Avogadro) !DEV: not right for MKS units!
+        gRow(:) = (1.5*nePerDens*sim_kBoltzmann * numFactor*chargeEtcFactor*hx_coulombLog*massFactor) &
+             *  (CvIon+CvEle) / (CvIon*CvEle)
+999     format(a,3(1PG23.16))
+!!!        print 999,'bRow(5),aRow(5),gRow(5):',bRow(5),aRow(5),gRow(5)
+        y2Row(:) = y20Row(:)*0.001     !starting point for Newton-Raphson iterations
+!!!        print*,'y20 bef Newton:',y20Row
+        call sim_anaNewtonRaphson(vecLen, y2Row, y20Row, tcurr, y2Min,bRow,aRow,gRow)
+!!!        print*,'y20 aft Newton:',y20Row
+
+!!!        y2Row(:) = -y2Row(:)
+        do i = is, ie
+           ii = i - is + 1
+ !          xx  = xCenter(i)
+!!           y2  = y20 * ft
+           temp2Zone = y2Row(ii) + Tm(ii)
+!!$           print*,'y20,y2 is',y20,y2,temp2Zone
+           y10 = temp1ZonesIni(ii) - Tm(ii)
+           y1  = y10 * y2Row(ii) / y20Row(ii)
+           temp1Zone = y1 + Tm(ii)
+
+           solnData(T1AN_VAR,i,j,k) = temp1Zone
+           solnData(T2AN_VAR,i,j,k) = temp2Zone
+
+        enddo
+     enddo
+  enddo
+  deallocate(gRow)
+  deallocate(aRow)
+  deallocate(bRow)
+  deallocate(y2Min)
+  deallocate(y20Row)
+  deallocate(y2Row)
+  deallocate(Tm)
+  deallocate(temp2ZonesIni)
+  deallocate(temp1ZonesIni)
+  deallocate(xCenter)
+  deallocate(yCenter)
+  deallocate(zCenter)
+  call Grid_releaseBlkPtr(blockId, solnData)
+     
+  return
+
+contains
+#ifdef DEBUG_SIMANA
+  subroutine sim_anaDebug
+    real,dimension(-100:100) :: y,t,dtdy,b,a,g,y0
+    real :: savedVecLen
+    integer :: i
+
+    b(:) = (CvIon - sim_memi*CvEle)/(CvIon)
+    a(:) = (1.0+sim_memi)*Tm(5)
+
+    Ye = sim_dynamicZ / sim_relA
+    ni = dens * sim_Avogadro / sim_relA
+    nePerDens = sim_Avogadro * Ye
+    numFactor = 8*sqrt(2*PI)/3.0
+    chargeEtcFactor = ni * sim_dynamicZ**2 * sim_eleCharge**4 * sim_kBoltzmann**(-1.5)
+    ionMassInUAmu = sim_relA - sim_dynamicZ * sim_eMassInUAmu
+
+    massFactor = sqrt(sim_eMassInUAmu)/ionMassInUAmu * sqrt(sim_Avogadro) !DEV: not right for MKS units!
+    g(:) = (1.5*nePerDens*sim_kBoltzmann * numFactor*chargeEtcFactor*hx_coulombLog*massFactor) &
+         *  (CvIon+CvEle) / (CvIon*CvEle)
+
+    savedVecLen = vecLen
+    vecLen = 0
+    do i=-100,100
+       y(i) = Tm(5) * 0.01*i*2
+       y0(i) = sign(Tm(5),y(i))
+       vecLen = vecLen + 1
+    end do
+
+    call sim_anaTimeByTemp(1,vecLen,y,y0,t,dtdy,b,a,g)
+
+    vecLen = savedVecLen
+
+    open(44,status='UNKNOWN',name='Debug.dat')
+997 format(6(1x,1PG22.15))
+998 format(a,6(1x,1PG22.15))
+    do i=-100,100
+!!!       print 998,"Dbg",y(i),t(i),dtdy(i),b(i),a(i),g(i)
+       write(44,997) y(i),t(i),dtdy(i),b(i),a(i),g(i)
+    end do
+    close(44,status='KEEP')
+
+  end subroutine sim_anaDebug
+#endif
+
+  subroutine sim_anaNewtonRaphson(vecLen, tempRow,y20Row, timeWanted, y2Min,b,a,g)
+    use eos_vecData, ONLY:  cvRow, cpRow
+    use Simulation_data, ONLY:  sim_anaSmallT, sim_anaTol, sim_anaMaxNewton
+    implicit none
+
+    integer,intent(IN) :: vecLen
+    real,intent(INOUT) :: tempRow(vecLen)
+    real,intent(IN) :: timeWanted
+    real,intent(IN) :: y20Row(vecLen),y2Min(vecLen)
+    real,intent(IN),dimension(vecLen) :: b,a,g
+
+    integer :: k
+    integer :: vecBegin,vecEnd  !DEV: needed?
+  ! declare some local storage for the results of sim_anaTimeByTemp
+    real,dimension(vecLen)::  timeRow, dty2Row
+  ! declare some local storage for the results of the Newton iteration
+    real,dimension(vecLen)::  tmpNew, error
+
+    vecBegin = 1
+    vecEnd = vecLen
+!!$    print*,'timerow:',timerow
+!!!    print*,'inNewton y20Row:',y20Row
+
+    ! Initialize the errors
+    error(:) = 0.0e0
+
+    ! Do the first eos call with all the zones in the pipe
+    !  Initial y2 here is what is stored in the grid, even though we 
+    !    SUSPECT this is not in equilibrium (or we wouldn't be calling Eos if it was fine)
+!!$    if (.NOT. all(tempRow(1:vecLen) > 0)) &
+!!$         print*,'sim_anaNr WARN:',tempRow(1:vecLen)
+
+!    tempRow(1:vecLen) = max(0.0,sim_anaSmallT,tempRow(1:vecLen))
+    tempRow(1:vecLen) = sign(max(0.0,sim_anaSmallT,abs(tempRow(1:vecLen))),tempRow(1:vecLen))
+    tempRow(1:vecLen) = max(y2Min(1:vecLen),tempRow(1:vecLen))
+    call sim_anaTimeByTemp(vecBegin,vecEnd,tempRow,y20Row,timeRow,dty2Row,b,a,g)
+    !  Now we have timeRow, dty2Row
+!!$    where (tempRow(1:vecLen) .LE. y2Min(1:vecLen) &
+!!$         .AND. dty2Row(1:vecLen) .LE. 0.0 &
+!!$         .AND. timeWanted .GE. timeRow(1:vecLen))
+!!$    end where
+
+    !  Create initial condition
+    do k = vecBegin, vecEnd
+
+       if (dty2Row(k) .LE. 0.0 &
+            .AND. tempRow(k) .LE. y2Min(k) &
+            .AND. timeWanted > timeRow(k)) then
+          tmpNew(k) = y2Min(k) + 4*spacing(y2Min(k))
+          dty2Row(k) = (timeRow(k) - timeWanted) / (tempRow(k) - tmpNew(k))
+       else if (dty2Row(k) .LE. 0.0 &
+            .AND. tempRow(k) .LE. y2Min(k) &
+            .AND. timeWanted == timeRow(k)) then
+          tmpNew(k) = y2Min(k)
+       else
+       !  timeWanted is our desired time input
+          tmpNew(k) = tempRow(k) - (timeRow(k) - timeWanted) / dty2Row(k)
+       endif
+
+       if (tmpNew(k)*tempRow(k) .LE. 0.0) then
+          tmpNew(k) = sign(max(2*sim_anaSmallT,abs(0.1*tempRow(k))),tempRow(k))
+       else
+       ! Don't allow the y2 to change by more than an order of magnitude 
+       ! in a single iteration
+          if (abs(tmpNew(k)) .GT. 10.e0*abs(tempRow(k)))  & 
+               tmpNew(k) = 10.e0*sign(tempRow(k),tmpNew(k))
+          if (abs(tmpNew(k)) .LT. 0.1e0*abs(tempRow(k)))  & 
+               tmpNew(k) = 0.1e0*sign(tempRow(k),tmpNew(k))
+       end if
+
+       if (tmpNew(k) .LE. y2Min(k)) then
+          tmpNew(k) = y2Min(k)
+       endif
+
+       ! Compute the error
+       error(k) = abs((tmpNew(k) - tempRow(k)) / tempRow(k))
+
+       ! Store the new y2
+       tempRow(k) = tmpNew(k)
+
+       ! Check if we are freezing, if so set the y2 to smallt, and adjust 
+       ! the error so we don't wait for this one
+       if (abs(tempRow(k)) .LT. sim_anaSmallT) then
+          tempRow(k) = sign(sim_anaSmallT,tempRow(k))
+          error(k)    = 0.1*sim_anaTol
+       endif
+
+    enddo
+
+
+    ! Loop over the zones individually now
+    do k = vecBegin, vecEnd
+       do i = 2, sim_anaMaxNewton
+          if (error(k) .LT. sim_anaTol) goto 70
+
+          ! evaluate integral only over this single item
+          call sim_anaTimeByTemp(k,k,tempRow,y20Row,timeRow,dty2Row,b,a,g)
+
+          if (dty2Row(k) .LE. 0.0 &
+               .AND. tempRow(k) .LE. y2Min(k) &
+               .AND. timeWanted > timeRow(k)) then
+             tmpNew(k) = y2Min(k) + 4*spacing(y2Min(k))
+             dty2Row(k) = (timeRow(k) - timeWanted) / (tempRow(k) - tmpNew(k))
+          else if (dty2Row(k) .LE. 0.0 &
+               .AND. tempRow(k) .LE. y2Min(k) &
+               .AND. timeWanted == timeRow(k)) then
+             tmpNew(k) = y2Min(k)
+          else
+             tmpNew(k) = tempRow(k) - (timeRow(k) - timeWanted) / dty2Row(k)
+          end if
+
+          if (tmpNew(k)*tempRow(k) .LE. 0.0) then
+             tmpNew(k) = sign(max(2*sim_anaSmallT,abs(0.1*tempRow(k))),tempRow(k))
+          else
+          ! Don't allow the y2 to change by more than an order of magnitude 
+          ! in a single iteration
+             if (abs(tmpNew(k)) .GT. 10.e0*abs(tempRow(k)))  & 
+                  tmpNew(k) = 10.e0*sign(tempRow(k),tmpNew(k))
+             if (abs(tmpNew(k)) .LT. 0.1e0*abs(tempRow(k)))  & 
+                  tmpNew(k) = 0.1e0*sign(tempRow(k),tmpNew(k))
+          endif
+
+
+          ! Compute the error
+          error(k) = abs((tmpNew(k) - tempRow(k)) / tempRow(k))
+
+          ! Store the new y2
+          tempRow(k) = tmpNew(k)
+
+          ! Check if we are freezing, if so set the y2 to sim_anaSmallT, and adjust 
+          ! the error so we don't wait for this one
+          if (abs(tempRow(k)) .LT. sim_anaSmallT) then
+             tempRow(k) = sign(sim_anaSmallT,tempRow(k))
+             error(k)    = .1*sim_anaTol
+          endif
+
+       end do  ! end of Newton iterations loop.  Failure drops below, success goes to 70
+
+       ! Land here if too many iterations are needed -- failure
+
+       print *, ' '
+       print *, 'Newton-Raphson failed in computeAnalytical'
+
+       print *, ' '
+       print *, 'too many iterations'
+       print *, ' '
+       print *, ' k    = ', k,vecBegin,vecEnd
+       print *, ' temp = ', tempRow(k)
+
+       call Driver_abortFlash('[Simulation_computeAnalytical] Error: too many iteration in Newton-Raphson')
+
+
+       ! Land here if the Newton iteration converged
+       !  jumps out of the iterations, but then continues to the next vector location
+
+70     continue           
+    end do
+
+    ! The output array is now filled with the results.
+
+  end subroutine sim_anaNewtonRaphson
+
+
+  subroutine sim_anaTimeByTemp(sim_jlo,sim_jhi,y2Row,y20Row,timeRow,dty2Row,b,a,g)
+
+    use Logfile_interface, ONLY : Logfile_stampMessage
+    use Timers_interface, ONLY: Timers_start, Timers_stop
+    use eos_vecData, ONLY: ptotRow, stotRow, &
+         dpdRow, dptRow, dstRow, dedRow, dsdRow, &
+         deaRow, dezRow, & !Calhoun
+         pelRow, neRow, etaRow, gamcRow, cvRow, cpRow, &
+         eCompRow, pCompRow
+
+    !! physical constants to high precision
+    use eos_helmConstData, ONLY: kerg, kergavo, asoli3, avo, avoInv, sioncon, pi
+    use Eos_data, ONLY: eos_gasConstant
+
+    implicit none
+
+
+#include "constants.h" 
+#include "Flash.h"  
+#include "Eos.h"
+#include "Eos_components.h"
+
+    !! Arguments
+    integer, intent(IN) :: sim_jlo, sim_jhi
+    real, intent(IN) :: y2Row(1:vecLen), y20Row(1:vecLen)
+    real, intent(OUT) :: timeRow(1:vecLen), dty2Row(1:vecLen)
+    real,intent(IN),dimension(vecLen) :: b,a,g
+
+    real,dimension(vecLen) :: minuginv,z,t0
+
+    minuginv(sim_jlo:sim_jhi) = - 1.0/g(sim_jlo:sim_jhi)
+
+
+    z(sim_jlo:sim_jhi) = b(sim_jlo:sim_jhi)*y20Row(sim_jlo:sim_jhi)+a(sim_jlo:sim_jhi)
+    !!  2.226 1 (p. 74)
+    timeRow(sim_jlo:sim_jhi) = (z(sim_jlo:sim_jhi)/3 + a(sim_jlo:sim_jhi)) * 2 * sqrt(z(sim_jlo:sim_jhi))
+    !!  2.235 1 (p. 75)
+    !!  2.224 5 (p. 73) [a > 0]
+    t0(sim_jlo:sim_jhi) =  timeRow(sim_jlo:sim_jhi) + a(sim_jlo:sim_jhi)**1.5 * &
+         log(abs((sqrt(z(sim_jlo:sim_jhi)) - sqrt(a(sim_jlo:sim_jhi)))/(sqrt(z(sim_jlo:sim_jhi)) + sqrt(a(sim_jlo:sim_jhi)))))
+!!!    t0(sim_jlo:sim_jhi) = 0.0
+
+
+    z(sim_jlo:sim_jhi) = b(sim_jlo:sim_jhi)*y2Row(sim_jlo:sim_jhi)+a(sim_jlo:sim_jhi)
+
+    dty2Row(sim_jlo:sim_jhi) = minuginv(sim_jlo:sim_jhi) / y2Row(sim_jlo:sim_jhi) *  &
+         z(sim_jlo:sim_jhi)**(1.5)
+!!!    print*,'TbT y20Row:',y20Row(sim_jlo:sim_jhi)
+!!!    print*,'TbT y2Row: ',y2Row(sim_jlo:sim_jhi)
+    !!  2.226 1 (p. 74)
+    timeRow(sim_jlo:sim_jhi) = (z(sim_jlo:sim_jhi)/3 + a(sim_jlo:sim_jhi)) * 2 * sqrt(z(sim_jlo:sim_jhi))
+    !!  2.235 1 (p. 75)
+!!$    timeRow(sim_jlo:sim_jhi) =  timeRow(sim_jlo:sim_jhi) + a(sim_jlo:sim_jhi)**(1./3) * &
+!!$         ( 1.5*log(abs(((b(sim_jlo:sim_jhi)*y2Row(sim_jlo:sim_jhi)+a(sim_jlo:sim_jhi))**(1./3) &
+!!$         - a(sim_jlo:sim_jhi)**(1./3))/(y2Row(sim_jlo:sim_jhi)**(1./3)))) &
+!!$           + 3.**(1./3) * atan2(sqrt(3.)*( b(sim_jlo:sim_jhi)*y2Row(sim_jlo:sim_jhi)+a(sim_jlo:sim_jhi) ) ** (1./3.0), &
+!!$           ( b(sim_jlo:sim_jhi)*y2Row(sim_jlo:sim_jhi)+a(sim_jlo:sim_jhi) )**(1./3.0) + 2*a(sim_jlo:sim_jhi)**(1./3)))
+    !!  2.224 5 (p. 73) [a > 0]
+    timeRow(sim_jlo:sim_jhi) =  timeRow(sim_jlo:sim_jhi) + a(sim_jlo:sim_jhi)**1.5 * &
+         log(abs((sqrt(z(sim_jlo:sim_jhi)) - sqrt(a(sim_jlo:sim_jhi)))/(sqrt(z(sim_jlo:sim_jhi)) + sqrt(a(sim_jlo:sim_jhi)))))
+    timeRow(sim_jlo:sim_jhi) = minuginv(sim_jlo:sim_jhi) * (timeRow(sim_jlo:sim_jhi) - t0(sim_jlo:sim_jhi))
+!!$    print*,'TbT dt/dy2',dty2Row
+
+
+#if(0)
+    real :: aa(1:vecLen)
+!!$    print*,'TbT y20Row:',y20Row
+!!$    print*,'TbT y2Row: ',y2Row
+    timeRow(sim_jlo:sim_jhi) = log(y2Row(sim_jlo:sim_jhi)/y20Row(sim_jlo:sim_jhi)) / (-hx_c12 * (CvIon+CvEle)/(CvIon*CvEle))
+!!$    print*,'TbT time:  ',timeRow
+    aa(sim_jlo:sim_jhi) = 1.0/y2Row(sim_jlo:sim_jhi)
+!!$    if (ANY(aa(sim_jlo:sim_jhi) <= 0)) then
+!!$       print*,' Neg a:',sim_jlo,':',sim_jhi,':',aa(sim_jlo:sim_jhi)
+!!$    end if
+    dty2Row(sim_jlo:sim_jhi) = aa(sim_jlo:sim_jhi) / (-hx_c12 * (CvIon+CvEle)/(CvIon*CvEle))
+!!$    print*,'TbT dt/dy2',dty2Row
+#endif
+
+  end subroutine sim_anaTimeByTemp
+end subroutine Simulation_computeAnalytical

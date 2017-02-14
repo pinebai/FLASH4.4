@@ -1,0 +1,52 @@
+# Configuration file for the Maclaurin spheroid problem, set up as a unit test for Poisson Gravity
+# [source/Simulation/SimulationMain/unitTest/Gravity/Poisson3]
+# recommended MAXBLOCKS 1000 or greater
+# because of the conflict between the "default" within GravityMain/Poisson and GravityMain/Poisson/Method
+#   you need to actually specify the Method on the setup line if you want something other than Multipole
+#   ./setup unitTest/Gravity/Poisson3 -auto -3d -maxblocks=1000 -with-unit=Gravity/GravityMain/Multigrid
+
+REQUIRES physics/Hydro
+REQUESTS physics/Gravity/GravityMain/Poisson/Multigrid
+REQUIRES physics/Gravity/GravityMain/Poisson/unitTest
+
+LINKIF IO_writeIntegralQuantities.F90 IO/IOMain
+LINKIF IO_outputFinal.F90 IO/IOMain
+
+# Multipole requires 3d geometry
+# Ideally we'd like to test against having Multipole used, but
+#  the USESETUPVARS only works if the option is specified on the command line
+# So, if another version of Poisson is implemented, comment out these lines
+USESETUPVARS nDim
+IF nDim <> 3
+  SETUPERROR unitTest/Gravity/Poisson3 and Poisson/Multipole must run in 3d.  Use ./setup unitTest/Gravity/Poisson3 -3d blah blah
+ENDIF
+
+
+USESETUPVARS timeMultipole
+IF timeMultipole
+   REQUIRES Simulation/SimulationMain/unitTest/Gravity/Poisson3/timeMultipole
+ENDIF
+
+
+# Runtime parameters
+
+D  pass_tolerance              Allowed error for testing.  0.015 = 1.5 percent error
+D  eccentricity                Eccentricity of the ellipsoid (e)
+D  equatorial_semimajor_axis   Equatorial semimajor axis (a1)
+D  angular_velocity            Dimensionless angular velocity (Omega)
+D  density                     Spheroid density (rho): set to -1 to generate spheroid mass of 1.0
+D  xctr                        X-coordinate of center of spheroid
+D  yctr                        Y-coordinate of center of spheroid
+D  zctr                        Z-coordinate of center of spheroid
+D  nsubzones                   Number of sub-zones per dimension
+
+PARAMETER pass_tolerance              REAL     0.015  [0.00000000000001 to 1.0]
+PARAMETER eccentricity                REAL     0.   [0.0 to 1.0]
+PARAMETER equatorial_semimajor_axis   REAL     1.   [0.0 to ]
+PARAMETER angular_velocity            REAL     0.
+PARAMETER density                     REAL     1.   [-1.0 to ]
+PARAMETER xctr                        REAL     0.5
+PARAMETER yctr                        REAL     0.5
+PARAMETER zctr                        REAL     0.5
+PARAMETER nsubzones                   INTEGER  2    [1 to ]
+

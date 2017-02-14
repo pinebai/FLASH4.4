@@ -1,0 +1,77 @@
+# flash.par for particles move benchmarks
+#
+# Basic setup line (PM):
+# ./setup StirTurb -3d -auto -with-unit=Particles +pm4dev -parfile=flash.par.particles_benchmark +noio -maxblocks=90
+#
+# Basic setup line (UG):
+# ./setup StirTurb -3d -auto +ug +cube32 -with-unit=Particles -parfile=flash.par.particles_benchmark +noio
+# 512:  iProcs = 8,  jProcs = 8,  kProcs = 8
+# 2048: iProcs = 8,  jProcs = 16, kProcs = 16
+# 8192: iProcs = 16, jProcs = 16, kProcs = 32
+#
+#
+# Scaling experiments can be run on 512, 2048, 8192 cores on Intrepid.
+
+iProcs = 8
+jProcs = 8
+kProcs = 8
+
+useParticles= .true.
+
+pt_numX = 256
+pt_numY = 256
+pt_numZ = 256
+pt_maxPerProc=500000
+
+lrefine_max	= 7
+lrefine_min 	= 6
+
+xmax            = 1.
+xmin            = 0.
+ymax            = 1.
+ymin            = 0.
+zmax            = 1.
+zmin            = 0.
+
+basenm          = "driventurb_3d_"
+
+restart         = .false.
+cpnumber        = 0
+ptnumber        = 0
+
+plot_var_1  = "dens"
+plot_var_2  = "pres"
+plot_var_3  = "temp"
+
+diffuse_therm   = .false.     # no thermal diffusion
+diffuse_visc    = .false.     # will need some laplacian viscosity
+diff_visc_nu    = .1
+
+gamma           = 1.4
+istir           = 1
+
+nend            = 100
+tmax            = 20.0
+nrefs           = 5     # No AMR, please.
+
+xl_boundary_type      = "periodic"
+xr_boundary_type      = "periodic"
+yl_boundary_type      = "periodic"
+yr_boundary_type      = "periodic"
+zl_boundary_type      = "periodic"
+zr_boundary_type      = "periodic"
+
+st_stirmax           = 25.1327
+st_stirmin           =  6.2832
+st_energy            =  1.E-4
+st_decay             =  0.5
+eintSwitch          = 0.
+
+dtini = 1.e-5
+dtmin = 1.e-5
+
+smallt = 1.e-15
+smalle = 1.e-10
+
+eachProcWritesSummary = .false.
+refine_var_1 = "dens"

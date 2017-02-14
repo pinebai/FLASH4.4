@@ -1,0 +1,6 @@
+#
+# Set the default as     -> Ray tracing using the Kaiser Algorithm
+# Other option via setup -> Ray tracing using cubic interpolation
+#
+DEFAULT   KaiserAlgorithm
+EXCLUSIVE KaiserAlgorithm CubicInterpolation

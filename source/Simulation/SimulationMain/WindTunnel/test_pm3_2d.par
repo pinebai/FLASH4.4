@@ -1,0 +1,50 @@
+#	Runtime parameters for the Emery wind tunnel + step problem.
+
+#	Parameters for initial model
+
+#		Ambient pressure and density and inflow velocity.
+
+sim_pAmbient	= 1.0
+sim_rhoAmbient	= 1.4
+sim_windVel     = 3.0
+
+#		Gas ratio of specific heats
+
+gamma           = 1.4
+
+#	Computational volume parameters
+
+#		Grid geometry
+
+geometry = "cartesian"
+
+#		Size of computational volume
+
+Nblockx		= 15
+Nblocky		= 5
+xmin		= 0.
+xmax		= 3.
+ymin		= 0.0
+ymax		= 1.0
+
+#		Boundary conditions
+
+xl_boundary_type = "user"
+xr_boundary_type = "outflow"
+
+yl_boundary_type = "reflect"
+yr_boundary_type = "reflect"
+
+
+#	Simulation (grid, time, I/O) parameters
+
+cfl		= 0.8
+lrefine_max     = 3
+refine_var_1 = "dens"
+refine_var_2 = "pres"
+basenm          = "windtunnel_3lev_"
+restart         = .false.
+checkpointFileIntervalTime          = 0.25
+nend            = 100000
+tmax            = 0.5
+eintSwitch     = 1.e-4

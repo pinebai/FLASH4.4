@@ -1,0 +1,7 @@
+
+REQUIRES Grid/GridMain/UG
+REQUIRES Grid/GridMain/UG/unitTest
+
+FACEVAR fcv1	 
+FACEVAR fcv2 	  
+FACEVAR fcv3

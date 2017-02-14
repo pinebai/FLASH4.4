@@ -1,0 +1,7 @@
+#  Configuration file for Helmholtz-derived multi-temperature EOS
+#  [physics/Eos/EosMain/multiTemp/Helmholtz]
+DEFAULT SpeciesBased 
+REQUIRES physics/Eos/EosMain/multiTemp/Helmholtz
+
+EXCLUSIVE SpeciesBased Ye
+

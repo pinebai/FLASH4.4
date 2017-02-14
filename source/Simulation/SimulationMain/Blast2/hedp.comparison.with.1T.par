@@ -1,0 +1,116 @@
+#	Runtime parameters for the Woodward-Colella interacting blast problem.
+
+#	Parameters for initial model
+
+#		Density, pressure, and velocity in each section of the grid
+eos_singleSpeciesA = 1.71428571428571428571
+eos_singleSpeciesZ = 0.85714285714285714285
+
+sim_rhoLeft        =    1.
+sim_rhoMid         =    1.
+sim_rhoRight       =    1.
+sim_pLeft          =    1000.
+sim_pMid           =    0.01
+sim_pRight         =    100.
+sim_uLeft          =    0.
+sim_uMid           =    0.
+sim_uRight         =    0.
+
+#		Angle and position of interfaces relative to x and y axes
+
+sim_xangle		=    0.
+sim_yangle		=    90.
+sim_posnL           =    0.1
+sim_posnR           =    0.9
+
+#		Gas ratio of specific heats
+
+gamma           = 1.666666666667
+
+#	Computational volume parameters
+
+#		Grid dimensionality and geometry
+
+geometry = "cartesian"
+
+#		Size of computational volume
+
+xmin		= 0.
+xmax		= 1.
+
+#		Boundary conditions
+
+xl_boundary_type = "reflect"
+xr_boundary_type = "reflect"
+
+
+#	Simulation time, I/O parameters
+
+cfl		= 0.8
+basenm          = "blast2_"
+restart         = .false.
+
+
+
+#	checkpoint file output parameters
+checkpointFileIntervalTime = 0.002
+checkpointFileIntervalStep = 0
+checkpointFileNumber = 0
+
+#	plotfile output parameters
+plotfileIntervalTime = 0.
+plotfileIntervalStep = 0
+plotfileNumber = 0
+
+
+
+
+nend            = 999999
+tmax            = 0.038
+plot_var_1 = "dens"
+plot_var_2 = "pres"
+plot_var_3 = "temp"
+
+run_comment	= "Woodward-Colella blast wave (to t=0.038)"
+log_file	= "2blast_1d_10lev.log"
+
+#	Misc parameters
+
+eintSwitch     = 0.
+convertToConsvdInMeshInterp   = .true.
+
+#  Adaptive Grid refinement parameters
+
+refine_var_1    = "dens"
+refine_var_2    = "pres"
+lrefine_max     = 10
+
+# Uniform Grid specific parameters
+iProcs = 1
+jProcs = 1
+kProcs = 1
+
+#only used with non-fixed block size
+#iGridSize = 8
+#jGridSize = 8
+#kGridSize = 8
+
+
+
+## -------------------------------------------------------------##
+##  SWITCHES SPECIFIC TO THE UNSPLIT HYDRO SOLVER               ##
+#	I. INTERPOLATION SCHEME:
+order		= 2      # Interpolation order (First/Second order)
+slopeLimiter    = "mc"   # Slope limiters (minmod, mc, vanLeer, hybrid, limited)
+LimitedSlopeBeta= 1.     # Slope parameter for the "limited" slope by Toro
+charLimiting	= .true. # Characteristic limiting vs. Primitive limiting
+
+
+#	II. RIEMANN SOLVERS:
+RiemannSolver	= "Roe"       # Roe, HLL, HLLC, LF
+shockInstabilityFix = .false. # Carbuncle instability fix for the Roe solver
+
+
+#	III. STRONG SHOCK HANDELING SCHEME:
+shockDetect	= .false.     # Shock Detect for numerical stability
+## -------------------------------------------------------------##

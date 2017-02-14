@@ -1,0 +1,38 @@
+# ./setup unitTest/IO/IOMeshReplication -auto -3d +parallelio
+# Run FLASH with 8 MPI ranks.
+
+#paramesh grid will not refine on its own. 
+#set this to higher values to create more blocks
+lrefine_max = 2
+lrefine_min = 2
+
+#can also create more initial blocks in paramesh this way
+nblockx = 1
+nblocky = 1
+nblockz = 1
+
+
+#for uniform grid must specify the number of procs in each direction
+#remember for ug only 1 block per processor
+iprocs = 1
+jprocs = 1
+kprocs = 2
+
+igridsize = 16
+jgridsize = 16
+kgridsize = 8
+
+
+#must specify which variables to output for plotfile
+plot_var_1 = "var1"
+plot_var_2 = "var2"
+plot_var_3 = "var3"
+plot_var_4 = "x007"
+plot_var_5 = "x002"
+plot_var_6 = "x011"
+
+
+meshCopyCount = 4
+
+restart = .true.
+checkpointFileNumber = 1

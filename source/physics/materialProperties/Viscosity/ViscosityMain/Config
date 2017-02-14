@@ -1,0 +1,15 @@
+DEFAULT Constant
+EXCLUSIVE Constant Spitzer
+
+D	  useViscosity flags whether the viscosity material property is being used
+PARAMETER useViscosity 		BOOLEAN TRUE
+
+# The following three runtime parameters are currently NOT used
+# in the Constant Viscosity implementation.
+D viscSuppressFactor -- allows the viscosity to be suppressed 
+D viscTempLow -- turn off viscosity for temps lower than this
+D viscTempHigh -- turn off viscosity for temps higher than this
+ 
+PARAMETER viscTempLow 		REAL 		3.0e5
+PARAMETER viscTempHigh 		REAL 		1.5e8
+PARAMETER viscSuppressFactor 	REAL 		1.0

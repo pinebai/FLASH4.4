@@ -1,0 +1,73 @@
+#	Configuration file for the interacting blast wave problem
+#	(Woodward, P. & Colella, P. 1984, JCP, 54, 115)
+
+REQUIRES Driver
+REQUIRES physics/Hydro
+REQUIRES physics/Eos
+
+USESETUPVARS withParticles
+
+IF withParticles
+   PARTICLETYPE passive INITMETHOD lattice MAPMETHOD quadratic ADVMETHOD rungekutta
+
+   REQUIRES Particles/ParticlesMain
+   REQUESTS Particles/ParticlesMapping/Quadratic
+   REQUESTS Particles/ParticlesInitialization/Lattice
+   REQUESTS IO/IOMain/
+   REQUESTS IO/IOParticles
+ENDIF
+
+MASS_SCALAR YE    EOSMAPIN: YE
+MASS_SCALAR SUMY  EOSMAPIN: SUMY
+
+D sim_rhoLeft Density in the left part of the grid 
+PARAMETER sim_rhoLeft          REAL    1.
+
+D sim_rhoMid Density in the middle of the grid 
+PARAMETER sim_rhoMid           REAL    1.
+
+D sim_rhoRight Density in the right part of the grid 
+PARAMETER sim_rhoRight         REAL    1.
+
+D sim_pLeft Pressure  in the left part of the grid 
+PARAMETER sim_pLeft            REAL    1000.
+
+D sim_pMid Pressure  in the middle of the grid 
+PARAMETER sim_pMid             REAL    0.01
+
+D sim_pRight Pressure  in the righ part of the grid 
+PARAMETER sim_pRight           REAL    100.
+
+
+D sim_uLeft fluid velocity in the left part of the grid 
+PARAMETER sim_uLeft            REAL    0.
+
+D sim_uMid fluid velocity in the middle of the grid 
+PARAMETER sim_uMid             REAL    0.
+
+D sim_uRight fluid velocity in the right part of the grid 
+PARAMETER sim_uRight           REAL    0.
+
+D sim_xangle  Angle made by diaphragm normal w/x-axis (deg)
+PARAMETER sim_xangle	    REAL    0.
+
+D sim_yangle Angle made by diaphragm normal w/y-axis (deg)
+PARAMETER sim_yangle	    REAL    90.
+
+D sim_posnL  Point of intersection between the left shock plane and x-axis
+PARAMETER sim_posnL		    REAL    0.1
+
+D sim_posnR  Point of intersection between the right shock plane and the x-axis
+PARAMETER sim_posnR		    REAL    0.9
+
+D refine_var_1 first variable on which to refine
+PARAMETER refine_var_1      STRING "pres"
+
+D refine_var_2 second variable on which to refine
+PARAMETER refine_var_2      STRING "dens"
+# Do not reshuffle standard variables (yet). 
+
+
+D gamma       Ratio of specific heats for gas - for initialization
+PARAMETER gamma         REAL    1.6667 [0.0 to ] 
+

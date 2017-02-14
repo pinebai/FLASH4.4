@@ -1,0 +1,193 @@
+
+physics/materialProperties/Opacity
+    useOpacity [BOOLEAN] CONSTANT [FALSE]
+        flags whether the Opacity unit is being used at all
+
+physics/materialProperties/Opacity/OpacityMain
+    useOpacity [BOOLEAN] [TRUE]
+        flags whether the Opacity unit is being used at all
+
+physics/materialProperties/Opacity/OpacityMain/BremsstrahlungAndThomson
+    op_absorbScale [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    op_emitScale [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    op_transScale [REAL] [1.0]
+        Valid Values: Unconstrained
+
+
+physics/materialProperties/Opacity/OpacityMain/Constant
+    op_absorbConst [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    op_emitConst [REAL] [1.0]
+        Valid Values: Unconstrained
+
+    op_transConst [REAL] [1.0]
+        Valid Values: Unconstrained
+
+
+physics/materialProperties/Opacity/OpacityMain/Constcm2g
+    op_absorbConst [REAL] [1.0]
+        Valid Values: Unconstrained
+        Constcm2g value for absorption opacity [cm^2/g]
+    op_emitConst [REAL] [1.0]
+        Valid Values: Unconstrained
+        Constcm2g value for emission opacity [cm^2/g]
+    op_transConst [REAL] [1.0]
+        Valid Values: Unconstrained
+        Constcm2g value for transport opacity [cm^2/g]
+
+physics/materialProperties/Opacity/OpacityMain/Multispecies
+    opacity_ignoreLowTemp [BOOLEAN] [TRUE]
+        control parameter indicating if the low temperature capability should be
+        ignored
+    opacity_writeOpacityInfo [BOOLEAN] [FALSE]
+        control parameter indicating if detailed info of the opacity unit should
+        be written out
+
+physics/materialProperties/Opacity/OpacityMain/Multispecies/method/Integrate
+    opacity_RombergAccuracy [REAL] [1.E-6]
+        Valid Values: Unconstrained
+
+    opacity_maxQuadratureRoots [INTEGER] [50]
+        Valid Values: Unconstrained
+
+    opacity_printQuadratureData [BOOLEAN] [TRUE]
+
+    opacity_useQuadrature [BOOLEAN] [FALSE]
+
+    opacity_useRomberg [BOOLEAN] [TRUE]
+
+
+physics/materialProperties/Opacity/OpacityMain/Multispecies/method/LowTemp
+    opacity_ignoreKleinNishina [BOOLEAN] [FALSE]
+
+
+physics/materialProperties/Opacity/OpacityMain/Multispecies/method/Tabulated
+    op_tableEnergyTolerance [REAL] [1.0e-04]
+        Valid Values: Unconstrained
+        allowed difference between table/FLASH group structure
+    opacity_useLogTables [BOOLEAN] [TRUE]
+        control parameter indicating use of logarithmic opacities
+
+physics/materialProperties/Opacity/OpacityMain/OPAL
+    op_absorbConst [REAL] [1.0]
+        Valid Values: Unconstrained
+        Constcm2g value for absorption opacity [cm^2/g]
+    op_emitConst [REAL] [1.0]
+        Valid Values: Unconstrained
+        Constcm2g value for emission opacity [cm^2/g]
+    op_hydrogenMassFrac [REAL] [1.0]
+        Valid Values: 0.0+ to 1.0
+        Fixed value to use for hydrogen mass fraction, used if
+        op_hydrogenMassFracVar does not exist
+    op_hydrogenMassFracVar [STRING] ["h1"]
+        Valid Values: Unconstrained
+        Variable in unk to use as hydrogen mass fraction, probably something
+        like "h1" or "h"
+    op_opalMaxLowT [REAL] [1.0e4]
+        Valid Values: Unconstrained
+        maximum temperature for which the LowT OPAL tables are to be used; above
+        this threshold, the HightT tables are used.
+    op_opalNumHydrogenAbundances [INTEGER] [10]
+        Valid Values: 0 to 10
+        number of hydrogen abundance ranges for which there are OPAL table
+        files.
+    op_opalTableAbundMax_1 [REAL] [0.1]
+        Valid Values: 0.0 to 1.0
+        Upper bound of hydrogen abundance range no. 1
+    op_opalTableAbundMax_10 [REAL] [1.0]
+        Valid Values: 0.0 to 1.0
+        Upper bound of hydrogen abundance range no. 10
+    op_opalTableAbundMax_2 [REAL] [0.2]
+        Valid Values: 0.0 to 1.0
+        Upper bound of hydrogen abundance range no. 2
+    op_opalTableAbundMax_3 [REAL] [0.3]
+        Valid Values: 0.0 to 1.0
+        Upper bound of hydrogen abundance range no. 3
+    op_opalTableAbundMax_4 [REAL] [0.4]
+        Valid Values: 0.0 to 1.0
+        Upper bound of hydrogen abundance range no. 4
+    op_opalTableAbundMax_5 [REAL] [0.5]
+        Valid Values: 0.0 to 1.0
+        Upper bound of hydrogen abundance range no. 5
+    op_opalTableAbundMax_6 [REAL] [0.6]
+        Valid Values: 0.0 to 1.0
+        Upper bound of hydrogen abundance range no. 6
+    op_opalTableAbundMax_7 [REAL] [0.7]
+        Valid Values: 0.0 to 1.0
+        Upper bound of hydrogen abundance range no. 7
+    op_opalTableAbundMax_8 [REAL] [0.8]
+        Valid Values: 0.0 to 1.0
+        Upper bound of hydrogen abundance range no. 8
+    op_opalTableAbundMax_9 [REAL] [0.9]
+        Valid Values: 0.0 to 1.0
+        Upper bound of hydrogen abundance range no. 9
+    op_opalTableHighT_1 [STRING] ["-none-"]
+        Valid Values: Unconstrained
+        High temp OPAL table for hydrogen abundance range no. 1
+    op_opalTableHighT_10 [STRING] ["-none-"]
+        Valid Values: Unconstrained
+        High temp OPAL table for hydrogen abundance range no. 10
+    op_opalTableHighT_2 [STRING] ["-none-"]
+        Valid Values: Unconstrained
+        High temp OPAL table for hydrogen abundance range no. 2
+    op_opalTableHighT_3 [STRING] ["-none-"]
+        Valid Values: Unconstrained
+        High temp OPAL table for hydrogen abundance range no. 3
+    op_opalTableHighT_4 [STRING] ["-none-"]
+        Valid Values: Unconstrained
+        High temp OPAL table for hydrogen abundance range no. 4
+    op_opalTableHighT_5 [STRING] ["-none-"]
+        Valid Values: Unconstrained
+        High temp OPAL table for hydrogen abundance range no. 5
+    op_opalTableHighT_6 [STRING] ["-none-"]
+        Valid Values: Unconstrained
+        High temp OPAL table for hydrogen abundance range no. 6
+    op_opalTableHighT_7 [STRING] ["-none-"]
+        Valid Values: Unconstrained
+        High temp OPAL table for hydrogen abundance range no. 7
+    op_opalTableHighT_8 [STRING] ["-none-"]
+        Valid Values: Unconstrained
+        High temp OPAL table for hydrogen abundance range no. 8
+    op_opalTableHighT_9 [STRING] ["-none-"]
+        Valid Values: Unconstrained
+        High temp OPAL table for hydrogen abundance range no. 9
+    op_opalTableLowT_1 [STRING] ["-none-"]
+        Valid Values: Unconstrained
+        Low temp OPAL table for hydrogen abundance range no. 1
+    op_opalTableLowT_10 [STRING] ["-none-"]
+        Valid Values: Unconstrained
+        Low temp OPAL table for hydrogen abundance range no. 10
+    op_opalTableLowT_2 [STRING] ["-none-"]
+        Valid Values: Unconstrained
+        Low temp OPAL table for hydrogen abundance range no. 2
+    op_opalTableLowT_3 [STRING] ["-none-"]
+        Valid Values: Unconstrained
+        Low temp OPAL table for hydrogen abundance range no. 3
+    op_opalTableLowT_4 [STRING] ["-none-"]
+        Valid Values: Unconstrained
+        Low temp OPAL table for hydrogen abundance range no. 4
+    op_opalTableLowT_5 [STRING] ["-none-"]
+        Valid Values: Unconstrained
+        Low temp OPAL table for hydrogen abundance range no. 5
+    op_opalTableLowT_6 [STRING] ["-none-"]
+        Valid Values: Unconstrained
+        Low temp OPAL table for hydrogen abundance range no. 6
+    op_opalTableLowT_7 [STRING] ["-none-"]
+        Valid Values: Unconstrained
+        Low temp OPAL table for hydrogen abundance range no. 7
+    op_opalTableLowT_8 [STRING] ["-none-"]
+        Valid Values: Unconstrained
+        Low temp OPAL table for hydrogen abundance range no. 8
+    op_opalTableLowT_9 [STRING] ["-none-"]
+        Valid Values: Unconstrained
+        Low temp OPAL table for hydrogen abundance range no. 9
+    opacity_useLogTables [BOOLEAN] CONSTANT [TRUE]
+        control parameter indicating use of logarithmic opacities
+    opacity_writeOpacityInfo [BOOLEAN] [FALSE]
+        control parameter indicating if detailed info of the opacity unit should
+        be written out

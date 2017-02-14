@@ -1,0 +1,5 @@
+#!/bin/bash
+rm sb_* rho-* p-* u-* rho_* p_* u_*
+rm *~
+rm *.dat
+

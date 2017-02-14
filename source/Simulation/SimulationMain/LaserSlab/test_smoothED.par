@@ -1,0 +1,434 @@
+run_comment = "3D-in-3D XYZ Regression Test"
+log_file    = "lasslab.log"
+basenm      = "lasslab_"
+
+
+##########################
+#                        #
+#     I/O PARAMETERS     #
+#                        #
+##########################
+
+### Checkpoint Options  ###
+checkpointFileIntervalTime = 1.0
+checkpointFileIntervalStep = 1
+
+### Plot Options ###
+plotFileNumber       = 0
+plotFileIntervalStep = 1000000
+plot_var_1           = "dens"
+plot_var_2           = "depo"
+plot_var_3           = "tele"
+plot_var_4           = "tion"
+plot_var_5           = "trad"
+plot_var_6           = "ye  "
+plot_var_7           = "sumy"
+plot_var_8           = "cham"
+plot_var_9           = "targ"
+
+### Restart Options ###
+restart              = .false.
+checkpointFileNumber = 0
+
+memory_stat_freq = 10
+
+### Integral Quantities File Option ###
+io_writeMscalarIntegrals = .TRUE.
+
+########################################
+#                                      #
+#     RADIATION/OPACITY PARAMETERS     #
+#                                      #
+########################################
+rt_useMGD       = .true.
+rt_mgdNumGroups = 6
+rt_mgdBounds_1  = 1.0e-01
+rt_mgdBounds_2  = 1.0e+00
+rt_mgdBounds_3  = 1.0e+01
+rt_mgdBounds_4  = 1.0e+02
+rt_mgdBounds_5  = 1.0e+03
+rt_mgdBounds_6  = 1.0e+04
+rt_mgdBounds_7  = 1.0e+05
+rt_mgdFlMode    = "fl_harmonic"
+rt_mgdFlCoef    = 1.0
+
+rt_mgdXlBoundaryType = "reflecting"
+rt_mgdXrBoundaryType = "reflecting"
+rt_mgdYlBoundaryType = "reflecting"
+rt_mgdYrBoundaryType = "reflecting"
+rt_mgdZlBoundaryType = "reflecting"
+rt_mgdZrBoundaryType = "reflecting"
+
+useOpacity     = .true.
+
+### SET CHAMBER (HELIUM) OPACITY OPTIONS ###
+op_chamAbsorb   = "op_tabpa"
+op_chamEmiss    = "op_tabpe"
+op_chamTrans    = "op_tabro"
+op_chamFileType = "ionmix4"
+op_chamFileName = "he-imx-005.cn4"
+
+### SET TARGET (ALUMINUM) OPACITY OPTIONS ###
+op_targAbsorb   = "op_tabpa"
+op_targEmiss    = "op_tabpe"
+op_targTrans    = "op_tabro"
+op_targFileType = "ionmix4"
+op_targFileName = "al-imx-003.cn4"
+
+
+############################
+#                          #
+#     LASER PARAMETERS     #
+#                          #
+############################
+
+ed_enforcePositiveTele = .true.
+ed_enforcePositiveNele = .true.
+ed_rayDeterminism      = .true.
+ed_printBeams          = .false.
+ed_printMain           = .false.
+ed_printPulses         = .false.
+ed_printRays           = .false.
+
+useEnergyDeposition = .true.
+ed_maxRayCount      = 20000
+ed_gradOrder        = 2
+
+### LASER IO OPTIONS ###
+ed_useLaserIO                  = .false.
+ed_laserIOMaxNumberOfPositions = 10000
+ed_laserIOMaxNumberOfRays      = 2560
+
+### SETUP LASER PULSES ###
+ed_numberOfPulses = 1
+
+# Define Pulse 1:
+ed_numberOfSections_1 = 5
+ed_time_1_1  = 0.0
+ed_time_1_2  = 1.6e-09
+ed_time_1_3  = 1.65e-09
+ed_time_1_4  = 1.7e-09
+ed_time_1_5  = 3.0e-09
+
+ed_power_1_1 = 2.333333e+11
+ed_power_1_2 = 2.333333e+11
+ed_power_1_3 = 2.333333e+11
+ed_power_1_4 = 2.333333e+11
+ed_power_1_5 = 2.333333e+11
+
+
+### SETUP LASER BEAM ###
+ed_numberOfBeams = 1
+
+# Setup Gaussian Beam 1:
+ed_lensX_1                     =  0.0
+ed_lensY_1                     = -1.0
+ed_lensZ_1                     =  0.0
+ed_lensSemiAxisMajor_1         =  50.0e-04
+ed_targetX_1                   =  0.0
+ed_targetY_1                   =  10.0e-03
+ed_targetZ_1                   =  0.0
+ed_targetSemiAxisMajor_1       =  50.0e-04
+ed_targetSemiAxisMinor_1       =  50.0e-04
+ed_pulseNumber_1               =  1
+ed_wavelength_1                =  1.053
+ed_crossSectionFunctionType_1  = "gaussian2D"
+ed_gaussianExponent_1          =  1.0
+ed_gaussianRadiusMajor_1       =  120.1122e-04
+ed_gaussianRadiusMinor_1       =  120.1122e-04
+ed_numberOfRays_1              =  512
+ed_semiAxisMajorTorsionAxis_1  = "z"
+ed_semiAxisMajorTorsionAngle_1 =  0.0
+ed_gridType_1                  = "square2D"
+#ed_gridType_1                  = "delta2D"
+#ed_gridDeltaSemiAxisMajor_1    =  10.0e-4 
+#ed_gridDeltaSemiAxisMinor_1    =  10.0e-4 
+
+# Setup Gaussian Beam 2:
+ed_lensX_2                     =  0.071
+ed_lensY_2                     = -0.1
+ed_lensZ_2                     =  0.071
+ed_lensSemiAxisMajor_2         =  50.0e-04
+ed_targetX_2                   =  0.0
+ed_targetY_2                   =  10.0e-03
+ed_targetZ_2                   =  0.0
+ed_targetSemiAxisMajor_2       =  50.0e-04
+ed_targetSemiAxisMinor_2       =  50.0e-04
+ed_pulseNumber_2               =  1
+ed_wavelength_2                =  1.053
+ed_crossSectionFunctionType_2  = "gaussian2D"
+ed_gaussianExponent_2          =  1.0
+ed_gaussianRadiusMajor_2       =  120.1122e-04
+ed_gaussianRadiusMinor_2       =  120.1122e-04
+ed_numberOfRays_2              =  512
+ed_semiAxisMajorTorsionAxis_2  = "z"
+ed_semiAxisMajorTorsionAngle_2 =  0.0
+ed_gridType_2                  = "square2D"
+
+# Setup Gaussian Beam 3:
+ed_lensX_3                     = -0.071
+ed_lensY_3                     = -0.1
+ed_lensZ_3                     = -0.071
+ed_lensSemiAxisMajor_3         =  50.0e-04
+ed_targetX_3                   =  0.0
+ed_targetY_3                   =  10.0e-03
+ed_targetZ_3                   =  0.0
+ed_targetSemiAxisMajor_3       =  50.0e-04
+ed_targetSemiAxisMinor_3       =  50.0e-04
+ed_pulseNumber_3               =  1
+ed_wavelength_3                =  1.053
+ed_crossSectionFunctionType_3  = "gaussian2D"
+ed_gaussianExponent_3          =  1.0
+ed_gaussianRadiusMajor_3       =  120.1122e-04
+ed_gaussianRadiusMinor_3       =  120.1122e-04
+ed_numberOfRays_3              =  512
+ed_semiAxisMajorTorsionAxis_3  = "z"
+ed_semiAxisMajorTorsionAngle_3 =  0.0
+ed_gridType_3                  = "square2D"
+
+# Setup Gaussian Beam 4:
+ed_lensX_4                     =  0.071
+ed_lensY_4                     = -0.1
+ed_lensZ_4                     = -0.071
+ed_lensSemiAxisMajor_4         =  50.0e-04
+ed_targetX_4                   =  0.0
+ed_targetY_4                   =  10.0e-03
+ed_targetZ_4                   =  0.0
+ed_targetSemiAxisMajor_4       =  50.0e-04
+ed_targetSemiAxisMinor_4       =  50.0e-04
+ed_pulseNumber_4               =  1
+ed_wavelength_4                =  1.053
+ed_crossSectionFunctionType_4  = "gaussian2D"
+ed_gaussianExponent_4          =  1.0
+ed_gaussianRadiusMajor_4       =  120.1122e-04
+ed_gaussianRadiusMinor_4       =  120.1122e-04
+ed_numberOfRays_4              =  512
+ed_semiAxisMajorTorsionAxis_4  = "z"
+ed_semiAxisMajorTorsionAngle_4 =  0.0
+ed_gridType_4                  = "square2D"
+
+# Setup Gaussian Beam 5:
+ed_lensX_5                     = -0.071
+ed_lensY_5                     = -0.1
+ed_lensZ_5                     =  0.071
+ed_lensSemiAxisMajor_5         =  50.0e-04
+ed_targetX_5                   =  0.0
+ed_targetY_5                   =  10.0e-03
+ed_targetZ_5                   =  0.0
+ed_targetSemiAxisMajor_5       =  50.0e-04
+ed_targetSemiAxisMinor_5       =  50.0e-04
+ed_pulseNumber_5               =  1
+ed_wavelength_5                =  1.053
+ed_crossSectionFunctionType_5  = "gaussian2D"
+ed_gaussianExponent_5          =  1.0
+ed_gaussianRadiusMajor_5       =  120.1122e-04
+ed_gaussianRadiusMinor_5       =  120.1122e-04
+ed_numberOfRays_5              =  512
+ed_semiAxisMajorTorsionAxis_5  = "z"
+ed_semiAxisMajorTorsionAngle_5 =  0.0
+ed_gridType_5                  = "square2D"
+
+
+
+###############################
+#  PROTON IMAGING PARAMETERS  #
+###############################
+useProtonImaging = .true.
+
+pi_protonDeterminism         = .true.
+pi_maxProtonCount            = 20000
+pi_printBeams                = .true.
+pi_printMain                 = .true.
+pi_printDetectors            = .true.
+pi_printProtons              = .false.
+pi_cellStepTolerance         = 1.0e-6
+pi_cellWallThicknessFactor   = 1.0e-6
+pi_ignoreElectricalField     = .true.        # default true
+pi_recordOffscreenProtons    = .true.        # default false
+pi_screenProtonBucketSize    = 1000
+pi_RungeKuttaMethod          = "CashKarp45"  # is default, others -> BogShamp23,Fehlberg34
+
+pi_numberOfDetectors = 1
+
+pi_detectorCenterX_1           = 0.5               # irrelevant (detector aligned wrt beam)
+pi_detectorCenterY_1           = 1.000000000001    # irrelevant (detector aligned wrt beam)
+pi_detectorCenterZ_1           = 0.5               # irrelevant (detector aligned wrt beam)
+pi_detectorNormalX_1           = 0.0               # irrelevant (detector aligned wrt beam)
+pi_detectorNormalY_1           = 1.0               # irrelevant (detector aligned wrt beam)
+pi_detectorNormalZ_1           = 0.0               # irrelevant (detector aligned wrt beam)
+pi_detectorSideLength_1        = 0.04              # covers all domain
+pi_detectorSideTiltingAngle_1  = 0.0
+pi_detectorSideTiltingAxis_1   = "z"
+pi_detectorAlignWRTbeamNr_1    = 1                 # place detector along beam 1 path
+pi_detectorDistance2BeamLens_1 = 2.000000000       # place detector very close behind domain in XZ plane
+
+pi_numberOfBeams = 1
+
+pi_beamLensX_1                 = 0.0               # lens X coordinate
+pi_beamLensY_1                 = -1.0              # lens Y coordinate
+pi_beamLensZ_1                 = 0.0               # lens Z coordinate
+pi_beamLensRadius_1            = 0.01              # radius of beam cone at lens
+pi_beamTargetX_1               = 0.0               # target X coordinate (only directional info)
+pi_beamTargetY_1               = 2.0               # target Y coordinate (only directional info)
+pi_beamTargetZ_1               = 0.0               # target Z coordinate (only directional info)
+pi_beamApertureAngle_1         = 0.0               # conical aperture angle (degrees)
+pi_beamProtonEnergy_1          = 20.0              # proton energy (in MeV)
+pi_beamTime2Launch_1           = 3.0e-15           # for the test, do it immediately
+pi_beamDetector_1              = 1                 # target detector screen number
+pi_beamNumberOfProtons_1       = 10000             # number of protons to be fired from beam (circle)
+pi_beamNoBoundaryCondition_1   = .true.            # ignore domain boundary condition ?
+
+
+### Conduction parameters ###
+useDiffuse      = .true.
+useConductivity = .true.
+diff_useEleCond = .true.
+diff_eleFlMode  = "fl_larsen"
+diff_eleFlCoef  = 0.06
+diff_thetaImplct = 1.0
+
+diff_eleXlBoundaryType = "outflow"
+diff_eleXrBoundaryType = "outflow"
+diff_eleYlBoundaryType = "outflow"
+diff_eleYrBoundaryType = "outflow"
+diff_eleZlBoundaryType = "outflow"
+diff_eleZrBoundaryType = "outflow"
+
+
+####################################
+#                                  #
+#     HEAT EXCHANGE PARAMETERS     #
+#                                  #
+####################################
+useHeatexchange = .true.
+
+
+##########################
+#                        #
+#     EOS PARAMETERS     #
+#                        #
+##########################
+eosModeInit      = "dens_temp_gather"
+smallt           = 1.0
+smallx           = 1.0e-99
+eos_useLogTables = .false.
+
+
+############################
+#                          #
+#     HYDRO PARAMETERS     #
+#                          #
+############################
+useHydro = .true.
+ 
+order            = 3        # Interpolation order (first/second/third/fifth order)
+slopeLimiter     = "minmod" # Slope limiters (minmod, mc, vanLeer, hybrid, limited)
+LimitedSlopeBeta = 1.       # Slope parameter for the "limited" slope by Toro
+charLimiting     = .true.   # Characteristic limiting vs. Primitive limiting
+use_avisc        = .true.  # use artificial viscosity (originally for PPM)
+cvisc            = 0.1      # coefficient for artificial viscosity
+use_flattening   = .false.  # use flattening (dissipative) (originally for PPM)
+use_steepening   = .false.  # use contact steepening (originally for PPM)
+use_upwindTVD    = .false.  # use upwind biased TVD slope for PPM (need nguard=6)
+RiemannSolver    = "hllc"   # Roe, HLL, HLLC, LLF, Marquina, hybrid
+entropy          = .false.  # Entropy fix for the Roe solver
+shockDetect      = .false.  # Shock Detect for numerical stability
+use_hybridOrder  = .false.   # Enforce Riemann density jump
+hy_biermannSource = .false.
+use_biermann      = .true.
+use_biermann1T    = .false.
+hy_bier1TA        = 4.0
+hy_bier1TZ        = 2.0
+hy_biermannCoef   = 1.0
+E_modification  = .true.          # High order algorithm for E-field construction
+energyFix       = .true.           # Update magnetic energy using staggered B-fields
+ForceHydroLimit = .false.          # Pure Hydro Limit (B=0)
+prolMethod      = "injection_prol" # Prolongation method (injecton_prol, balsara_prol)
+
+# Hydro boundary conditions:
+xl_boundary_type = "outflow"
+xr_boundary_type = "outflow"
+yl_boundary_type = "outflow"
+yr_boundary_type = "outflow"
+zl_boundary_type = "outflow"
+zr_boundary_type = "outflow"
+
+
+##############################
+#                            #
+#     INITIAL CONDITIONS     #
+#                            #
+##############################
+
+
+sim_targetRadius = 50.0e-03
+sim_targetHeight = 40.0e-03
+sim_vacuumHeight = 10.0e-03
+
+# Target material defaults set for Aluminum at room temperature:
+sim_rhoTarg  = 2.7
+sim_teleTarg = 290.11375
+sim_tionTarg = 290.11375
+sim_tradTarg = 290.11375
+ms_targA = 26.9815386
+ms_targZ = 13.0
+ms_targZMin = 0.02
+eos_targEosType = "eos_tab"
+eos_targSubType = "ionmix4"
+eos_targTableFile = "al-imx-003.cn4"
+
+# Chamber material defaults set for Helium at pressure 1.6 mbar:
+sim_rhoCham  = 1.0e-05
+sim_teleCham = 290.11375
+sim_tionCham = 290.11375
+sim_tradCham = 290.11375
+ms_chamA = 4.002602
+ms_chamZ = 2.0
+eos_chamEosType = "eos_tab"
+eos_chamSubType = "ionmix4"
+eos_chamTableFile = "he-imx-005.cn4"
+
+
+###########################
+#                         #
+#     TIME PARAMETERS     #
+#                         #
+###########################
+tstep_change_factor = 1.10
+cfl            = 0.3
+dt_diff_factor = 1.0e+100 # Disable diffusion dt
+rt_dtFactor    = 0.02
+hx_dtFactor    = 1.0e+100
+tmax           = 3.0e-09
+dtmin          = 1.0e-16
+dtinit         = 1.0e-15
+dtmax          = 3.0e-09
+nend           = 100
+
+
+###########################
+#                         #
+#     MESH PARAMETERS     #
+#                         #
+###########################
+geometry = "cartesian"
+
+# Domain size:
+xmin = -20.0e-03
+xmax = 20.0e-03
+ymin = -20e-03
+ymax = 20.0e-03
+zmin = -20.0e-03
+zmax = 20.0e-03
+
+
+# Total number of blocks:
+nblockx = 1
+nblocky = 1
+nblockz = 1
+
+lrefine_max = 2
+lrefine_min = 1
+refine_var_1 = "dens"
+refine_var_2 = "tele"
+

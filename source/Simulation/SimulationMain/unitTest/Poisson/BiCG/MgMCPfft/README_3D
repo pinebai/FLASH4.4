@@ -1,0 +1,160 @@
+# Setup Line Used for XYZ all Neuman BCs Problem:
+# For AMR Grid, 8^3 cells per block:
+
+export FLASH_DIR=(YOUR FLASH BASE DIRECTORY)
+./setup.py unitTest/Poisson/BiCG/MgMCPfft -auto -3d -debug -nxb=8 -nyb=8 -nzb=8 -maxblocks=800 -gridinterpolation=native -parfile=$FLASH_DIR/source/Simulation/SimulationMain/unitTest/Poisson/XYZneu_3D/XYZneu_pm_3d_reflev_3-4.par +pm4dev -objdir=XYZNEU_3D_BIPCGSTAB_PRECOND PfftSolver=HomBcTrigSolver -site=(YOUR SITE) -noclobber
+
+# Uses BiPCGSTAB preconditioned by MultigridMC on a two-level AMR grid. Solves the harmonic manufactured solution on the cube:
+# phi(x,y,z) = cos(kx*x+alpha_x)*cos(ky*y+alpha_y)*cos(kz*z), kx=2*PI*waven_x/Lx, etc. where:
+# Number of waves in x, y and z for the solution.
+# waven_x = 1.
+# waven_y = 1.
+# waven_z = 1.
+
+# Phase angle for the solution in x (in rads)
+# alpha_x = 0.
+# alpha_y = 0.
+
+# Domain boundary conditions are homogeneous NEUMAN, i.e. see XYZneu_pm_3d_reflev_3-4.par.
+
+# file for included units
+    Driver/DriverMain/Split
+    Grid/GridBoundaryConditions
+    Grid/GridMain/paramesh/paramesh4/Paramesh4dev/PM4_package/headers
+    Grid/GridMain/paramesh/paramesh4/Paramesh4dev/PM4_package/mpi_source
+    Grid/GridMain/paramesh/paramesh4/Paramesh4dev/PM4_package/source
+    Grid/GridMain/paramesh/paramesh4/Paramesh4dev/PM4_package/utilities/multigrid
+    Grid/GridMain/paramesh/paramesh4/Paramesh4dev/flash_avoid_orrery
+    Grid/GridSolvers/BiPCGStab/poisson/PrecondMultigridMC
+    Grid/GridSolvers/MultigridMC/poisson/PfftTopLevelSolve/HomBcTrig
+    Grid/GridSolvers/Pfft/HomBcTrigSolver
+    Grid/GridSolvers/Pfft/MeshReconfiguration/PtToPt
+    Grid/GridSolvers/Pfft/ProcessGrid
+    Grid/GridSolvers/unitTest
+    Grid/localAPI
+    IO/IOMain/hdf5/serial/PM
+    IO/localAPI
+    PhysicalConstants/PhysicalConstantsMain
+    RuntimeParameters/RuntimeParametersMain
+    Simulation/SimulationMain/unitTest/Poisson/BiCG/MgMCPfft
+    Simulation/SimulationMain/unitTest/Poisson/XYZneu_3D
+    flashUtilities/contiguousConversion
+    flashUtilities/datastructures/linkedlist
+    flashUtilities/general
+    flashUtilities/interpolation/oneDim
+    flashUtilities/nameValueLL
+    flashUtilities/sorting/quicksort
+    flashUtilities/system/memoryUsage/legacy
+    monitors/Logfile/LogfileMain
+    monitors/Timers/TimersMain/MPINative
+
+# If no hdf5 lib -> add +noio in setup line.
+
+# Execution line for Level 3-4 grid:
+# mpirun -n 2 ./flash4
+
+# STDOUT for Level 3-4 grid:
+ Into Grid Solve Poisson ..
+ BIPCGSTAB dr_restart F
+ [Grid_pfftInit]: Generating PFFT processor grid:           1           1           2
+  pfft_inLen:          32          32          16
+ pfft_midLen:          32          16          32
+ pfft_outLen:          32          32          16
+  pfft_t1Len:          32          32          16
+  pfft_t2Len:          32          16          32
+ workarraysize:      16384
+ Using derived data types for the MPI messages
+cycle    1 : res_norm_ratio =  6.28E-03 res norm =  2.63E-01 new to old ratio =  6.28E-03
+cycle    2 : res_norm_ratio =  7.71E-05 res norm =  3.23E-03 new to old ratio =  1.23E-02
+cycle    3 : res_norm_ratio =  2.89E-06 res norm =  1.21E-04 new to old ratio =  3.75E-02
+cycle    4 : res_norm_ratio =  1.11E-07 res norm =  4.64E-06 new to old ratio =  3.84E-02
+cycle    5 : res_norm_ratio =  5.51E-09 res norm =  2.31E-07 new to old ratio =  4.97E-02
+cycle    6 : res_norm_ratio =  2.68E-10 res norm =  1.12E-08 new to old ratio =  4.86E-02
+cycle    7 : res_norm_ratio =  1.36E-11 res norm =  5.68E-10 new to old ratio =  5.06E-02
+cycle    8 : res_norm_ratio =  7.01E-13 res norm =  2.94E-11 new to old ratio =  5.17E-02
+cyc1/2   1 res norm =  7.01E-13 new to old ratio =  7.01E-13
+ Elapsed Time in Preconditioner =   3.1589999999999998     
+ Poisson Solver time =   3.4380000000000002     
+ Mean Anl, Num=   8.6736173798840355E-019   6.9388939039072284E-018
+ L2 error =    1.2740581906021968E-003
+ Linf error =    3.7697559444730411E-003
+ ############################################
+ Returned from Grid_unitTest
+ *** Wrote plotfile to GRID_Poisson_XYZNeu_forced_hdf5_plt_cnt_0000 ****
+ gr_pfftFinalize: pfft_setupOnce is F
+
+
+# Execution line for Level 4-5 grid:
+# mpirun -n 4 ./flash4
+
+# STDOUT for Level 4-5 grid:
+ Into Grid Solve Poisson ..
+ BIPCGSTAB dr_restart F
+ [Grid_pfftInit]: Generating PFFT processor grid:           1           2           2
+  pfft_inLen:          64          32          32
+ pfft_midLen:          64          32          32
+ pfft_outLen:          64          32          32
+  pfft_t1Len:          64          32          32
+  pfft_t2Len:          64          32          32
+ workarraysize:      65536
+ Using derived data types for the MPI messages
+cycle    1 : res_norm_ratio =  6.22E-03 res norm =  2.61E-01 new to old ratio =  6.22E-03
+cycle    2 : res_norm_ratio =  6.39E-05 res norm =  2.67E-03 new to old ratio =  1.03E-02
+cycle    3 : res_norm_ratio =  2.86E-06 res norm =  1.20E-04 new to old ratio =  4.48E-02
+cycle    4 : res_norm_ratio =  1.12E-07 res norm =  4.68E-06 new to old ratio =  3.91E-02
+cycle    5 : res_norm_ratio =  5.52E-09 res norm =  2.31E-07 new to old ratio =  4.93E-02
+cycle    6 : res_norm_ratio =  2.60E-10 res norm =  1.09E-08 new to old ratio =  4.71E-02
+cycle    7 : res_norm_ratio =  1.24E-11 res norm =  5.18E-10 new to old ratio =  4.76E-02
+cycle    8 : res_norm_ratio =  5.75E-13 res norm =  2.41E-11 new to old ratio =  4.65E-02
+cyc1/2   1 res norm =  5.75E-13 new to old ratio =  5.75E-13
+ Elapsed Time in Preconditioner =   16.687000000000001     
+ Poisson Solver time =   17.806000000000001     
+ Mean Anl, Num=  -2.8189256484623115E-018   1.0191500421363742E-017
+ L2 error =    3.1476181703873462E-004
+ Linf error =    9.4000274337069367E-004
+ ############################################
+ Returned from Grid_unitTest
+ *** Wrote plotfile to GRID_Poisson_XYZNeu_forced_hdf5_plt_cnt_0000 ****
+ gr_pfftFinalize: pfft_setupOnce is F
+
+
+# Execution line for Level 5-6 grid:
+# mpirun -n 12 ./flash4
+
+# STDOUT for Level 5-6 grid:
+ Into Grid Solve Poisson ..
+ BIPCGSTAB dr_restart F
+ [gr_pfftGetProcGrid]: WARNING. We have a VERY difficult domain for PFFT!
+ [Grid_pfftInit]: Generating PFFT processor grid:           1           3           4
+ [gr_pfftInitMetadata]: WARNING... making work arrays larger artificially!!! Size was:      176128 now:      177504
+  pfft_inLen:         128          43          32
+ pfft_midLen:         128          32          43
+ pfft_outLen:         128          43          32
+  pfft_t1Len:         128          43          32
+  pfft_t2Len:         128          32          43
+ workarraysize:     177504
+ Using derived data types for the MPI messages
+cycle    1 : res_norm_ratio =  6.17E-03 res norm =  2.58E-01 new to old ratio =  6.17E-03
+cycle    2 : res_norm_ratio =  6.08E-05 res norm =  2.54E-03 new to old ratio =  9.85E-03
+cycle    3 : res_norm_ratio =  2.77E-06 res norm =  1.16E-04 new to old ratio =  4.56E-02
+cycle    4 : res_norm_ratio =  1.09E-07 res norm =  4.57E-06 new to old ratio =  3.94E-02
+cycle    5 : res_norm_ratio =  5.40E-09 res norm =  2.26E-07 new to old ratio =  4.95E-02
+cycle    6 : res_norm_ratio =  2.56E-10 res norm =  1.07E-08 new to old ratio =  4.74E-02
+cycle    7 : res_norm_ratio =  1.23E-11 res norm =  5.15E-10 new to old ratio =  4.81E-02
+cycle    8 : res_norm_ratio =  5.90E-13 res norm =  2.47E-11 new to old ratio =  4.80E-02
+cyc1/2   1 res norm =  5.91E-13 new to old ratio =  5.91E-13
+ Elapsed Time in Preconditioner =   87.819999999999993     
+ Poisson Solver time =   95.165999999999997     
+ Mean Anl, Num=  -8.6736173798840355E-019  -3.0357660829594124E-018
+ L2 error =    7.2720053940856591E-005
+ Linf error =    2.2351755352245650E-004
+ ############################################
+ Returned from Grid_unitTest
+ *** Wrote plotfile to GRID_Poisson_XYZNeu_forced_hdf5_plt_cnt_0000 ****
+ gr_pfftFinalize: pfft_setupOnce is F
+
+
+
+
+
+

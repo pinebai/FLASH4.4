@@ -1,0 +1,27 @@
+
+REQUIRES Driver
+REQUIRES Grid
+REQUIRES Grid/GridParticles
+REQUIRES Grid/GridParticles/GridParticlesMove/Sieve
+REQUIRES IO
+REQUIRES IO/IOParticles
+
+REQUIRES Particles/ParticlesMain/active/charged/HybridPIC
+
+## Uncomment the following 4 lines to disable writing of checkpoints by default.
+# USESETUPVARS WriteCheckpoints
+# IF not WriteCheckpoints
+#    LINKIF IO_writeCheckpoint.F90.suppressWrite IO
+# ENDIF
+
+D    sim_bx Initial magnetic field x-component [T]
+PARAMETER sim_bx REAL 0.0
+D    sim_by Initial magnetic field y-component [T]
+PARAMETER sim_by REAL 0.0
+D    sim_bz Initial magnetic field z-component [T]
+PARAMETER sim_bz REAL 0.0
+
+D  overwrite the particles tag reset parameter
+D  to make sure that the tag assignment always starts
+D  from 1
+PARAMETER pt_resetTag BOOLEAN TRUE

@@ -1,0 +1,62 @@
+# Config file for multiTemp (3T) variant of the unsplit Hydro implementation
+#
+
+VARIABLE pion                   EOSMAP:  PRES1  # ion pressure
+VARIABLE pele                   EOSMAP:  PRES2  # electron pressure
+VARIABLE prad                   EOSMAP:  PRES3  # radiation pressure
+
+VARIABLE tion                   EOSMAP:  TEMP1  # ion "temperature"
+VARIABLE tele                   EOSMAP:  TEMP2  # electron "temperature"
+VARIABLE trad                   EOSMAP:  TEMP3  # radiation "temperature"
+
+VARIABLE volx
+VARIABLE voly
+VARIABLE volz
+
+USESETUPVARS SuppressEintVariable
+IF not SuppressEintVariable
+	VARIABLE eion TYPE: PER_MASS  EOSMAP: EINT1  # specific internal energy of ions (and neutrals?)
+	VARIABLE eele TYPE: PER_MASS  EOSMAP: EINT2  # specific internal energy of electrons
+	VARIABLE erad TYPE: PER_MASS  EOSMAP: EINT3  # specific internal energy of radiation
+ENDIF
+
+VARIABLE dbgs					# debug for shocks
+
+
+REQUESTS physics/Diffuse
+REQUESTS physics/materialProperties/Conductivity
+
+# For testing ways to advect components and handle shock heating
+ 
+D hy_eosModeAfter Eos mode to apply at the end of a state advance,
+D & before Hydro returns.
+D & This is currently ONLY used with multiTemp,
+D & and ignored otherwise!
+D & Some meaningful choices are (1): == eosMode (traditional),
+D & (2): "dens_ie_sele_gather" for MODE_DENS_EI_SELE_GATHER.
+PARAMETER hy_eosModeAfter STRING "dens_ie_gather"["dens_ie","dens_pres","dens_temp","dens_ie_all","dens_ie_scatter","dens_ie_gather","dens_ie_sele_gather","dens_temp_equi","dens_temp_all","dens_temp_gather","dens_ie_recal_gather"]
+
+D hy_3TMode Indictates the 3T model to use
+PARAMETER hy_3TMode STRING "ragelike" ["ragelike","crashlike", "entropy"]
+
+# The following mostly do not do anything for unsplit Hydro, but are here for
+# possible compatibility with split PPM multiTemp Hydro.
+
+D hy_3Ttry_D How to consolidate energies. Values: 0. Do not, 1. Trust Eele, discard Eion,
+D & 1.5 Trust Eele, discard Eion, 2. Trust combined Eint, recalibrate both components.
+PARAMETER hy_3Ttry_D REAL 2.0 [0.0,2.0,3.0]
+
+D hy_3Ttry_B How to deal with component energy "work" term
+D hy_3Ttry_B_rad  How to deal with "work" term for radiation, i.e. for Erad,
+D & -1 means same as hy_3Ttry_B
+D hy_3Ttry_E How to recalibrate component energy (if D2)
+D hy_3Ttry_F What to consolidate/recalibrate (if E2)
+D hy_3Ttry_G What to use for component P (if B1)
+PARAMETER hy_3Ttry_B INTEGER 0 [0,1,2]
+PARAMETER hy_3Ttry_E INTEGER 1 [1,2]
+PARAMETER hy_3Ttry_F INTEGER 2 [2,3]
+PARAMETER hy_3Ttry_G INTEGER 4 [0,1,2,4]
+PARAMETER hy_3Ttry_B_rad INTEGER -1 [-1,0,1,2]
+
+#Signal that the unsplit implementation is 3T Unsplit Hydro
+PPDEFINE FLASH_UHD_3T

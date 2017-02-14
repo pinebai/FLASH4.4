@@ -1,0 +1,27 @@
+CCOMP = /usr/local/mpich-1.2.7p1/gfortran/bin/mpicc
+CFLAGS = -c -O2 -Wall -g
+LFLAGS = -o
+
+#Available defines: NO_HDF4, NO_HDF5, NEED_MPI
+
+CDEFINES = -DNO_HDF4 -DNEED_MPI
+CFLAGS += -Minform=warn -I/usr/local/hdf5-1.6.5/gcc/include -I/usr/local/mpich-1.2.7p1/gfortran/bin/include -I/usr/local/pnetcdf-1.0.0/gcc/include
+
+
+LIBS = -L/usr/local/hdf5-1.6.5/gcc/lib -static -lhdf5 -lz -lm  -L/usr/local/pnetcdf-1.0.0/gcc/lib -lpnetcdf
+
+EXENAME = sfocu
+OBJS = main.o sfocu.o test_reader.o flash_reader.o namecmp.o flash_reader_ncdf.o \
+       flash_reader_hdf5.o flash_reader_chombo.o sameblock.o options.o
+
+#OBJS = main.o sfocu.o test_reader.o flash_reader.o namecmp.o flash_reader_hdf5.o flash_reader_chombo.o sameblock.o options.o
+
+.SUFFIXES: .c .o
+.c.o :
+	$(CCOMP) $(CFLAGS) $(CDEFINES) $*.c
+
+default: $(OBJS)
+	$(CCOMP) $(OBJS) $(LIBS) $(LFLAGS) $(EXENAME)
+
+clean:
+	rm $(OBJS) $(EXENAME)

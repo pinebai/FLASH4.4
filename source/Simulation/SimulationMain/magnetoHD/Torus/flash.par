@@ -1,0 +1,149 @@
+# 	Runtime parameters for the MHD Torus problem.
+#	Please also look at default.par for more runtime parameters in the object directory
+
+#	Specific heats ratio
+gamma           = 1.66666666666666667
+useGravity      = .true.
+use_gravHalfUpdate = .true.
+ptmass          = 1.
+ptxpos          = 0.
+ptypos          = 0.
+ptzpos          = 0.
+gravsoft        = 0.
+
+#       Grid dimensionality and geometry
+geometry       = "cylindrical"
+
+
+#       Size of computational volume for 2D test
+xmin            = 1.5
+xmax            = 15.5
+ymin            = -7.
+ymax            =  7.
+
+#	Parameters
+
+R_min         = 3.0
+R_max         = 4.7
+den_max       = 10.0
+den_cut       = 5.0
+BETA          = 350.
+D_Con         = 1.e-4
+T_Con         = 100.0
+R_0           = 1.0
+R_Sphere      = 1.5
+
+gr_pmrpcurvilinearconserve = .true.
+gr_pmrpdivergencefree = 1
+gr_pmrpforceconsistency = .true.
+gr_pmrpCylindricalPm  = .true.
+
+#       Boundary conditions (code -22 is periodic)
+xl_boundary_type = "user"
+xr_boundary_type = "user"
+yl_boundary_type = "user"
+yr_boundary_type = "user"
+zl_boundary_type = "periodic"
+zr_boundary_type = "periodic"
+
+#       Simulation (grid, time, I/O) parameters
+run_comment     = "2D Torus MHD problem"
+log_file        = "torus_mhd_2d.log"
+basenm          = "torus_mhd_2d_"
+restart         = .false.
+checkPointFileNumber=0
+#plotFileNumber  = 1
+nend            = 3000000
+tmax            = 150.0
+cfl             = 0.8
+plot_var_1	= "magx"
+plot_var_2	= "magy"
+plot_var_3	= "magp"
+
+convertToConsvdInMeshInterp = .true.
+checkpointFileIntervalTime = 1.0
+#checkpointFileIntervalStep = 1
+
+
+#	AMR parameters
+#nblockx	= 1
+#nblocky	= 1
+lrefine_min	= 1
+lrefine_max     = 7 
+nrefs           = 1
+refine_var_1	= "dens"
+refine_var_2	= "vely"
+eintSwitch	= 0.0
+
+
+#	DivB control switch
+killdivb	= .true.
+
+
+#	Flux Conservation for AMR
+flux_correct    = .true.
+
+## -------------------------------------------------------------##
+##  SWITCHES SPECIFIC TO THE UNSPLIT STAGGERED MESH MHD SOLVER  ##
+#	I. INTERPOLATION SCHEME:
+order		= 2      # Interpolation order (first/second/third/fifth order)
+slopeLimiter    = "vanLeer"   # Slope limiters (minmod, mc, vanLeer, hybrid, limited)
+LimitedSlopeBeta= 1.     # Slope parameter for the "limited" slope by Toro
+charLimiting	= .true. # Characteristic limiting vs. Primitive limiting
+
+
+use_avisc	= .false. # use artificial viscosity (originally for PPM)
+cvisc		= 0.1     # coefficient for artificial viscosity
+use_flattening	= .false. # use flattening (dissipative) (originally for PPM)
+use_steepening	= .false. # use contact steepening (originally for PPM)
+use_upwindTVD	= .false. # use upwind biased TVD slope for PPM (need nguard=6)
+
+
+#	II. MAGNETIC(B) AND ELECTRIC(E) FIELDS:
+E_modification	= .false.           # High order algorithm for E-field construction
+energyFix	= .true.           # Update magnetic energy using staggered B-fields
+ForceHydroLimit	= .false.          # Pure Hydro Limit (B=0)
+prolMethod      = "balsara_prol" # Prolongation method (injecton_prol, balsara_prol)
+
+
+#	III. RIEMANN SOLVERS:
+RiemannSolver	= "hllc"       # Roe, HLL, HLLC, HLLD, LLF, Marquina
+entropy         = .false.     # Entropy fix for the Roe solver
+
+
+#	IV. STRONG SHOCK HANDELING SCHEME:
+shockDetect	= .false.     # Shock Detect for numerical stability
+## -------------------------------------------------------------##
+
+## ---------------------------------------------------------------##
+##  SWITCHES SPECIFIC TO THE SUPER-TIME-STEPPING (STS) ALGORITHM  ##
+##  NOTE: For details on using STS runtime parameters, please     ##
+##        refer to user's guide (Driver chapter).                 ##
+useSTS                  = .false.
+nstepTotalSTS           = 5
+nuSTS                   = 0.2
+## ---------------------------------------------------------------##
+
+
+#	The parameters below are only necessary for the Uniform Grid
+iGridSize	= 256   #defined as nxb * iprocs
+jGridSize	= 256   #defined as nyb * jprocs
+kGridSize	= 1	#defined as nzb * kprocs
+iProcs		= 2	#number or procs in the i direction
+jProcs		= 2	#number or procs in the j direction
+kProcs		= 1	#number or procs in the k direction
+
+
+# When using UG, iProcs, jProcs and kProcs must be specified.
+# These are the processors along each of the dimensions
+# FIXEDBLOCKSIZE mode ::
+#	When using fixed blocksize, iGridSize etc are redundant in
+#	runtime parameters. These quantities are calculated as 
+#	iGridSize = NXB*iprocs
+#	jGridSize = NYB*jprocs
+#	kGridSize = NZB*kprocs
+# NONFIXEDBLOCKSIZE mode ::
+#	iGridSize etc must be specified. They constitute the global
+#	number of grid points in the physical domain without taking 
+#	the guard cell into account. The local blocksize is calculated
+#	as iGridSize/iprocs  etc.

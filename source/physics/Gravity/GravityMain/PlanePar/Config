@@ -1,0 +1,16 @@
+#	Configuration file for the gravitational physics module:
+#	gravitational field caused by a point mass of mass (ptmass) at
+#       position (ptxpos) in the ptdirn direction.  The point mass is
+#	assumed to be distant, allowing the field to be treated as
+#	plane-parallel.
+
+D ptmass        mass of the point
+D ptxpos        location of the point mass, in the ptdirn direction
+D ptdirn        x = 1, y = 2, z = 3
+D gravsoft      softening length
+
+PARAMETER ptmass       REAL    10000.
+PARAMETER ptxpos       REAL    1.
+PARAMETER ptdirn       INTEGER 1
+PARAMETER gravsoft     REAL    .0001
+

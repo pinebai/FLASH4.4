@@ -1,0 +1,471 @@
+#I do not use -noc when creating an identical application with a
+#different compiler because the .mod and .o files are incompatible.
+
+#Intel applications must be setup with -test to get -fp-model precise
+#compiler option so that we get identical answers with MPI-only and
+#hybrid applications.  Gnu applications can be setup with -opt because
+#it compiles FLASH with -O2 which does not introduce floating point
+#transformations that can change results.
+
+<code>
+  <Composite>
+    <Sod>
+      <intel>
+        <mpi_only>
+          <split>
+            setupName: Sod
+            setupOptions: -auto -3d -maxblocks=500 +pm4dev -unit=Particles
+            numProcs: 8
+            parfiles: <pathToSimulations>/Sod/coldstart_esp_3d.par
+            restartParfiles: <pathToSimulations>/Sod/restart_esp_3d.par
+            checkpointBasename: sod_3d_45deg_4lev_hdf5_chk_
+	    comparisonNumber: 0001
+	    restartNumber: 0002
+	    comparisonBenchmark: <siteDir>/2012-10-24/Composite_Sod_intel_mpi_only_split/<runDir>/<checkpointBasename><comparisonNumber>
+ 	    restartBenchmark: <siteDir>/2012-10-24/Composite_Sod_intel_mpi_only_split/<runDir>/<checkpointBasename><restartNumber>
+            environment: PATH=/opt/mpich2/intel/1.4.1p1/bin:/usr/local/bin:/bin:/usr/bin LD_LIBRARY_PATH=/opt/hdf5/intel/1.8.7/lib:/opt/mpich2/intel/1.4.1p1/lib:/opt/intel/composer_xe_2011_sp1.6.233/compiler/lib/intel64
+          </split>
+        </mpi_only>
+      </intel>
+      <gnu>
+        <mpi_only>
+          <split>
+            setupName: Sod
+            setupOptions: -auto -3d -maxblocks=500 +pm4dev -unit=Particles -makefile=gnu
+            numProcs: 8
+            parfiles: <pathToSimulations>/Sod/coldstart_esp_3d.par
+            restartParfiles: <pathToSimulations>/Sod/restart_esp_3d.par
+            checkpointBasename: sod_3d_45deg_4lev_hdf5_chk_
+	    comparisonNumber: 0001
+	    restartNumber: 0002
+	    comparisonBenchmark: <siteDir>/2012-10-24/Composite_Sod_gnu_mpi_only_split/<runDir>/<checkpointBasename><comparisonNumber>
+ 	    restartBenchmark: <siteDir>/2012-10-24/Composite_Sod_gnu_mpi_only_split/<runDir>/<checkpointBasename><restartNumber>
+            environment: PATH=/opt/mpich2/gnu/1.4.1p1/bin:/usr/local/bin:/bin:/usr/bin LD_LIBRARY_PATH=/opt/hdf5/gnu/1.8.7/lib:/opt/mpich2/gnu/1.4.1p1/lib
+          </split>
+        </mpi_only>
+      </gnu>
+    </Sod>
+    <RTFlame>
+      <intel>
+        <mpi_only>
+          <split>
+            setupName: RTFlame
+            setupOptions: -auto -3d +cube16 +parallelio -unit=Particles/ParticlesMain -maxblocks=60 +pm4dev -test
+            numProcs: 8
+            parfiles: <pathToSimulations>/RTFlame/coldstart_esp_3d.par
+            restartParfiles: <pathToSimulations>/RTFlame/restart_esp_3d.par
+            checkpointBasename: rtflame_256_s3_hdf5_chk_
+	    comparisonNumber: 0001
+	    restartNumber: 0002
+	    comparisonBenchmark: <siteDir>/2012-10-16/Composite_RTFlame_intel_mpi_only_split/<runDir>/<checkpointBasename><comparisonNumber>
+ 	    restartBenchmark: <siteDir>/2012-10-16/Composite_RTFlame_intel_mpi_only_split/<runDir>/<checkpointBasename><restartNumber>
+            transfers: object/helm_table.dat
+            environment: PATH=/opt/mpich2/intel/1.4.1p1/bin:/usr/local/bin:/bin:/usr/bin LD_LIBRARY_PATH=/opt/hdf5/intel/1.8.7/lib:/opt/mpich2/intel/1.4.1p1/lib:/opt/intel/composer_xe_2011_sp1.6.233/compiler/lib/intel64
+          </split>
+        </mpi_only>
+        <twb>
+          <reg_make>
+            <split>
+              setupName: RTFlame
+              setupOptions: -auto -3d +cube16 +parallelio -unit=Particles/ParticlesMain -maxblocks=60 +pm4dev -test useFortran2003=True threadWithinBlock=True
+              numProcs: 8
+              parfiles: <pathToSimulations>/RTFlame/coldstart_esp_3d.par
+              restartParfiles: <pathToSimulations>/RTFlame/restart_esp_3d.par
+              checkpointBasename: rtflame_256_s3_hdf5_chk_
+  	      comparisonNumber: 0001
+	      restartNumber: 0002
+	      comparisonBenchmark: <siteDir>/2012-10-16/Composite_RTFlame_intel_mpi_only_split/<runDir>/<checkpointBasename><comparisonNumber>
+ 	      restartBenchmark: <siteDir>/2012-10-16/Composite_RTFlame_intel_mpi_only_split/<runDir>/<checkpointBasename><restartNumber>
+              transfers: object/helm_table.dat
+              environment: OMP_NUM_THREADS=4 OMP_STACKSIZE=16M PATH=/opt/mpich2/intel/1.4.1p1/bin:/usr/local/bin:/bin:/usr/bin LD_LIBRARY_PATH=/opt/hdf5/intel/1.8.7/lib:/opt/mpich2/intel/1.4.1p1/lib:/opt/intel/composer_xe_2011_sp1.6.233/compiler/lib/intel64
+            </split>
+            <split_tuned_eos>
+              setupName: RTFlame
+              setupOptions: -auto -3d +cube16 +parallelio -unit=Particles/ParticlesMain -maxblocks=60 +pm4dev -test useFortran2003=True threadWithinBlock=True useTunedEos=True
+              numProcs: 8
+              parfiles: <pathToSimulations>/RTFlame/coldstart_esp_3d.par
+              restartParfiles: <pathToSimulations>/RTFlame/restart_esp_3d.par
+              checkpointBasename: rtflame_256_s3_hdf5_chk_
+  	      comparisonNumber: 0001
+	      restartNumber: 0002
+	      comparisonBenchmark: <siteDir>/2012-10-16/Composite_RTFlame_intel_mpi_only_split/<runDir>/<checkpointBasename><comparisonNumber>
+ 	      restartBenchmark: <siteDir>/2012-10-16/Composite_RTFlame_intel_mpi_only_split/<runDir>/<checkpointBasename><restartNumber>
+              transfers: object/helm_table.dat
+              environment: OMP_NUM_THREADS=4 OMP_STACKSIZE=16M PATH=/opt/mpich2/intel/1.4.1p1/bin:/usr/local/bin:/bin:/usr/bin LD_LIBRARY_PATH=/opt/hdf5/intel/1.8.7/lib:/opt/mpich2/intel/1.4.1p1/lib:/opt/intel/composer_xe_2011_sp1.6.233/compiler/lib/intel64
+	      errTol: 1.0e-8
+	      partErrTol: 1.0e-8
+            </split_tuned_eos>
+            <unsplit>
+              setupName: RTFlame
+              setupOptions: -auto -3d +cube16 +parallelio -unit=Particles/ParticlesMain -maxblocks=60 +pm4dev -test useFortran2003=True threadWithinBlock=True +uhd
+              numProcs: 8
+              parfiles: <pathToSimulations>/RTFlame/coldstart_esp_3d.par
+              restartParfiles: <pathToSimulations>/RTFlame/restart_esp_3d.par
+              checkpointBasename: rtflame_256_s3_hdf5_chk_
+  	      comparisonNumber: 0001
+	      restartNumber: 0002
+	      comparisonBenchmark: <siteDir>/2012-11-02/Composite_RTFlame_intel_mpi_only_unsplit/<runDir>/<checkpointBasename><comparisonNumber>
+ 	      restartBenchmark: <siteDir>/2012-11-02/Composite_RTFlame_intel_mpi_only_unsplit/<runDir>/<checkpointBasename><restartNumber>
+              transfers: object/helm_table.dat
+              environment: OMP_NUM_THREADS=4 OMP_STACKSIZE=16M PATH=/opt/mpich2/intel/1.4.1p1/bin:/usr/local/bin:/bin:/usr/bin LD_LIBRARY_PATH=/opt/hdf5/intel/1.8.7/lib:/opt/mpich2/intel/1.4.1p1/lib:/opt/intel/composer_xe_2011_sp1.6.233/compiler/lib/intel64
+            </unsplit>
+            <unsplit_tuned_eos>
+              setupName: RTFlame
+              setupOptions: -auto -3d +cube16 +parallelio -unit=Particles/ParticlesMain -maxblocks=60 +pm4dev -test useFortran2003=True threadWithinBlock=True useTunedEos=True +uhd
+              numProcs: 8
+              parfiles: <pathToSimulations>/RTFlame/coldstart_esp_3d.par
+              restartParfiles: <pathToSimulations>/RTFlame/restart_esp_3d.par
+              checkpointBasename: rtflame_256_s3_hdf5_chk_
+  	      comparisonNumber: 0001
+	      restartNumber: 0002
+	      comparisonBenchmark: <siteDir>/2012-11-02/Composite_RTFlame_intel_mpi_only_unsplit/<runDir>/<checkpointBasename><comparisonNumber>
+ 	      restartBenchmark: <siteDir>/2012-11-02/Composite_RTFlame_intel_mpi_only_unsplit/<runDir>/<checkpointBasename><restartNumber>
+              transfers: object/helm_table.dat
+              environment: OMP_NUM_THREADS=4 OMP_STACKSIZE=16M PATH=/opt/mpich2/intel/1.4.1p1/bin:/usr/local/bin:/bin:/usr/bin LD_LIBRARY_PATH=/opt/hdf5/intel/1.8.7/lib:/opt/mpich2/intel/1.4.1p1/lib:/opt/intel/composer_xe_2011_sp1.6.233/compiler/lib/intel64
+	      errTol: 1.0e-8
+	      partErrTol: 1.0e-8
+            </unsplit_tuned_eos>
+          </reg_make>
+          <cond_make>
+            <split>
+              setupName: RTFlame
+              setupOptions: -auto -3d +cube16 +parallelio -unit=Particles/ParticlesMain -maxblocks=60 +pm4dev -test useFortran2003=True threadWithinBlock=True -makefile=conditional
+              numProcs: 8
+              parfiles: <pathToSimulations>/RTFlame/coldstart_esp_3d.par
+              restartParfiles: <pathToSimulations>/RTFlame/restart_esp_3d.par
+              checkpointBasename: rtflame_256_s3_hdf5_chk_
+  	      comparisonNumber: 0001
+	      restartNumber: 0002
+	      comparisonBenchmark: <siteDir>/2012-10-16/Composite_RTFlame_intel_mpi_only_split/<runDir>/<checkpointBasename><comparisonNumber>
+ 	      restartBenchmark: <siteDir>/2012-10-16/Composite_RTFlame_intel_mpi_only_split/<runDir>/<checkpointBasename><restartNumber>
+              transfers: object/helm_table.dat
+              environment: OMP_NUM_THREADS=4 OMP_STACKSIZE=16M PATH=/opt/mpich2/intel/1.4.1p1/bin:/usr/local/bin:/bin:/usr/bin LD_LIBRARY_PATH=/opt/hdf5/intel/1.8.7/lib:/opt/mpich2/intel/1.4.1p1/lib:/opt/intel/composer_xe_2011_sp1.6.233/compiler/lib/intel64
+            </split>
+            <split_tuned_eos>
+              setupName: RTFlame
+              setupOptions: -auto -3d +cube16 +parallelio -unit=Particles/ParticlesMain -maxblocks=60 +pm4dev -test useFortran2003=True threadWithinBlock=True -makefile=conditional useTunedEos=True
+              numProcs: 8
+              parfiles: <pathToSimulations>/RTFlame/coldstart_esp_3d.par
+              restartParfiles: <pathToSimulations>/RTFlame/restart_esp_3d.par
+              checkpointBasename: rtflame_256_s3_hdf5_chk_
+  	      comparisonNumber: 0001
+	      restartNumber: 0002
+	      comparisonBenchmark: <siteDir>/2012-10-16/Composite_RTFlame_intel_mpi_only_split/<runDir>/<checkpointBasename><comparisonNumber>
+ 	      restartBenchmark: <siteDir>/2012-10-16/Composite_RTFlame_intel_mpi_only_split/<runDir>/<checkpointBasename><restartNumber>
+              transfers: object/helm_table.dat
+              environment: OMP_NUM_THREADS=4 OMP_STACKSIZE=16M PATH=/opt/mpich2/intel/1.4.1p1/bin:/usr/local/bin:/bin:/usr/bin LD_LIBRARY_PATH=/opt/hdf5/intel/1.8.7/lib:/opt/mpich2/intel/1.4.1p1/lib:/opt/intel/composer_xe_2011_sp1.6.233/compiler/lib/intel64
+	      errTol: 1.0e-8
+	      partErrTol: 1.0e-8
+            </split_tuned_eos>
+            <unsplit>
+              setupName: RTFlame
+              setupOptions: -auto -3d +cube16 +parallelio -unit=Particles/ParticlesMain -maxblocks=60 +pm4dev -test useFortran2003=True threadWithinBlock=True +uhd -makefile=conditional
+              numProcs: 8
+              parfiles: <pathToSimulations>/RTFlame/coldstart_esp_3d.par
+              restartParfiles: <pathToSimulations>/RTFlame/restart_esp_3d.par
+              checkpointBasename: rtflame_256_s3_hdf5_chk_
+  	      comparisonNumber: 0001
+	      restartNumber: 0002
+	      comparisonBenchmark: <siteDir>/2012-11-02/Composite_RTFlame_intel_mpi_only_unsplit/<runDir>/<checkpointBasename><comparisonNumber>
+ 	      restartBenchmark: <siteDir>/2012-11-02/Composite_RTFlame_intel_mpi_only_unsplit/<runDir>/<checkpointBasename><restartNumber>
+              transfers: object/helm_table.dat
+              environment: OMP_NUM_THREADS=4 OMP_STACKSIZE=16M PATH=/opt/mpich2/intel/1.4.1p1/bin:/usr/local/bin:/bin:/usr/bin LD_LIBRARY_PATH=/opt/hdf5/intel/1.8.7/lib:/opt/mpich2/intel/1.4.1p1/lib:/opt/intel/composer_xe_2011_sp1.6.233/compiler/lib/intel64
+            </unsplit>
+            <unsplit_tuned_eos>
+              setupName: RTFlame
+              setupOptions: -auto -3d +cube16 +parallelio -unit=Particles/ParticlesMain -maxblocks=60 +pm4dev -test useFortran2003=True threadWithinBlock=True useTunedEos=True +uhd -makefile=conditional
+              numProcs: 8
+              parfiles: <pathToSimulations>/RTFlame/coldstart_esp_3d.par
+              restartParfiles: <pathToSimulations>/RTFlame/restart_esp_3d.par
+              checkpointBasename: rtflame_256_s3_hdf5_chk_
+  	      comparisonNumber: 0001
+	      restartNumber: 0002
+	      comparisonBenchmark: <siteDir>/2012-11-02/Composite_RTFlame_intel_mpi_only_unsplit/<runDir>/<checkpointBasename><comparisonNumber>
+ 	      restartBenchmark: <siteDir>/2012-11-02/Composite_RTFlame_intel_mpi_only_unsplit/<runDir>/<checkpointBasename><restartNumber>
+              transfers: object/helm_table.dat
+              environment: OMP_NUM_THREADS=4 OMP_STACKSIZE=16M PATH=/opt/mpich2/intel/1.4.1p1/bin:/usr/local/bin:/bin:/usr/bin LD_LIBRARY_PATH=/opt/hdf5/intel/1.8.7/lib:/opt/mpich2/intel/1.4.1p1/lib:/opt/intel/composer_xe_2011_sp1.6.233/compiler/lib/intel64
+	      errTol: 1.0e-8
+	      partErrTol: 1.0e-8
+            </unsplit_tuned_eos>
+          </cond_make>
+        </twb>
+        <tbl>
+          <reg_make>
+            <split>
+              setupName: RTFlame
+              setupOptions: -auto -3d +cube16 +parallelio -unit=Particles/ParticlesMain -maxblocks=60 +pm4dev -test useFortran2003=True threadBlockList=True
+              numProcs: 8
+              parfiles: <pathToSimulations>/RTFlame/coldstart_esp_3d.par
+              restartParfiles: <pathToSimulations>/RTFlame/restart_esp_3d.par
+              checkpointBasename: rtflame_256_s3_hdf5_chk_
+  	      comparisonNumber: 0001
+	      restartNumber: 0002
+	      comparisonBenchmark: <siteDir>/2012-10-16/Composite_RTFlame_intel_mpi_only_split/<runDir>/<checkpointBasename><comparisonNumber>
+ 	      restartBenchmark: <siteDir>/2012-10-16/Composite_RTFlame_intel_mpi_only_split/<runDir>/<checkpointBasename><restartNumber>
+              transfers: object/helm_table.dat
+              environment: OMP_NUM_THREADS=4 OMP_STACKSIZE=16M PATH=/opt/mpich2/intel/1.4.1p1/bin:/usr/local/bin:/bin:/usr/bin LD_LIBRARY_PATH=/opt/hdf5/intel/1.8.7/lib:/opt/mpich2/intel/1.4.1p1/lib:/opt/intel/composer_xe_2011_sp1.6.233/compiler/lib/intel64
+            </split>
+            <split_tuned_eos>
+              setupName: RTFlame
+              setupOptions: -auto -3d +cube16 +parallelio -unit=Particles/ParticlesMain -maxblocks=60 +pm4dev -test useFortran2003=True threadBlockList=True useTunedEos=True
+              numProcs: 8
+              parfiles: <pathToSimulations>/RTFlame/coldstart_esp_3d.par
+              restartParfiles: <pathToSimulations>/RTFlame/restart_esp_3d.par
+              checkpointBasename: rtflame_256_s3_hdf5_chk_
+  	      comparisonNumber: 0001
+	      restartNumber: 0002
+	      comparisonBenchmark: <siteDir>/2012-10-16/Composite_RTFlame_intel_mpi_only_split/<runDir>/<checkpointBasename><comparisonNumber>
+ 	      restartBenchmark: <siteDir>/2012-10-16/Composite_RTFlame_intel_mpi_only_split/<runDir>/<checkpointBasename><restartNumber>
+              transfers: object/helm_table.dat
+              environment: OMP_NUM_THREADS=4 OMP_STACKSIZE=16M PATH=/opt/mpich2/intel/1.4.1p1/bin:/usr/local/bin:/bin:/usr/bin LD_LIBRARY_PATH=/opt/hdf5/intel/1.8.7/lib:/opt/mpich2/intel/1.4.1p1/lib:/opt/intel/composer_xe_2011_sp1.6.233/compiler/lib/intel64
+	      errTol: 1.0e-8
+	      partErrTol: 1.0e-8
+            </split_tuned_eos>
+            <unsplit>
+              setupName: RTFlame
+              setupOptions: -auto -3d +cube16 +parallelio -unit=Particles/ParticlesMain -maxblocks=60 +pm4dev -test useFortran2003=True threadBlockList=True +uhd
+              numProcs: 8
+              parfiles: <pathToSimulations>/RTFlame/coldstart_esp_3d.par
+              restartParfiles: <pathToSimulations>/RTFlame/restart_esp_3d.par
+              checkpointBasename: rtflame_256_s3_hdf5_chk_
+  	      comparisonNumber: 0001
+	      restartNumber: 0002
+	      comparisonBenchmark: <siteDir>/2012-11-02/Composite_RTFlame_intel_mpi_only_unsplit/<runDir>/<checkpointBasename><comparisonNumber>
+ 	      restartBenchmark: <siteDir>/2012-11-02/Composite_RTFlame_intel_mpi_only_unsplit/<runDir>/<checkpointBasename><restartNumber>
+              transfers: object/helm_table.dat
+              environment: OMP_NUM_THREADS=4 OMP_STACKSIZE=16M PATH=/opt/mpich2/intel/1.4.1p1/bin:/usr/local/bin:/bin:/usr/bin LD_LIBRARY_PATH=/opt/hdf5/intel/1.8.7/lib:/opt/mpich2/intel/1.4.1p1/lib:/opt/intel/composer_xe_2011_sp1.6.233/compiler/lib/intel64
+            </unsplit>
+            <unsplit_tuned_eos>
+              setupName: RTFlame
+              setupOptions: -auto -3d +cube16 +parallelio -unit=Particles/ParticlesMain -maxblocks=60 +pm4dev -test useFortran2003=True threadBlockList=True useTunedEos=True +uhd
+              numProcs: 8
+              parfiles: <pathToSimulations>/RTFlame/coldstart_esp_3d.par
+              restartParfiles: <pathToSimulations>/RTFlame/restart_esp_3d.par
+              checkpointBasename: rtflame_256_s3_hdf5_chk_
+  	      comparisonNumber: 0001
+	      restartNumber: 0002
+	      comparisonBenchmark: <siteDir>/2012-11-02/Composite_RTFlame_intel_mpi_only_unsplit/<runDir>/<checkpointBasename><comparisonNumber>
+ 	      restartBenchmark: <siteDir>/2012-11-02/Composite_RTFlame_intel_mpi_only_unsplit/<runDir>/<checkpointBasename><restartNumber>
+              transfers: object/helm_table.dat
+              environment: OMP_NUM_THREADS=4 OMP_STACKSIZE=16M PATH=/opt/mpich2/intel/1.4.1p1/bin:/usr/local/bin:/bin:/usr/bin LD_LIBRARY_PATH=/opt/hdf5/intel/1.8.7/lib:/opt/mpich2/intel/1.4.1p1/lib:/opt/intel/composer_xe_2011_sp1.6.233/compiler/lib/intel64
+	      errTol: 1.0e-8
+	      partErrTol: 1.0e-8
+            </unsplit_tuned_eos>
+          </reg_make>
+          <cond_make>
+            <split>
+              setupName: RTFlame
+              setupOptions: -auto -3d +cube16 +parallelio -unit=Particles/ParticlesMain -maxblocks=60 +pm4dev -test useFortran2003=True threadBlockList=True -makefile=conditional
+              numProcs: 8
+              parfiles: <pathToSimulations>/RTFlame/coldstart_esp_3d.par
+              restartParfiles: <pathToSimulations>/RTFlame/restart_esp_3d.par
+              checkpointBasename: rtflame_256_s3_hdf5_chk_
+  	      comparisonNumber: 0001
+	      restartNumber: 0002
+	      comparisonBenchmark: <siteDir>/2012-10-16/Composite_RTFlame_intel_mpi_only_split/<runDir>/<checkpointBasename><comparisonNumber>
+ 	      restartBenchmark: <siteDir>/2012-10-16/Composite_RTFlame_intel_mpi_only_split/<runDir>/<checkpointBasename><restartNumber>
+              transfers: object/helm_table.dat
+              environment: OMP_NUM_THREADS=4 OMP_STACKSIZE=16M PATH=/opt/mpich2/intel/1.4.1p1/bin:/usr/local/bin:/bin:/usr/bin LD_LIBRARY_PATH=/opt/hdf5/intel/1.8.7/lib:/opt/mpich2/intel/1.4.1p1/lib:/opt/intel/composer_xe_2011_sp1.6.233/compiler/lib/intel64
+            </split>
+            <split_tuned_eos>
+              setupName: RTFlame
+              setupOptions: -auto -3d +cube16 +parallelio -unit=Particles/ParticlesMain -maxblocks=60 +pm4dev -test useFortran2003=True threadBlockList=True useTunedEos=True -makefile=conditional
+              numProcs: 8
+              parfiles: <pathToSimulations>/RTFlame/coldstart_esp_3d.par
+              restartParfiles: <pathToSimulations>/RTFlame/restart_esp_3d.par
+              checkpointBasename: rtflame_256_s3_hdf5_chk_
+  	      comparisonNumber: 0001
+	      restartNumber: 0002
+	      comparisonBenchmark: <siteDir>/2012-10-16/Composite_RTFlame_intel_mpi_only_split/<runDir>/<checkpointBasename><comparisonNumber>
+ 	      restartBenchmark: <siteDir>/2012-10-16/Composite_RTFlame_intel_mpi_only_split/<runDir>/<checkpointBasename><restartNumber>
+              transfers: object/helm_table.dat
+              environment: OMP_NUM_THREADS=4 OMP_STACKSIZE=16M PATH=/opt/mpich2/intel/1.4.1p1/bin:/usr/local/bin:/bin:/usr/bin LD_LIBRARY_PATH=/opt/hdf5/intel/1.8.7/lib:/opt/mpich2/intel/1.4.1p1/lib:/opt/intel/composer_xe_2011_sp1.6.233/compiler/lib/intel64
+	      errTol: 1.0e-8
+	      partErrTol: 1.0e-8
+            </split_tuned_eos>
+            <unsplit>
+              setupName: RTFlame
+              setupOptions: -auto -3d +cube16 +parallelio -unit=Particles/ParticlesMain -maxblocks=60 +pm4dev -test useFortran2003=True threadBlockList=True +uhd -makefile=conditional
+              numProcs: 8
+              parfiles: <pathToSimulations>/RTFlame/coldstart_esp_3d.par
+              restartParfiles: <pathToSimulations>/RTFlame/restart_esp_3d.par
+              checkpointBasename: rtflame_256_s3_hdf5_chk_
+  	      comparisonNumber: 0001
+	      restartNumber: 0002
+	      comparisonBenchmark: <siteDir>/2012-11-02/Composite_RTFlame_intel_mpi_only_unsplit/<runDir>/<checkpointBasename><comparisonNumber>
+ 	      restartBenchmark: <siteDir>/2012-11-02/Composite_RTFlame_intel_mpi_only_unsplit/<runDir>/<checkpointBasename><restartNumber>
+              transfers: object/helm_table.dat
+              environment: OMP_NUM_THREADS=4 OMP_STACKSIZE=16M PATH=/opt/mpich2/intel/1.4.1p1/bin:/usr/local/bin:/bin:/usr/bin LD_LIBRARY_PATH=/opt/hdf5/intel/1.8.7/lib:/opt/mpich2/intel/1.4.1p1/lib:/opt/intel/composer_xe_2011_sp1.6.233/compiler/lib/intel64
+            </unsplit>
+            <unsplit_tuned_eos>
+              setupName: RTFlame
+              setupOptions: -auto -3d +cube16 +parallelio -unit=Particles/ParticlesMain -maxblocks=60 +pm4dev -test useFortran2003=True threadBlockList=True useTunedEos=True +uhd -makefile=conditional
+              numProcs: 8
+              parfiles: <pathToSimulations>/RTFlame/coldstart_esp_3d.par
+              restartParfiles: <pathToSimulations>/RTFlame/restart_esp_3d.par
+              checkpointBasename: rtflame_256_s3_hdf5_chk_
+  	      comparisonNumber: 0001
+	      restartNumber: 0002
+	      comparisonBenchmark: <siteDir>/2012-11-02/Composite_RTFlame_intel_mpi_only_unsplit/<runDir>/<checkpointBasename><comparisonNumber>
+ 	      restartBenchmark: <siteDir>/2012-11-02/Composite_RTFlame_intel_mpi_only_unsplit/<runDir>/<checkpointBasename><restartNumber>
+              transfers: object/helm_table.dat
+              environment: OMP_NUM_THREADS=4 OMP_STACKSIZE=16M PATH=/opt/mpich2/intel/1.4.1p1/bin:/usr/local/bin:/bin:/usr/bin LD_LIBRARY_PATH=/opt/hdf5/intel/1.8.7/lib:/opt/mpich2/intel/1.4.1p1/lib:/opt/intel/composer_xe_2011_sp1.6.233/compiler/lib/intel64
+	      errTol: 1.0e-8
+	      partErrTol: 1.0e-8
+            </unsplit_tuned_eos>
+          </cond_make>
+        </tbl>
+      </intel>
+      <gnu>
+        <mpi_only>
+          <split>
+            setupName: RTFlame
+            setupOptions: -auto -3d +cube16 +parallelio -unit=Particles/ParticlesMain -maxblocks=60 +pm4dev -opt -makefile=gnu
+            numProcs: 8
+            parfiles: <pathToSimulations>/RTFlame/coldstart_esp_3d.par
+            restartParfiles: <pathToSimulations>/RTFlame/restart_esp_3d.par
+            checkpointBasename: rtflame_256_s3_hdf5_chk_
+	    comparisonNumber: 0001
+	    restartNumber: 0002
+	    comparisonBenchmark: <siteDir>/2012-10-16/Composite_RTFlame_gnu_mpi_only_split/<runDir>/<checkpointBasename><comparisonNumber>
+ 	    restartBenchmark: <siteDir>/2012-10-16/Composite_RTFlame_gnu_mpi_only_split/<runDir>/<checkpointBasename><restartNumber>
+            transfers: object/helm_table.dat
+            environment: PATH=/opt/mpich2/gnu/1.4.1p1/bin:/usr/local/bin:/bin:/usr/bin LD_LIBRARY_PATH=/opt/hdf5/gnu/1.8.7/lib:/opt/mpich2/gnu/1.4.1p1/lib
+          </split>
+        </mpi_only>
+        <twb>
+          <reg_make>
+            <split>
+              setupName: RTFlame
+              setupOptions: -auto -3d +cube16 +parallelio -unit=Particles/ParticlesMain -maxblocks=60 +pm4dev -opt useFortran2003=True threadWithinBlock=True -makefile=gnu
+              numProcs: 8
+              parfiles: <pathToSimulations>/RTFlame/coldstart_esp_3d.par
+              restartParfiles: <pathToSimulations>/RTFlame/restart_esp_3d.par
+              checkpointBasename: rtflame_256_s3_hdf5_chk_
+  	      comparisonNumber: 0001
+	      restartNumber: 0002
+	      comparisonBenchmark: <siteDir>/2012-10-16/Composite_RTFlame_gnu_mpi_only_split/<runDir>/<checkpointBasename><comparisonNumber>
+ 	      restartBenchmark: <siteDir>/2012-10-16/Composite_RTFlame_gnu_mpi_only_split/<runDir>/<checkpointBasename><restartNumber>
+              transfers: object/helm_table.dat
+              environment: OMP_NUM_THREADS=4 OMP_STACKSIZE=16M PATH=/opt/mpich2/gnu/1.4.1p1/bin:/usr/local/bin:/bin:/usr/bin LD_LIBRARY_PATH=/opt/hdf5/gnu/1.8.7/lib:/opt/mpich2/gnu/1.4.1p1/lib
+            </split>
+            <split_tuned_eos>
+              setupName: RTFlame
+              setupOptions: -auto -3d +cube16 +parallelio -unit=Particles/ParticlesMain -maxblocks=60 +pm4dev -opt useFortran2003=True threadWithinBlock=True useTunedEos=True -makefile=gnu
+              numProcs: 8
+              parfiles: <pathToSimulations>/RTFlame/coldstart_esp_3d.par
+              restartParfiles: <pathToSimulations>/RTFlame/restart_esp_3d.par
+              checkpointBasename: rtflame_256_s3_hdf5_chk_
+  	      comparisonNumber: 0001
+	      restartNumber: 0002
+	      comparisonBenchmark: <siteDir>/2012-10-16/Composite_RTFlame_gnu_mpi_only_split/<runDir>/<checkpointBasename><comparisonNumber>
+ 	      restartBenchmark: <siteDir>/2012-10-16/Composite_RTFlame_gnu_mpi_only_split/<runDir>/<checkpointBasename><restartNumber>
+              transfers: object/helm_table.dat
+              environment: OMP_NUM_THREADS=4 OMP_STACKSIZE=16M PATH=/opt/mpich2/gnu/1.4.1p1/bin:/usr/local/bin:/bin:/usr/bin LD_LIBRARY_PATH=/opt/hdf5/gnu/1.8.7/lib:/opt/mpich2/gnu/1.4.1p1/lib
+	      errTol: 1.0e-8
+	      partErrTol: 1.0e-8
+            </split_tuned_eos>
+          </reg_make>
+          <cond_make>
+            <split>
+              setupName: RTFlame
+              setupOptions: -auto -3d +cube16 +parallelio -unit=Particles/ParticlesMain -maxblocks=60 +pm4dev -opt useFortran2003=True threadWithinBlock=True -makefile=gnu_conditional
+              numProcs: 8
+              parfiles: <pathToSimulations>/RTFlame/coldstart_esp_3d.par
+              restartParfiles: <pathToSimulations>/RTFlame/restart_esp_3d.par
+              checkpointBasename: rtflame_256_s3_hdf5_chk_
+  	      comparisonNumber: 0001
+	      restartNumber: 0002
+	      comparisonBenchmark: <siteDir>/2012-10-16/Composite_RTFlame_gnu_mpi_only_split/<runDir>/<checkpointBasename><comparisonNumber>
+ 	      restartBenchmark: <siteDir>/2012-10-16/Composite_RTFlame_gnu_mpi_only_split/<runDir>/<checkpointBasename><restartNumber>
+              transfers: object/helm_table.dat
+              environment: OMP_NUM_THREADS=4 OMP_STACKSIZE=16M PATH=/opt/mpich2/gnu/1.4.1p1/bin:/usr/local/bin:/bin:/usr/bin LD_LIBRARY_PATH=/opt/hdf5/gnu/1.8.7/lib:/opt/mpich2/gnu/1.4.1p1/lib
+            </split>
+            <split_tuned_eos>
+              setupName: RTFlame
+              setupOptions: -auto -3d +cube16 +parallelio -unit=Particles/ParticlesMain -maxblocks=60 +pm4dev -opt useFortran2003=True threadWithinBlock=True useTunedEos=True -makefile=gnu_conditional
+              numProcs: 8
+              parfiles: <pathToSimulations>/RTFlame/coldstart_esp_3d.par
+              restartParfiles: <pathToSimulations>/RTFlame/restart_esp_3d.par
+              checkpointBasename: rtflame_256_s3_hdf5_chk_
+  	      comparisonNumber: 0001
+	      restartNumber: 0002
+	      comparisonBenchmark: <siteDir>/2012-10-16/Composite_RTFlame_gnu_mpi_only_split/<runDir>/<checkpointBasename><comparisonNumber>
+ 	      restartBenchmark: <siteDir>/2012-10-16/Composite_RTFlame_gnu_mpi_only_split/<runDir>/<checkpointBasename><restartNumber>
+              transfers: object/helm_table.dat
+              environment: OMP_NUM_THREADS=4 OMP_STACKSIZE=16M PATH=/opt/mpich2/gnu/1.4.1p1/bin:/usr/local/bin:/bin:/usr/bin LD_LIBRARY_PATH=/opt/hdf5/gnu/1.8.7/lib:/opt/mpich2/gnu/1.4.1p1/lib
+	      errTol: 1.0e-8
+	      partErrTol: 1.0e-8
+            </split_tuned_eos>
+          </cond_make>
+        </twb>
+        <tbl>
+          <reg_make>
+            <split>
+              setupName: RTFlame
+              setupOptions: -auto -3d +cube16 +parallelio -unit=Particles/ParticlesMain -maxblocks=60 +pm4dev -opt useFortran2003=True threadBlockList=True -makefile=gnu
+              numProcs: 8
+              parfiles: <pathToSimulations>/RTFlame/coldstart_esp_3d.par
+              restartParfiles: <pathToSimulations>/RTFlame/restart_esp_3d.par
+              checkpointBasename: rtflame_256_s3_hdf5_chk_
+  	      comparisonNumber: 0001
+	      restartNumber: 0002
+	      comparisonBenchmark: <siteDir>/2012-10-16/Composite_RTFlame_gnu_mpi_only_split/<runDir>/<checkpointBasename><comparisonNumber>
+ 	      restartBenchmark: <siteDir>/2012-10-16/Composite_RTFlame_gnu_mpi_only_split/<runDir>/<checkpointBasename><restartNumber>
+              transfers: object/helm_table.dat
+              environment: OMP_NUM_THREADS=4 OMP_STACKSIZE=16M PATH=/opt/mpich2/gnu/1.4.1p1/bin:/usr/local/bin:/bin:/usr/bin LD_LIBRARY_PATH=/opt/hdf5/gnu/1.8.7/lib:/opt/mpich2/gnu/1.4.1p1/lib
+            </split>
+            <split_tuned_eos>
+              setupName: RTFlame
+              setupOptions: -auto -3d +cube16 +parallelio -unit=Particles/ParticlesMain -maxblocks=60 +pm4dev -opt useFortran2003=True threadBlockList=True useTunedEos=True -makefile=gnu
+              numProcs: 8
+              parfiles: <pathToSimulations>/RTFlame/coldstart_esp_3d.par
+              restartParfiles: <pathToSimulations>/RTFlame/restart_esp_3d.par
+              checkpointBasename: rtflame_256_s3_hdf5_chk_
+  	      comparisonNumber: 0001
+	      restartNumber: 0002
+	      comparisonBenchmark: <siteDir>/2012-10-16/Composite_RTFlame_gnu_mpi_only_split/<runDir>/<checkpointBasename><comparisonNumber>
+ 	      restartBenchmark: <siteDir>/2012-10-16/Composite_RTFlame_gnu_mpi_only_split/<runDir>/<checkpointBasename><restartNumber>
+              transfers: object/helm_table.dat
+              environment: OMP_NUM_THREADS=4 OMP_STACKSIZE=16M PATH=/opt/mpich2/gnu/1.4.1p1/bin:/usr/local/bin:/bin:/usr/bin LD_LIBRARY_PATH=/opt/hdf5/gnu/1.8.7/lib:/opt/mpich2/gnu/1.4.1p1/lib
+	      errTol: 1.0e-8
+	      partErrTol: 1.0e-8
+            </split_tuned_eos>
+          </reg_make>
+          <cond_make>
+            <split>
+              setupName: RTFlame
+              setupOptions: -auto -3d +cube16 +parallelio -unit=Particles/ParticlesMain -maxblocks=60 +pm4dev -opt useFortran2003=True threadBlockList=True -makefile=gnu_conditional
+              numProcs: 8
+              parfiles: <pathToSimulations>/RTFlame/coldstart_esp_3d.par
+              restartParfiles: <pathToSimulations>/RTFlame/restart_esp_3d.par
+              checkpointBasename: rtflame_256_s3_hdf5_chk_
+  	      comparisonNumber: 0001
+	      restartNumber: 0002
+	      comparisonBenchmark: <siteDir>/2012-10-16/Composite_RTFlame_gnu_mpi_only_split/<runDir>/<checkpointBasename><comparisonNumber>
+ 	      restartBenchmark: <siteDir>/2012-10-16/Composite_RTFlame_gnu_mpi_only_split/<runDir>/<checkpointBasename><restartNumber>
+              transfers: object/helm_table.dat
+              environment: OMP_NUM_THREADS=4 OMP_STACKSIZE=16M PATH=/opt/mpich2/gnu/1.4.1p1/bin:/usr/local/bin:/bin:/usr/bin LD_LIBRARY_PATH=/opt/hdf5/gnu/1.8.7/lib:/opt/mpich2/gnu/1.4.1p1/lib
+            </split>
+            <split_tuned_eos>
+              setupName: RTFlame
+              setupOptions: -auto -3d +cube16 +parallelio -unit=Particles/ParticlesMain -maxblocks=60 +pm4dev -opt useFortran2003=True threadBlockList=True useTunedEos=True -makefile=gnu_conditional
+              numProcs: 8
+              parfiles: <pathToSimulations>/RTFlame/coldstart_esp_3d.par
+              restartParfiles: <pathToSimulations>/RTFlame/restart_esp_3d.par
+              checkpointBasename: rtflame_256_s3_hdf5_chk_
+  	      comparisonNumber: 0001
+	      restartNumber: 0002
+	      comparisonBenchmark: <siteDir>/2012-10-16/Composite_RTFlame_gnu_mpi_only_split/<runDir>/<checkpointBasename><comparisonNumber>
+ 	      restartBenchmark: <siteDir>/2012-10-16/Composite_RTFlame_gnu_mpi_only_split/<runDir>/<checkpointBasename><restartNumber>
+              transfers: object/helm_table.dat
+              environment: OMP_NUM_THREADS=4 OMP_STACKSIZE=16M PATH=/opt/mpich2/gnu/1.4.1p1/bin:/usr/local/bin:/bin:/usr/bin LD_LIBRARY_PATH=/opt/hdf5/gnu/1.8.7/lib:/opt/mpich2/gnu/1.4.1p1/lib
+	      errTol: 1.0e-8
+	      partErrTol: 1.0e-8
+            </split_tuned_eos>
+          </cond_make>
+        </tbl>
+      </gnu>
+    </RTFlame>
+  </Composite>
+</code>

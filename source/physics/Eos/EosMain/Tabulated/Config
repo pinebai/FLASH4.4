@@ -1,0 +1,11 @@
+# Config file for the Opacity/OpacityMain/method/Tabulated unit
+
+D control parameter indicating use of logarithmic opacities
+PARAMETER eos_useLogTables BOOLEAN TRUE
+
+USESETUPVARS MoreDataFiles
+IF MoreDataFiles
+  DATAFILES *.imx
+ENDIF
+
+REQUIRES ./Hdf5TableRead

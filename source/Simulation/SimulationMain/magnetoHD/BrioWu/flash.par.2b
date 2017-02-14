@@ -1,0 +1,117 @@
+#	Runtime parameters for 1d MHD shock-tube problem.
+#	Ryu & Jones, AspJ, 442:228-258, 1995, Fig 2b.
+
+#	Specific heats ratio
+gamma		= 1.66666666666666666667
+
+
+#       Grid dimensionality and geometry
+geometry	= "cartesian"
+
+
+#	Size of computational volume
+xmin		= 0.
+xmax		= 1.
+ymin		= 0.
+ymax		= 1.
+
+
+#	Boundary conditions
+xl_boundary_type = "outflow"
+xr_boundary_type = "outflow"
+yl_boundary_type = "outflow"
+yr_boundary_type = "outflow"
+
+
+#	Parameters for initial model
+#	Density, pressure, velocity and magnetic field
+#	initial values on either side of the interface
+rho_left	= 1.
+rho_right	= 0.1
+p_left		= 1.
+p_right		= 10.
+u_left		= 0.
+u_right		= 0.
+v_left		= 0.
+v_right		= 2.
+w_left		= 0.
+w_right		= 1.
+by_left		= 1.692568751
+by_right	= 0.282094792
+b_normal	= 0.846284375
+
+
+#	Angle and position of interface relative to x and y axes
+#	Note: the StaggeredMesh solver only supports non-rotated setups
+xangle		= 0.
+yangle		= 90.
+posn		= 0.5
+
+
+#	Simulation (grid, time, I/O) parameters
+run_comment	= "1D MHD shock tube problem, parallel to x-axis"
+log_file        = "1d_mhd_shock_tube.log"
+basenm          = "1d_mhd_shock_tube_"
+restart         = .false.
+nend            = 1000000
+tmax            = 0.035
+cfl		= 0.8
+plot_var_1	= "dens"
+checkpointFileIntervalTime = 0.005
+#checkpointFileIntervalStep = 10
+
+
+#	AMR parameters
+#nblockx	= 1
+#nblocky	= 1
+lrefine_min	= 1
+lrefine_max     = 6
+nrefs		= 2
+refine_var_1	= "dens"
+eintSwitch      = 1.e-6
+
+
+#	DivB control switch
+killdivb	= .true.
+
+#	Flux Conservation for AMR
+flux_correct    = .true.
+
+## -------------------------------------------------------------##
+##  SWITCHES SPECIFIC TO THE UNSPLIT STAGGERED MESH MHD SOLVER  ##
+#	I. INTERPOLATION SCHEME:
+order		= 2      # Interpolation order (First/Second order)
+slopeLimiter    = "mc"   # Slope limiters (minmod, mc, vanLeer, hybrid, limited)
+LimitedSlopeBeta= 1.     # Slope parameter for the "limited" slope by Toro
+charLimiting	= .true. # Characteristic limiting vs. Primitive limiting
+
+
+#	II. RIEMANN SOLVERS:
+RiemannSolver	= "Roe"       # Roe, HLL, HLLC, HLLD, LF
+RoeAvg		= .true.      # Roe averages
+shockInstabilityFix = .false. # Carbuncle instability fix for the Roe solver
+
+## -------------------------------------------------------------##
+
+#	The parameters below are only necessary for the Uniform Grid
+
+#iGridSize	= 8	#defined as nxb * iprocs
+#jGridSize	= 8	#defined as nyb * jprocs
+#kGridSize	= 1	#defined as nzb * kprocs
+iProcs		= 1	#num procs in i direction
+jProcs		= 1	#num procs in j direction
+kProcs		= 1	#num procs in k direction
+
+# When using UG, iProcs, jProcs and kProcs must be specified.
+# These are the processors along each of the dimensions
+# FIXEDBLOCKSIZE mode ::
+#	When using fixed blocksize, iGridSize etc are redundant in
+#	runtime parameters. These quantities are calculated as 
+#	iGridSize = NXB*iprocs
+#	jGridSize = NYB*jprocs
+#	kGridSize = NZB*kprocs
+# NONFIXEDBLOCKSIZE mode ::
+#	iGridSize etc must be specified. They constitute the global
+#	number of grid points in the physical domain without taking 
+#	the guard cell into account. The local blocksize is calculated
+#	as iGridSize/iprocs  etc.

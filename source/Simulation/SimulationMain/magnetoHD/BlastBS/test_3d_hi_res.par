@@ -1,0 +1,113 @@
+#	Runtime parameters for the MHD Blast problem.
+
+#	Specific heats ratio
+gamma           = 1.4
+
+
+#       Grid dimensionality and geometry
+geometry       = "cartesian"
+
+
+#       Size of computational volume
+xmin            = -0.5
+xmax            =  0.5
+ymin            = -0.5
+ymax            =  0.5
+zmin            = -0.5
+zmax            =  0.5
+
+xCtr		= 0.
+yCtr		= 0.
+zCtr		= 0.
+Radius   	= 0.1
+Bx0		= 100.
+
+#       Boundary conditions (code -22 is periodic)
+xl_boundary_type = "periodic"
+xr_boundary_type = "periodic"
+yl_boundary_type = "periodic"
+yr_boundary_type = "periodic"
+zl_boundary_type = "periodic"
+zr_boundary_type = "periodic"
+
+
+#       Simulation (grid, time, I/O) parameters
+run_comment     = "MHD BS blast problem"
+log_file        = "blastBS_mhd.log"
+basenm          = "blastBS_mhd_"
+restart         = .false.
+nend            = 1000000
+tmax            = 0.01
+cfl             = 0.8
+plot_var_1	= "dens"
+
+convertToConsvdInMeshInterp = .true.
+checkpointFileIntervalTime = 0.001
+#checkpointFileIntervalStep = 5
+
+
+#	AMR Refinement parameters
+nblockx         = 1
+nblocky         = 1
+nblockz		= 1
+
+lrefine_min     = 2
+lrefine_max     = 4 
+nrefs		= 2
+refine_var_1    = "dens"
+refine_var_2    = "pres"
+eintSwitch	= 1.e-6
+
+
+#	DivB control switch
+killdivb	= .true.
+
+#	Flux Conservation for AMR
+flux_correct    = .true.
+
+
+##-------------------------------------------------------##
+##	Switches specific to the StaggeredMesh Solver    ##
+order		= 2    #(first / second order scheme)
+slopeLimiter    = "vanLeer" #(minmod, mc, hybrid, vanLeer, limited)
+LimitedSlopeBeta= 1.   # only needed for the limited slope by Toro
+charLimiting	= .true.
+E_modification	= .true.
+energyFix	= .true.
+
+#	Riemann Solver
+RiemannSolver	= "HLLD"
+
+#	CTU integrator
+CTU		= .false.
+
+#	Pure Hydro Limit
+ForceHydroLimit	= .false.
+
+#	Prolongation method of Facevars
+prolMethod      = "injection_prol" #(injecton_prol, balsara_prol)
+##-------------------------------------------------------##
+
+
+#These parameters below are only necessary for the Uniform Grid
+#iGridSize = 100   #defined as nxb * iprocs
+#jGridSize = 100
+#kGridSize = 1
+iProcs = 1      #num procs in i direction
+jProcs = 1      #num procs in j direction
+kProcs = 1
+
+
+# When using UG, iProcs, jProcs and kProcs must be specified.
+# These are the processors along each of the dimensions
+# FIXEDBLOCKSIZE mode ::
+#	When using fixed blocksize, iGridSize etc are redundant in
+#	runtime parameters. These quantities are calculated as 
+#	iGridSize = NXB*iprocs
+#	jGridSize = NYB*jprocs
+#	kGridSize = NZB*kprocs
+# NONFIXEDBLOCKSIZE mode ::
+#	iGridSize etc must be specified. They constitute the global
+#	number of grid points in the physical domain without taking 
+#	the guard cell into account. The local blocksize is calculated
+#	as iGridSize/iprocs  etc.

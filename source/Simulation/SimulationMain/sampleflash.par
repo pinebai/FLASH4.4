@@ -1,0 +1,120 @@
+# Runtime parameters for a generic problem
+# check the online documentation for runtime parameter descriptions
+# or look at the setup_params file in the object directory for
+# descriptions of parameters specific to your simulation
+
+
+
+#		Gas ratio of specific heats
+
+gamma           = 1.4
+
+#	Computational volume parameters
+
+#		Grid parameters
+
+geometry        = "cartesian"
+eosMode 	= "dens_ie"
+convertToConsvdInMeshInterp = .true.
+
+#		Size of computational volume
+
+xmin		= 0.
+xmax		= 1.
+ymin		= 0.
+ymax		= 1.
+
+#		Boundary conditions
+
+xl_boundary_type = "outflow"
+xr_boundary_type = "outflow"
+
+yl_boundary_type = "outflow"
+yr_boundary_type = "outflow"
+
+
+#	Simulation (time, I/O) parameters
+
+cfl		= 0.8
+basenm          = "sod_"
+restart         = .false.
+nend            = 1000
+tmax            = .2
+wall_clock_time_limit = 604800.
+
+#	checkpoint file output parameters
+checkpointFileIntervalTime = 0.2
+checkpointFileIntervalStep = 0
+checkpointFileNumber = 0
+
+#	plotfile output parameters
+plotfileIntervalTime = 0.
+plotfileIntervalStep = 0
+plotfileNumber = 0
+
+#       variables to output to plotfiles
+plot_var_1 = "dens"
+plot_var_2 = "pres"
+plot_var_3 = "temp"
+
+#      logfile parameters
+run_comment     = "Your Simulation"
+log_file        = "yourSimulation.log"
+
+#    common eos parameters
+eintSwitch     = 1.e-4
+
+
+
+#    AMR refinement parameters  
+lrefine_max     = 6
+lrefine_min 	= 1
+refine_var_1    = "dens"
+
+
+# These parameters are used only for the uniform grid
+
+#iGridSize = 8   #defined as nxb * iprocs
+#jGridSize = 8
+#kGridSize = 1
+iProcs = 1	#number or procs in the i direction	
+jProcs = 1
+kProcs = 1
+
+# When using UG, iProcs, jProcs and kProcs must be specified.
+# These are the processors along each of the dimensions
+#FIXEDBLOCKSIZE mode ::
+# When using fixed blocksize, iGridSize etc are redundant in
+# runtime parameters. These quantities are calculated as 
+# iGridSize = NXB*iprocs
+# jGridSize = NYB*jprocs
+# kGridSize = NZB*kprocs
+#NONFIXEDBLOCKSIZE mode ::
+# iGridSize etc must be specified. They constitute the global
+# number of grid points in the physical domain without taking 
+# the guard cell into account. The local blocksize is calculated
+# as iGridSize/iprocs  etc.
+ 
+ 
+## -------------------------------------------------------------##
+##  SWITCHES SPECIFIC TO THE UNSPLIT HYDRO (and MHD) SOLVERS    ##
+#	I. INTERPOLATION SCHEME:
+order		= 3      # Interpolation order (1st/2nd/3rd/5th order, 3 means PPM)
+slopeLimiter    = "mc"   # Slope limiters (minmod, mc, vanLeer, hybrid, limited)
+LimitedSlopeBeta= 1.     # Slope parameter for the "limited" slope by Toro
+charLimiting	= .true. # Characteristic limiting vs. Primitive limiting
+
+use_avisc	= .true. # use artificial viscosity (originally for PPM)
+cvisc		= 0.1     # coefficient for artificial viscosity
+use_flattening	= .true.  # use flattening (dissipative) (originally for PPM)
+use_steepening	= .true.  # use contact steepening (originally for PPM)
+use_upwindTVD	= .false. # use upwind biased TVD slope for PPM (need nguard=6)
+
+#	II. RIEMANN SOLVERS:
+RiemannSolver	= "Roe"       # Roe, HLL, HLLC, HLLD, LLF, Marquina
+entropy         = .false.     # Entropy fix for the Roe solver
+
+#	III. STRONG SHOCK HANDELING SCHEME:
+shockDetect	= .false.     # Shock Detect for numerical stability
+shocklowerCfl	= .false.     # Apply a lower CFL factor in shocks for stability
+## -------------------------------------------------------------##

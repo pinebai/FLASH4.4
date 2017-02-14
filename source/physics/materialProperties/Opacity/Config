@@ -1,0 +1,8 @@
+# Config file for the Opacity unit
+
+DEFAULT OpacityMain
+
+CHILDORDER localAPI
+
+D         useOpacity flags whether the Opacity unit is being used at all
+PARAMETER useOpacity BOOLEAN CONSTANT FALSE

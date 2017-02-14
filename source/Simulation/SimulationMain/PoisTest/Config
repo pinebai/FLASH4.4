@@ -1,0 +1,11 @@
+#Configuration file for Huang & Greengard problem
+
+REQUIRES Driver
+REQUIRES physics/Gravity/GravityMain/Poisson/Multigrid
+REQUIRES RuntimeParameters
+REQUIRES physics/Hydro
+REQUIRES physics/Eos
+REQUIRES Grid
+
+D sim_smlRho smallest allowed value of density
+PARAMETER sim_smlRho     REAL    1.E-10

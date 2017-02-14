@@ -1,0 +1,19 @@
+CCOMP = gcc
+LFLAGS = -o
+CDEFINES = -DNO_HDF5
+
+CFLAGS = -c 
+LIBS = -L/local/lib -lmfhdf -ldf -ljpeg -lz -L/usr/lib -lnsl -lm
+
+EXENAME = sfocu
+OBJS = main.o sfocu.o flash_reader.o namecmp.o flash_reader_hdf4.o flash_reader_chombo.o sameblock.o options.o
+
+.SUFFIXES: .c .o
+.c.o :
+	$(CCOMP) $(CFLAGS) $(CDEFINES) $*.c
+
+default: $(OBJS)
+	$(CCOMP) $(OBJS) $(LIBS) $(LFLAGS) $(EXENAME)
+
+clean:
+	rm $(OBJS) $(EXENAME)

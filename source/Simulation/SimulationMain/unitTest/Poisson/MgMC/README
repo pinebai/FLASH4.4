@@ -1,0 +1,22 @@
+# The setup lines for these unit tests, which use Martin and Cartwright Multigrid to solve the Poisson equation
+# on an AMR grid are analogous to the ones described in unitTest/Poisson/BiCG/MgMCPfft/README_2D for a 2D problem, 
+# and README_3D for a 3D Problem.
+
+# For example, in case of solving the 2D Dirchlet BCs Poisson problem on the square with a 4-5 levels of refinement
+# AMR grid with 8^2 blocks, the setup line is:
+
+export FLASH_DIR=(YOUR FLASH BASE DIRECTORY)
+./setup.py unitTest/Poisson/MgMC -auto -2d -debug -nxb=8 -nyb=8 -maxblocks=2000 -gridinterpolation=native -parfile=$FLASH_DIR/source/Simulation/SimulationMain/unitTest/Poisson/XYdir_2D/XYdir_pm_2d_reflev_4-5.par +pm4dev -objdir=XYDIR_MgMC_2D PfftSolver=HomBcTrigSolver -site=(YOUR SITE) -noclobber
+
+# Uses MC Multigrid with PFFT HomBcTrigSolver coarse level solution on a two-level AMR grid. Solves the harmonic manufactured solution on the square:
+# phi(x,y) = sin(kx*x+alpha_x)*sin(ky*y+alpha_y), kx=2*PI*waven_x/Lx, etc. where:
+# Number of waves in x, y for the solution.
+# waven_x = 1.
+# waven_y = 1.
+
+# Phase angle for the solution in x (in rads)
+# alpha_x = 0.
+# alpha_y = 0.
+
+# Domain boundary conditions are homogeneous DIRICHLET, i.e. see XYdir_pm_2d_reflev_5-6.par.
+

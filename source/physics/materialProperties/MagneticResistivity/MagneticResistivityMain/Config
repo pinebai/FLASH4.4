@@ -1,0 +1,8 @@
+# Config file for source/physics/materialProperties/MagneticResistivity/MagneticResistivityMain
+
+DEFAULT Constant
+#PPDEFINE MAGNETIC_RESISTIVITY
+EXCLUSIVE Anomalous Constant Spitzer SpitzerHighZ
+
+D	  useMagneticResistivity flags whether the magnetic resistivity material property is being used
+PARAMETER useMagneticResistivity BOOLEAN TRUE

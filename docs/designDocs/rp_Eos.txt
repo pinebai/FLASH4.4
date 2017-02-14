@@ -1,0 +1,250 @@
+
+physics/Eos/EosMain
+    eintSwitch [REAL] [0.0]
+        Valid Values: Unconstrained
+        a rarely used switch which ensures that internal energy calculations
+        maintain sufficient precision. Important only if energyTotal is
+        dominated by energyKinetic. If (energyInternal <
+        eintSwitch*energyKinetic) then some routines (Eos/Helmholtz,
+        Hydro/hy_updateSoln) will NOT calculate energyInternal by subtraction,
+        but rather through direct calculation.
+    eos_entrEleScaleChoice [INTEGER] [6]
+        Valid Values: 1 to 8
+        selects a scale variant for representing electron entropy. See code in
+        eos_idealGamma for the meaning of the various choices. The choice that
+        corresponds most closely to the Sackur-Tetrode equation in physical
+        units should be 3, closely followed by 2.
+    eos_logLevel [INTEGER] [700]
+        Valid Values: 0 to INFTY
+        Control verbosity of messages from the Eos unit. See Eos.h for relevant
+        EOS_LOGLEVEL_* definitions.
+    eos_singleSpeciesA [REAL] [1.00]
+        Valid Values: 0.0 to INFTY
+        Nucleon number for the gas (available ONLY for Eos with single species)
+    eos_singleSpeciesZ [REAL] [1.00]
+        Valid Values: 0.0 to INFTY
+        Proton number for the gas (available ONLY for Eos with single species)
+    gamma [REAL] [1.6667]
+        Valid Values: 0.0 to INFTY
+        Ratio of specific heats for gas (available ONLY for Eos/Gamma)
+    threadEosWithinBlock [BOOLEAN] [TRUE]
+
+
+physics/Eos/EosMain/Helmholtz
+    eos_coulombAbort [BOOLEAN] [true]
+        Abort if pressures become negative.  Otherwise, issue a warning message
+        and continue
+    eos_coulombMult [REAL] [1.0]
+        Valid Values: Unconstrained
+        coulomb correction multiplier
+    eos_fluffDens [REAL] [0.0]
+        Valid Values: Unconstrained
+        material below this density has its energy replaced if its temperature
+        falls below smallt. This should be a small density for enery
+        conservation reasons. Only used in the Helmholtz/ExternalAbarZbar
+        implementation of Eos.
+    eos_forceConstantInput [BOOLEAN] [false]
+        Helmholtz routines can allow input EINT or PRES to change on output to
+        preserve equilibrium.  This switch forces a constant input of EINT or
+        PRES
+    eos_maxNewton [INTEGER] [50]
+        Valid Values: Unconstrained
+        maximum number of Newton-Raphson iterations to try.
+    eos_tolerance [REAL] [1.e-8]
+        Valid Values: Unconstrained
+        tolerance for the Newton-Raphson iterations
+    larget [REAL] [1.e20]
+        Valid Values: Unconstrained
+        default upper bracket bound and used to fake temperature if it tries to
+        go too high. Currently, only used in the Helmholtz/ExternalAbarZbar
+        implementation of Eos.
+
+physics/Eos/EosMain/Helmholtz/SpeciesBased
+    eos_singleSpeciesA [REAL] [1.00]
+        Valid Values: 0.0 to INFTY
+        Single-species nucleon number for the gas (only used by Eos/Helmholtz
+        when compiled w/o Multispecies)
+    eos_singleSpeciesZ [REAL] [1.00]
+        Valid Values: 0.0 to INFTY
+        Single-species proton number for the gas (only used Eos/Helmholtz when
+        compiled w/o Multispecies)
+
+physics/Eos/EosMain/Tabulated
+    eos_useLogTables [BOOLEAN] [TRUE]
+
+
+physics/Eos/EosMain/Tabulated/Hdf5TableRead
+    eos_useLogTables [BOOLEAN] [TRUE]
+
+
+physics/Eos/EosMain/multiTemp
+    eint1Switch [REAL] [-1.0]
+        Valid Values: Unconstrained
+        OBSOLETE - a switch which tries to ensure that internal energy
+        calculations for component 1 in a multiple-temperature setup maintain
+        sufficient precision. Important only if total energy for this component
+        is dominated by bulk kinetic energy. A value of -1 means to use the
+        value of eintSwitch for eint1Switch.
+    eint2Switch [REAL] [-1.0]
+        Valid Values: Unconstrained
+        OBSOLETE - a switch which tries to ensure that internal energy
+        calculations for component 2 in a multiple-temperature setup maintain
+        sufficient precision. See eint1Switch. A value of -1 means to use the
+        value of eintSwitch for eint2Switch.
+    eint3Switch [REAL] [-1.0]
+        Valid Values: Unconstrained
+        OBSOLETE - a switch which tries to ensure that internal energy
+        calculations for component 3 in a multiple-temperature setup maintain
+        sufficient precision. See eint1Switch. A value of -1 means to use the
+        value of eintSwitch for eint3Switch.
+    eos_combinedTempRule [INTEGER] [-10]
+        Valid Values: -10, 0 to 3
+        determines for multiTemp Eos implementations what a call to Eos will
+        return in the EOS_TEMP part of eosData, when Eos is called in a mode for
+        which EOS_TEMP is an output and different component temperatures can be
+        returned. 1 for ion temperature EOS_TEMPION; 2 for electron temperature
+        EOS_TEMPELE; 3 for radiation temperature EOS_TEMPRAD; 0 for the
+        temperature that would result in the same specific internal energy as
+        given if all components where equilibrated at the same temperature,
+        which may be expensive to compute; -10 for undefined, i.e., we do not
+        care what is returned. Currently only implemented for Multitype Eos.
+    eos_smallEele [REAL] [0.0]
+        Valid Values: Unconstrained
+        a floor value used for the electron component of internal energy in the
+        Eos unit
+    eos_smallEion [REAL] [0.0]
+        Valid Values: Unconstrained
+        a floor value used for the ion component of internal energy by the Eos
+        unit
+    eos_smallErad [REAL] [0.0]
+        Valid Values: Unconstrained
+        a floor value used for the radiation component of internal energy in the
+        Eos unit
+
+physics/Eos/EosMain/multiTemp/Gamma
+    eos_forceConstantInput [BOOLEAN] [false]
+        Helmholtz routines can allow input EINT or PRES to change on output to
+        preserve equilibrium.  This switch forces a constant input of EINT or
+        PRES
+    eos_maxNewton [INTEGER] [50]
+        Valid Values: Unconstrained
+        maximum number of Newton-Raphson iterations to try.
+    eos_singleSpeciesA [REAL] [1.00794]
+        Valid Values: 0.0 to INFTY
+        Nucleon number for the gas (for Eos tracking matter as single species)
+    eos_singleSpeciesZ [REAL] [1.00]
+        Valid Values: 0.0 to INFTY
+        Proton number for the gas (for Eos tracking matter as single species)
+    eos_tolerance [REAL] [1.e-8]
+        Valid Values: Unconstrained
+        tolerance for the Newton-Raphson iterations
+    gamma [REAL] [1.6666666666666667]
+        Valid Values: 0.0 to INFTY
+        Ratio of specific heats for gas
+    gammaEle [REAL] [1.6666666666666667]
+        Valid Values: 0.0 to INFTY
+        Ratio of specific heats for electron component
+    gammaIon [REAL] [1.6666666666666667]
+        Valid Values: 0.0 to INFTY
+        Ratio of specific heats for ion component
+    gammaRad [REAL] [1.3333333333333333]
+        Valid Values: 0.0 to INFTY
+        Ratio of specific heats for radiation component
+
+physics/Eos/EosMain/multiTemp/Helmholtz
+    eos_coulombAbort [BOOLEAN] [true]
+        Abort if pressures become negative.  Otherwise, issue a warning message
+        and continue
+    eos_coulombMult [REAL] [1.0]
+        Valid Values: Unconstrained
+        coulomb correction multiplier
+    eos_forceConstantInput [BOOLEAN] [false]
+        Helmholtz routines can allow input EINT or PRES to change on output to
+        preserve equilibrium.  This switch forces a constant input of EINT or
+        PRES
+    eos_largeT [REAL] [1.e20]
+        Valid Values: Unconstrained
+        default upper bracket bound and used to fake temperature if it tries to
+        go too high. Used in some Helmholtz and Multitype implementations of
+        Eos.
+    eos_maxNewton [INTEGER] [50]
+        Valid Values: Unconstrained
+        maximum number of Newton-Raphson iterations to try.
+    eos_tolerance [REAL] [1.e-8]
+        Valid Values: Unconstrained
+        tolerance for the Newton-Raphson iterations
+
+physics/Eos/EosMain/multiTemp/Helmholtz/SpeciesBased
+    eos_singleSpeciesA [REAL] [1.00]
+        Valid Values: 0.0 to INFTY
+        Single-species nucleon number for the gas (only used by Eos/Helmholtz
+        when compiled w/o Multispecies)
+    eos_singleSpeciesZ [REAL] [1.00]
+        Valid Values: 0.0 to INFTY
+        Single-species proton number for the gas (only used Eos/Helmholtz when
+        compiled w/o Multispecies)
+
+physics/Eos/EosMain/multiTemp/Multigamma
+    eos_forceConstantInput [BOOLEAN] [false]
+        Newton-Raphson loop in Eos can allow input EINT or PRES to change on
+        output to preserve equilibrium.  This switch forces a constant input of
+        EINT or PRES
+    eos_maxNewton [INTEGER] [50]
+        Valid Values: Unconstrained
+        maximum number of Newton-Raphson iterations to try.
+    eos_tolerance [REAL] [1.e-8]
+        Valid Values: Unconstrained
+        tolerance for the Newton-Raphson iterations
+    gammaEle [REAL] [1.6666666666666667]
+        Valid Values: 0.0 to INFTY
+        Ratio of specific heats for electron component
+    gammaRad [REAL] [1.3333333333333333]
+        Valid Values: 0.0 to INFTY
+        Ratio of specific heats for radiation component
+
+physics/Eos/EosMain/multiTemp/Multitype
+    eos_forceConstantInput [BOOLEAN] [false]
+        Newton-Raphson loop in Eos can allow input EINT or PRES to change on
+        output to preserve equilibrium.  This switch forces a constant input of
+        EINT or PRES
+    eos_largeT [REAL] [1.e14]
+        Valid Values: Unconstrained
+        default upper bracket bound and used to fake temperature if it tries to
+        go too high. Used in some Helmholtz and Multitype implementations of
+        Eos.
+    eos_maxFactorDown [REAL] [0.6309573]
+        Valid Values: Unconstrained
+
+    eos_maxFactorUp [REAL] [1.5848932]
+        Valid Values: Unconstrained
+
+    eos_maxNewton [INTEGER] [50]
+        Valid Values: Unconstrained
+        maximum number of Newton-Raphson iterations to try.
+    eos_tolerance [REAL] [1.e-8]
+        Valid Values: Unconstrained
+        tolerance for the Newton-Raphson iterations
+
+physics/Eos/EosNuclear
+    bounceTime [REAL] [0.0]
+        Valid Values: Unconstrained
+        Time of bounce in seconds
+    eos_file [STRING]
+    ["myshen_test_220r_180t_50y_extT_analmu_20100322_SVNr28.h5"]
+        Valid Values: Unconstrained
+        Filename of the table.  Data may be found at
+        stellarcollapse.org/equationofstate.
+    postBounce [BOOLEAN] [FALSE]
+        Flag to specify that simulation is post-bounce
+
+physics/Eos/unitTest
+    eos_testEintMode [STRING] ["dens_ie"]
+        Valid Values: Unconstrained
+        The Eos mode for getting other variables from density and a specific
+        internal energy.
+    eos_testPresMode [STRING] ["dens_pres"]
+        Valid Values: Unconstrained
+        The Eos mode for getting other variables from density and a pressure.
+    eos_testTempMode [STRING] ["dens_temp"]
+        Valid Values: Unconstrained
+        The Eos mode for getting other variables from density and a temperature.

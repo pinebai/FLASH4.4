@@ -1,0 +1,334 @@
+# Runtime parameters for the laser quadratic tube unit test I.
+
+basenm                        = "LaserTubeTestI_"
+useEnergyDeposition           = .true.
+useHydro                      = .false.
+
+#######################
+#  LASER PARAMETERS   #
+#######################
+
+ed_maxRayCount        = 8
+ed_gradOrder          = 2
+ed_printBeams         = .true.
+ed_printMain          = .true.
+ed_printPulses        = .true.
+ed_printRays          = .false.
+ed_rayZeroPower       = 1.e-6      # high value, to ensure only 1 ray per pulse (otherwise spurios rays with tiny power)
+
+ed_cellRayDifferentialFactor = 1.e-1
+
+ed_numberOfPulses     = 8
+
+ed_numberOfSections_1 = 2
+ed_time_1_1           = 0.e+00     # in seconds
+ed_time_1_2           = 1.e-08     # in seconds
+ed_power_1_1          = 1.e-07     # in Watt (J/s)
+ed_power_1_2          = 1.e-07     # in Watt (J/s)
+
+ed_numberOfSections_2 = 2
+ed_time_2_1           = 1.e-08
+ed_time_2_2           = 2.e-08
+ed_power_2_1          = 1.e-07
+ed_power_2_2          = 1.e-07
+
+ed_numberOfSections_3 = 2
+ed_time_3_1           = 2.e-08
+ed_time_3_2           = 3.e-08
+ed_power_3_1          = 1.e-07
+ed_power_3_2          = 1.e-07
+
+ed_numberOfSections_4 = 2
+ed_time_4_1           = 3.e-08
+ed_time_4_2           = 4.e-08
+ed_power_4_1          = 1.e-07
+ed_power_4_2          = 1.e-07
+
+ed_numberOfSections_5 = 2
+ed_time_5_1           = 4.e-08
+ed_time_5_2           = 5.e-08
+ed_power_5_1          = 1.e-07
+ed_power_5_2          = 1.e-07
+
+ed_numberOfSections_6 = 2
+ed_time_6_1           = 5.e-08
+ed_time_6_2           = 6.e-08
+ed_power_6_1          = 1.e-07
+ed_power_6_2          = 1.e-07
+
+ed_numberOfSections_7 = 2
+ed_time_7_1           = 6.e-08
+ed_time_7_2           = 7.e-08
+ed_power_7_1          = 1.e-07
+ed_power_7_2          = 1.e-07
+
+ed_numberOfSections_8 = 2
+ed_time_8_1           = 7.e-08
+ed_time_8_2           = 8.e-08
+ed_power_8_1          = 1.e-07
+ed_power_8_2          = 1.e-07
+
+ed_numberOfBeams      = 8
+
+ed_lensX_1                     =  8.0                 # lens X coordinate
+ed_lensY_1                     = -2.0                 # lens Y coordinate
+ed_lensZ_1                     =  5.0                 # lens Z coordinate
+ed_targetX_1                   =  8.0                 # target X coordinate
+ed_targetY_1                   =  0.0                 # target Y coordinate
+ed_targetZ_1                   =  5.0                 # target Z coordinate
+ed_targetSemiAxisMajor_1       =  1.e-02              # target major semiaxis length (1 ray -> not relevant)
+ed_targetSemiAxisMinor_1       =  1.e-02              # target minor semiaxis length (1 ray -> not relevant)
+ed_lensSemiAxisMajor_1         =  1.e-02              #  lens  major semiaxis length (1 ray -> not relevant)
+ed_semiAxisMajorTorsionAngle_1 =  0.0                 # major semiaxis torsion angle (point target -> not relevant)
+ed_semiAxisMajorTorsionAxis_1  =  "z"                 # major semiaxis torsion axis
+ed_pulseNumber_1               =  1                   # pulse ID number
+ed_wavelength_1                =  1.0                 # wavelength in microns
+ed_initialRaySpeed_1           =  1.0                 # initial ray speed (units of c), is = 1 here
+ed_ignoreBoundaryCondition_1   =  .true.              # ignore domain boundary condition ?
+ed_crossSectionFunctionType_1  =  "gaussianInverse2D" # beam cross section function type               (not relevant)
+ed_gaussianExponent_1          =  1.0                 # gaussian exponent                              (not relevant)
+ed_gaussianRadiusMajor_1       =  1.0                 # gaussian e-folding length along major semiaxis (not relevant)
+ed_gaussianRadiusMinor_1       =  1.0                 # gaussian e-folding length along minor semiaxis (not relevant)
+ed_gaussianCenterMajor_1       =  0.0                 # gaussian origin location along major semiaxis  (not relevant)
+ed_gaussianCenterMinor_1       =  0.0                 # gaussian origin location along minor semiaxis  (not relevant)
+ed_numberOfRays_1              =  1                   # number of rays wanted
+ed_gridType_1                  =  "square2D"          # type of beam grid                              (not relevant)
+ed_gridnRadialTics_1           =  0                   # number of radial tics for radial grids         (not relevant)
+ed_gridnAngularTics_1          =  0                   # number of angular tics for radial grids        (not relevant) 
+
+ed_lensX_2                     =  2.0
+ed_lensY_2                     = -2.0
+ed_lensZ_2                     =  5.0
+ed_targetX_2                   =  2.0
+ed_targetY_2                   =  0.0
+ed_targetZ_2                   =  5.0
+ed_targetSemiAxisMajor_2       =  1.e-02
+ed_targetSemiAxisMinor_2       =  1.e-02
+ed_lensSemiAxisMajor_2         =  1.e-02
+ed_semiAxisMajorTorsionAngle_2 =  0.0
+ed_semiAxisMajorTorsionAxis_2  =  "z"
+ed_pulseNumber_2               =  2
+ed_wavelength_2                =  1.0
+ed_initialRaySpeed_2           =  1.0
+ed_ignoreBoundaryCondition_2   =  .true.
+ed_crossSectionFunctionType_2  =  "gaussianInverse2D"
+ed_gaussianExponent_2          =  1.0
+ed_gaussianRadiusMajor_2       =  1.0
+ed_gaussianRadiusMinor_2       =  1.0
+ed_gaussianCenterMajor_2       =  0.0
+ed_gaussianCenterMinor_2       =  0.0
+ed_numberOfRays_2              =  1
+ed_gridType_2                  =  "square2D"
+ed_gridnRadialTics_2           =  0
+ed_gridnAngularTics_2          =  0
+
+ed_lensX_3                     =  5.0
+ed_lensY_3                     = -2.0
+ed_lensZ_3                     =  8.0
+ed_targetX_3                   =  5.0
+ed_targetY_3                   =  0.0
+ed_targetZ_3                   =  8.0
+ed_targetSemiAxisMajor_3       =  1.e-02
+ed_targetSemiAxisMinor_3       =  1.e-02
+ed_lensSemiAxisMajor_3         =  1.e-02
+ed_semiAxisMajorTorsionAngle_3 =  0.0
+ed_semiAxisMajorTorsionAxis_3  =  "z"
+ed_pulseNumber_3               =  3
+ed_wavelength_3                =  1.0
+ed_initialRaySpeed_3           =  1.0
+ed_ignoreBoundaryCondition_3   =  .true.
+ed_crossSectionFunctionType_3  =  "gaussianInverse2D"
+ed_gaussianExponent_3          =  1.0
+ed_gaussianRadiusMajor_3       =  1.0
+ed_gaussianRadiusMinor_3       =  1.0
+ed_gaussianCenterMajor_3       =  0.0
+ed_gaussianCenterMinor_3       =  0.0
+ed_numberOfRays_3              =  1
+ed_gridType_3                  =  "square2D"
+ed_gridnRadialTics_3           =  0
+ed_gridnAngularTics_3          =  0
+
+ed_lensX_4                     =  5.0
+ed_lensY_4                     = -2.0
+ed_lensZ_4                     =  2.0
+ed_targetX_4                   =  5.0
+ed_targetY_4                   =  0.0
+ed_targetZ_4                   =  2.0
+ed_targetSemiAxisMajor_4       =  1.e-02
+ed_targetSemiAxisMinor_4       =  1.e-02
+ed_lensSemiAxisMajor_4         =  1.e-02
+ed_semiAxisMajorTorsionAngle_4 =  0.0
+ed_semiAxisMajorTorsionAxis_4  =  "z"
+ed_pulseNumber_4               =  4
+ed_wavelength_4                =  1.0
+ed_initialRaySpeed_4           =  1.0
+ed_ignoreBoundaryCondition_4   =  .true.
+ed_crossSectionFunctionType_4  =  "gaussianInverse2D"
+ed_gaussianExponent_4          =  1.0
+ed_gaussianRadiusMajor_4       =  1.0
+ed_gaussianRadiusMinor_4       =  1.0
+ed_gaussianCenterMajor_4       =  0.0
+ed_gaussianCenterMinor_4       =  0.0
+ed_numberOfRays_4              =  1
+ed_gridType_4                  =  "square2D"
+ed_gridnRadialTics_4           =  0
+ed_gridnAngularTics_4          =  0
+
+ed_lensX_5                     =  7.121320343560    # this is = 5 + 3/sqrt(2) 
+ed_lensY_5                     = -2.0
+ed_lensZ_5                     =  7.121320343560
+ed_targetX_5                   =  7.121320343560
+ed_targetY_5                   =  0.0
+ed_targetZ_5                   =  7.121320343560
+ed_targetSemiAxisMajor_5       =  1.e-02
+ed_targetSemiAxisMinor_5       =  1.e-02
+ed_lensSemiAxisMajor_5         =  1.e-02
+ed_semiAxisMajorTorsionAngle_5 =  0.0
+ed_semiAxisMajorTorsionAxis_5  =  "z"
+ed_pulseNumber_5               =  5
+ed_wavelength_5                =  1.0
+ed_initialRaySpeed_5           =  1.0
+ed_ignoreBoundaryCondition_5   =  .true.
+ed_crossSectionFunctionType_5  =  "gaussianInverse2D"
+ed_gaussianExponent_5          =  1.0
+ed_gaussianRadiusMajor_5       =  1.0
+ed_gaussianRadiusMinor_5       =  1.0
+ed_gaussianCenterMajor_5       =  0.0
+ed_gaussianCenterMinor_5       =  0.0
+ed_numberOfRays_5              =  1
+ed_gridType_5                  =  "square2D"
+ed_gridnRadialTics_5           =  0
+ed_gridnAngularTics_5          =  0
+
+ed_lensX_6                     =  7.121320343560
+ed_lensY_6                     = -2.0
+ed_lensZ_6                     =  2.878679656440    # this is = 5 - 3/sqrt(2) 
+ed_targetX_6                   =  7.121320343560
+ed_targetY_6                   =  0.0
+ed_targetZ_6                   =  2.878679656440
+ed_targetSemiAxisMajor_6       =  1.e-02
+ed_targetSemiAxisMinor_6       =  1.e-02
+ed_lensSemiAxisMajor_6         =  1.e-02
+ed_semiAxisMajorTorsionAngle_6 =  0.0
+ed_semiAxisMajorTorsionAxis_6  =  "z"
+ed_pulseNumber_6               =  6
+ed_wavelength_6                =  1.0
+ed_initialRaySpeed_6           =  1.0
+ed_ignoreBoundaryCondition_6   =  .true.
+ed_crossSectionFunctionType_6  =  "gaussianInverse2D"
+ed_gaussianExponent_6          =  1.0
+ed_gaussianRadiusMajor_6       =  1.0
+ed_gaussianRadiusMinor_6       =  1.0
+ed_gaussianCenterMajor_6       =  0.0
+ed_gaussianCenterMinor_6       =  0.0
+ed_numberOfRays_6              =  1
+ed_gridType_6                  =  "square2D"
+ed_gridnRadialTics_6           =  0
+ed_gridnAngularTics_6          =  0
+
+ed_lensX_7                     =  2.878679656440
+ed_lensY_7                     = -2.0
+ed_lensZ_7                     =  7.121320343560
+ed_targetX_7                   =  2.878679656440
+ed_targetY_7                   =  0.0
+ed_targetZ_7                   =  7.121320343560
+ed_targetSemiAxisMajor_7       =  1.e-02
+ed_targetSemiAxisMinor_7       =  1.e-02
+ed_lensSemiAxisMajor_7         =  1.e-02
+ed_semiAxisMajorTorsionAngle_7 =  0.0
+ed_semiAxisMajorTorsionAxis_7  =  "z"
+ed_pulseNumber_7               =  7
+ed_wavelength_7                =  1.0
+ed_initialRaySpeed_7           =  1.0
+ed_ignoreBoundaryCondition_7   =  .true.
+ed_crossSectionFunctionType_7  =  "gaussianInverse2D"
+ed_gaussianExponent_7          =  1.0
+ed_gaussianRadiusMajor_7       =  1.0
+ed_gaussianRadiusMinor_7       =  1.0
+ed_gaussianCenterMajor_7       =  0.0
+ed_gaussianCenterMinor_7       =  0.0
+ed_numberOfRays_7              =  1
+ed_gridType_7                  =  "square2D"
+ed_gridnRadialTics_7           =  0
+ed_gridnAngularTics_7          =  0
+
+ed_lensX_8                     =  2.878679656440
+ed_lensY_8                     = -2.0
+ed_lensZ_8                     =  2.878679656440
+ed_targetX_8                   =  2.878679656440
+ed_targetY_8                   =  0.0
+ed_targetZ_8                   =  2.878679656440
+ed_targetSemiAxisMajor_8       =  1.e-02
+ed_targetSemiAxisMinor_8       =  1.e-02
+ed_lensSemiAxisMajor_8         =  1.e-02
+ed_semiAxisMajorTorsionAngle_8 =  0.0
+ed_semiAxisMajorTorsionAxis_8  =  "z"
+ed_pulseNumber_8               =  8
+ed_wavelength_8                =  1.0
+ed_initialRaySpeed_8           =  1.0
+ed_ignoreBoundaryCondition_8   =  .true.
+ed_crossSectionFunctionType_8  =  "gaussianInverse2D"
+ed_gaussianExponent_8          =  1.0
+ed_gaussianRadiusMajor_8       =  1.0
+ed_gaussianRadiusMinor_8       =  1.0
+ed_gaussianCenterMajor_8       =  0.0
+ed_gaussianCenterMinor_8       =  0.0
+ed_numberOfRays_8              =  1
+ed_gridType_8                  =  "square2D"
+ed_gridnRadialTics_8           =  0
+ed_gridnAngularTics_8          =  0
+
+##########################
+# SIMMULATION PARAMETERS #
+##########################
+
+sim_printBlockVariables = .false.
+sim_lasersOrientation   = "XZ"
+
+#######################
+#    EOS PARAMETERS   #
+#######################
+eos_singleSpeciesA  = 1.0
+eos_singleSpeciesZ  = 1.0
+eosmodeInit         = "dens_temp"
+
+#########################
+#   OUTPUT PARAMETERS   #
+#########################
+
+checkpointFileIntervalStep = 1
+plotFileNumber             = 0
+plot_var_1                 = "dens"
+plot_var_2                 = "depo"
+
+#######################
+#   TIME PARAMETERS   #
+#######################
+tmax           = 1.0e-08
+dtmin          = 1.0e-15
+dtinit         = 1.0e-14
+dtmax          = 1.0e-11
+nend           = 1
+
+#######################
+#   MESH PARAMETERS   #
+#######################
+
+geometry = cartesian
+
+xmin =  0.0
+xmax = 10.0
+ymin =  0.0
+ymax = 11.1072073450784486          # this is 5pi/sqrt(2)
+zmin =  0.0
+zmax = 10.0
+
+xl_boundary_type  = "outflow"
+xr_boundary_type  = "outflow"
+yl_boundary_type  = "outflow"
+yr_boundary_type  = "outflow"
+zl_boundary_type  = "outflow"
+zr_boundary_type  = "outflow"
+
+lrefine_min = 1
+lrefine_max = 1

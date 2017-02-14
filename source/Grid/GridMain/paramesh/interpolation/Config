@@ -1,0 +1,14 @@
+#Config file for Grid/GridMain/paramesh/interpolation
+#
+# Inclusion of this directory is equivalent to asking
+# for monotonic interpolation in the AMR implementation.
+
+USESETUPVARS Grid
+
+IF Grid in ["","PM3","PM4","PM40","PM4DEV"]
+   DEFAULT Paramesh4
+ENDIF
+
+IF Grid=="PM2"
+   REQUESTS Grid/GridMain/paramesh/Paramesh2/monotonic
+ENDIF

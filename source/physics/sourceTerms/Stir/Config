@@ -1,0 +1,6 @@
+#	Configuration file for source term Stir
+
+DEFAULT StirMain
+
+D useStir   Runtime switch for turning stirring on/off
+PARAMETER useStir	BOOLEAN     CONSTANT FALSE

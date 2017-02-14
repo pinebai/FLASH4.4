@@ -1,0 +1,6 @@
+
+# source/physics/Hydro/HydroMain/split
+
+DEFAULT PPM
+
+EXCLUSIVE PPM MHD_8Wave RHD SlowFlowPPM SPPM

@@ -1,0 +1,24 @@
+
+
+#define GRPT_POSX_IND 1
+#define GRPT_POSY_IND 2
+#define GRPT_POSZ_IND 3
+#define GRPT_BLK_IND 4
+#define GRPT_TAG_IND 5
+#define GRPT_PROC_IND 6
+#define GRPT_POSXTMP_IND 7
+#define GRPT_POSYTMP_IND 8
+#define GRPT_POSZTMP_IND 9
+#define GRPT_VELX_IND 10
+#define GRPT_VELY_IND 11
+#define GRPT_VELZ_IND 12
+#define GRPT_VELXTMP_IND 13
+#define GRPT_VELYTMP_IND 14
+#define GRPT_VELZTMP_IND 15
+#define GRPT_POSTMP 16
+#define GRPT_VEL 17
+#define GRPT_VELTMP 18
+#define GRPT_VIRTUAL 19
+#define GRPT_ALL 19
+#define GRPT_RESET 0
+#define GRPT_EXIST 546

@@ -1,0 +1,245 @@
+#config file for IO/IOMain
+
+REQUIRES Driver
+REQUIRES IO/localAPI
+REQUESTS flashUtilities/system/memoryUsage
+
+DEFAULT hdf5
+
+EXCLUSIVE *
+
+# the setupvariable IO can influence which branch we take
+# if IO is one of the recognized and non-empty give an error
+USESETUPVARS IO
+
+IF IO=="direct"
+   DEFAULT direct/UG
+ELSEIF IO=="MPIDump"
+   DEFAULT MPIDump
+ELSEIF IO=="pnetcdf"
+   DEFAULT pnetcdf
+ELSEIF IO=="MPIHybrid"
+   DEFAULT MPIHybrid
+ELSEIF IO=="hdf5" 
+ELSEIF IO <> ""
+   SETUPERROR Setup Variable 'IO' must be something I know about
+ENDIF
+
+# define a variable in Flash.h to show that SOME sort of IO is included
+PPDEFINE FLASH_IO 
+
+
+# All withTOPLEVELUNIT are set to true if the corresponding
+# unit is included in the command line.
+
+USESETUPVARS withParticles
+
+IF withParticles
+   REQUIRES IO/IOParticles
+ENDIF
+
+
+# Lines that begin with 'D' as in 'Description' will end up as
+# comment lines in the setup_params file.  setup_params is
+# written by the setup script and holds all the default 
+# values of parameters.  
+
+# !!! If you add a parameter, please add a description line
+# Format is D <parameter name> <description>
+
+
+
+D bytePack compress plotfile data to bytes
+D & !!Only implemented with UG in hdf5 !!!
+D & !!Not tested
+PARAMETER bytePack BOOLEAN FALSE
+
+D memory_stat_freq Specify the number of timesteps between memory statistic
+D & dumps to flash.log !!NOT Yet Implemented in F3
+PARAMETER memory_stat_freq INTEGER 100000
+
+D rss_limit Maximum value (in MB) of largest resident set size (rss) before we
+D         & checkpoint and exit. Negative for no limit.  Only active if
+D         & memory statistics are being kept.
+PARAMETER rss_limit REAL -1.0
+
+D rolling_checkpoint       Checkpoint file number cycling span.  
+D &   Only the last rolling_checkpoint files are kept.  
+PARAMETER rolling_checkpoint      INTEGER 10000  
+
+D wall_clock_checkpoint    Checkpoint after XX seconds (wallclock time)
+D &   This is useful to ensure that the job outputs a restart file before
+D &   a queue window closes.
+PARAMETER wall_clock_checkpoint   REAL    43200.
+
+D wr_integrals_freq         Number of timesteps between writing to flash.dat
+PARAMETER wr_integrals_freq INTEGER 1
+
+D basenm       Base name for checkpoint files	
+PARAMETER basenm	STRING	"flash_" 
+
+D stats_file   Name of the file integral quantities are written to (.dat file)
+PARAMETER stats_file    STRING  "flash.dat"
+
+D io_writeMscalarIntegrals Should density integrals for all mass scalars be written
+D & to the stats_file (.dat file)?  This runtime parameter is handled in the default
+D & IO_writeIntegralQuantities implementation in IOMain, and may have no effect if a
+D & simulation overrides that implementation.
+PARAMETER io_writeMscalarIntegrals    BOOLEAN  FALSE
+
+D output_directory  output dir for checkpoint file, can be absolute or relative path
+PARAMETER output_directory STRING ""
+
+D prof_file !!NOT yet implemented yet in F3
+PARAMETER prof_file     STRING  "profile.dat"
+
+D checkpointFileIntervalStep       Checkpoint after this many steps
+PARAMETER checkpointFileIntervalStep	INTEGER	0
+
+D checkpointFileIntervalTime       Checkpoint after this much time
+PARAMETER checkpointFileIntervalTime	REAL	1.	
+
+D checkpointFileIntervalRedshift   Checkpoint after this change in z
+PARAMETER checkpointFileIntervalZ       REAL  HUGE(1.)
+
+D plotFileIntervalStep        Write a plotfile after this many steps
+PARAMETER plotFileIntervalStep  	INTEGER	0
+
+D plotFileIntervalTime        Write a plotfile after this much time
+PARAMETER plotFileIntervalTime  	REAL	1.	
+
+D plotFileIntervalZ           Write a plotfile after this change in z
+PARAMETER plotFileIntervalZ             REAL    HUGE(1.)
+
+D outputSplitNum Split checkpoint, plotfiles, particle plots into this
+D & many files per dump
+D & Not fully implemented, only hdf5 parallel. use at own risk
+PARAMETER outputSplitNum INTEGER 1
+
+D chkGuardCellsOutput if true guardcells are written the checkpoint file.
+D & Default is false where only interior cells are written.
+D & Currently only implemented with hdf5 parallel paramesh IO implementation 
+D chkGuardCellsInput if true guardcells are read from the checkpoint file.
+D & Default is false where only interior cells are read.
+D & Currently only implemented with hdf5 parallel paramesh IO implementation 
+PARAMETER chkGuardCellsInput BOOLEAN CONSTANT FALSE
+PARAMETER chkGuardCellsOutput BOOLEAN CONSTANT FALSE
+
+
+D corners does nothing.  However, it is part of the checkpoint file 
+D & specification, so we retain the checkpoint entry, but force it to be .false..
+D & It was used in FLASH2 to interpolate the data to the zone corners before 
+D & storing the data in the plotfile (for creating improved iso-surfaces).
+PARAMETER corners	BOOLEAN	FALSE	
+
+D checkpointFileNumber     Initial checkpoint file number (used for restarts as well)
+PARAMETER checkpointFileNumber      INTEGER 0
+
+D plotFileNumber     Initial plot file number
+PARAMETER plotFileNumber      INTEGER 0 
+
+
+
+#D plot_var_1	 set what variables are to be stored in the plotfile.
+#D &	Up to 12 choices are allowed.  If plot_var_X is set to
+#D &	"none" then no variable will be saved.
+#D &     The parameter should have the same name as the variable corresponding to it.
+#D &     For exampe, if a variable is declared VARIABLE pres, to write that variable to a plotfile
+#D &     a parameter should be declared as PARAMETER plot_var_X STRING "pres"
+PARAMETER plot_var_1 STRING "none"
+PARAMETER plot_var_2 STRING "none"
+PARAMETER plot_var_3 STRING "none"
+PARAMETER plot_var_4 STRING "none"
+PARAMETER plot_var_5 STRING "none"
+PARAMETER plot_var_6 STRING "none"
+PARAMETER plot_var_7 STRING "none"
+PARAMETER plot_var_8 STRING "none"
+PARAMETER plot_var_9 STRING "none"
+PARAMETER plot_var_10 STRING "none"
+PARAMETER plot_var_11 STRING "none"
+PARAMETER plot_var_12 STRING "none"
+
+
+
+D plot_grid_var_1	Allows user to output specific scratch grid vars
+D &	Up to 12 choices are allowed.  If plot_grid_var_X is set to
+D &	"none" then no variable will be saved.
+D &     The parameter should have the same name as the variable corresponding to it.
+D &     For exampe, if a variable is declared GRID_VAR vrtz, to write that grid variable to a plotfile
+D &     a parameter should be declared as PARAMETER plot_grid_var_X STRING "vrtz"
+PARAMETER plot_grid_var_1 STRING "none"
+PARAMETER plot_grid_var_2 STRING "none"
+PARAMETER plot_grid_var_3 STRING "none"
+PARAMETER plot_grid_var_4 STRING "none"
+PARAMETER plot_grid_var_5 STRING "none"
+PARAMETER plot_grid_var_6 STRING "none"
+PARAMETER plot_grid_var_7 STRING "none"
+PARAMETER plot_grid_var_8 STRING "none"
+PARAMETER plot_grid_var_9 STRING "none"
+PARAMETER plot_grid_var_10 STRING "none"
+PARAMETER plot_grid_var_11 STRING "none"
+PARAMETER plot_grid_var_12 STRING "none"
+
+D alwaysRestrictCheckpoint Allows the user to choose whether checkpoint file 
+D &    data is always restricted, so all ancestor blocks have valid data.
+D &    The default is true.  It can be set to false for debugging purposes,
+D &    in which case only the data from IO_output will be guaranteed to have 
+D &    fully restricted data.  See the User's guide for more information.
+
+PARAMETER alwaysRestrictCheckpoint BOOLEAN true 
+
+
+D alwaysComputeUserVars  Allows the user to force the computation of user 
+D &    variables (i.e. those computed by Grid_computeUserVars) for all 
+D &   checkpoint files.  Defaults to true.  If set to false, lone calls to 
+D &   IO_writeCheckpoint will not call Grid_computeUserVars.  Plotfiles
+D &   always call Grid_computeUserVars.
+
+PARAMETER alwaysComputeUserVars BOOLEAN true
+
+D forcedPlotfileNumber  The user can set the starting sequence number for plot 
+D &   files that are output, but are considered "forced", i.e. they are not 
+D &   output due to plotfileIntervalTime, plotfileIntervalStep, or 
+D &   plotfileIntervalZ.  This defaults to 0.
+
+PARAMETER forcedPlotFileNumber INTEGER 0
+
+D ignoreForced If this is true, the old way of outputing plotfiles will be 
+D & followed, and none will have the forced tag.
+
+PARAMETER ignoreForcedPlot BOOLEAN false
+
+D useCollectiveHDF5 If true, all non-header, non-list datasets will be written
+D & using HDF5's collective output mode otherwise, the independent access mode
+D & is used.  Default value is true.
+
+PARAMETER useCollectiveHDF5 BOOLEAN true
+
+D plotfileMetadataDP Sets the floating point grid metadata fields to be 
+D & written in double precision if true in plotfiles.  Default value is false
+
+PARAMETER plotfileMetadataDP BOOLEAN false
+
+D plotfileGridQuantityDP If true, this sets the grid variables (unk, facevars, 
+D & etc.) to be output in double precision in plotfiles.  
+D & Default value is false.
+
+PARAMETER plotfileGridQuantityDP BOOLEAN false
+
+D fileFormatVersion Integer value specifying the file format type
+PARAMETER fileFormatVersion INTEGER 9
+
+D useLegacyLabels If true, this stores mesh labels e.g. 'dens', 'pres'
+D & in a IO library dataspace of 4 characters.  We may want to set it
+D & to false to use larger labels e.g. 'density'
+PARAMETER useLegacyLabels BOOLEAN true
+
+D typeMatchedXfer Ensures that floating point data transfers are type matched when
+D & using HDF5.  This prevents HDF5 reverting to independent parallel I/O.
+PARAMETER typeMatchedXfer BOOLEAN true
+
+D summaryOutputOnly Makes FLASH write integrated quantities, i.e. summary data, only.
+D & FLASH will only write a checkpoint, plot, or particle file if the user
+D & creates a .dump_plotfile, .dump_checkpoint, .dump_restart, or
+D & .dump_particle_file file.  A .kill file will still kill FLASH.
+PARAMETER summaryOutputOnly BOOLEAN false

@@ -1,0 +1,63 @@
+# Coniguration file for the 1D Radiative Shock
+REQUIRES Driver
+REQUESTS physics/Diffuse/DiffuseMain/Unsplit
+REQUESTS physics/sourceTerms/Heatexchange/HeatexchangeMain/Spitzer
+REQUESTS physics/materialProperties/Conductivity/ConductivityMain/SpitzerHighZ
+
+DATAFILES al-imx-004.cn4
+
+##########################
+#                        #
+#   RUNTIME PARAMETERS   #
+#                        #
+##########################
+
+D sim_foilRadius [cm] The radius to use for the target
+PARAMETER sim_foilRadius REAL 0.0064
+
+D sim_foilThickness [cm] The thickness of the foil
+PARAMETER sim_foilThickness REAL 0.0008
+
+D sim_foilZPosition [cm] The position of the foil along the z-axis. This 
+D   corresponds to the bottom of the foil. Thus, the foil will occupy an 
+D   area between:
+D     sim_foilZPosition < z < sim_foilZPosition + sim_foilThickness
+PARAMETER sim_foilZPosition REAL 0.0
+
+# Foil defaults set for solid aluminum at room temperature:
+D sim_rhoFoil [g/cc] Initial foil density
+PARAMETER sim_rhoFoil REAL 2.7
+
+D sim_teleFoil [K] Initial foil background electron temperature
+PARAMETER sim_teleFoil REAL 290.11375
+
+D sim_tionFoil [K] Initial foil ion temperature
+PARAMETER sim_tionFoil REAL 290.11375
+
+D sim_tradFoil [K] Initial foil radiation temperature
+PARAMETER sim_tradFoil REAL 290.11375
+
+D sim_thotFoil [K] sim_thotFoil + sim_teleFoil is the peak foil electron
+D   temperature
+PARAMETER sim_thotFoil REAL 0.0
+
+D sim_teleRDecayFoil [cm] Sets lengthscale for temperature drop in R
+D   direction
+PARAMETER sim_teleRDecayFoil REAL 10.0e-04
+
+D sim_teleZDecayFoil [cm] Sets lengthscale for temperature drop in Z
+D   direction
+PARAMETER sim_teleZDecayFoil REAL 2.0e-04
+
+# Vacuum runtime parameters:
+D sim_rhoVacu [g/cc] Initial vacuum density
+PARAMETER sim_rhoVacu   REAL 2.7
+
+D sim_teleVacu [K] Initial vacuum electron temperature
+PARAMETER sim_teleVacu  REAL 290.11375
+
+D sim_tionVacu [K] Initial vacuum ion temperature
+PARAMETER sim_tionVacu  REAL 290.11375
+
+D sim_tradVacu [K] Initial vacuum radiation temperature
+PARAMETER sim_tradVacu  REAL 290.11375

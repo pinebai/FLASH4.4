@@ -1,0 +1,6 @@
+# Config file for the Conductivity Unit
+
+DEFAULT ConductivityMain
+
+D	  useConductivity flags whether the conductivity material property is being used
+PARAMETER useConductivity BOOLEAN CONSTANT FALSE

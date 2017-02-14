@@ -1,0 +1,30 @@
+#		Configuration file for a spherical velocity field
+
+REQUIRES Driver
+REQUIRES physics/Hydro
+REQUIRES Grid
+REQUIRES Particles/passive
+
+#! rho_ambient       Ambient density
+#! p_ambient         Ambient pressure
+#! u_ambient         Ambient x-velocity
+#! v_ambient         Ambient y-velocity
+#! vortex_strength   Vortex strength
+#! xctr              Coordinates of the center of the vortex
+#! yctr
+#! nx_subint         number of subintervals for computing cell averages
+#! ny_subint
+
+PARAMETER rho_ambient      REAL    1.0
+PARAMETER p_ambient        REAL    1.0
+PARAMETER u_ambient        REAL    1.0
+PARAMETER v_ambient        REAL    1.0
+PARAMETER vortex_strength  REAL    5.0
+PARAMETER xctr             REAL    0.0
+PARAMETER yctr             REAL    0.0
+PARAMETER nx_subint        INTEGER 10
+PARAMETER ny_subint        INTEGER 10
+
+PROPERTY      p_dens          REAL
+PROPERTY      p_temp          REAL
+

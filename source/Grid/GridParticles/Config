@@ -1,0 +1,31 @@
+# Config file for source/Grid/GridParticles
+
+PPDEFINE FLASH_GRID_PARTICLES
+
+REQUIRES Grid/GridMain
+REQUESTS Particles
+
+USESETUPVARS Grid
+
+EXCLUSIVE Paramesh UG
+
+REQUIRES Grid/GridParticles/GridParticlesMove
+
+D gr_ptRemove  boolean.  This is a switch which determines the action if the number
+D of particles on a processor exceeds the maximum allowed
+D if the parameter is false, then the run aborts, if it is
+D true, then some algorithm is applied to reduce the number of
+D particles
+PARAMETER gr_ptRemove BOOLEAN FALSE
+
+D gr_ptRemoveAlgo integer  The algorithm used in determining which particles to remove
+D if gr_ptRemove is true
+PARAMETER gr_ptRemoveAlgo INTEGER 2
+
+D gr_ptNumToReduce  integer  if particles are to be removed at runtime, how many
+D should be removed in one iteration
+PARAMETER gr_ptNumToReduce INTEGER 10
+ 
+D pt_keepLostParticles boolean if true the particles that leave the domain should
+D not be dropped from the simulation, but should be kept around
+PARAMETER keepLostParticles BOOLEAN FALSE

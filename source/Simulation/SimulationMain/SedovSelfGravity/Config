@@ -1,0 +1,39 @@
+#
+#       Configuration file for the Sedov explosion problem
+#       (Sedov, L. I., 1959, Similarity and Dimensional Methods
+#       in Mechanics [New York:  Academic])
+#
+#
+
+REQUIRES Driver
+REQUIRES physics/Hydro
+REQUIRES physics/Gravity/GravityMain/Poisson/Multipole 
+
+
+D   p_ambient       Initial ambient pressure
+PARAMETER p_ambient     REAL    1.E-5
+
+D   rho_ambient     Initial ambient density
+PARAMETER rho_ambient   REAL    1.
+
+D   exp_energy      Explosion energy (distributed over
+D                           &         2^dimen central zones)
+PARAMETER exp_energy    REAL    1.
+
+D   t_init          Initial time since explosion
+PARAMETER t_init        REAL    0.
+
+D   r_init          Radial position of the inner edge of the grid
+PARAMETER r_init        REAL    0.05
+
+D   sim_nsubzones       Number of `sub-zones' to break cells into for
+D                    & applying 1d profile
+PARAMETER sim_nsubzones     INTEGER 7
+
+# Possibly specify here that this is a strictly 1d problem
+# Do not reshuffle standard variables (yet). 
+
+USESETUPVARS nDim
+IF nDim <> 1
+  SETUPERROR Sedov self gravity runs in only 1D spherical
+ENDIF

@@ -1,0 +1,16 @@
+diff -ru libNBC-1.1.1-orig/nbc_internal.h libNBC-1.1.1/nbc_internal.h
+--- libNBC-1.1.1-orig/nbc_internal.h	2013-05-07 09:34:50.296996948 -0500
++++ libNBC-1.1.1/nbc_internal.h	2013-05-07 09:37:52.842108102 -0500
+@@ -28,7 +28,11 @@
+  * still in the cache and second, the tmpbuf used by the schedule must
+  * be attached to the handle that uses this schedule !!!! 
+  * I.E., THIS IS EXPERIMENTAL AND MIGHT NOT WORK */
+-#define NBC_CACHE_SCHEDULE 
++/* It also leaks memory because the schedule is never cleaned up when
++   the communicator is destroyed, so don't use it for now */
++#ifdef NBC_CACHE_SCHEDULE
++#undef NBC_CACHE_SCHEDULE
++#endif
+ #define NBC_SCHED_DICT_UPPER 1024 /* max. number of dict entries */
+ #define NBC_SCHED_DICT_LOWER 512  /* nuber of dict entries after wipe, if SCHED_DICT_UPPER is reached */
+ 

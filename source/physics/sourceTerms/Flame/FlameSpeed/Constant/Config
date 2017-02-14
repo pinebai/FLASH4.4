@@ -1,0 +1,2 @@
+PARAMETER fl_fsConstFlameSpeed       REAL         1.e0
+PARAMETER fl_fsConstFlameWidth       REAL         1.e0

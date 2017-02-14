@@ -1,0 +1,484 @@
+run_comment = "3D Laser Example Simulation"
+log_file    = "lasslab.log"
+basenm      = "lasslab_"
+
+# This particular parfile is used as an example parfile that is
+# described in detail in the users guide.
+
+# Setup options for this example simulation are:
+# ./setup -auto LaserSlab -noc -3d +pm4dev +hdf5typeio 
+#         -nxb=16 -nyb=16 -nzb=16 +mtmmmt +laser +mgd 
+#         +uhd3t species=cham,targ mgd_meshgroups=6
+#         -parfile=multibeam3d.par
+#         ed_maxBeams=9
+
+#########################
+#   OUTPUT PARAMETERS   #
+#########################
+
+### Checkpoint Options  ###
+checkpointFileIntervalTime = 1.0
+checkpointFileIntervalStep = 10
+
+### Plot Options ###
+plotFileNumber       = 0
+plotFileIntervalStep = 10
+plot_var_1           = "dens"
+plot_var_2           = "depo"
+plot_var_3           = "tele"
+plot_var_4           = "tion"
+plot_var_5           = "ye  "
+plot_var_6           = "sumy"
+
+### Restart Options ###
+restart              = .false.
+checkpointFileNumber = 0
+
+########################################
+#                                      #
+#     RADIATION/OPACITY PARAMETERS     #
+#                                      #
+########################################
+rt_useMGD       = .true.
+rt_mgdNumGroups = 6
+rt_mgdBounds_1  = 1.0e-01
+rt_mgdBounds_2  = 1.0e+00
+rt_mgdBounds_3  = 1.0e+01
+rt_mgdBounds_4  = 1.0e+02
+rt_mgdBounds_5  = 1.0e+03
+rt_mgdBounds_6  = 1.0e+04
+rt_mgdBounds_7  = 1.0e+05
+rt_mgdFlMode    = "fl_harmonic"
+rt_mgdFlCoef    = 1.0
+
+rt_mgdXlBoundaryType = "reflecting"
+rt_mgdXrBoundaryType = "vacuum"
+rt_mgdYlBoundaryType = "vacuum"
+rt_mgdYrBoundaryType = "reflecting"
+rt_mgdZlBoundaryType = "reflecting"
+rt_mgdZrBoundaryType = "reflecting"
+
+useOpacity     = .true.
+
+### SET CHAMBER (HELIUM) OPACITY OPTIONS ###
+op_chamAbsorb   = "op_tabpa"
+op_chamEmiss    = "op_tabpe"
+op_chamTrans    = "op_tabro"
+op_chamFileType = "ionmix4"
+op_chamFileName = "he-imx-005.cn4"
+
+### SET TARGET (ALUMINUM) OPACITY OPTIONS ###
+op_targAbsorb   = "op_tabpa"
+op_targEmiss    = "op_tabpe"
+op_targTrans    = "op_tabro"
+op_targFileType = "ionmix4"
+op_targFileName = "al-imx-003.cn4"
+
+
+############################
+#                          #
+#     LASER PARAMETERS     #
+#                          #
+############################
+
+useEnergyDeposition = .true.
+ed_maxRayCount      = 1000000
+ed_gradOrder        = 2
+
+### LASER IO OPTIONS ###
+ed_useLaserIO             = .true.
+ed_laserIOMaxNumPositions = 30000
+ed_laserIONumRays         = 10000
+
+ed_computeGradNeleX = .true.
+ed_computeGradNeleZ = .true.
+
+### SETUP LASER PULSES ###
+ed_numPulses = 3
+
+# Define Pulse 1:
+ed_numSections_1 = 2
+ed_time_1_1  = 0.0
+ed_time_1_2  = 3.0e-09
+ed_power_1_1 = 1.3e+07
+ed_power_1_2 = 1.3e+07
+
+# Define Pulse 2:
+ed_numSections_2 = 5
+ed_time_2_1  = 0.0
+ed_time_2_2  = 1.6e-09
+ed_time_2_3  = 1.65e-09
+ed_time_2_4  = 1.7e-09
+ed_time_2_5  = 3.0e-09
+
+ed_power_2_1 = 1.3e+07
+ed_power_2_2 = 1.3e+07
+ed_power_2_3 = 3.13e+08
+ed_power_2_4 = 1.3e+07
+ed_power_2_5 = 1.3e+07
+
+# Define Pulse 3:
+ed_numSections_3 = 5
+ed_time_3_1  = 0.0
+ed_time_3_2  = 1.6e-09
+ed_time_3_3  = 1.65e-09
+ed_time_3_4  = 1.7e-09
+ed_time_3_5  = 3.0e-09
+
+ed_power_3_1 = 2.333333e+07
+ed_power_3_2 = 2.333333e+07
+ed_power_3_3 = 6.233333e+08
+ed_power_3_4 = 2.333333e+07
+ed_power_3_5 = 2.333333e+07
+
+
+### SETUP LASER BEAM ###
+ed_numBeams = 9
+
+# Setup beam 1:
+ed_lensX_1            = -0.1
+ed_lensY_1            = -0.1
+ed_lensZ_1            =  0.0
+
+ed_targetX_1          =  0.0
+ed_targetY_1          =  0.0
+ed_targetZ_1          =  0.0
+
+ed_semiaxis1_1        =  20.0e-04
+ed_semiaxis2_1        =  20.0e-04
+
+ed_torsionAngle_1     = 0.0
+
+ed_pulseNumber_1      =  3        
+ed_wavelength_1       =  1.053
+ed_crossSectionID_1   =  6 # 2D Gaussian Beam
+ed_decayExponent_1    =  1.0
+ed_decayRadius1_1     =  1.201122e-03
+ed_decayRadius2_1     =  1.201122e-03
+ed_lensEqualsTarget_1 =  .true.     
+ed_numRays_1          =  10000
+
+
+# Setup beam 2:
+ed_lensX_2            = -0.0
+ed_lensY_2            = -0.1
+ed_lensZ_2            =  0.0
+
+ed_targetX_2          =  0.0
+ed_targetY_2          =  0.0
+ed_targetZ_2          =  0.0
+
+ed_semiaxis1_2        =  20.0e-04
+ed_semiaxis2_2        =  20.0e-04
+
+ed_torsionAngle_2     = 0.0
+
+ed_pulseNumber_2      =  3        
+ed_wavelength_2       =  1.053
+ed_crossSectionID_2   =  6 # 2D Gaussian Beam
+ed_decayExponent_2    =  1.0
+ed_decayRadius1_2     =  1.201122e-03
+ed_decayRadius2_2     =  1.201122e-03
+ed_lensEqualsTarget_2 =  .true.     
+ed_numRays_2          =  10000
+
+# Setup beam 3:
+ed_lensX_3            =  0.0
+ed_lensY_3            = -0.1
+ed_lensZ_3            = -0.1
+
+ed_targetX_3          =  0.0
+ed_targetY_3          =  0.0
+ed_targetZ_3          =  0.0
+
+ed_semiaxis1_3        =  20.0e-04
+ed_semiaxis2_3        =  20.0e-04
+
+ed_torsionAngle_3     = 0.0
+
+ed_pulseNumber_3      =  3        
+ed_wavelength_3       =  1.053
+ed_crossSectionID_3   =  6 # 2D Gaussian Beam
+ed_decayExponent_3    =  1.0
+ed_decayRadius1_3     =  1.201122e-03
+ed_decayRadius2_3     =  1.201122e-03
+ed_lensEqualsTarget_3 =  .true.     
+ed_numRays_3          =  10000
+
+# Setup beam 4:
+ed_lensX_4            =  0.1
+ed_lensY_4            = -0.1
+ed_lensZ_4            =  0.0
+
+ed_targetX_4          =  0.0
+ed_targetY_4          =  0.0
+ed_targetZ_4          =  0.0
+
+ed_semiaxis1_4        =  20.0e-04
+ed_semiaxis2_4        =  20.0e-04
+
+ed_torsionAngle_4     = 0.0
+
+ed_pulseNumber_4      =  3        
+ed_wavelength_4       =  1.053
+ed_crossSectionID_4   =  6 # 2D Gaussian Beam
+ed_decayExponent_4    =  1.0
+ed_decayRadius1_4     =  1.201122e-03
+ed_decayRadius2_4     =  1.201122e-03
+ed_lensEqualsTarget_4 =  .true.     
+ed_numRays_4          =  10000
+
+# Setup beam 5:
+ed_lensX_5            =  0.0
+ed_lensY_5            = -0.1
+ed_lensZ_5            =  0.1
+
+ed_targetX_5          =  0.0
+ed_targetY_5          =  0.0
+ed_targetZ_5          =  0.0
+
+ed_semiaxis1_5        =  20.0e-04
+ed_semiaxis2_5        =  20.0e-04
+
+ed_torsionAngle_5     = 0.0
+
+ed_pulseNumber_5      =  3        
+ed_wavelength_5       =  1.053
+ed_crossSectionID_5   =  6 # 2D Gaussian Beam
+ed_decayExponent_5    =  1.0
+ed_decayRadius1_5     =  1.201122e-03
+ed_decayRadius2_5     =  1.201122e-03
+ed_lensEqualsTarget_5 =  .true.     
+ed_numRays_5          =  10000
+
+# Setup beam 6:
+ed_lensX_6            = -0.1
+ed_lensY_6            = -0.1
+ed_lensZ_6            = -0.1
+
+ed_targetX_6          =  0.0
+ed_targetY_6          =  0.0
+ed_targetZ_6          =  0.0
+
+ed_semiaxis1_6        =  20.0e-04
+ed_semiaxis2_6        =  20.0e-04
+
+ed_torsionAngle_6     = 0.0
+
+ed_pulseNumber_6      =  3        
+ed_wavelength_6       =  1.053
+ed_crossSectionID_6   =  6 # 2D Gaussian Beam
+ed_decayExponent_6    =  1.0
+ed_decayRadius1_6     =  1.201122e-03
+ed_decayRadius2_6     =  1.201122e-03
+ed_lensEqualsTarget_6 =  .true.     
+ed_numRays_6          =  10000
+
+# Setup beam 7:
+ed_lensX_7            =  0.1
+ed_lensY_7            = -0.1
+ed_lensZ_7            =  0.1
+
+ed_targetX_7          =  0.0
+ed_targetY_7          =  0.0
+ed_targetZ_7          =  0.0
+
+ed_semiaxis1_7        =  20.0e-04
+ed_semiaxis2_7        =  20.0e-04
+
+ed_torsionAngle_7     = 0.0
+
+ed_pulseNumber_7      =  3        
+ed_wavelength_7       =  1.053
+ed_crossSectionID_7   =  6 # 2D Gaussian Beam
+ed_decayExponent_7    =  1.0
+ed_decayRadius1_7     =  1.201122e-03
+ed_decayRadius2_7     =  1.201122e-03
+ed_lensEqualsTarget_7 =  .true.     
+ed_numRays_7          =  10000
+
+# Setup beam 8:
+ed_lensX_8            = -0.1
+ed_lensY_8            = -0.1
+ed_lensZ_8            =  0.1
+
+ed_targetX_8          =  0.0
+ed_targetY_8          =  0.0
+ed_targetZ_8          =  0.0
+
+ed_semiaxis1_8        =  20.0e-04
+ed_semiaxis2_8        =  20.0e-04
+
+ed_torsionAngle_8     = 0.0
+
+ed_pulseNumber_8      =  3        
+ed_wavelength_8       =  1.053
+ed_crossSectionID_8   =  6 # 2D Gaussian Beam
+ed_decayExponent_8    =  1.0
+ed_decayRadius1_8     =  1.201122e-03
+ed_decayRadius2_8     =  1.201122e-03
+ed_lensEqualsTarget_8 =  .true.     
+ed_numRays_8          =  10000
+
+# Setup beam 9:
+ed_lensX_9            =  0.1
+ed_lensY_9            = -0.1
+ed_lensZ_9            = -0.1
+
+ed_targetX_9          =  0.0
+ed_targetY_9          =  0.0
+ed_targetZ_9          =  0.0
+
+ed_semiaxis1_9        =  20.0e-04
+ed_semiaxis2_9        =  20.0e-04
+
+ed_torsionAngle_9     = 0.0
+
+ed_pulseNumber_9      =  3        
+ed_wavelength_9       =  1.053
+ed_crossSectionID_9   =  6 # 2D Gaussian Beam
+ed_decayExponent_9    =  1.0
+ed_decayRadius1_9     =  1.201122e-03
+ed_decayRadius2_9     =  1.201122e-03
+ed_lensEqualsTarget_9 =  .true.     
+ed_numRays_9          =  10000
+
+
+
+### Conduction parameters ###
+useDiffuse      = .true.
+useConductivity = .true.
+diff_useEleCond = .true.
+diff_eleFlMode  = "fl_larsen"
+diff_eleFlCoef  = 0.06
+diff_thetaImplct = 1.0
+
+diff_eleXlBoundaryType = "outflow"
+diff_eleXrBoundaryType = "outflow"
+diff_eleYlBoundaryType = "vacuum"
+diff_eleYrBoundaryType = "outflow"
+diff_eleZlBoundaryType = "outflow"
+diff_eleZrBoundaryType = "outflow"
+
+### Heat-Exchange parameters ###
+useHeatexchange = .true.
+
+### Material and EOS parameters ###
+eosModeInit      = "dens_temp_gather"
+eosMode          = "dens_ie_recal_gather"
+smallt           = 1.0
+smallx           = 1.0e-99
+eos_useLogTables = .false.
+
+############################
+#                          #
+#     HYDRO PARAMETERS     #
+#                          #
+############################
+
+# Use second order hybrid solver with minmod slope limiter. This
+# essentially eliminates any Carbuncle instability.
+ 
+order            = 2         # Interpolation order (first/second/third/fifth order)
+slopeLimiter     = "vanLeer" # Slope limiters (minmod, mc, vanLeer, hybrid, limited)
+LimitedSlopeBeta = 1.        # Slope parameter for the "limited" slope by Toro
+charLimiting     = .true.    # Characteristic limiting vs. Primitive limiting
+use_avisc        = .true.    # use artificial viscosity (originally for PPM)
+cvisc            = 0.1       # coefficient for artificial viscosity
+use_flattening   = .false.   # use flattening (dissipative) (originally for PPM)
+use_steepening   = .false.   # use contact steepening (originally for PPM)
+use_upwindTVD    = .false.   # use upwind biased TVD slope for PPM (need nguard=6)
+RiemannSolver    = "hybrid"  # Roe, HLL, HLLC, LLF, Marquina, hybrid
+entropy          = .false.   # Entropy fix for the Roe solver
+shockDetect      = .false.   # Shock Detect for numerical stability
+addThermalFlux   = .false.
+use_hybridOrder = .true.
+
+# Hydro boundary conditions:
+xl_boundary_type = "outflow"
+xr_boundary_type = "outflow"
+yl_boundary_type = "outflow"
+yr_boundary_type = "outflow"
+zl_boundary_type = "outflow"
+zr_boundary_type = "outflow"
+
+
+##########################
+#   INITIAL CONDITIONS   #
+##########################
+
+sim_targetRadius = 200.0e-04
+sim_targetHeight =  40.0e-04
+sim_vacuumHeight =   0.0e-04
+
+# Target material defaults set for Aluminum at room temperature:
+sim_rhoTarg  = 2.7
+sim_teleTarg = 290.11375
+sim_tionTarg = 290.11375
+sim_tradTarg = 290.11375
+ms_targA = 26.9815386
+ms_targZ = 13.0
+ms_targZMin = 0.02
+eos_targEosType = "eos_tab"
+eos_targSubType = "ionmix4"
+eos_targTableFile = "al-imx-003.cn4"
+
+# Chamber material defaults set for Helium at pressure 1.6 mbar:
+sim_rhoCham  = 1.0e-05
+sim_teleCham = 290.11375
+sim_tionCham = 290.11375
+sim_tradCham = 290.11375
+ms_chamA = 4.002602
+ms_chamZ = 2.0
+eos_chamEosType = "eos_tab"
+eos_chamSubType = "ionmix4"
+eos_chamTableFile = "he-imx-005.cn4"
+
+#######################
+#   TIME PARAMETERS   #
+#######################
+tstep_change_factor = 1.10
+cfl            = 0.4
+dt_diff_factor = 1.0e+100 # Disable diffusion dt
+rt_dtFactor    = 0.02
+hx_dtFactor    = 1.0e+100
+tmax           = 3.0e-09
+dtmin          = 1.0e-16
+dtinit         = 1.0e-15
+dtmax          = 3.0e-09
+nend           = 200
+
+
+#######################
+#   MESH PARAMETERS   #
+#######################
+
+geometry = "cartesian"
+
+# Domain size:
+xmin = -40.0e-04
+xmax =  40.0e-04
+ymin = -40.0e-04
+ymax =  40.0e-04
+zmin = -40.0e-04
+zmax =  40.0e-04
+
+# NOFBS options:
+iProcs = 1
+jProcs = 1
+kProcs = 1
+
+iGridSize = 32
+jGridSize = 16
+kGridSize = 32
+
+# Total number of blocks:
+nblockx = 2
+nblocky = 2
+nblockz = 2
+
+lrefine_max = 1
+lrefine_min = 1
+refine_var_1 = "dens"
+refine_var_2 = "tele"
+

@@ -1,0 +1,74 @@
+#!/bin/bash
+PROG="flash4"
+NODES=${COBALT_JOBSIZE}
+PROJECT_DIR='/intrepid-fs0/users/cdaley/persistent/2012/early_science'
+FLASH_RUNDIRS=("${PROJECT_DIR}/RTFlame_256_s3/rundir_001"\
+    "${PROJECT_DIR}/RTFlame_256_s6/rundir_001"\
+    "${PROJECT_DIR}/RTFlame_256_s9/rundir_001"\
+    "${PROJECT_DIR}/RTFlame_256_s12/rundir_001")
+
+echo -e "Starting Cobalt job script:\n"\
+"COBALT_JOBID=${COBALT_JOBID}\n"\
+"COBALT_PARTNAME=${COBALT_PARTNAME}\n"\
+"COBALT_JOBSIZE=${COBALT_JOBSIZE}\n"
+
+
+# Launch each cobalt-subrun job and save the background process id in bpid.
+subnodes=$(echo $NODES/${#FLASH_RUNDIRS[*]} | bc)
+for subrun in ${!FLASH_RUNDIRS[*]}; do
+    rundir="${FLASH_RUNDIRS[${subrun}]}"
+    echo -e "Job ${subrun}:\nRun directory ${rundir}\nNode count ${subnodes}"
+
+    cobalt-subrun \
+	${subnodes} \
+	${subrun} \
+	-mode vn \
+	-np ${NODES} \
+	-verbose 2 \
+	-cwd "${rundir}" \
+	-env "BG_COREDUMPONERROR=1" \
+	-env "BG_MAPPING=TXYZ" \
+	-env "MPIRUN_LABEL=1" \
+	"${PROG}" \
+	1>"${rundir}/${COBALT_JOBID}.subrun.output" \
+	2>"${rundir}/${COBALT_JOBID}.subrun.error" &
+
+    #Replace cobalt-subrun command with the ping command below to
+    #test the script without actually having to submit jobs on BG/P.
+    #ping flash.uchicago.edu -c 3 > /dev/null 2>&1 &
+    bpid[${subrun}]=$!
+    echo -e "Background process id ${bpid[${subrun}]}\n"
+done
+
+
+echo -e "\nAll cobalt-subrun jobs are running!\n\n"
+
+
+# Wait for all cobalt-subrun jobs to finish.
+# We do not want the script to exit before the cobalt-subrun commands exit.
+rtn=0
+for subrun in ${!FLASH_RUNDIRS[*]}; do
+    echo -e "Waiting on job ${subrun} which has process id ${bpid[${subrun}]}"
+    wait ${bpid[$subrun]}
+    epid=$?
+    # Not sure why the line below once gave the error:
+    #  echo: write error: Interrupted system call.
+    echo -e "Job ${subrun} returned exit code ${epid}\n"
+    if [ ${epid} -ne 0 ]; then
+	let rtn=${rtn}+1
+    fi
+done
+
+
+# Extra wait for safety.  The bpid wait should have been sufficient, 
+# but there could potentially be other active child processes.
+wait
+echo "All cobalt-subrun jobs are complete!"
+
+if [ ${rtn} -eq 0 ]; then
+    echo "All cobalt-subrun jobs returned an exit code of 0!"
+else
+    echo "${rtn} cobalt-subrun jobs returned non-zero exit codes!"
+fi
+
+exit ${rtn}

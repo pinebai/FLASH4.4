@@ -1,0 +1,5 @@
+#	Config file for the Multigamma ideal-gas-based 2T equation of state
+# - Matter-Radiation version with 3 components (one unused)
+# [physics/Eos/EosMain/multiTemp/MatRad3/Multigamma]
+
+REQUIRES physics/Eos/EosMain/multiTemp/Multigamma

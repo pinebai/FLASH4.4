@@ -1,0 +1,76 @@
+#            Configuration file for a passive particle time advancement test
+# ./setup -auto unitTest/ParticlesAdvance/HomologousPassive -objdir=PartHom analytic=1 -without-unit=IO -gridinterpolation=native
+# ./setup -auto unitTest/ParticlesAdvance/HomologousPassive -objdir=PartHom -gridinterpolation=native +ug -unit=Particles/ParticlesMain/EstiMidpointPassive -nxb=80 -1d
+REQUIRES Particles
+#REQUIRES IO/IOParticles
+
+REQUIRES Particles/ParticlesMain/passive/unitTest
+
+USESETUPVARS analytic
+USESETUPVARS domap
+IF not analytic
+   REQUIRES Grid/GridParticles/
+ENDIF
+IF not domap
+   PPDEFINE DONT_FAKE_MAP_MESH_TO_PARTICES
+ENDIF
+
+#LINKIF  ...
+
+VARIABLE dens TYPE: PER_VOLUME #density
+VARIABLE pres                  #pressure
+VARIABLE velx TYPE: PER_MASS   #velocity x
+VARIABLE vely TYPE: PER_MASS   #velocity y
+VARIABLE velz TYPE: PER_MASS   #velocity z
+
+PARTICLEPROP posInitX REAL           # initial x coordinate
+PARTICLEPROP posInitY REAL           # initial y coordinate
+PARTICLEPROP posInitZ REAL           # initial z coordinate
+PARTICLEPROP posAnalX REAL           # analytic x coordinate
+PARTICLEPROP posAnalY REAL           # analytic y coordinate
+PARTICLEPROP posAnalZ REAL           # analytic z coordinate
+PARTICLEPROP errX REAL           # position error in x coordinate
+PARTICLEPROP errY REAL           # position error in y coordinate
+PARTICLEPROP errZ REAL           # position error in z coordinate
+PARTICLEPROP maxerrX REAL           # largest position error in x coordinate
+PARTICLEPROP maxerrY REAL           # largest position error in y coordinate
+PARTICLEPROP maxerrZ REAL           # largest position error in z coordinate
+PARTICLEPROP errwhenX REAL           # when largest position error in x coordinate occurred
+PARTICLEPROP errwhenY REAL           # when largest position error in y coordinate occurred
+PARTICLEPROP errwhenZ REAL           # when largest position error in z coordinate occurred
+
+#  Ambient parameters
+D sim_rho_amb    Gas Density:  Entire domain receives this ambient parameter
+PARAMETER    sim_rho_amb      REAL    0.95e-3
+
+D sim_p_amb      Gas Pressure: Entire domain receives this ambient parameter
+PARAMETER    sim_p_amb        REAL    8.e5
+
+D sim_vx_amb     Gas x-velocity:  Dominant flow velocity throughout domain 
+PARAMETER    sim_vx_amb       REAL    0.5
+
+D sim_vx_multiplier   Half of the domain in y has x-velocity multiplied by this value
+PARAMETER    sim_vx_multiplier REAL   1.0
+
+# Random velocity perturbations
+D sim_seed   Random number seed -- NOT USED please ignore
+PARAMETER    sim_seed         REAL     1.0
+
+D sim_vx_pert   Scales [-1,1] random number in x direction: set to zero for uniform flow
+PARAMETER    sim_vx_pert      REAL     0.1
+
+D sim_vy_pert   Scales [-1,1] random number in y direction: set to zero for uniform flow
+PARAMETER    sim_vy_pert      REAL     0.1
+
+D sim_vz_pert   Scales [-1,1] random number in z direction: set to zero for uniform flow
+PARAMETER    sim_vz_pert      REAL     0.1
+
+# ----------------------------------------------------------------------------------------
+
+D sim_a0  constant component of velocity field factor a(t)
+D sim_a1  varying part of velocity field factor a(t)
+PARAMETER sim_a0	REAL	1.0
+PARAMETER sim_a1	REAL	0.1
+
+PARAMETER sim_analyticParticlePositions	BOOLEAN	FALSE
+PARAMETER sim_fakeMapMeshToParticles	BOOLEAN	TRUE
