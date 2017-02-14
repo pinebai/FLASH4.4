@@ -13,7 +13,6 @@ sim_xctr		= 0.5
 sim_yctr		= 0.5
 sim_zctr		= 0.5
 
-
 #		Gas ratio of specific heats
 
 gamma           = 1.4
@@ -37,9 +36,7 @@ zmax		= 1.
 
 
 xl_boundary_type = "outflow"
-#xr_boundary_type = "outflow"
-#xl_boundary_type = "reflect"
-xr_boundary_type = "reflect"
+xr_boundary_type = "outflow"
 
 yl_boundary_type = "outflow"
 yr_boundary_type = "outflow"
@@ -55,21 +52,21 @@ zr_boundary_type = "outflow"
 
 cfl		= 0.8
 basenm          = "sedov_"
-restart         = .false.
+restart         = .true.
 
 
 #	checkpoint file output parameters
-checkpointFileIntervalTime = 0
+checkpointFileIntervalTime = 0.01
 checkpointFileIntervalStep = 0
-checkpointFileNumber = 0
+checkpointFileNumber = 1
 
 #	plotfile output parameters
-plotfileIntervalTime = 0.02
-plotfileIntervalStep = 0
-plotfileNumber = 0
+#plotfileIntervalTime = 0.
+#plotfileIntervalStep = 0
+#plotfileNumber = 0
 
 nend            = 10000
-tmax            = 0.42
+tmax            = 0.05
 
 run_comment     = "Sedov explosion"
 log_file        = "sedov.log"
@@ -111,34 +108,21 @@ kProcs = 1
 # the guard cell into account. The local blocksize is calculated
 # as iGridSize/iprocs  etc.
  
- 
 ## -------------------------------------------------------------##
 ##  SWITCHES SPECIFIC TO THE UNSPLIT HYDRO SOLVER               ##
-#	I. INTERPOLATION SCHEME:
-order		= 3      # Interpolation order (first/second/third/fifth order)
+#       I. INTERPOLATION SCHEME:
+order           = 3      # Interpolation order (First/Second/Third order)
 slopeLimiter    = "mc"   # Slope limiters (minmod, mc, vanLeer, hybrid, limited)
 LimitedSlopeBeta= 1.     # Slope parameter for the "limited" slope by Toro
-charLimiting	= .true. # Characteristic limiting vs. Primitive limiting
+charLimiting    = .true. # Characteristic limiting vs. Primitive limiting
+use_steepening	= .true. # Contact Steepening for Third order PPM
 
-use_avisc	= .true. # use artificial viscosity (originally for PPM)
-cvisc		= 0.1     # coefficient for artificial viscosity
-use_flattening	= .false. # use flattening (dissipative) (originally for PPM)
-use_steepening	= .false. # use contact steepening (originally for PPM)
-use_upwindTVD	= .false. # use upwind biased TVD slope for PPM (need nguard=6)
+#       II. RIEMANN SOLVERS:
+RiemannSolver   = "hllc"       # Roe, HLL, HLLC, LF
+shockInstabilityFix = .false. # Carbuncle instability fix for the Roe solver
+EOSforRiemann	= .false.     # Call EoS for Riemann solves
+entropy		= .false.
 
-#	II. RIEMANN SOLVERS:
-RiemannSolver	= "Roe"       # Roe, HLL, HLLC, LLF, Marquina
-entropy         = .false.     # Entropy fix for the Roe solver
-
-#	III. STRONG SHOCK HANDELING SCHEME:
-shockDetect	= .false.     # Shock Detect for numerical stability
+#       III. STRONG SHOCK HANDELING SCHEME:
+shockDetect     = .false.     # Shock Detect for numerical stability
 ## -------------------------------------------------------------##
-
-## ---------------------------------------------------------------##
-##  SWITCHES SPECIFIC TO THE SUPER-TIME-STEPPING (STS) ALGORITHM  ##
-##  NOTE: For details on using STS runtime parameters, please     ##
-##        refer to user's guide (Driver chapter).                 ##
-useSTS                  = .false.
-nstepTotalSTS           = 5
-nuSTS                   = 0.2
-## ---------------------------------------------------------------##

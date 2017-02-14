@@ -13,7 +13,6 @@ sim_xctr		= 0.5
 sim_yctr		= 0.5
 sim_zctr		= 0.5
 
-
 #		Gas ratio of specific heats
 
 gamma           = 1.4
@@ -37,9 +36,7 @@ zmax		= 1.
 
 
 xl_boundary_type = "outflow"
-#xr_boundary_type = "outflow"
-#xl_boundary_type = "reflect"
-xr_boundary_type = "reflect"
+xr_boundary_type = "outflow"
 
 yl_boundary_type = "outflow"
 yr_boundary_type = "outflow"
@@ -59,17 +56,17 @@ restart         = .false.
 
 
 #	checkpoint file output parameters
-checkpointFileIntervalTime = 0
+checkpointFileIntervalTime = 0.01
 checkpointFileIntervalStep = 0
 checkpointFileNumber = 0
 
 #	plotfile output parameters
-plotfileIntervalTime = 0.02
+plotfileIntervalTime = 0.
 plotfileIntervalStep = 0
 plotfileNumber = 0
 
 nend            = 10000
-tmax            = 0.42
+tmax            = 0.05
 
 run_comment     = "Sedov explosion"
 log_file        = "sedov.log"

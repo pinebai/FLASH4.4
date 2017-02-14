@@ -1,0 +1,227 @@
+#Runtime parameters for testing the ThomsonScattering unit with a Sedov explosion problem.
+
+# ./setup -auto -objdir=Composite_Sedov_AMR_non-threaded_3d -3d Sedov -makefile=gnu -debug +uhd3t +pm4dev -unit=diagnostics/ThomsonScattering -noc +mtmmmt species=h thsc_maxBeams=1 thsc_maxDetectors=1 thsc_maxPulseSections=2 thsc_maxPulses=1 -parfile=Sedov_thscTest.par
+
+#	Parameters for initial model
+
+#		Ambient pressure and density, explosion energy, initial
+#		radius of perturbation, and location of explosion center
+
+sim_pAmbient	= 1.E9 #1.E-5
+sim_rhoAmbient	= 1.e-4
+sim_expEnergy	= 1.E17 #1.
+sim_rInit		= 0.013671875
+sim_xctr		= 0.5
+sim_yctr		= 0.5
+sim_zctr		= 0.5
+
+
+### SETUP PROBE LASER PULSES FOR Thomson SCATTERING ###
+thsc_numberOfPulses = 1
+
+# Define Pulse 1:
+thsc_numberOfSections_1 = 2
+thsc_time_1_1  = 0.0
+thsc_time_1_2  = 1.0e-09
+
+thsc_power_1_1 = 40.0e9
+thsc_power_1_2 = 40.0e9
+
+
+### SETUP LASER BEAM ###
+thsc_numberOfBeams = 1
+
+# Setup Gaussian Beam 1:
+thsc_beamLensX_1                     =  0.5
+thsc_beamLensY_1                     = -1.0
+thsc_beamLensZ_1                     =  0.5
+thsc_lensSemiAxisMajor_1         =  50.0e-03
+thsc_beamTargetX_1                   =  0.5
+thsc_beamTargetY_1                   =  10.0e-03
+thsc_beamTargetZ_1                   =  0.5
+thsc_targetSemiAxisMajor_1       =  50.0e-03
+thsc_targetSemiAxisMinor_1       =  50.0e-03
+thsc_beamPowerMeasureDist1_1     =  0
+thsc_beamPowerMeasureDist2_1     =  0.25
+thsc_pulseNumber_1               =  1
+thsc_wavelength_1                =  0.5265 # 1.053 / 2
+thsc_crossSectionFunctionType_1  = "gaussian2D"
+thsc_gaussianExponent_1          =  1.0
+thsc_gaussianRadiusMajor_1       =  120.1122e-04
+thsc_gaussianRadiusMinor_1       =  120.1122e-04
+thsc_semiAxisMajorTorsionAxis_1  = "z"
+thsc_semiAxisMajorTorsionAngle_1 =  0.0
+thsc_gridType_1                  = "square2D"
+thsc_beamDetector_1              = 1
+
+thsc_nSubZonesI = 2
+thsc_nSubZonesJ = 2
+thsc_nSubZonesK = 2
+
+thsc_numberOfDetectors = 1
+thsc_detectorApertureAngle_1 = 70 # 20
+thsc_detectorTargetRadius_1 =  16.0e-03
+thsc_detectorCenterX_1  = .1
+thsc_detectorCenterY_1  = .1
+thsc_detectorCenterZ_1  = .1
+thsc_detectorTargetX_1  = .5
+thsc_detectorTargetY_1  = .5
+thsc_detectorTargetZ_1  = .5
+thsc_dOmegaOfDetector_1  = 1.0
+
+thsc_detectorXYwriteFormat = "(1P,G18.8)" #"es18.8"
+thsc_detectorDGwriteFormat = "(-1PG15.5)" #"es15.5"
+thsc_detectorWriteAnglesInDeg  = .TRUE.
+thsc_detectorWriteTempInKeV    = .TRUE.
+thsc_detectorFileAllowOverwrite = .TRUE.
+thsc_computeSpectra = .TRUE.
+thsc_spectrumFileAllowOverwrite = .TRUE.
+thsc_spectrumLamsMin_1          = 525.75 # minimum scattered wavelength (nm)
+thsc_spectrumLamsMax_1          = 527.25 # maximum scattered wavelength (nm)
+thsc_spectrumNpts_1             = 50000
+
+thsc_detectedRayDiagnostics = .TRUE.
+thsc_printPulses            = .TRUE.
+thsc_printBeams             = .TRUE.
+thsc_printDetectors         = .TRUE.
+thsc_printMain = .TRUE.
+
+threadThomsonScBlockList = .TRUE.
+threadThomsonScWithinBlock = .FALSE.
+
+#		Gas ratio of specific heats
+
+gamma           = 1.6666666666667 # 1.4
+ms_hA = 1.00794
+ms_hZ = 1.0
+eos_hEosType    = "EOS_GAM"
+eosModeInit = "dens_ie_scatter"
+
+smallT = 1.0e-1
+eos_maxNewton = 50
+eos_tolerance = 1.e-8
+eos_maxFactorUp = 100.0
+eos_maxFactorDown = 0.001
+
+#	Computational volume parameters
+
+#		Grid dimensionality and geometry
+
+geometry = "cartesian"
+
+#		Size of computational volume
+
+xmin		= 0.
+xmax		= 1.
+ymin		= 0.
+ymax		= 1.
+zmin		= 0.
+zmax		= 1.
+
+#		Boundary conditions
+
+
+xl_boundary_type = "outflow"
+xr_boundary_type = "outflow"
+
+yl_boundary_type = "outflow"
+yr_boundary_type = "outflow"
+
+zl_boundary_type = "outflow"
+zr_boundary_type = "outflow"
+
+
+
+
+
+#	Simulation time, I/O  parameters
+
+cfl		= 0.8
+basenm          = "sedov_"
+restart         = .false.
+
+
+#	checkpoint file output parameters
+checkpointFileIntervalTime = 0.01E-7
+checkpointFileIntervalStep = 0
+checkpointFileNumber = 0
+
+#	plotfile output parameters
+plotfileIntervalTime = 0.
+plotfileIntervalStep = 0
+plotfileNumber = 0
+
+nend            = 1 #10000
+tmax            = 0.05E-7
+
+dtinit                         = 1.0E-17
+dtmax                          = 1.E5
+dtmin                          = 1.0E-17
+
+
+
+run_comment     = "Sedov explosion"
+log_file        = "sedov.log"
+#eachProcWritesSummary = .TRUE.
+eintSwitch     = 1.e-4
+
+plot_var_1 = "dens"
+plot_var_2 = "pres"
+plot_var_3 = "temp"
+
+#  Adaptive Grid refinement parameters
+
+#lrefine_min_init     = 1
+lrefine_max     = 4
+refine_var_1 = "dens"
+refine_var_2 = "pres"
+
+
+# Uniform Grid specific parameters 
+# see note below for more explanation
+
+#iGridSize = 8   #global number of gridpoints along x, excluding gcells
+#jGridSize = 8   #global number of gridpoints along y, excluding gcells
+#kGridSize = 1
+iProcs = 1	#num procs in i direction
+jProcs = 1	#num procs in j direction
+kProcs = 1
+
+
+# When using UG, iProcs, jProcs and kProcs must be specified.
+# These are the processors along each of the dimensions
+#FIXEDBLOCKSIZE mode ::
+# When using fixed blocksize, iGridSize etc are redundant in
+# runtime parameters. These quantities are calculated as 
+# iGridSize = NXB*iprocs
+# jGridSize = NYB*jprocs
+# kGridSize = NZB*kprocs
+#NONFIXEDBLOCKSIZE mode ::
+# iGridSize etc must be specified. They constitute the global
+# number of grid points in the physical domain without taking 
+# the guard cell into account. The local blocksize is calculated
+# as iGridSize/iprocs  etc.
+ 
+#useHydro = .FALSE.
+## -------------------------------------------------------------##
+##  SWITCHES SPECIFIC TO THE UNSPLIT HYDRO SOLVER               ##
+#	I. INTERPOLATION SCHEME:
+order		= 2      # Interpolation order (First/Second order)
+slopeLimiter    = "vanLeer"   # Slope limiters (minmod, mc, vanLeer, hybrid, limited)
+LimitedSlopeBeta= 1.     # Slope parameter for the "limited" slope by Toro
+charLimiting	= .true. # Characteristic limiting vs. Primitive limiting
+
+##use_avisc	= .true. # use artificial viscosity (originally for PPM)
+cvisc		= 0.1     # coefficient for artificial viscosity
+##use_flattening	= .false. # use flattening (dissipative) (originally for PPM)
+##use_steepening	= .false. # use contact steepening (originally for PPM)
+use_upwindTVD	= .false. # use upwind biased TVD slope for PPM (need nguard=6)
+
+#	II. RIEMANN SOLVERS:
+RiemannSolver	= "hllc"       # Roe, HLL, HLLC, LF
+
+
+#	III. STRONG SHOCK HANDELING SCHEME:
+shockDetect	= .true.     # Shock Detect for numerical stability
+#shockLowerCFL = .TRUE.       # Shock Detect for numerical stability
+## -------------------------------------------------------------##

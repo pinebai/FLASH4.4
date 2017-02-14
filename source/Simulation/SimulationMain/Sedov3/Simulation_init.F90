@@ -68,16 +68,6 @@ subroutine Simulation_init()
   call RuntimeParameters_get('zmax',sim_zMax)
   call RuntimeParameters_get('tinitial',sim_tInitial)
 
-!!!!!!!!!!!!!!!!!!!!!!!
-  ! call RuntimeParameters_get('sim_pAmbient2', sim_pAmbient2)
-  ! call RuntimeParameters_get('sim_rhoAmbient2', sim_rhoAmbient2)
-  ! call RuntimeParameters_get('sim_expEnergy2', sim_expEnergy2)
-  ! call RuntimeParameters_get('sim_rInit2', sim_rInit2)
-  ! call RuntimeParameters_get('sim_xctr2',sim_xCenter2)
-  ! call RuntimeParameters_get('sim_yctr2',sim_yCenter2)
-  ! call RuntimeParameters_get('sim_zctr2',sim_zCenter2)
-!!!!!!!!!!!!!!!!!!!!!!!
-
   sim_iFuel = 1
   
   if (sim_nSubZones .le. 1) sim_nSubZones = 2
@@ -99,18 +89,6 @@ subroutine Simulation_init()
   
   sim_pExp    = (sim_gamma-1.) * sim_expEnergy / sim_vctr
 
-
-!!!!!!!!!!!!!!!!!!!!!!!
-  ! if (NDIM .eq. 1) then
-  !    sim_vctr2 = 2. * sim_rInit2
-  ! elseif (NDIM .eq. 2) then
-  !    sim_vctr2 = sim_pi * sim_rInit2**2
-  ! else
-  !    sim_vctr2 = 4./3.*sim_pi*sim_rInit2**3
-  ! endif
-  
-  ! sim_pExp2    = (sim_gamma-1.) * sim_expEnergy2 / sim_vctr2
-!!!!!!!!!!!!!!!!!!!!!!!
 
   call RuntimeParameters_get("threadBlockListBuild", threadBlockListBuild)
   call RuntimeParameters_get("threadHydroBlockList", sim_threadBlockList)

@@ -1,3 +1,15 @@
+# ---------------------------------------------------------------------- #
+# This is a par file for the unsplit hydro code using a third-order      # 
+# PPM scheme for reconstruction,                                         #
+# 1. with using flattening and steepeing                                 #
+# 2. with hllc solver.						         #
+#								         #
+# This setup is expected to be 1.5 or more expensive than the split PPM. #
+# Parameters were chosen to provide the UHD's solutions as close to that #
+# of split PPM's solutions.
+# ---------------------------------------------------------------------- #
+
+
 #	Runtime parameters for the Sedov explosion problem.
 
 #	Parameters for initial model
@@ -12,7 +24,6 @@ sim_rInit		= 0.013671875
 sim_xctr		= 0.5
 sim_yctr		= 0.5
 sim_zctr		= 0.5
-
 
 #		Gas ratio of specific heats
 
@@ -37,9 +48,7 @@ zmax		= 1.
 
 
 xl_boundary_type = "outflow"
-#xr_boundary_type = "outflow"
-#xl_boundary_type = "reflect"
-xr_boundary_type = "reflect"
+xr_boundary_type = "outflow"
 
 yl_boundary_type = "outflow"
 yr_boundary_type = "outflow"
@@ -54,25 +63,25 @@ zr_boundary_type = "outflow"
 #	Simulation time, I/O  parameters
 
 cfl		= 0.8
-basenm          = "sedov_"
+basenm          = "sedov_uhd_ppm_"
 restart         = .false.
 
 
 #	checkpoint file output parameters
-checkpointFileIntervalTime = 0
+checkpointFileIntervalTime = 0.01
 checkpointFileIntervalStep = 0
 checkpointFileNumber = 0
 
 #	plotfile output parameters
-plotfileIntervalTime = 0.02
+plotfileIntervalTime = 0.
 plotfileIntervalStep = 0
 plotfileNumber = 0
 
 nend            = 10000
-tmax            = 0.42
+tmax            = 0.05
 
 run_comment     = "Sedov explosion"
-log_file        = "sedov.log"
+log_file        = "sedov_uhd_ppm.log"
 eintSwitch     = 1.e-4
 
 plot_var_1 = "dens"
@@ -122,12 +131,12 @@ charLimiting	= .true. # Characteristic limiting vs. Primitive limiting
 
 use_avisc	= .true. # use artificial viscosity (originally for PPM)
 cvisc		= 0.1     # coefficient for artificial viscosity
-use_flattening	= .false. # use flattening (dissipative) (originally for PPM)
-use_steepening	= .false. # use contact steepening (originally for PPM)
+use_flattening	= .true. # use flattening (dissipative) (originally for PPM)
+use_steepening	= .true. # use contact steepening (originally for PPM)
 use_upwindTVD	= .false. # use upwind biased TVD slope for PPM (need nguard=6)
 
 #	II. RIEMANN SOLVERS:
-RiemannSolver	= "Roe"       # Roe, HLL, HLLC, LLF, Marquina
+RiemannSolver	= "hllc"       # Roe, HLL, HLLC, LLF, Marquina
 entropy         = .false.     # Entropy fix for the Roe solver
 
 #	III. STRONG SHOCK HANDELING SCHEME:

@@ -54,8 +54,6 @@ subroutine Simulation_initBlock(blockId)
      &  sim_smallT, &
      &  sim_nSubZones, sim_xCenter, sim_yCenter, sim_zCenter, sim_inSubzm1, sim_inszd, &
      sim_threadBlockList, sim_threadWithinBlock
-
-
   use Grid_interface, ONLY : Grid_getBlkIndexLimits, Grid_getBlkPtr, Grid_releaseBlkPtr,&
     Grid_getCellCoords, Grid_putPointData
   
@@ -102,8 +100,6 @@ subroutine Simulation_initBlock(blockId)
   !
   !  If t>0, use the analytic Sedov solution to initialize the
   !  code.  Otherwise, just use a top-hat.
-  !   
-  ! can I just add a second explosion here without chaning anything else?
   !
 
   if (sim_tInitial .gt. 0.) then

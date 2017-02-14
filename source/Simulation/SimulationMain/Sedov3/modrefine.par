@@ -1,4 +1,6 @@
 #	Runtime parameters for the Sedov explosion problem.
+#	Testing of various runtime parameters that modify the maximum
+#       refinement level, beased on Sean Couch's adaptations.
 
 #	Parameters for initial model
 
@@ -9,10 +11,9 @@ sim_pAmbient	= 1.E-5
 sim_rhoAmbient	= 1.
 sim_expEnergy	= 1.
 sim_rInit		= 0.013671875
-sim_xctr		= 0.5
-sim_yctr		= 0.5
+sim_xctr		= 0.0
+sim_yctr		= 0.0
 sim_zctr		= 0.5
-
 
 #		Gas ratio of specific heats
 
@@ -22,7 +23,7 @@ gamma           = 1.4
 
 #		Grid dimensionality and geometry
 
-geometry = "cartesian"
+geometry = "cylindrical"
 
 #		Size of computational volume
 
@@ -36,10 +37,8 @@ zmax		= 1.
 #		Boundary conditions
 
 
-xl_boundary_type = "outflow"
-#xr_boundary_type = "outflow"
-#xl_boundary_type = "reflect"
-xr_boundary_type = "reflect"
+xl_boundary_type = "reflecting"
+xr_boundary_type = "outflow"
 
 yl_boundary_type = "outflow"
 yr_boundary_type = "outflow"
@@ -47,29 +46,35 @@ yr_boundary_type = "outflow"
 zl_boundary_type = "outflow"
 zr_boundary_type = "outflow"
 
+gr_lrefineMaxRedDoByLogR = .true.
+gr_lrefineMaxRedRadiusFact = 0.20
 
+gr_lrefineMaxRedDoByTime = .true.
 
+#gr_refineMaxLevelLogTimeScale = -1.7
+gr_lrefineMaxRedTimeScale = 0.00002
 
+gr_lrefineMaxRedTRef = 0.0
 
 #	Simulation time, I/O  parameters
 
 cfl		= 0.8
 basenm          = "sedov_"
-restart         = .false.
+##restart         = .true.
 
 
 #	checkpoint file output parameters
-checkpointFileIntervalTime = 0
-checkpointFileIntervalStep = 0
+checkpointFileIntervalTime = 0.01
+checkpointFileIntervalStep = 24
 checkpointFileNumber = 0
 
 #	plotfile output parameters
-plotfileIntervalTime = 0.02
+plotfileIntervalTime = 0.
 plotfileIntervalStep = 0
 plotfileNumber = 0
 
 nend            = 10000
-tmax            = 0.42
+tmax            = 0.30
 
 run_comment     = "Sedov explosion"
 log_file        = "sedov.log"
@@ -79,9 +84,9 @@ plot_var_1 = "dens"
 plot_var_2 = "pres"
 plot_var_3 = "temp"
 
-#  Adaptvie Grid refinement parameters
+#  Adaptive Grid refinement parameters
 
-lrefine_max     = 6
+lrefine_max     = 10
 refine_var_1 = "dens"
 refine_var_2 = "pres"
 
@@ -115,30 +120,17 @@ kProcs = 1
 ## -------------------------------------------------------------##
 ##  SWITCHES SPECIFIC TO THE UNSPLIT HYDRO SOLVER               ##
 #	I. INTERPOLATION SCHEME:
-order		= 3      # Interpolation order (first/second/third/fifth order)
-slopeLimiter    = "mc"   # Slope limiters (minmod, mc, vanLeer, hybrid, limited)
+order		= 2      # Interpolation order (First/Second order)
+slopeLimiter    = "vanLeer"   # Slope limiters (minmod, mc, vanLeer, hybrid, limited)
 LimitedSlopeBeta= 1.     # Slope parameter for the "limited" slope by Toro
 charLimiting	= .true. # Characteristic limiting vs. Primitive limiting
 
-use_avisc	= .true. # use artificial viscosity (originally for PPM)
-cvisc		= 0.1     # coefficient for artificial viscosity
-use_flattening	= .false. # use flattening (dissipative) (originally for PPM)
-use_steepening	= .false. # use contact steepening (originally for PPM)
-use_upwindTVD	= .false. # use upwind biased TVD slope for PPM (need nguard=6)
 
 #	II. RIEMANN SOLVERS:
-RiemannSolver	= "Roe"       # Roe, HLL, HLLC, LLF, Marquina
-entropy         = .false.     # Entropy fix for the Roe solver
+RiemannSolver	= "hllc"       # Roe, HLL, HLLC, LF
+shockInstabilityFix = .false. # Carbuncle instability fix for the Roe solver
+
 
 #	III. STRONG SHOCK HANDELING SCHEME:
-shockDetect	= .false.     # Shock Detect for numerical stability
+shockDetect	= .true.     # Shock Detect for numerical stability
 ## -------------------------------------------------------------##
-
-## ---------------------------------------------------------------##
-##  SWITCHES SPECIFIC TO THE SUPER-TIME-STEPPING (STS) ALGORITHM  ##
-##  NOTE: For details on using STS runtime parameters, please     ##
-##        refer to user's guide (Driver chapter).                 ##
-useSTS                  = .false.
-nstepTotalSTS           = 5
-nuSTS                   = 0.2
-## ---------------------------------------------------------------##

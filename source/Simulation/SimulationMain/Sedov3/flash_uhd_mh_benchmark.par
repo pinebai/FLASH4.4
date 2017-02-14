@@ -1,3 +1,12 @@
+# ------------------------------------------------------------------- #
+# This is a par file for the unsplit hydro code using a second-order  #
+# MUSCL-Hancock reconstruction scheme:                                #
+# 1. without using flattening and steepening,                         #
+# 2. with hllc solver.                                                #
+#                                                                     #
+# This setup is expected to equally perform as the split PPM.         #
+# ------------------------------------------------------------------- #
+
 #	Runtime parameters for the Sedov explosion problem.
 
 #	Parameters for initial model
@@ -12,7 +21,6 @@ sim_rInit		= 0.013671875
 sim_xctr		= 0.5
 sim_yctr		= 0.5
 sim_zctr		= 0.5
-
 
 #		Gas ratio of specific heats
 
@@ -37,9 +45,7 @@ zmax		= 1.
 
 
 xl_boundary_type = "outflow"
-#xr_boundary_type = "outflow"
-#xl_boundary_type = "reflect"
-xr_boundary_type = "reflect"
+xr_boundary_type = "outflow"
 
 yl_boundary_type = "outflow"
 yr_boundary_type = "outflow"
@@ -59,17 +65,17 @@ restart         = .false.
 
 
 #	checkpoint file output parameters
-checkpointFileIntervalTime = 0
+checkpointFileIntervalTime = 0.01
 checkpointFileIntervalStep = 0
 checkpointFileNumber = 0
 
 #	plotfile output parameters
-plotfileIntervalTime = 0.02
+plotfileIntervalTime = 0.
 plotfileIntervalStep = 0
 plotfileNumber = 0
 
 nend            = 10000
-tmax            = 0.42
+tmax            = 0.05
 
 run_comment     = "Sedov explosion"
 log_file        = "sedov.log"
@@ -115,7 +121,7 @@ kProcs = 1
 ## -------------------------------------------------------------##
 ##  SWITCHES SPECIFIC TO THE UNSPLIT HYDRO SOLVER               ##
 #	I. INTERPOLATION SCHEME:
-order		= 3      # Interpolation order (first/second/third/fifth order)
+order		= 2      # Interpolation order (first/second/third/fifth order)
 slopeLimiter    = "mc"   # Slope limiters (minmod, mc, vanLeer, hybrid, limited)
 LimitedSlopeBeta= 1.     # Slope parameter for the "limited" slope by Toro
 charLimiting	= .true. # Characteristic limiting vs. Primitive limiting
@@ -127,7 +133,7 @@ use_steepening	= .false. # use contact steepening (originally for PPM)
 use_upwindTVD	= .false. # use upwind biased TVD slope for PPM (need nguard=6)
 
 #	II. RIEMANN SOLVERS:
-RiemannSolver	= "Roe"       # Roe, HLL, HLLC, LLF, Marquina
+RiemannSolver	= "hllc"       # Roe, HLL, HLLC, LLF, Marquina
 entropy         = .false.     # Entropy fix for the Roe solver
 
 #	III. STRONG SHOCK HANDELING SCHEME:
