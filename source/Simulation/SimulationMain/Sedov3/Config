@@ -42,4 +42,40 @@ D sim_nsubzones       Number of `sub-zones' in cells for applying 1d profile
 PARAMETER sim_nsubzones     INTEGER 7
 
 
+
+
+
+
+D sim_pAmbient2       Initial ambient pressure
+PARAMETER sim_pAmbient2     REAL    1.E-5
+
+D sim_rhoAmbient2     Initial ambient density
+PARAMETER sim_rhoAmbient2   REAL    1.
+
+D sim_expEnergy2      Explosion energy (distributed over 2^dimen central zones)
+PARAMETER sim_expEnergy2    REAL    1.
+
+D sim_rInit2          Radial position of inner edge of grid (for 1D)
+PARAMETER sim_rInit2        REAL    0.05
+
+D sim_xctr2            Explosion center coordinates
+PARAMETER sim_xctr2          REAL    0.5
+
+D sim_yctr2            Explosion center coordinates
+PARAMETER sim_yctr2          REAL    0.5
+
+D sim_zctr2            Explosion center coordinates
+PARAMETER sim_zctr2          REAL    0.5
+
+D sim_nsubzones2       Number of `sub-zones' in cells for applying 1d profile
+PARAMETER sim_nsubzones2     INTEGER 7
+
+
+
+
+
+
+
+
+
 # No VARIABLE declarations here, using VARIABLES declared in Hydro etc.
