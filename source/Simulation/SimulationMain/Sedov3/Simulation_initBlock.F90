@@ -53,6 +53,7 @@ subroutine Simulation_initBlock(blockId)
      &  sim_smallX, sim_smallRho, sim_smallP, sim_rInit, &
      &  sim_smallT, &
      &  sim_nSubZones, sim_xCenter, sim_yCenter, sim_zCenter, sim_inSubzm1, sim_inszd, &
+     &  sim_xCenter2, sim_yCenter2, sim_zCenter2, sim_inSubzm12, sim_inszd2, &
      sim_threadBlockList, sim_threadWithinBlock
   use Grid_interface, ONLY : Grid_getBlkIndexLimits, Grid_getBlkPtr, Grid_releaseBlkPtr,&
     Grid_getCellCoords, Grid_putPointData
@@ -66,13 +67,18 @@ subroutine Simulation_initBlock(blockId)
   
   
   integer  ::  i, j, k, n, jLo, jHi
+  integer  ::  jLo2, jHi2
   integer  ::  ii, jj, kk
   real     ::  distInv, xDist, yDist, zDist
+  real     ::  distInv2, xDist2, yDist2, zDist2
   real     ::  sumRho, sumP, sumVX, sumVY, sumVZ
   real     ::  vel, diagonal
+  real     ::  vel2
   real     ::  xx, dxx, yy, dyy, zz, dzz, frac
+  real     ::  frac2
   real     ::  vx, vy, vz, p, rho, e, ek
   real     ::  dist
+  real     ::  dist2
   logical  ::  validGeom
   integer :: istat
 
@@ -214,22 +220,30 @@ subroutine Simulation_initBlock(blockId)
            do kk = 0, (sim_nSubZones-1)*K3D
               zz    = zCoord(k) + (kk*sim_inSubzm1-.5)*dzz 
               zDist = (zz - sim_zCenter) * K3D
+              zDist2 = (zz - sim_zCenter2) * K3D
+
               
               do jj = 0, (sim_nSubZones-1)*K2D
                  yy    = yCoord(j) + (jj*sim_inSubzm1-.5)*dyy
                  yDist = (yy - sim_yCenter) * K2D
+                 yDist2 = (yy - sim_yCenter2) * K2D
                  
                  do ii = 0, (sim_nSubZones-1)
                     xx    = xCoord(i) + (ii*sim_inSubzm1-.5)*dxx
                     xDist = xx - sim_xCenter
+                    xDist2 = xx - sim_xCenter2
                     
                     dist    = sqrt( xDist**2 + yDist**2 + zDist**2 )
                     distInv = 1. / max( dist, 1.E-10 )
+                    dist2    = sqrt( xDist2**2 + yDist2**2 + zDist2**2 )
+                    distInv2 = 1. / max( dist2, 1.E-10 )
                     call sim_find (sim_rProf, sim_nProfile, dist, jLo)
                     !
                     !  a point at `dist' is frac-way between jLo and jHi.   We do a
                     !  linear interpolation of the quantities at jLo and jHi and sum those.
                     ! 
+                    call sim_find (sim_rProf, sim_nProfile, dist2, jLo2)
+
                     if (jLo .eq. 0) then
                        jLo = 1
                        jHi = 1
@@ -243,22 +257,38 @@ subroutine Simulation_initBlock(blockId)
                        frac = (dist - sim_rProf(jLo)) / & 
                             (sim_rProf(jHi)-sim_rProf(jLo))
                     endif
+                    if (jLo2 .eq. 0) then
+                       jLo2 = 1
+                       jHi2 = 1
+                       frac2 = 0.
+                    else if (jLo2 .eq. sim_nProfile) then
+                       jLo2 = sim_nProfile
+                       jHi2 = sim_nProfile
+                       frac2 = 0.
+                    else
+                       jHi2 = jLo2 + 1
+                       frac2 = (dist2 - sim_rProf(jLo2)) / & 
+                            (sim_rProf(jHi2)-sim_rProf(jLo2))
+                    endif
                     ! 
                     !   Now total these quantities.   Note that  v is a radial velocity; 
                     !   we multiply by the tangents of the appropriate angles to get
                     !   the projections in the x, y and z directions.
                     !
                     sumP = sumP +  & 
-                         sim_pProf(jLo) + frac*(sim_pProf(jHi)  - sim_pProf(jLo))
+                         sim_pProf(jLo) + frac*(sim_pProf(jHi)  - sim_pProf(jLo)) + &
+                         sim_pProf(jLo2) + frac*(sim_pProf(jHi2)  - sim_pProf(jLo2))
                     
                     sumRho = sumRho + & 
-                         sim_rhoProf(jLo) + frac*(sim_rhoProf(jHi)- sim_rhoProf(jLo))
+                         sim_rhoProf(jLo) + frac*(sim_rhoProf(jHi)- sim_rhoProf(jLo)) + &
+                         sim_rhoProf(jLo2) + frac*(sim_rhoProf(jHi2)- sim_rhoProf(jLo2))
                     
                     vel = sim_vProf(jLo) + frac*(sim_vProf(jHi)  - sim_vProf(jLo))
+                    vel2 = sim_vProf(jLo2) + frac2*(sim_vProf(jHi2)  - sim_vProf(jLo2))
                     
-                    sumVX  = sumVX  + vel*xDist*distInv
-                    sumVY  = sumVY  + vel*yDist*distInv
-                    sumVZ  = sumVZ  + vel*zDist*distInv
+                    sumVX  = sumVX  + vel*xDist*distInv + vel2*xDist2*distInv2
+                    sumVY  = sumVY  + vel*yDist*distInv + vel2*yDist2*distInv2
+                    sumVZ  = sumVZ  + vel*zDist*distInv + vel2*zDist2*distInv2
                     
                  enddo
               enddo

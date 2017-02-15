@@ -1,19 +1,10 @@
-# Sedov particle movement strong scaling experiments.
-#
-# Basic setup line: 
-# ./setup Sedov -auto +pm4dev -3d -maxblocks=200 -with-unit=Particles +noio
-#
-# This will fit on 512 cores in VN mode on a BG/P.  
-#   Has also been run on 2048, 8192 cores.
-#
+#	Runtime parameters for the Sedov explosion problem.
 
 #	Parameters for initial model
 
 #		Ambient pressure and density, explosion energy, initial
 #		radius of perturbation, and location of explosion center
 
-max_particles_per_blk = 20000
-refine_on_particle_count = .true.
 sim_pAmbient	= 1.E-5
 sim_rhoAmbient	= 1.
 sim_expEnergy	= 1.
@@ -21,6 +12,11 @@ sim_rInit		= 0.013671875
 sim_xctr		= 0.5
 sim_yctr		= 0.5
 sim_zctr		= 0.5
+
+sim_expEnergy2	= 1.
+sim_xctr2		= 0.1
+sim_yctr2		= 0.1
+sim_zctr2		= 0.1
 
 #		Gas ratio of specific heats
 
@@ -53,14 +49,8 @@ yr_boundary_type = "outflow"
 zl_boundary_type = "outflow"
 zr_boundary_type = "outflow"
 
-nblockx = 4
-nblocky = 4
-nblockz = 4
 
-pt_numX = 256
-pt_numY = 256
-pt_numZ = 256
-pt_maxPerProc = 1500000
+
 
 
 #	Simulation time, I/O  parameters
@@ -71,17 +61,17 @@ restart         = .false.
 
 
 #	checkpoint file output parameters
-checkpointFileIntervalTime = 0.01
+checkpointFileIntervalTime = 0.1
 checkpointFileIntervalStep = 0
 checkpointFileNumber = 0
 
 #	plotfile output parameters
-plotfileIntervalTime = 0.
+plotfileIntervalTime = 0.02
 plotfileIntervalStep = 0
 plotfileNumber = 0
 
-nend            = 100
-tmax            = 0.05
+nend            = 10000
+tmax            = 0.20
 
 run_comment     = "Sedov explosion"
 log_file        = "sedov.log"
@@ -93,7 +83,7 @@ plot_var_3 = "temp"
 
 #  Adaptvie Grid refinement parameters
 
-lrefine_max     = 9
+lrefine_max     = 6
 refine_var_1 = "dens"
 refine_var_2 = "pres"
 
@@ -127,18 +117,30 @@ kProcs = 1
 ## -------------------------------------------------------------##
 ##  SWITCHES SPECIFIC TO THE UNSPLIT HYDRO SOLVER               ##
 #	I. INTERPOLATION SCHEME:
-order		= 2      # Interpolation order (First/Second order)
+order		= 3      # Interpolation order (first/second/third/fifth order)
 slopeLimiter    = "mc"   # Slope limiters (minmod, mc, vanLeer, hybrid, limited)
 LimitedSlopeBeta= 1.     # Slope parameter for the "limited" slope by Toro
 charLimiting	= .true. # Characteristic limiting vs. Primitive limiting
 
+use_avisc	= .true. # use artificial viscosity (originally for PPM)
+cvisc		= 0.1     # coefficient for artificial viscosity
+use_flattening	= .false. # use flattening (dissipative) (originally for PPM)
+use_steepening	= .false. # use contact steepening (originally for PPM)
+use_upwindTVD	= .false. # use upwind biased TVD slope for PPM (need nguard=6)
 
 #	II. RIEMANN SOLVERS:
-RiemannSolver	= "Roe"       # Roe, HLL, HLLC, LF
-RoeAvg		= .true.      # Roe averages
-shockInstabilityFix = .false. # Carbuncle instability fix for the Roe solver
-
+RiemannSolver	= "Roe"       # Roe, HLL, HLLC, LLF, Marquina
+entropy         = .false.     # Entropy fix for the Roe solver
 
 #	III. STRONG SHOCK HANDELING SCHEME:
 shockDetect	= .false.     # Shock Detect for numerical stability
 ## -------------------------------------------------------------##
+
+## ---------------------------------------------------------------##
+##  SWITCHES SPECIFIC TO THE SUPER-TIME-STEPPING (STS) ALGORITHM  ##
+##  NOTE: For details on using STS runtime parameters, please     ##
+##        refer to user's guide (Driver chapter).                 ##
+useSTS                  = .false.
+nstepTotalSTS           = 5
+nuSTS                   = 0.2
+## ---------------------------------------------------------------##

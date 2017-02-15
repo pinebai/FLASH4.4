@@ -42,14 +42,26 @@ module Simulation_data
   integer, save :: sim_iFuel
   real, save    :: sim_tInitial
 
+
+  real, save    :: sim_expEnergy2
+  real, save    :: sim_xCenter2, sim_yCenter2, sim_zCenter2
+
+
+
   !! *** Variables pertaining to this Simulation *** !!
 
   integer, parameter                  :: sim_nProfile = 1000
   real   , save                       :: sim_inSubZones, sim_inSubzm1
+  real   , save                       :: sim_inSubZones2, sim_inSubzm12
   real   , save                       :: sim_inszd
+  real   , save                       :: sim_inszd2
   real, dimension(sim_nProfile), save :: sim_rProf, sim_rhoProf, sim_pProf
   real, dimension(sim_nProfile), save :: sim_vProf
   real, save                          :: sim_drProf, sim_pExp, sim_vctr
+
+
+  real, save                          :: sim_pExp2
+
 
   integer, save :: sim_meshMe
   logical, save :: sim_threadBlockList = .false.
