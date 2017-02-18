@@ -13,11 +13,6 @@ sim_xctr		= 0.5
 sim_yctr		= 0.5
 sim_zctr		= 0.5
 
-sim_expEnergy2	= 1.
-sim_xctr2		= 0.1
-sim_yctr2		= 0.1
-sim_zctr2		= 0.1
-
 #		Gas ratio of specific heats
 
 gamma           = 1.4
@@ -61,17 +56,17 @@ restart         = .false.
 
 
 #	checkpoint file output parameters
-checkpointFileIntervalTime = 0.1
+checkpointFileIntervalTime = 0.01
 checkpointFileIntervalStep = 0
 checkpointFileNumber = 0
 
 #	plotfile output parameters
-plotfileIntervalTime = 0.02
+plotfileIntervalTime = 0.
 plotfileIntervalStep = 0
 plotfileNumber = 0
 
 nend            = 10000
-tmax            = 0.20
+tmax            = 0.05
 
 run_comment     = "Sedov explosion"
 log_file        = "sedov.log"
