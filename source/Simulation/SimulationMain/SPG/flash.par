@@ -1,4 +1,5 @@
 # 	Runtime parameters for the MHD Cylindrical Noh problem.
+# 	Adapted for the Stanford Plasma Gun
 
 #	Specific heats ratio
 gamma           = 1.66666666666666667
@@ -40,9 +41,9 @@ gr_pmrpCylindricalPm  = .true.
 
 
 #       Simulation (grid, time, I/O) parameters
-run_comment     = "2D Noh MHD problem"
-log_file        = "noh_mhd_2d.log"
-basenm          = "noh_mhd_2d_"
+run_comment     = "Stanford Plasma Gun"
+log_file        = "spg_mhd_2d.log"
+basenm          = "_spg_mhd_2d_"
 restart         = .false.
 #checkPointFileNumber=1
 #plotFileNumber  = 1

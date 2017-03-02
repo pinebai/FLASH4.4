@@ -1,4 +1,5 @@
 # 	Runtime parameters for the MHD Cylindrical Noh problem.
+# 	Adapted for the Stanford Plasma Gun
 
 #	Specific heats ratio
 gamma           = 1.66666666666666667

@@ -11,7 +11,7 @@ ZLIB_PATH  =
 PAPI_PATH  =
 PAPI_FLAGS =
 
-LIB_NCMPI = /usr/local/pkgs/pnetcdf-1.2.0/gcc
+#LIB_NCMPI = /usr/local/pkgs/pnetcdf-1.2.0/gcc
 MPE_PATH   =
 #MPI_PATH = /usr/local/pkgs/mpich2-1.4.1p1/
 MPI_PATH = /usr/local/Cellar/open-mpi/2.0.2/bin/
@@ -124,6 +124,7 @@ LIB_MATH  =
 
 LIB_MPI   = 
 #LIB_NCMPI = -L $(NCMPI_PATH)/lib -lpnetcdf
+LIB_NCMPI = /usr/local/pkgs/pnetcdf-1.2.0/gcc
 LIB_MPE   =
 
 LIB_HYPRE = -L ${HYPRE_PATH}/lib -lHYPRE

@@ -1,4 +1,6 @@
 #       Configuration file for the 2D Cylindrical MHD Noh
+# 		Adapted for the Stanford Plasma Gun
+
 
 REQUIRES physics/Hydro/HydroMain
 REQUESTS physics/materialProperties/MagneticResistivity/MagneticResistivityMain/Constant 

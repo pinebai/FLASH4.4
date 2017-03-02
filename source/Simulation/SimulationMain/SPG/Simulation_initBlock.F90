@@ -1,3 +1,4 @@
+!! Stanford Plasma Gun
 !!****if* source/Simulation/SimulationMain/magnetoHD/NohCylindrical/Simulation_initBlock
 !!
 !! NAME
@@ -203,14 +204,14 @@ subroutine Simulation_initBlock(blockID)
      do j = blkLimitsGC(LOW,JAXIS),blkLimitsGC(HIGH,JAXIS)
         do i = blkLimitsGC(LOW,IAXIS),blkLimitsGC(HIGH,IAXIS)
 
-           ! x Coord at cell center
+           ! x Coord at cell center (for cylindrical, x-Coord = r (radial))
            if (i <=blkLimitsGC(HIGH,IAXIS)) then
               x1 = xCoord(i)
            else
               x1 = xCoord(i-1) + dx
            endif
 
-           ! y Coord at cell center
+           ! y Coord at cell center (for cylindrical, y-Coord = z (axial))
            if (j <=blkLimitsGC(HIGH,JAXIS)) then
               x2 = yCoord(j)
            else
@@ -225,6 +226,16 @@ subroutine Simulation_initBlock(blockID)
               solnData(VELX_VAR,i,j,k)= -3.24101
               solnData(VELY_VAR,i,j,k)= 0.0
               solnData(VELZ_VAR,i,j,k)= 0.0
+
+              ! #############################################
+              
+              ! Try to include some axial velocity for part of the plasma
+              !if (x2 > sizeY/2) then
+              !    solnData(VELY_VAR,i,j,k)=5.e1
+              !endif
+
+              ! #############################################
+
            endif     
          ! plasma beta is 8 PI 10^-6
            solnData(PRES_VAR,i,j,k)=  8.*PI*1.e-6*&
