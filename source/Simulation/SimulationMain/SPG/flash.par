@@ -50,7 +50,7 @@ restart         = .false.
 
 
 #	checkpoint file output parameters
-checkpointFileIntervalTime = 0.1
+checkpointFileIntervalTime = 0.005
 checkpointFileIntervalStep = 0
 checkpointFileNumber = 0
 
@@ -67,6 +67,9 @@ cfl             = 0.8
 plot_var_1 = "dens"
 plot_var_2 = "pres"
 plot_var_3 = "temp"
+plot_var_4 = "velx"
+plot_var_5 = "vely"
+plot_var_6 = "magz"
 
 
 #convertToConsvdInMeshInterp = .true.

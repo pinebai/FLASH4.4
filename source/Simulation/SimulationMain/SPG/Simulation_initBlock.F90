@@ -45,6 +45,11 @@ subroutine Simulation_initBlock(blockID)
 #include "constants.h"
 #include "Flash.h"
 
+  !call RuntimeParameters_get('ymin',    sim_yMin)
+  !call RuntimeParameters_get('ymax',    sim_yMax)
+  !call RuntimeParameters_get('xmin',    sim_xMin)
+  !call RuntimeParameters_get('xmax',    sim_xMax)
+
   !! Arguments ------------------------
   integer, intent(in) :: blockID
   !! ----------------------------------
@@ -204,6 +209,11 @@ subroutine Simulation_initBlock(blockID)
      do j = blkLimitsGC(LOW,JAXIS),blkLimitsGC(HIGH,JAXIS)
         do i = blkLimitsGC(LOW,IAXIS),blkLimitsGC(HIGH,IAXIS)
 
+            ! cylindrical:
+            ! 1/i/x := r
+            ! 2/j/y := z
+            ! 3/k/z := theta
+
            ! x Coord at cell center (for cylindrical, x-Coord = r (radial))
            if (i <=blkLimitsGC(HIGH,IAXIS)) then
               x1 = xCoord(i)
@@ -228,13 +238,20 @@ subroutine Simulation_initBlock(blockID)
               solnData(VELZ_VAR,i,j,k)= 0.0
 
               ! #############################################
+              ! #############################################
+              ! #############################################
               
               ! Try to include some axial velocity for part of the plasma
-              !if (x2 > sizeY/2) then
-              !    solnData(VELY_VAR,i,j,k)=5.e1
-              !endif
+              !!if (x2 > 1) then
+              !!  if (x2 < 2) then
+              !!    solnData(VELY_VAR,i,j,k)=5.e0
+              !!  endif
+              !!endif
 
               ! #############################################
+              ! #############################################
+              ! #############################################
+
 
            endif     
          ! plasma beta is 8 PI 10^-6
