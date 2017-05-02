@@ -62,7 +62,7 @@ plotfileNumber = 0
 
 nend            = 1000000
 tmax            = 30.e-2
-cfl             = 0.8			# Courant number for stability
+cfl             = 0.8
 
 plot_var_1 = "dens"
 plot_var_2 = "pres"

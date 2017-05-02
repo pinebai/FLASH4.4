@@ -21,7 +21,7 @@ PARAMETER tiny                 REAL     1.e-16
 
 # Normalization
 
-PARAMETER unit_density         REAL     1.e-15			# originally 1.e-5			tried 1.e-10,e-15 
+PARAMETER unit_density         REAL     1.e-5
 PARAMETER unit_velocity        REAL     1.e7
 PARAMETER unit_length          REAL     1.0
 

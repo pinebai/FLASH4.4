@@ -49,11 +49,6 @@ subroutine Simulation_init()
   call RuntimeParameters_get('killdivb', sim_killdivb)
   call RuntimeParameters_get('smallp',   sim_smallP)
 
-
-  
-
-
-
   sim_gCell = .true.
   
 end subroutine Simulation_init

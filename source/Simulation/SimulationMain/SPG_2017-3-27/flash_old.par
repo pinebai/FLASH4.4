@@ -41,36 +41,15 @@ gr_pmrpCylindricalPm  = .true.
 
 
 #       Simulation (grid, time, I/O) parameters
-run_comment     = "Stanford Plasma Gun"
-log_file        = "spg_mhd_2d.log"
-basenm          = "_spg_mhd_2d_"
+run_comment     = "2D Noh MHD problem"
+log_file        = "noh_mhd_2d.log"
+basenm          = "noh_mhd_2d_"
 restart         = .false.
 #checkPointFileNumber=1
 #plotFileNumber  = 1
-
-
-#	checkpoint file output parameters
-checkpointFileIntervalTime = 0.01
-checkpointFileIntervalStep = 0
-checkpointFileNumber = 0
-
-#	plotfile output parameters
-plotfileIntervalTime = 0.03
-plotfileIntervalStep = 0
-plotfileNumber = 0
-
-
 nend            = 1000000
 tmax            = 30.e-2
-cfl             = 0.8			# Courant number for stability
-
-plot_var_1 = "dens"
-plot_var_2 = "pres"
-plot_var_3 = "temp"
-plot_var_4 = "velx"
-plot_var_5 = "vely"
-plot_var_6 = "magz"
-
+cfl             = 0.8
 
 #convertToConsvdInMeshInterp = .true.
 checkpointFileIntervalTime = 0.01
