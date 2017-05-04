@@ -1,0 +1,29 @@
+#       Configuration file for the 2D Cylindrical MHD Noh
+# 		Adapted for the Stanford Plasma Gun
+
+
+REQUIRES physics/Hydro/HydroMain
+REQUESTS physics/materialProperties/MagneticResistivity/MagneticResistivityMain/Constant 
+REQUESTS physics/Diffuse/DiffuseMain/Unsplit 
+
+USESETUPVARS ThreeT
+IF ThreeT
+  REQUIRES physics/Eos/EosMain/multiTemp/Gamma
+ELSE
+  REQUIRES physics/Eos/EosMain/Gamma
+ENDIF
+
+MASS_SCALAR sele EOSMAP: SELE
+
+# Labels
+
+PARAMETER tiny                 REAL     1.e-16
+
+# Normalization
+
+PARAMETER unit_density         REAL     1.e-15			# originally 1.e-5			tried 1.e-10,e-15 
+PARAMETER unit_velocity        REAL     1.e7
+PARAMETER unit_length          REAL     1.0
+
+VARIABLE vecz                  # vector potential Az
+

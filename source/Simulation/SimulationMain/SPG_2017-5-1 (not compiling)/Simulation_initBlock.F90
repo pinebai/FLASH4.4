@@ -71,7 +71,6 @@ subroutine Simulation_initBlock(blockID)
   !#############################
   real :: nDensPeak,molarDensPeak,molarMass,massDensPeak,rChar
   real :: velYInit, BPhiInit,MassDensInit,BPhiO
-  real :: IExternal
   !#############################
   !#############################
   !#############################
@@ -154,9 +153,8 @@ subroutine Simulation_initBlock(blockID)
   dz = del(3)
 
   !BPhiO = 6.35584*1.e5/sqrt(4.*PI*sim_UnitDensity*sim_UnitVelocity**2)
-  Iexternal = 0.
-  BPhiO = IExternal*.635584/sqrt(4.*PI*sim_UnitDensity*sim_UnitVelocity**2)
-  !BPhiO = 0;
+  !BPhiO = .635584/sqrt(4.*PI*sim_UnitDensity*sim_UnitVelocity**2)
+  BPhiO = 0;
 
 
 !* ************************** *

@@ -1,5 +1,5 @@
 # 	Runtime parameters for the MHD Cylindrical Noh problem.
-# 	Adapted for the Stanford Plasma Gun
+#	Adapted for the Stanford Plasma Gun
 
 #	Specific heats ratio
 gamma           = 1.66666666666666667
@@ -10,8 +10,6 @@ geometry       = "cylindrical"
 
 
 #       Size of computational volume for 2D test
-# x = radial
-# y = axial
 xmin            = 0.0
 xmax            =  3.
 ymin            = 0.0
@@ -20,58 +18,21 @@ ymax            =  3.
 #       Boundary conditions (code -22 is periodic)
 xl_boundary_type = "axisymmetric" 
 xr_boundary_type = "outflow"
-#yl_boundary_type = "outflow"
-yl_boundary_type = "user-defined"
+yl_boundary_type = "outflow"
 yr_boundary_type = "outflow"
 zl_boundary_type = "outflow"
 zr_boundary_type = "outflow"
 
-#	AMR parameters
-#nblockx	= 1
-#nblocky	= 1
-lrefine_min	= 1
-lrefine_max     = 6 
-nrefs           = 1
-refine_var_1	= "dens"
-eintSwitch	= 0.0
-
-gr_pmrpcurvilinearconserve = .true.
-gr_pmrpdivergencefree = 1
-gr_pmrpforceconsistency = .false.
-gr_pmrpCylindricalPm  = .true.
-
-
 #       Simulation (grid, time, I/O) parameters
-run_comment     = "Stanford Plasma Gun"
-log_file        = "spg_mhd_2d.log"
-basenm          = "_spg_mhd_2d_"
+run_comment     = "2D Noh MHD problem"
+log_file        = "noh_mhd_2d.log"
+basenm          = "noh_mhd_2d_"
 restart         = .false.
 #checkPointFileNumber=1
 #plotFileNumber  = 1
-
-
-#	checkpoint file output parameters
-checkpointFileIntervalTime = 0.01
-checkpointFileIntervalStep = 0
-checkpointFileNumber = 0
-
-#	plotfile output parameters
-plotfileIntervalTime = 0.03
-plotfileIntervalStep = 0
-plotfileNumber = 0
-
-
 nend            = 1000000
 tmax            = 30.e-2
-cfl             = 0.8			# Courant number for stability
-
-plot_var_1 = "dens"
-plot_var_2 = "pres"
-plot_var_3 = "temp"
-plot_var_4 = "velx"
-plot_var_5 = "vely"
-plot_var_6 = "magz"
-
+cfl             = 0.8
 
 #convertToConsvdInMeshInterp = .true.
 checkpointFileIntervalTime = 0.01
@@ -105,7 +66,7 @@ use_upwindTVD	= .false. # use upwind biased TVD slope for PPM (need nguard=6)
 E_modification	= .true.           # High order algorithm for E-field construction
 energyFix	= .true.           # Update magnetic energy using staggered B-fields
 ForceHydroLimit	= .false.          # Pure Hydro Limit (B=0)
-prolMethod      = "balsara_prol" # Prolongation method (injecton_prol, balsara_prol)
+prolMethod      = "injection_prol" # Prolongation method (injecton_prol, balsara_prol)
 
 
 #	III. RIEMANN SOLVERS:
@@ -127,6 +88,8 @@ nuSTS                   = 0.2
 ## ---------------------------------------------------------------##
 
 
+nblockx = 256
+nblocky = 256
 
 
 #	The parameters below are only necessary for the Uniform Grid
@@ -151,3 +114,17 @@ meshCopyCount   = 1
 #	number of grid points in the physical domain without taking 
 #	the guard cell into account. The local blocksize is calculated
 #	as iGridSize/iprocs  etc.
+
+
+# 3T RAGE-like options:
+hy_eosModeAfter = "dens_ie_gather"
+eosModeInit = "dens_ie_gather"
+eosMode = "dens_ie_recal_gather"
+
+# Fully ionized Deuterium is hydrodynamically equivalent to neutral
+# Hydrogen, which is used in the 1T version of simulation (see
+# flash.par). This is true to RAGE-like hydro, but not for entropy
+# advection. Thus, in this case, the RAGE-like solution with fully
+# ionized Deuterium should give the same answer as the 1T solution
+eos_singleSpeciesA = 2
+eos_singleSpeciesZ = 1
