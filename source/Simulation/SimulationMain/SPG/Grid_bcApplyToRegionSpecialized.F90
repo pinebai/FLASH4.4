@@ -283,8 +283,9 @@ do ivar = 1,varCount
                        !if (ivar == GAME_VAR) regionData(i,j,1:ke,ivar) = regionData(guard+1,j,1:ke,ivar)
                        !if (ivar == EINT_VAR) regionData(i,j,1:ke,ivar) = regionData(guard+1,j,1:ke,ivar)
                        !if (ivar == ENER_VAR) regionData(i,j,1:ke,ivar) = regionData(guard+1,j,1:ke,ivar)
-                       if (ivar == MAGZ_VAR) regionData(i,j,1:ke,ivar) = xCoord
+                       if (ivar == MAGZ_VAR) regionData(i,j,1:ke,ivar) = 100*max(1/xCoord(i),0.0)
                         !print*,'xCoord=',xCoord,', sizeX=',sizeX
+                        !print*,'magz=',regionData(i,j,1:ke,ivar)
 
                     endif
                  end do

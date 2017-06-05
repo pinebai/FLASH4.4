@@ -56,7 +56,7 @@ subroutine Simulation_initBlock(blockID)
     
   integer :: i, j, k, n, istat, sizeX, sizeY, sizeZ
   integer, dimension(2,MDIM) :: blkLimits, blkLimitsGC
-  real :: radius, dx, dy, dz
+  real :: radius, dx, dy, dz, dist_axial
   real, allocatable,dimension(:) :: xCoord,xCoordL,xCoordR,&
                                     yCoord,yCoordL,yCoordR,&
                                     zCoord,zCoordL,zCoordR
@@ -69,8 +69,8 @@ subroutine Simulation_initBlock(blockID)
   !#############################
   !#############################
   !#############################
-  real :: nDensPeak,molarDensPeak,molarMass,massDensPeak,rChar
-  real :: velYInit, BPhiInit,MassDensInit,BPhiO
+  real :: nDensPeak,molarDensPeak,molarMass,massDensPeak,rChar,zChar
+  real :: velYInit, BPhiInit,MassDensInit,BPhiO, BzChar
   real :: IExternal
   !#############################
   !#############################
@@ -154,8 +154,9 @@ subroutine Simulation_initBlock(blockID)
   dz = del(3)
 
   !BPhiO = 6.35584*1.e5/sqrt(4.*PI*sim_UnitDensity*sim_UnitVelocity**2)
-  Iexternal = 0.
+  IExternal = 1.e-2
   BPhiO = IExternal*.635584/sqrt(4.*PI*sim_UnitDensity*sim_UnitVelocity**2)
+  BzChar = 10
   !BPhiO = 0;
 
 
@@ -201,9 +202,13 @@ subroutine Simulation_initBlock(blockID)
 
            ! define radius with respect to center
            radius = x1
+           dist_axial = x2
            ! define Az  
            !Ay(i,j,k) =  -0.5*radius**2*6.35584*1.e5/sqrt(4.*PI*sim_UnitDensity*sim_UnitVelocity**2)
-            Ay(i,j,k) =  -0.5*radius**2*x2*BPhiO
+            !Ay(i,j,k) =  -0.5*radius**2*x2*BPhiO
+            Ay(i,j,k) =  -0.5*radius**2*BPhiO*exp(-dist_axial/BzChar)
+            !Ay(i,j,k) =  -0.5*radius**2*BPhiO
+
 
         enddo
      enddo
@@ -248,22 +253,25 @@ subroutine Simulation_initBlock(blockID)
 
            !radius 
            radius = x1
+           dist_axial = x2
 
           !#############################
           !#############################
           !#############################
           !#############################
-           ! set plasma density
-           !solnData(DENS_VAR,i,j,k)=  3.1831*radius**2
-           !solnData(DENS_VAR,i,j,k)=  3.1831*(3-radius)**2
-           nDensPeak = 1.e15                              ! #/cm^3
-           molarDensPeak = nDensPeak/(6.02*1.e23)         ! mol/cm^3
-           molarMass = 2.01588                            ! g/mol
-           massDensPeak = molarDensPeak*molarMass
-           rChar = 1.0                                    ! characteristic radius fall off (cm) (0.8?)
-           !MassDensInit = massDensPeak*exp(-((3-radius)/rChar)**2)/1e-10
-           MassDensInit = massDensPeak*exp(-(radius/rChar)**2)/1e-10 
-           !MassDensInit = massDensPeak*exp(-(radius/rChar)**2)
+            ! set plasma density
+            !solnData(DENS_VAR,i,j,k)=  3.1831*radius**2
+            !solnData(DENS_VAR,i,j,k)=  3.1831*(3-radius)**2
+            nDensPeak = 1.e15                              ! #/cm^3
+            molarDensPeak = nDensPeak/(6.02*1.e23)         ! mol/cm^3
+            molarMass = 2.01588                            ! g/mol
+            massDensPeak = molarDensPeak*molarMass
+            rChar = 1.0                                    ! characteristic radius fall off (cm) (0.8?)
+            zChar = 10                                     ! characteristic z fall-off of IC's (just messing with this)
+            !MassDensInit = massDensPeak*exp(-((3-radius)/rChar)**2)/1e-10
+            !MassDensInit = massDensPeak*exp(-(radius/rChar)**2)
+            !MassDensInit = massDensPeak*exp(-(radius/rChar)**2)/1e-10 
+            MassDensInit = massDensPeak*exp(-(radius/rChar)**2)*exp(-dist_axial/zChar)/1e-10 
             
             solnData(DENS_VAR,i,j,k)=  MassDensInit
 
@@ -287,7 +295,10 @@ subroutine Simulation_initBlock(blockID)
               !!endif
 
            endif   
-           BPhiInit = x1*x2*BPhiO
+           !BPhiInit = x1*x2*BPhiO
+           !PhiInit = x1*BPhiO
+           BPhiInit = x1*BPhiO*exp(-dist_axial/BzChar)
+
          ! plasma beta is 8 PI 10^-6
            !solnData(PRES_VAR,i,j,k)=  8.*PI*1.e-6*&
            !  (x1*6.35584*1.e5/sqrt(4.*PI*sim_UnitDensity*sim_UnitVelocity**2))**2
@@ -350,7 +361,7 @@ subroutine Simulation_initBlock(blockID)
                  faceyData(MAG_FACE_VAR,i,j,k)=0.0!-(Az(i+1,j,k)-Az(i,j,k))/dx
                  solnData(MAGX_VAR,i,j,k)=  0.0
                  solnData(MAGY_VAR,i,j,k)=  0.0
-                 !solnData(MAGZ_VAR,i,j,k)=  x1*6.35584*1.e5/sqrt(4.*PI*sim_UnitDensity*sim_UnitVelocity**2)
+                 !solnData(MAGZ_VAR,i,j,k)=  x1*6.35584*1.e5/sqrt(4.*PI*sim_UnitDensity*sim_  ocity**2)
                  !solnData(MAGZ_VAR,i,j,k)=  x2*x1*6.35584*1.e5/sqrt(4.*PI*sim_UnitDensity*sim_UnitVelocity**2)
                  solnData(MAGZ_VAR,i,j,k)=  BPhiInit
               endif
